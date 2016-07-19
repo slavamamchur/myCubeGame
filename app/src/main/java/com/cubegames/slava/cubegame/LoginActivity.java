@@ -3,21 +3,21 @@ package com.cubegames.slava.cubegame;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build.VERSION;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,22 +29,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.cubegames.slava.cubegame.api.LoginRequest;
 import com.cubegames.slava.cubegame.api.LoginResponse;
 import com.cubegames.slava.cubegame.api.RestConst;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static com.cubegames.slava.cubegame.api.RestConst.URL_LOGIN;
-import static com.cubegames.slava.cubegame.api.RestConst.URL_REGISTER;
-import static com.cubegames.slava.cubegame.api.RestConst.getBaseUrl;
 
 /**
  * A login screen that offers login via email/password.
@@ -56,23 +56,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * Network read timeout, in milliseconds.
-     */
-    private static final int NET_READ_TIMEOUT_MILLIS = 10000;  // 10 seconds
-
-    /**
-     * Network connection timeout, in milliseconds.
-     */
-    private static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "khrenomorj@gmail.com:gfhjkmyf[eq111", "bar@example.com:world"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -220,13 +203,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+    private boolean isEmailValid(@SuppressWarnings("UnusedParameters") String email) {
         return true; //email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 1;
     }
 
@@ -357,82 +338,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private final String mUrl;
         private String mError;
         private String mAuthToken;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            mUrl = getBaseUrl() + URL_REGISTER;
             mError = null;
             mAuthToken = null;
         }
 
-        /**
-         * Given a string representation of a URL, sets up a connection and gets an input stream.
-         */
-        private InputStream downloadUrl(final URL url) throws IOException {
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS /* milliseconds */);
-            conn.setConnectTimeout(NET_CONNECT_TIMEOUT_MILLIS /* milliseconds */);
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
-//            conn.setRequestProperty("user-name", mEmail);
-//            conn.setRequestProperty("user-pass", mPassword);
-           conn.setRequestProperty("user-name", "new_user");
-            conn.setRequestProperty("user-pass", "123");
-            conn.setRequestProperty("email", "user@user.com");
-            conn.setRequestProperty("language", "RU");
-            // Starts the query
-            conn.connect();
-            return conn.getInputStream();
-        }
-
-        /* void handleError(response) {
-            if (response) {
-                if (response.error) {
-                    var msg = response.error;
-                    if (response.auth) {
-                        msg = " :AUTH: " + msg;
-                    }
-                    throw new Error(msg);
-                }
-            }
-        } */
-
-        boolean handleError(String response){
-            Gson gson = new Gson();
-            LoginResponse data = gson.fromJson(response, LoginResponse.class);
-
-            if (data == null){
+        boolean handleError(LoginResponse response){
+            if (response == null){
                 mError = "Invalid response";
                 return false;
             }
             else {
-                if( data.getId() != null) mAuthToken = data.getId();
+                if( response.getId() != null)
+                    mAuthToken = response.getId();
 
-                //TODO...
-                mError = data.getError();
-                return !(mError != null && mError.isEmpty());
+                return TextUtils.isEmpty(mError = response.getError());
             }
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
             try {
-                // TODO: register the new account here.
-                return handleError(RestConst.convertStreamToString(downloadUrl(new URL(mUrl))));
-            } catch (MalformedURLException e) {
-                mError = "Invalid Url";
-                return false;
-            } catch (IOException e) {
+                return handleError(new LoginRequest(mEmail, mPassword).getResponse());
+            } catch (Exception e) {
                 mError = e.getMessage();
                 return false;
             }
-
         }
 
         @Override

@@ -1,29 +1,33 @@
 package com.cubegames.slava.cubegame.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * Created by Slava on 16.07.2016.
+ * Created by Slava Mamchur on 16.07.2016.
  */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginResponse {
 
-    private final String id;
-    private final String error;
+    @JsonProperty("id")
+    private String id;
 
-    public LoginResponse(String id, String error) {
-        this.id = id;
-        this.error = error;
-    }
+    @JsonProperty("error")
+    private String error;
 
     public String getId() {
         return id;
     }
-
     public String getError() {
         return error;
     }
 
-    @Override
-    public String toString() {
-        return String.format("(id: %s, error: %s)", id, error);
+    public void setId(String id) {
+        this.id = id;
+    }
+    public void setError(String error) {
+        this.error = error;
     }
 
 }

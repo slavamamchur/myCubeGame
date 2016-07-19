@@ -1,8 +1,9 @@
 package com.cubegames.slava.cubegame.api;
 
 /**
- * Created by Slava on 15.07.2016.
+ * Created by Slava Mamchur on 15.07.2016.
  */
+@SuppressWarnings({"unused", "DefaultFileTemplate"})
 public class RestConst {
     // main controller
     public static final String URL_PING = "/ping";
@@ -37,12 +38,18 @@ public class RestConst {
     public static final String URL_UPDATE = "/update";
     public static final String URL_LIST = "/list";
 
-    public static String getBaseUrl() {
-        return "http://192.168.1.105:8080/engine";
+    /**
+     * Network read timeout, in milliseconds.
+     */
+    public static final int NET_READ_TIMEOUT_MILLIS = 15000;  // 15 seconds
+    /**
+     * Network connection timeout, in milliseconds.
+     */
+    public static final int NET_CONNECT_TIMEOUT_MILLIS = 30000;  // 30 seconds
+
+    //TODO - from stored prop
+    public static final String getBaseUrl() {
+        return "http://10.0.2.2:8080/engine";
     }
 
-    public static String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
 }
