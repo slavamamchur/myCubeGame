@@ -4,8 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -28,18 +32,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.cubegames.slava.cubegame.api.LoginRequest;
-import com.cubegames.slava.cubegame.api.LoginResponse;
-import com.cubegames.slava.cubegame.api.RestConst;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
+import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.model.LoginResponse;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +55,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
+    private BroadcastReceiver mLoginBroadcastReceiver = null;
+    private BroadcastReceiver mRegisterBroadcastReceiver = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -67,6 +64,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private TextView mTokenView;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +78,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
+        registerRestApiResponceReceivers();
+
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if ((id == R.id.login || id == EditorInfo.IME_NULL) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
                     attemptLogin();
                     return true;
                 }
-                return false;
+                return true;
             }
         });
 
@@ -99,6 +103,52 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mTokenView = (TextView) findViewById(R.id.auth_token);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private void registerRestApiResponceReceivers() {
+        mLoginBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                showProgress(false);
+
+                LoginResponse response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+                if (response.getId() != null) {
+                    mTokenView.setText(response.getId());
+                } else {
+                    mPasswordView.setError(response.getError());
+                    mPasswordView.requestFocus();
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter(RestApiService.ACTION_LOGIN_RESPONSE);
+        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(mLoginBroadcastReceiver, intentFilter);
+
+        mRegisterBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                showProgress(false);
+
+                String error = intent.getStringExtra(RestApiService.EXTRA_REGISTRATION_RESPONSE_TEXT);
+                Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+
+            }
+        };
+        IntentFilter updateIntentFilter = new IntentFilter(
+                RestApiService.ACTION_REGISTRATION_RESPONSE);
+        updateIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(mRegisterBroadcastReceiver, updateIntentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(mLoginBroadcastReceiver);
+        unregisterReceiver(mRegisterBroadcastReceiver);
     }
 
     private void populateAutoComplete() {
@@ -116,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
         if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -124,7 +174,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(android.R.string.ok, new OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
@@ -157,10 +207,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -197,9 +243,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            RestApiService.startActionLogin(this, email, password);
+
+            /*RegisterRequestParams params = new RegisterRequestParams();
+            params.setUserName("slava3");
+            params.setUserPass("1234567");
+            params.setEmail("slava3@gmail.com");
+            params.setLanguage("RU");
+            RestApiService.startActionRegistration(this, params);*/
         }
     }
 
@@ -219,7 +272,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -290,6 +343,46 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Login Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.cubegames.slava.cubegame/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Login Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.cubegames.slava.cubegame/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -330,65 +423,5 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private String mError;
-        private String mAuthToken;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-            mError = null;
-            mAuthToken = null;
-        }
-
-        boolean handleError(LoginResponse response){
-            if (response == null){
-                mError = "Invalid response";
-                return false;
-            }
-            else {
-                if( response.getId() != null)
-                    mAuthToken = response.getId();
-
-                return TextUtils.isEmpty(mError = response.getError());
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                return handleError(new LoginRequest(mEmail, mPassword).getResponse());
-            } catch (Exception e) {
-                mError = e.getMessage();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                mTokenView.setText(mAuthToken);
-            } else {
-                mPasswordView.setError(mError);
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
 }
 

@@ -38,14 +38,19 @@ public class RestConst {
     public static final String URL_UPDATE = "/update";
     public static final String URL_LIST = "/list";
 
+    //Parameters
+    public static final String PARAM_LOGIN_USER_NAME = "user-name";
+    public static final String PARAM_LOGIN_USER_PASS = "user-pass";
+    public static final String PARAM_HEADER_AUTH_TOKEN = "user-token";
+
     /**
      * Network read timeout, in milliseconds.
      */
-    public static final int NET_READ_TIMEOUT_MILLIS = 15000;  // 15 seconds
+    public static final int NET_READ_TIMEOUT_MILLIS = 60000;  // 15 seconds
     /**
      * Network connection timeout, in milliseconds.
      */
-    public static final int NET_CONNECT_TIMEOUT_MILLIS = 30000;  // 30 seconds
+    public static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
 
     //TODO - from stored prop
     public static final String getBaseUrl() {
