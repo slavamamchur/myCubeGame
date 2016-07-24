@@ -90,7 +90,7 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
     public T getResponse()  throws RestClientException, WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<T> responseEntity = restTemplate.exchange(mUrl+"/hunya", mHttpMethod, getHttpEntity(), mResponseType);
+        ResponseEntity<T> responseEntity = restTemplate.exchange(mUrl, mHttpMethod, getHttpEntity(), mResponseType);
 
         if(responseEntity.getStatusCode().equals(HttpStatus.OK)) {
             return responseEntity.getBody();
@@ -121,6 +121,7 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
         requestFactory.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
 
         RestTemplate restTemplate = new RestTemplate(requestFactory);
+        //restTemplate.setErrorHandler();
 
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         return restTemplate;
@@ -130,6 +131,7 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
 
     protected HttpEntity<?> getHeaderParamsHttpEntity(Map<String, String> params) {
         HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setUserAgent("ANDROID");
         requestHeaders.setAll(params);
 
         return new HttpEntity<>(requestHeaders);
@@ -138,6 +140,7 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
     protected HttpEntity<?> getJsonObjectParamsHttpEntity(Object params) {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        requestHeaders.setUserAgent("ANDROID");
 
         return new HttpEntity<>(params, requestHeaders);
     }
