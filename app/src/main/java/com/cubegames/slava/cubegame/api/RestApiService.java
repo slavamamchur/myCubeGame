@@ -4,16 +4,9 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.cubegames.slava.cubegame.model.GameMap;
-import com.cubegames.slava.cubegame.model.RegisterRequestParams;
-import com.cubegames.slava.cubegame.model.LoginResponse;
-
-import org.springframework.web.client.RestClientException;
-
-import java.util.List;
+import com.cubegames.slava.cubegame.model.params.RegisterRequestParams;
+import com.cubegames.slava.cubegame.model.AuthToken;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -88,24 +81,19 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionLogin(String userName, String userPass) {
-        LoginResponse response;
+        AuthToken response = null;
         try {
             response = new LoginRequest(userName, userPass).getResponse();
         }
         catch (WebServiceException e) {
-            response = new LoginResponse(null, e.getErrorCode().getReasonPhrase());
+            response = new AuthToken(null);
         }
-        catch (RestClientException e) {
-            response = new LoginResponse(null, e.getLocalizedMessage());
-        }
-
 
         if(response.getId() != null){
             //TODO map list test
             //List<GameMap> maps = new GameMapController(response.getId()).getResponseList();
             //maps = null;
         }
-        Log.d(TAG, response.toString());
 
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
@@ -113,16 +101,16 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionRegistration(RegisterRequestParams regParams) {
-        LoginResponse response = null;
+        String message = "Succsessfully registered";
+
         try {
-            response = new RegistrationRequest(regParams).getResponse();
+            new RegistrationRequest(regParams).sendRequest();
         } catch (WebServiceException e) {
-            e.printStackTrace();
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
-        String error = (response == null) || TextUtils.isEmpty(response.getError()) ? "Succsessfully registered" : response.getError();
 
         Bundle params = new Bundle();
-        params.putString(EXTRA_REGISTRATION_RESPONSE_TEXT, error);
+        params.putString(EXTRA_REGISTRATION_RESPONSE_TEXT, message);
         sendResponseIntent(ACTION_REGISTRATION_RESPONSE, params);
     }
 }

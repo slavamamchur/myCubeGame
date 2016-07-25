@@ -1,6 +1,6 @@
 package com.cubegames.slava.cubegame.api;
 
-import com.cubegames.slava.cubegame.model.LoginResponse;
+import com.cubegames.slava.cubegame.model.AuthToken;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -10,13 +10,13 @@ import java.util.Map;
 
 import static com.cubegames.slava.cubegame.api.RestConst.*;
 
-public class LoginRequest extends AbstractHttpRequest<LoginResponse> {
+public class LoginRequest extends AbstractHttpRequest<AuthToken> {
 
     private String userName;
     private String userPass;
 
     public LoginRequest(String userName, String userPass) {
-        super(URL_LOGIN, LoginResponse.class, HttpMethod.GET);
+        super(URL_LOGIN, AuthToken.class, HttpMethod.GET);
 
         this.userName = userName;
         this.userPass = userPass;

@@ -1,4 +1,4 @@
-package com.cubegames.slava.cubegame.model;
+package com.cubegames.slava.cubegame.model.params;
 
 import android.os.Parcel;
 import android.os.Parcelable;

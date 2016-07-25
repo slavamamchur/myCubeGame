@@ -1,19 +1,25 @@
 package com.cubegames.slava.cubegame.api;
 
+import com.cubegames.slava.cubegame.model.ErrorEntity;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpServerErrorException;
 
-public class WebServiceException extends Exception {
-    private HttpStatus errorCode;
+public class WebServiceException extends HttpServerErrorException {
 
-    public WebServiceException(HttpStatus errorCode) {
-        this.errorCode = errorCode;
+    private ErrorEntity errorObject;
+
+    public WebServiceException(HttpStatus statusCode, String statusText) {
+        this(statusCode, statusText, null);
     }
 
-    public HttpStatus getErrorCode() {
-        return errorCode;
+    public WebServiceException(HttpStatus statusCode, String statusText, ErrorEntity error) {
+        super(statusCode, statusText);
+
+        this.errorObject = error;
     }
 
-    public void setErrorCode(HttpStatus errorCode) {
-        this.errorCode = errorCode;
+    public ErrorEntity getErrorObject() {
+        return errorObject;
     }
 }

@@ -2,20 +2,18 @@ package com.cubegames.slava.cubegame.api;
 
 import android.support.annotation.NonNull;
 
-import com.cubegames.slava.cubegame.model.AbstractResponse;
+import com.cubegames.slava.cubegame.model.BasicEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -26,7 +24,7 @@ import static com.cubegames.slava.cubegame.api.RestConst.NET_READ_TIMEOUT_MILLIS
 import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
 import static com.cubegames.slava.cubegame.api.RestConst.getBaseUrl;
 
-public abstract class AbstractHttpRequest<T extends AbstractResponse>{
+public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
     private String mUrl;
     protected Class<T> mResponseType;
@@ -36,16 +34,6 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
     static class ResponseList {
         @JsonProperty(required = false)
         private ResponseData responseData;
-
-        @JsonProperty(required = false)
-        private String error;
-
-        public String getError() {
-            return error;
-        }
-        public void setError(String error) {
-            this.error = error;
-        }
 
         public void setResponseData(ResponseData responseData) {
             this.responseData = responseData;
@@ -87,31 +75,25 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
         this.mResponseType = mResponseType;
     }
 
-    public T getResponse()  throws RestClientException, WebServiceException {
+    public void sendRequest()  throws WebServiceException {
+        RestTemplate restTemplate = getRestTemplate();
+        restTemplate.exchange(mUrl, mHttpMethod, getHttpEntity(), mResponseType);
+    }
+
+    public T getResponse()  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
         ResponseEntity<T> responseEntity = restTemplate.exchange(mUrl, mHttpMethod, getHttpEntity(), mResponseType);
 
-        if(responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-            return responseEntity.getBody();
-        }
-        else {
-            throw new WebServiceException(responseEntity.getStatusCode());
-        }
+        return responseEntity.getBody();
     }
 
-    public List<T> getResponseList() {
+    public List<T> getResponseList()  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        try {
-            ResponseEntity<ResponseList> responseEntity = restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class);
-            //TODO Error code in entity and Error exception rise
-            //responseEntity.getStatusCode().getReasonPhrase();
-            return responseEntity.getBody().getResponseData().getItems();
-        } catch (Exception e) {
-            String error = e.getLocalizedMessage();
-            return null;
-        }
+        ResponseEntity<ResponseList> responseEntity = restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class);
+
+        return responseEntity.getBody().getResponseData().getItems();
     }
 
     @NonNull
@@ -121,9 +103,9 @@ public abstract class AbstractHttpRequest<T extends AbstractResponse>{
         requestFactory.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
 
         RestTemplate restTemplate = new RestTemplate(requestFactory);
-        //restTemplate.setErrorHandler();
-
+        restTemplate.setErrorHandler(new CustomResponseErrorHandler());
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
         return restTemplate;
     }
 

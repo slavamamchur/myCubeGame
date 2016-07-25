@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BasicNamedDbEntity extends BasicDbEntity {
+public abstract class BasicNamedDbEntity extends BasicDbEntity {
     @JsonProperty(required = true)
     protected String name;
 

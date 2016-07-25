@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
-import com.cubegames.slava.cubegame.model.LoginResponse;
+import com.cubegames.slava.cubegame.model.AuthToken;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -114,11 +114,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onReceive(Context context, Intent intent) {
                 showProgress(false);
 
-                LoginResponse response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+                AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
                 if (response.getId() != null) {
                     mTokenView.setText(response.getId());
                 } else {
-                    mPasswordView.setError(response.getError());
+                    mPasswordView.setError("Error");
                     mPasswordView.requestFocus();
                 }
             }

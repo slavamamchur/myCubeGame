@@ -4,8 +4,7 @@ import android.os.Parcel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class BasicDbEntity extends BasicEntity {
+public abstract class BasicDbEntity extends BasicEntity {
     protected String tenantId;
     protected boolean deleted;
 
@@ -28,16 +27,12 @@ public class BasicDbEntity extends BasicEntity {
 
     @Override
     protected void save2Parcel(Parcel dest) {
-        super.save2Parcel(dest);
-
         dest.writeString(tenantId);
         dest.writeBooleanArray(new boolean[]{deleted});
     }
 
     @Override
     protected void loadFromParcel(Parcel in) {
-        super.loadFromParcel(in);
-
         setTenantId(in.readString());
         boolean[] deleted= new boolean[1];
         in.readBooleanArray(deleted);
