@@ -11,6 +11,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,9 +22,12 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -74,6 +78,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        setupActionBar();
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -108,6 +115,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            case R.id.menu_exit:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void registerRestApiResponceReceivers() {
         mLoginBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -117,6 +152,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
                 if (response.getId() != null) {
                     mTokenView.setText(response.getId());
+                    SharedPreferences settings = getSharedPreferences(SplashActivity.PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("authToken", response.getId());
+                    editor.commit();
                 } else {
                     mPasswordView.setError("Error");
                     mPasswordView.requestFocus();
@@ -246,13 +285,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             showProgress(true);
             RestApiService.startActionLogin(this, email, password);
-
-            /*RegisterRequestParams params = new RegisterRequestParams();
-            params.setUserName("slava3");
-            params.setUserPass("1234567");
-            params.setEmail("slava3@gmail.com");
-            params.setLanguage("RU");
-            RestApiService.startActionRegistration(this, params);*/
         }
     }
 

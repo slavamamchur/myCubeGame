@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.params.RegisterRequestParams;
 import com.cubegames.slava.cubegame.model.AuthToken;
+
+import java.util.List;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -23,12 +26,16 @@ public class RestApiService extends IntentService {
     public static final String ACTION_LOGIN_RESPONSE = "com.cubegames.slava.cubegame.api.action.LOGIN_RESPONSE";
     private static final String ACTION_REGISTRATION = "com.cubegames.slava.cubegame.api.action.REGISTRATION";
     public static final String ACTION_REGISTRATION_RESPONSE = "com.cubegames.slava.cubegame.api.action.REGISTRATION_RESPONSE";
+    private static final String ACTION_PING = "com.cubegames.slava.cubegame.api.action.PING";
+    public static final String ACTION_PING_RESPONSE = "com.cubegames.slava.cubegame.api.action.PING_RESPONSE";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
     public static final String EXTRA_LOGIN_RESPONSE_OBJECT = "LOGIN_RESPONSE_OBJECT";
     public static final String EXTRA_REGISTRATION_PARAMS_OBJECT = "LOGIN_RESPONSE_OBJECT";
     public static final String EXTRA_REGISTRATION_RESPONSE_TEXT = "REGISTRATION_RESPONSE_TEXT";
+    public static final String EXTRA_AUTH_TOKEN = "AUTH_TOKEN";
+    public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
 
     public RestApiService() {
         super("RestApiService");
@@ -45,6 +52,13 @@ public class RestApiService extends IntentService {
         intent.setAction(ACTION_LOGIN);
         intent.putExtra(EXTRA_USER_NAME, userName);
         intent.putExtra(EXTRA_USER_PASS, userPass);
+        context.startService(intent);
+    }
+
+    public static void startActionPing(Context context, String authToken) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_PING);
+        intent.putExtra(EXTRA_AUTH_TOKEN, authToken);
         context.startService(intent);
     }
 
@@ -69,6 +83,10 @@ public class RestApiService extends IntentService {
                 final RegisterRequestParams params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
                 handleActionRegistration(params);
             }
+            else if (ACTION_PING.equals(action)) {
+                final String authToken = intent.getStringExtra(EXTRA_AUTH_TOKEN);
+                handleActionPing(authToken);
+            }
         }
     }
 
@@ -81,18 +99,12 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionLogin(String userName, String userPass) {
-        AuthToken response = null;
+        AuthToken response;
         try {
-            response = new LoginRequest(userName, userPass).getResponse();
+            response = new LoginRequest(userName, userPass).doLogin();
         }
         catch (WebServiceException e) {
-            response = new AuthToken(null);
-        }
-
-        if(response.getId() != null){
-            //TODO map list test
-            //List<GameMap> maps = new GameMapController(response.getId()).getResponseList();
-            //maps = null;
+            response = new AuthToken((String)null);
         }
 
         Bundle params = new Bundle();
@@ -104,7 +116,7 @@ public class RestApiService extends IntentService {
         String message = "Succsessfully registered";
 
         try {
-            new RegistrationRequest(regParams).sendRequest();
+            new RegistrationRequest(regParams).doRegister();
         } catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
@@ -112,5 +124,11 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         params.putString(EXTRA_REGISTRATION_RESPONSE_TEXT, message);
         sendResponseIntent(ACTION_REGISTRATION_RESPONSE, params);
+    }
+
+    private void handleActionPing(String authToken) {
+        Bundle params = new Bundle();
+        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(authToken).doPing());
+        sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 }

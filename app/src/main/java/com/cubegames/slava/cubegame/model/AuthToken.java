@@ -12,6 +12,11 @@ public class AuthToken extends BasicEntity implements Parcelable{
 
     @SuppressWarnings("unused")
     public AuthToken() {}
+
+    public AuthToken(String id) {
+        this.id = id;
+    }
+
     public AuthToken(Parcel in)
     {
         loadFromParcel(in);

@@ -30,34 +30,30 @@ import java.util.List;
 public class CustomResponseErrorHandler implements ResponseErrorHandler {
 
     private ResponseErrorHandler errorHandler = new DefaultResponseErrorHandler();
-    private ErrorEntity error;
 
-    private boolean hasErrorEntity(ClientHttpResponse response){
-        boolean result = false;
+    private ErrorEntity fetchErrorEntity(ClientHttpResponse response){
+        ErrorEntity error;
 
         try {
-            if(!response.getStatusCode().equals(HttpStatus.OK)) {
-                String sresp = convertStreamToString(response.getBody());
-                JSONObject jresp = new JSONObject(sresp);
-                error = new ErrorEntity();
-                error.setError(jresp.getString("error"));
-
-                result = !TextUtils.isEmpty(error.getError());
-            }
+             String sresp = convertStreamToString(response.getBody());
+             JSONObject jresp = new JSONObject(sresp);
+             error = new ErrorEntity();
+             error.setError(jresp.getString("error"));
         }
         catch (Exception e){
-            result = false;
+            error = null;
         }
 
-        return result;
+        return error;
     }
 
     public boolean hasError(ClientHttpResponse response) throws IOException {
-        return errorHandler.hasError(response) || hasErrorEntity(response);
+        return errorHandler.hasError(response);
     }
 
     public void handleError(ClientHttpResponse response) throws IOException {
-        throw new WebServiceException(response.getStatusCode(), response.getStatusCode().getReasonPhrase(), error);
+        throw new WebServiceException(
+                response.getStatusCode(), response.getStatusCode().getReasonPhrase(), fetchErrorEntity(response));
     }
 
     private String convertStreamToString(java.io.InputStream is) {

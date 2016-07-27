@@ -24,11 +24,15 @@ public class LoginRequest extends AbstractHttpRequest<AuthToken> {
 
 
     @Override
-    protected HttpEntity<?> getHttpEntity() {
+    protected HttpEntity<?> getHttpEntity(Object entity) {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_LOGIN_USER_NAME, userName);
         params.put(PARAM_LOGIN_USER_PASS, userPass);
 
         return getHeaderParamsHttpEntity(params);
+    }
+
+    public AuthToken doLogin() throws WebServiceException {
+        return getResponse();
     }
 }

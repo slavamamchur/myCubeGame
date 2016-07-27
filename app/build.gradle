@@ -5,7 +5,7 @@ android {
     buildToolsVersion '24.0.0'
     defaultConfig {
         applicationId "com.cubegames.slava.cubegame"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -37,4 +37,5 @@ dependencies {
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     compile 'com.google.android.gms:play-services-appindexing:9.2.1'
+    compile 'com.android.support:support-v4:24.1.1'
 }

@@ -21,10 +21,13 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
     }
 
     @Override
-    protected HttpEntity<?> getHttpEntity() {
+    protected HttpEntity<?> getHttpEntity(Object entity) {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_HEADER_AUTH_TOKEN, authToken);
 
-        return getHeaderParamsHttpEntity(params);
+        if(entity == null)
+            return getHeaderParamsHttpEntity(params);
+        else
+            return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
 }
