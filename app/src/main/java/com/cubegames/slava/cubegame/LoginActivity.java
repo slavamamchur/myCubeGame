@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
@@ -23,7 +24,9 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -48,11 +51,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.cubegames.slava.cubegame.SettingsManager.PARAM_AUTH_TOKEN;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -78,8 +82,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        setupActionBar();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -115,32 +117,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(true);
-        }
-    }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_logout).setVisible(false);
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.menu_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                return true;
-            case R.id.menu_exit:
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void registerRestApiResponceReceivers() {
@@ -151,14 +132,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
                 if (response.getId() != null) {
-                    mTokenView.setText(response.getId());
-                    SharedPreferences settings = getSharedPreferences(SplashActivity.PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("authToken", response.getId());
-                    editor.commit();
+                    SettingsManager.getInstance(getApplicationContext()).setAuthToken(response.getId());
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 } else {
-                    mPasswordView.setError("Error");
-                    mPasswordView.requestFocus();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setMessage("Invalid password or user name.\nPlease try again.")
+                            .setTitle("Login Error");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            mPasswordView.requestFocus();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             }
         };

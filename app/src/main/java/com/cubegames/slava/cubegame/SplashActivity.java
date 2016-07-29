@@ -12,9 +12,11 @@ import android.text.TextUtils;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 
+import static com.cubegames.slava.cubegame.SettingsManager.PARAM_AUTH_TOKEN;
+
 public class SplashActivity extends AppCompatActivity {
 
-    public static final String PREFS_NAME = "MyPrefsFile";
+    public static  final int HIDE_DELAY = 3000;
 
     private final Handler mHideHandler = new Handler();
     private final Runnable mHideRunnable = new Runnable() {
@@ -41,14 +43,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String authToken = settings.getString("authToken", "");
+        String authToken = SettingsManager.getInstance(getApplicationContext()).getAuthToken();
 
         if(!TextUtils.isEmpty(authToken))
             RestApiService.startActionPing(this, authToken);
         else {
             cls = LoginActivity.class;
-            delayedHide(3000);
+            delayedHide(HIDE_DELAY);
         }
     }
 
@@ -59,12 +60,9 @@ public class SplashActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : SettingsActivity.class;
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("authToken", "");
-                    editor.commit();
+                    SettingsManager.getInstance(getApplicationContext()).setAuthToken("");
                 }
-                delayedHide(3000);
+                delayedHide(HIDE_DELAY);
             }
         };
 

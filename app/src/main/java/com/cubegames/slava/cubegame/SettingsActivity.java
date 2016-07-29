@@ -22,6 +22,8 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import static com.cubegames.slava.cubegame.SettingsManager.PARAM_WEB_SERVICE_URL;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -133,6 +135,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -173,12 +181,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            //TODO: on changed listener - > do logout and start Login Activity (if stay logged in checked), on acticvity resume - > ping
+            bindPreferenceSummaryToValue(findPreference(PARAM_WEB_SERVICE_URL));
         }
 
         @Override

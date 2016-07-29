@@ -1,25 +1,15 @@
 package com.cubegames.slava.cubegame.api;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.cubegames.slava.cubegame.model.GameMap;
-import com.cubegames.slava.cubegame.model.params.RegisterRequestParams;
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.params.RegisterRequestParams;
 
-import java.util.List;
-
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
 public class RestApiService extends IntentService {
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
+    @SuppressWarnings("unused")
     private final String TAG = "RestApiService";
 
     private static final String ACTION_LOGIN = "com.cubegames.slava.cubegame.api.action.LOGIN";
@@ -41,12 +31,6 @@ public class RestApiService extends IntentService {
         super("RestApiService");
     }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
     public static void startActionLogin(Context context, String userName, String userPass) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_LOGIN);
@@ -101,7 +85,7 @@ public class RestApiService extends IntentService {
     private void handleActionLogin(String userName, String userPass) {
         AuthToken response;
         try {
-            response = new LoginRequest(userName, userPass).doLogin();
+            response = new LoginRequest(userName, userPass, getApplicationContext()).doLogin();
         }
         catch (WebServiceException e) {
             response = new AuthToken((String)null);
@@ -116,7 +100,7 @@ public class RestApiService extends IntentService {
         String message = "Succsessfully registered";
 
         try {
-            new RegistrationRequest(regParams).doRegister();
+            new RegistrationRequest(regParams, getApplicationContext()).doRegister();
         } catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
@@ -128,7 +112,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionPing(String authToken) {
         Bundle params = new Bundle();
-        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(authToken).doPing());
+        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(authToken, getApplicationContext()).doPing());
         sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 }

@@ -1,5 +1,7 @@
 package com.cubegames.slava.cubegame.api;
 
+import android.content.Context;
+
 import com.cubegames.slava.cubegame.model.AuthToken;
 
 import org.springframework.http.HttpEntity;
@@ -15,8 +17,8 @@ public class LoginRequest extends AbstractHttpRequest<AuthToken> {
     private String userName;
     private String userPass;
 
-    public LoginRequest(String userName, String userPass) {
-        super(URL_LOGIN, AuthToken.class, HttpMethod.GET);
+    public LoginRequest(String userName, String userPass, Context ctx) {
+        super(URL_LOGIN, AuthToken.class, HttpMethod.GET, ctx);
 
         this.userName = userName;
         this.userPass = userPass;

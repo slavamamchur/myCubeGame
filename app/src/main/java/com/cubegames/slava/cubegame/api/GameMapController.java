@@ -1,5 +1,7 @@
 package com.cubegames.slava.cubegame.api;
 
+import android.content.Context;
+
 import com.cubegames.slava.cubegame.model.GameMap;
 
 import org.springframework.http.HttpEntity;
@@ -14,8 +16,8 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP;
 public class GameMapController extends AbstractHttpRequest<GameMap> {
     private String authToken;
 
-    public GameMapController(String authToken) {
-        super(URL_GAME_MAP, GameMap.class, HttpMethod.GET);
+    public GameMapController(String authToken, Context ctx) {
+        super(URL_GAME_MAP, GameMap.class, HttpMethod.GET, ctx);
 
         this.authToken = authToken;
     }

@@ -1,7 +1,9 @@
 package com.cubegames.slava.cubegame.api;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.BasicDbEntity;
 import com.cubegames.slava.cubegame.model.BasicEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -26,13 +28,13 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_DELETE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_FIND;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_UPDATE;
-import static com.cubegames.slava.cubegame.api.RestConst.getBaseUrl;
 
 public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
     private String mUrl;
     protected Class<T> mResponseType;
     private final HttpMethod mHttpMethod;
+    private final Context ctx;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class ResponseList {
@@ -60,12 +62,16 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         }
     }
 
-    protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod) {
+    protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod, Context ctx) {
+        this.ctx = ctx;
         mUrl = getBaseUrl() + url;
         this.mResponseType = responseType;
         this.mHttpMethod = httpMethod;
     }
 
+    public final String getBaseUrl() {
+        return SettingsManager.getInstance(ctx).getWebServiceUrl();
+    }
     public String getmUrl() {
         return mUrl;
     }
