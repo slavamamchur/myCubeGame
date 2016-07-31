@@ -2,10 +2,15 @@
 
     <EditTextPreference
         android:defaultValue="@string/pref_default_web_service_url"
-        android:key="baseUrl"
+        android:key="@string/pref_key_web_service_url"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_web_service_url" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_key_stay_logged"
+        android:title="@string/pref_title_stay_logged" />
 
 </PreferenceScreen>

@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="@string/pref_title_admin_portal"
+        android:key="@string/pref_key_admin_portal">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="http://10.0.2.2:8080/clientjs/index.html" />
+    </Preference>
+
+</PreferenceScreen>

@@ -43,10 +43,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        String authToken = SettingsManager.getInstance(getApplicationContext()).getAuthToken();
-
-        if(!TextUtils.isEmpty(authToken))
-            RestApiService.startActionPing(this, authToken);
+        if(SettingsManager.getInstance(getApplicationContext()).isLoggedIn())
+            RestApiService.startActionPing(this, SettingsManager.getInstance(getApplicationContext()).getAuthToken());
         else {
             cls = LoginActivity.class;
             delayedHide(HIDE_DELAY);

@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,14 +22,10 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuBuilder;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -39,19 +34,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.AuthToken;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static com.cubegames.slava.cubegame.SettingsManager.PARAM_AUTH_TOKEN;
 
 /**
  * A login screen that offers login via email/password.
@@ -64,39 +54,36 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     private static final int REQUEST_READ_CONTACTS = 0;
 
     private BroadcastReceiver mLoginBroadcastReceiver = null;
-    private BroadcastReceiver mRegisterBroadcastReceiver = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private TextView mTokenView;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
+    //private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        registerRestApiResponceReceivers();
+        registerRestApiResponseReceivers();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if ((id == R.id.login || id == EditorInfo.IME_NULL) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                if ((id == R.id.login || id == EditorInfo.IME_NULL) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN))
                     attemptLogin();
-                    return true;
-                }
+
                 return true;
             }
         });
@@ -109,12 +96,20 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             }
         });
 
+        Button mRegisterButton = (Button) findViewById(R.id.register_new_user_button);
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doRegistration();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        mTokenView = (TextView) findViewById(R.id.auth_token);
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -124,22 +119,26 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
         return true;
     }
 
-    private void registerRestApiResponceReceivers() {
+    private void registerRestApiResponseReceivers() {
         mLoginBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 showProgress(false);
 
+                //TODO: process error object
                 AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
                 if (response.getId() != null) {
                     SettingsManager.getInstance(getApplicationContext()).setAuthToken(response.getId());
+                    SettingsManager.getInstance(getApplicationContext()).setUserName(mEmailView.getText().toString());
+                    SettingsManager.getInstance(getApplicationContext()).setUserPass(mPasswordView.getText().toString());
+
                     finish();
                     startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Invalid password or user name.\nPlease try again.")
-                            .setTitle("Login Error");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            .setTitle(R.string.login_error_title);
+                    builder.setPositiveButton(R.string.pos_btn_caption, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             mPasswordView.requestFocus();
                         }
@@ -153,29 +152,13 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
         IntentFilter intentFilter = new IntentFilter(RestApiService.ACTION_LOGIN_RESPONSE);
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(mLoginBroadcastReceiver, intentFilter);
-
-        mRegisterBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                showProgress(false);
-
-                String error = intent.getStringExtra(RestApiService.EXTRA_REGISTRATION_RESPONSE_TEXT);
-                Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
-
-            }
-        };
-        IntentFilter updateIntentFilter = new IntentFilter(
-                RestApiService.ACTION_REGISTRATION_RESPONSE);
-        updateIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mRegisterBroadcastReceiver, updateIntentFilter);
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         unregisterReceiver(mLoginBroadcastReceiver);
-        unregisterReceiver(mRegisterBroadcastReceiver);
+
+        super.onDestroy();
     }
 
     private void populateAutoComplete() {
@@ -257,11 +240,12 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        }
+        /*else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-        }
+        }*/
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -272,16 +256,21 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             // perform the user login attempt.
 
             showProgress(true);
-            RestApiService.startActionLogin(this, email, password);
+            RestApiService.startActionLogin(getApplicationContext(), email, password);
         }
     }
 
+    private void doRegistration(){
+        startActivity(new Intent(getApplicationContext(), RegistrationActivity.class));
+    }
+
+    @SuppressWarnings("unused")
     private boolean isEmailValid(@SuppressWarnings("UnusedParameters") String email) {
         return true; //email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 1;
+        return password.length() > 2;
     }
 
     /**
@@ -367,40 +356,40 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     public void onStart() {
         super.onStart();
 
+        /*
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Login Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
+                Action.TYPE_VIEW,
+                "Login Page",
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.cubegames.slava.cubegame/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+        */
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
+        /*
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Login Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
+                Action.TYPE_VIEW,
+                "Login Page",
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.cubegames.slava.cubegame/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+        */
     }
 
     private interface ProfileQuery {
@@ -410,7 +399,6 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     /**
@@ -427,12 +415,14 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             ContentResolver cr = getContentResolver();
             Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
                     null, null, null);
-            while (emailCur.moveToNext()) {
+            while ((emailCur != null) && emailCur.moveToNext()) {
                 String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract
                         .CommonDataKinds.Email.DATA));
                 emailAddressCollection.add(email);
             }
-            emailCur.close();
+
+            if (emailCur != null)
+                emailCur.close();
 
             return emailAddressCollection;
         }

@@ -1,9 +1,9 @@
-package com.cubegames.slava.cubegame.model.params;
+package com.cubegames.slava.cubegame.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class RegisterRequestParams implements Parcelable{
+public class UserEntity extends BasicEntity implements Parcelable{
 
     private String userName;
     private String userPass;
@@ -11,24 +11,21 @@ public class RegisterRequestParams implements Parcelable{
     private String language;
 
     @SuppressWarnings("unused")
-    public RegisterRequestParams() {}
+    public UserEntity() {}
 
-    protected RegisterRequestParams(Parcel in) {
-        userName = in.readString();
-        userPass = in.readString();
-        email = in.readString();
-        language = in.readString();
+    protected UserEntity(Parcel in) {
+        loadFromParcel(in);
     }
 
-    public static final Creator<RegisterRequestParams> CREATOR = new Creator<RegisterRequestParams>() {
+    public static final Creator<UserEntity> CREATOR = new Creator<UserEntity>() {
         @Override
-        public RegisterRequestParams createFromParcel(Parcel in) {
-            return new RegisterRequestParams(in);
+        public UserEntity createFromParcel(Parcel in) {
+            return new UserEntity(in);
         }
 
         @Override
-        public RegisterRequestParams[] newArray(int size) {
-            return new RegisterRequestParams[size];
+        public UserEntity[] newArray(int size) {
+            return new UserEntity[size];
         }
     };
 
@@ -71,9 +68,22 @@ public class RegisterRequestParams implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        save2Parcel(dest);
+    }
+
+    @Override
+    protected void save2Parcel(Parcel dest) {
         dest.writeString(userName);
         dest.writeString(userPass);
         dest.writeString(email);
         dest.writeString(language);
+    }
+
+    @Override
+    protected void loadFromParcel(Parcel in) {
+        userName = in.readString();
+        userPass = in.readString();
+        email = in.readString();
+        language = in.readString();
     }
 }

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
-import com.cubegames.slava.cubegame.model.params.RegisterRequestParams;
+import com.cubegames.slava.cubegame.model.UserEntity;
 
 public class RestApiService extends IntentService {
     @SuppressWarnings("unused")
@@ -46,7 +46,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionRegistration(Context context, RegisterRequestParams regParams) {
+    public static void startActionRegistration(Context context, UserEntity regParams) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_REGISTRATION);
         intent.putExtra(EXTRA_REGISTRATION_PARAMS_OBJECT, regParams);
@@ -64,7 +64,7 @@ public class RestApiService extends IntentService {
                 handleActionLogin(param1, param2);
             }
             else if (ACTION_REGISTRATION.equals(action)) {
-                final RegisterRequestParams params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
+                final UserEntity params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
                 handleActionRegistration(params);
             }
             else if (ACTION_PING.equals(action)) {
@@ -85,9 +85,10 @@ public class RestApiService extends IntentService {
     private void handleActionLogin(String userName, String userPass) {
         AuthToken response;
         try {
-            response = new LoginRequest(userName, userPass, getApplicationContext()).doLogin();
+            response = new LoginRequest(userName, userPass, this).doLogin();
         }
         catch (WebServiceException e) {
+            //TODO: return error object
             response = new AuthToken((String)null);
         }
 
@@ -96,11 +97,11 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_LOGIN_RESPONSE, params);
     }
 
-    private void handleActionRegistration(RegisterRequestParams regParams) {
-        String message = "Succsessfully registered";
+    private void handleActionRegistration(UserEntity regParams) {
+        String message = "";
 
         try {
-            new RegistrationRequest(regParams, getApplicationContext()).doRegister();
+            new RegistrationRequest(regParams, this).doRegister();
         } catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
@@ -112,7 +113,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionPing(String authToken) {
         Bundle params = new Bundle();
-        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(authToken, getApplicationContext()).doPing());
+        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(authToken, this).doPing());
         sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 }
