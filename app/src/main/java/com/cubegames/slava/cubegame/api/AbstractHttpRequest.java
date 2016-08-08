@@ -86,22 +86,20 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     }
 
     protected void sendRequestWithParams(String action, Object ... args)  throws WebServiceException {
-        sendRequestWithParams(action, mHttpMethod, args);
+        sendRequestWithParams(action, mHttpMethod, null, args);
     }
 
-    protected void sendRequestWithParams(String action, HttpMethod method, Object ... args)  throws WebServiceException {
+    protected void sendRequestWithParams(String action, HttpMethod method, Object entity, Object ... args)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
-        restTemplate.exchange(mUrl + action, method, getHttpEntity(), mResponseType, args);
+        restTemplate.exchange(mUrl + action, method, getHttpEntity(entity), mResponseType, args);
     }
 
     protected void sendRequest(String action, Object entity)  throws WebServiceException {
-        RestTemplate restTemplate = getRestTemplate();
-        restTemplate.exchange(mUrl + action, mHttpMethod, getHttpEntity(entity), mResponseType);
+        sendRequestWithParams(action, mHttpMethod, entity);
     }
 
     protected void sendPostRequest(String action, Object entity)  throws WebServiceException {
-        RestTemplate restTemplate = getRestTemplate();
-        restTemplate.exchange(mUrl + action, HttpMethod.POST, getHttpEntity(entity), mResponseType);
+        sendRequestWithParams(action, HttpMethod.POST, entity);
     }
 
     protected T getResponse(String action, Object ... args)  throws WebServiceException {
@@ -140,6 +138,15 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
         return responseEntity.getBody().getResponseData().getCollection();
     }
+
+    /*public byte[] getBinaryData(BasicDbEntity entity)  throws WebServiceException {
+        RestTemplate restTemplate = getRestTemplate();
+
+        ResponseEntity<ResponseList> responseEntity = restTemplate.
+                //restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class, entity.getId());
+
+        return responseEntity.getBody().getResponseData().getCollection();
+    }*/
 
     @NonNull
     protected RestTemplate getRestTemplate() {

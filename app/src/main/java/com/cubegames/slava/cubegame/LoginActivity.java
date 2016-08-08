@@ -34,6 +34,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.AuthToken;
@@ -135,7 +136,8 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
                     finish();
                     startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    Toast.makeText(LoginActivity.this, "Invalid password or user name.\nPlease try again.", Toast.LENGTH_LONG).show();
+                    /*AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Invalid password or user name.\nPlease try again.")
                             .setTitle(R.string.login_error_title);
                     builder.setPositiveButton(R.string.pos_btn_caption, new DialogInterface.OnClickListener() {
@@ -145,7 +147,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
                     });
 
                     AlertDialog dialog = builder.create();
-                    dialog.show();
+                    dialog.show();*/
                 }
             }
         };
@@ -261,6 +263,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     }
 
     private void doRegistration(){
+        finish();
         startActivity(new Intent(getApplicationContext(), RegistrationActivity.class));
     }
 

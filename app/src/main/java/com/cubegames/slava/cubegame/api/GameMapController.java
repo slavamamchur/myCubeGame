@@ -1,6 +1,9 @@
 package com.cubegames.slava.cubegame.api;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Picture;
+import android.media.Image;
 
 import com.cubegames.slava.cubegame.model.GameMap;
 
@@ -31,5 +34,11 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
             return getHeaderParamsHttpEntity(params);
         else
             return getHeaderAndObjectParamsHttpEntity(params, entity);
+    }
+
+    //TODO: download pic from stream
+    public Picture getMapImage(GameMap map){
+        Picture pic = new Picture(null);
+        return null;
     }
 }
