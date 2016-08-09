@@ -1,5 +1,7 @@
 package com.cubegames.slava.cubegame.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class GameMap extends BasicNamedDbEntity implements Parcelable{
     @JsonProperty(required = false)
     private long createdDate;
+    //@JsonProperty(required = false)
+    //private byte[] binaryData;
     @JsonProperty(required = false)
-    private byte[] binaryData;
+    private Bitmap bitmap;
 
     public GameMap() {}
 
@@ -17,7 +21,18 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
         loadFromParcel(in);
 
         createdDate = in.readLong();
-        binaryData = in.createByteArray();
+
+        byte[] binaryData = in.createByteArray();
+        bitmap = BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (bitmap != null) {
+            bitmap.recycle();
+        }
+
+        super.finalize();
     }
 
     public static final Creator<GameMap> CREATOR = new Creator<GameMap>() {
@@ -38,12 +53,19 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
     public void setCreatedDate(long createdDate) {
         this.createdDate = createdDate;
     }
-    public byte[] getBinaryData() {
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    /*public byte[] getBinaryData() {
         return binaryData;
     }
     public void setBinaryData(byte[] binaryData) {
         this.binaryData = binaryData;
-    }
+    }*/
 
 
     @Override
@@ -56,6 +78,8 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
         save2Parcel(dest);
 
         dest.writeLong(createdDate);
-        dest.writeByteArray(binaryData);
+        //dest.writeByteArray(binaryData);
+        if (bitmap != null)
+            bitmap.writeToParcel(dest, flags);
     }
 }

@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
@@ -22,7 +21,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -120,7 +118,10 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
         return true;
     }
 
-    private void registerRestApiResponseReceivers() {
+    @Override
+    protected void registerRestApiResponseReceivers() {
+        super.registerRestApiResponseReceivers();
+
         mLoginBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -133,8 +134,10 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
                     SettingsManager.getInstance(getApplicationContext()).setUserName(mEmailView.getText().toString());
                     SettingsManager.getInstance(getApplicationContext()).setUserPass(mPasswordView.getText().toString());
 
+                    Intent mintent = new Intent(getApplicationContext(), GameMapActivity.class);
+                    startActivity(mintent);
+
                     finish();
-                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid password or user name.\nPlease try again.", Toast.LENGTH_LONG).show();
                     /*AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

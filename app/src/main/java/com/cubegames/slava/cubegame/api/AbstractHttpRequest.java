@@ -34,7 +34,7 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     private String mUrl;
     protected Class<T> mResponseType;
     private final HttpMethod mHttpMethod;
-    private final Context ctx;
+    protected final Context ctx;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class ResponseList {

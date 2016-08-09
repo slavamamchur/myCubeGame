@@ -3,9 +3,11 @@ package com.cubegames.slava.cubegame.api;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.UserEntity;
 
 public class RestApiService extends IntentService {
@@ -18,6 +20,8 @@ public class RestApiService extends IntentService {
     public static final String ACTION_REGISTRATION_RESPONSE = "com.cubegames.slava.cubegame.api.action.REGISTRATION_RESPONSE";
     private static final String ACTION_PING = "com.cubegames.slava.cubegame.api.action.PING";
     public static final String ACTION_PING_RESPONSE = "com.cubegames.slava.cubegame.api.action.PING_RESPONSE";
+    private static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
+    public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -26,6 +30,7 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_REGISTRATION_RESPONSE_TEXT = "REGISTRATION_RESPONSE_TEXT";
     public static final String EXTRA_AUTH_TOKEN = "AUTH_TOKEN";
     public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
+    public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
 
     public RestApiService() {
         super("RestApiService");
@@ -39,10 +44,9 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionPing(Context context, String authToken) {
+    public static void startActionPing(Context context) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_PING);
-        intent.putExtra(EXTRA_AUTH_TOKEN, authToken);
         context.startService(intent);
     }
 
@@ -54,22 +58,33 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionGetMapImage(Context context, GameMap map) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_GET_MAP_IMAGE);
+        intent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
+
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_LOGIN.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_USER_NAME);
-                final String param2 = intent.getStringExtra(EXTRA_USER_PASS);
-                handleActionLogin(param1, param2);
+                final String userName = intent.getStringExtra(EXTRA_USER_NAME);
+                final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
+                handleActionLogin(userName, userPass);
             }
             else if (ACTION_REGISTRATION.equals(action)) {
                 final UserEntity params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
                 handleActionRegistration(params);
             }
             else if (ACTION_PING.equals(action)) {
-                final String authToken = intent.getStringExtra(EXTRA_AUTH_TOKEN);
-                handleActionPing(authToken);
+                handleActionPing();
+            }
+            else if (ACTION_GET_MAP_IMAGE.equals(action)) {
+                final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
+                handleActionGetMapImage(map);
             }
         }
     }
@@ -111,9 +126,25 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_REGISTRATION_RESPONSE, params);
     }
 
-    private void handleActionPing(String authToken) {
+    private void handleActionPing() {
         Bundle params = new Bundle();
-        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(authToken, this).doPing());
+        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(this).doPing());
         sendResponseIntent(ACTION_PING_RESPONSE, params);
+    }
+
+    private void handleActionGetMapImage(GameMap map) {
+        Bitmap mapImage;
+
+        try {
+            mapImage = new GameMapController(this).getMapImage(map);
+        }
+        catch (WebServiceException e) {
+            mapImage = null;
+        }
+
+        map.setBitmap(mapImage);
+        Bundle params = new Bundle();
+        params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);
+        sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
     }
 }

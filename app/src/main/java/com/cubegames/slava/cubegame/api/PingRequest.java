@@ -3,6 +3,7 @@ package com.cubegames.slava.cubegame.api;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.PingResponse;
 
 import org.springframework.http.HttpEntity;
@@ -18,9 +19,9 @@ public class PingRequest extends AbstractHttpRequest<PingResponse> {
 
     private String authToken;
 
-    protected PingRequest(String authToken, Context ctx) {
+    protected PingRequest(Context ctx) {
         super(URL_PING, PingResponse.class, HttpMethod.GET, ctx);
-        this.authToken = authToken;
+        this.authToken = SettingsManager.getInstance(ctx).getAuthToken();
     }
 
     @Override

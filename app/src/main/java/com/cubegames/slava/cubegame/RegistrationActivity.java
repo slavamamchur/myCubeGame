@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -65,7 +64,10 @@ public class RegistrationActivity extends BaseActivityWithMenu {
         }
     }
 
-    private void registerRestApiResponseReceivers() {
+    @Override
+    protected void registerRestApiResponseReceivers() {
+        super.registerRestApiResponseReceivers();
+
         mRegisterBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

@@ -20,6 +20,8 @@ public class BaseActivityWithMenu extends AppCompatActivity {
     private BroadcastReceiver mLoginBroadcastReceiver = null;
     private ProgressDialog progressDialog = null;
 
+    private boolean isFirstResume;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -50,7 +52,7 @@ public class BaseActivityWithMenu extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
 
-    private void registerRestApiResponseReceivers() {
+    protected void registerRestApiResponseReceivers() {
         mPingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -87,13 +89,15 @@ public class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void doRelogin(){
-        RestApiService.startActionLogin(this, SettingsManager.getInstance(getApplicationContext()).getUserName(),
+        RestApiService.startActionLogin(getApplicationContext(), SettingsManager.getInstance(getApplicationContext()).getUserName(),
                 SettingsManager.getInstance(getApplicationContext()).getUserPass());
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        isFirstResume = true;
 
         registerRestApiResponseReceivers();
     }
@@ -102,7 +106,12 @@ public class BaseActivityWithMenu extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
 
-        checkAuthentication();
+        if (!isFirstResume) {
+            checkAuthentication();
+        }
+        else {
+            isFirstResume = false;
+        }
     }
 
     @Override
@@ -129,7 +138,7 @@ public class BaseActivityWithMenu extends AppCompatActivity {
         if(SettingsManager.getInstance(getApplicationContext()).isLoggedIn()) {
             showProgress();
 
-            RestApiService.startActionPing(this, SettingsManager.getInstance(getApplicationContext()).getAuthToken());
+            RestApiService.startActionPing(this);
         }
     }
 }

@@ -4,15 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.model.GameMap;
 
-import static com.cubegames.slava.cubegame.SettingsManager.PARAM_AUTH_TOKEN;
+import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -44,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkAuthentication(){
         if(SettingsManager.getInstance(getApplicationContext()).isLoggedIn())
-            RestApiService.startActionPing(this, SettingsManager.getInstance(getApplicationContext()).getAuthToken());
+            RestApiService.startActionPing(this);
         else {
             cls = LoginActivity.class;
             delayedHide(HIDE_DELAY);
@@ -56,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
         mPingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : SettingsActivity.class;
+                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : GameMapActivity.class;
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
                     SettingsManager.getInstance(getApplicationContext()).setAuthToken("");
                 }
@@ -77,7 +76,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void hide() {
-        startActivity(new Intent(getApplicationContext(), cls));
+        GameMap map = new GameMap();
+        map.setId("577f83ae129c1d5d011aecc7");
+        map.setName("dima map 01");
+
+        Intent mintent = new Intent(getApplicationContext(), cls);
+        mintent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
+
+        startActivity(mintent);
         finish();
     }
 
