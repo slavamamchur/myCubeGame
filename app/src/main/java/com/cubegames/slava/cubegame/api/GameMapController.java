@@ -1,8 +1,6 @@
 package com.cubegames.slava.cubegame.api;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.GameMap;
@@ -11,6 +9,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
             return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
 
-    public Bitmap getMapImage(GameMap map) throws WebServiceException {
+    public byte[] getMapImage(GameMap map) throws WebServiceException {
         try {
             URL url;
             url = new URL(getBaseUrl() + String.format(URL_GAME_MAP_IMAGE2, map.getId(), SettingsManager.getInstance(ctx).getAuthToken()));
@@ -49,10 +50,24 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
             urlcon.setDoInput(true);
             urlcon.connect();
 
-            return  BitmapFactory.decodeStream(urlcon.getInputStream());
+            return  readBytesFromStream(urlcon.getInputStream());
 
         } catch (Exception e) {
             throw new WebServiceException(HttpStatus.INTERNAL_SERVER_ERROR, "Can not download image.");
         }
+    }
+
+    private byte[] readBytesFromStream(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+
+        int bufferSize = 4096;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while (inputStream.available() > 0 && (len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+
+        return byteBuffer.toByteArray();
     }
 }

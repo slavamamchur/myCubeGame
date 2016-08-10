@@ -3,7 +3,6 @@ package com.cubegames.slava.cubegame.api;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
@@ -133,7 +132,7 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionGetMapImage(GameMap map) {
-        Bitmap mapImage;
+        byte[] mapImage;
 
         try {
             mapImage = new GameMapController(this).getMapImage(map);
@@ -142,9 +141,10 @@ public class RestApiService extends IntentService {
             mapImage = null;
         }
 
-        map.setBitmap(mapImage);
+        map.setBinaryData(mapImage);
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);
+
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
     }
 }

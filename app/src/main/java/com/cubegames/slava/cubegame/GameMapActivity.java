@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
@@ -13,6 +16,7 @@ import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
+//TODO: upload image and UI
 public class GameMapActivity extends BaseActivityWithMenu {
 
     private BroadcastReceiver mGetImageBroadcastReceiver = null;
@@ -33,8 +37,8 @@ public class GameMapActivity extends BaseActivityWithMenu {
         GameMap map = getIntent().getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
         if(map != null){
             setTitle(map.getName());
-            //showProgress();
-            //RestApiService.startActionGetMapImage(getApplicationContext(), map);
+            showProgress();
+            RestApiService.startActionGetMapImage(getApplicationContext(), map);
         }
     }
 
@@ -48,8 +52,11 @@ public class GameMapActivity extends BaseActivityWithMenu {
                 hideProgress();
 
                 GameMap response = intent.getParcelableExtra(RestApiService.EXTRA_GAME_MAP_OBJECT);
-                if (response.getBitmap() != null) {
-                    //TODO: Show Image
+                if (response.getBinaryData() != null) {
+                    Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(), 0, response.getBinaryData().length);
+                    ImageView mMapView = (ImageView) findViewById(R.id.map_image);
+                    mMapView.setImageBitmap(mapImage);
+                    mMapView.invalidate();
                 } else {
                     Toast.makeText(GameMapActivity.this, "Can not download image.", Toast.LENGTH_LONG).show();
                 }
