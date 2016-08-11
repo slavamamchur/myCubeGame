@@ -12,13 +12,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.cubegames.slava.cubegame.api.RestConst.NET_CONNECT_TIMEOUT_MILLIS;
@@ -37,28 +38,15 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     protected final Context ctx;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static class ResponseList {
+    public class ResponseList<T> {
         @JsonProperty(required = false)
-        private ResponseData responseData;
+        private ArrayList<T> collection;
 
-        public void setResponseData(ResponseData responseData) {
-            this.responseData = responseData;
+        public void setCollection(ArrayList<T> collection) {
+            this.collection = collection;
         }
-        public ResponseData getResponseData() {
-            return this.responseData;
-        }
-
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        private class ResponseData<T> {
-
-            private List<T> collection;
-
-            public void setCollection(List<T> collection) {
-                this.collection = collection;
-            }
-            public List<T> getCollection() {
-                return this.collection;
-            }
+        public ArrayList<T> getCollection() {
+            return this.collection;
         }
     }
 
@@ -69,6 +57,9 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         this.mHttpMethod = httpMethod;
     }
 
+    public final String getAuthToken() {
+        return SettingsManager.getInstance(ctx).getAuthToken();
+    }
     public final String getBaseUrl() {
         return SettingsManager.getInstance(ctx).getWebServiceUrl();
     }
@@ -130,13 +121,19 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         sendRequestWithParams(URL_DELETE, HttpMethod.DELETE, entity.getId());
     }
 
-    public List<T> getResponseList()  throws WebServiceException {
+    public ArrayList<T> getResponseList()  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<ResponseList> responseEntity =
-                restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class);
+        ResponseEntity<ResponseList> responseEntity;
+        try {
+            responseEntity =
+                    restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class);
+        }
+        catch (Exception e){
+            throw new WebServiceException(HttpStatus.OK,"");
+        }
 
-        return responseEntity.getBody().getResponseData().getCollection();
+        return responseEntity.getBody().getCollection();
     }
 
     /*public byte[] getBinaryData(BasicDbEntity entity)  throws WebServiceException {
@@ -167,28 +164,20 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
     protected abstract HttpEntity<?> getHttpEntity(Object entity);
 
-    protected HttpEntity<?> getHeaderParamsHttpEntity(Map<String, String> params) {
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setUserAgent("ANDROID");
-        requestHeaders.setAll(params);
-
-        return new HttpEntity<>(requestHeaders);
+    protected HttpEntity<?> getHeaderAndObjectParamsHttpEntity(Map<String, String> params){
+        return getHeaderAndObjectParamsHttpEntity(params, null);
     }
-
-    protected HttpEntity<?> getJsonObjectParamsHttpEntity(Object params) {
+    protected HttpEntity<?> getHeaderAndObjectParamsHttpEntity(Map<String, String> params, Object entity) {
         HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         requestHeaders.setUserAgent("ANDROID");
+        if (params != null)
+            requestHeaders.setAll(params);
 
-        return new HttpEntity<>(params, requestHeaders);
-    }
-
-    protected HttpEntity<?> getHeaderAndObjectParamsHttpEntity(Map<String, String> hparams, Object params) {
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        requestHeaders.setUserAgent("ANDROID");
-        requestHeaders.setAll(hparams);
-
-        return new HttpEntity<>(params, requestHeaders);
+        if (entity != null) {
+            requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+            return new HttpEntity<>(entity, requestHeaders);
+        }
+        else
+            return new HttpEntity<>(requestHeaders);
     }
 }

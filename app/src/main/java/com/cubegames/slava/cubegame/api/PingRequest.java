@@ -3,7 +3,6 @@ package com.cubegames.slava.cubegame.api;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.PingResponse;
 
 import org.springframework.http.HttpEntity;
@@ -17,19 +16,16 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_PING;
 
 public class PingRequest extends AbstractHttpRequest<PingResponse> {
 
-    private String authToken;
-
     protected PingRequest(Context ctx) {
         super(URL_PING, PingResponse.class, HttpMethod.GET, ctx);
-        this.authToken = SettingsManager.getInstance(ctx).getAuthToken();
     }
 
     @Override
     protected HttpEntity<?> getHttpEntity(Object entity) {
         Map<String, String> params = new HashMap<>();
-        params.put(PARAM_HEADER_AUTH_TOKEN, authToken);
+        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
 
-        return getHeaderParamsHttpEntity(params);
+        return getHeaderAndObjectParamsHttpEntity(params);
     }
 
     public boolean doPing(){

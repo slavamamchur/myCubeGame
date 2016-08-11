@@ -22,7 +22,7 @@ public class RegistrationRequest extends AbstractHttpRequest<ErrorEntity>{
 
     @Override
     protected HttpEntity<?> getHttpEntity(Object entity) {
-        return getJsonObjectParamsHttpEntity(params);
+        return getHeaderAndObjectParamsHttpEntity(null, entity);
     }
 
     public void doRegister() throws WebServiceException {

@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.DbPlayer;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.UserEntity;
+
+import java.util.ArrayList;
 
 public class RestApiService extends IntentService {
     @SuppressWarnings("unused")
@@ -21,13 +24,13 @@ public class RestApiService extends IntentService {
     public static final String ACTION_PING_RESPONSE = "com.cubegames.slava.cubegame.api.action.PING_RESPONSE";
     private static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
     public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
+    //TODO: action get map list & get players list
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
     public static final String EXTRA_LOGIN_RESPONSE_OBJECT = "LOGIN_RESPONSE_OBJECT";
     public static final String EXTRA_REGISTRATION_PARAMS_OBJECT = "LOGIN_RESPONSE_OBJECT";
     public static final String EXTRA_REGISTRATION_RESPONSE_TEXT = "REGISTRATION_RESPONSE_TEXT";
-    public static final String EXTRA_AUTH_TOKEN = "AUTH_TOKEN";
     public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
     public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
 
@@ -131,10 +134,12 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 
+    ArrayList<DbPlayer> pl;
     private void handleActionGetMapImage(GameMap map) {
         byte[] mapImage;
 
         try {
+            pl = new DBPlayerController(this).getResponseList();
             mapImage = new GameMapController(this).getMapImage(map);
         }
         catch (WebServiceException e) {

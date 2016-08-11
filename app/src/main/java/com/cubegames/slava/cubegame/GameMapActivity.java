@@ -16,7 +16,6 @@ import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
-//TODO: upload image and UI
 public class GameMapActivity extends BaseActivityWithMenu {
 
     private BroadcastReceiver mGetImageBroadcastReceiver = null;
