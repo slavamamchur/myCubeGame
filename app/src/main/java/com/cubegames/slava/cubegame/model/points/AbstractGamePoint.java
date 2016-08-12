@@ -3,6 +3,8 @@ package com.cubegames.slava.cubegame.model.points;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_POINT;
+
 /**
  * Abstract game point
  */
@@ -81,5 +83,9 @@ public class AbstractGamePoint implements Parcelable{
         yPos = in.readInt();
         type = PointType.values()[in.readInt()];
         nextPointIndex = in.readInt();
+    }
+
+    public static String getActionName(){
+        return URL_GAME_POINT;
     }
 }

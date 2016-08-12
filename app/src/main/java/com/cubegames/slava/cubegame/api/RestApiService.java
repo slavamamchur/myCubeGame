@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
-import com.cubegames.slava.cubegame.model.DbPlayer;
+import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.UserEntity;
-
-import java.util.ArrayList;
 
 public class RestApiService extends IntentService {
     @SuppressWarnings("unused")
@@ -134,12 +132,15 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 
-    ArrayList<DbPlayer> pl;
     private void handleActionGetMapImage(GameMap map) {
         byte[] mapImage;
 
         try {
-            pl = new DBPlayerController(this).getResponseList();
+            GameController gc = new GameController(this);
+            Game game = new Game();//gc.find("576be8118cf855eed81c1aa9");
+            game.setId("576be8118cf855eed81c1aa9");
+            gc.removePoint(game, 1);
+
             mapImage = new GameMapController(this).getMapImage(map);
         }
         catch (WebServiceException e) {

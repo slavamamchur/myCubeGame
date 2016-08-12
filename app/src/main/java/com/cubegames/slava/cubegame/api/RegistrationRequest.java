@@ -12,12 +12,12 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_REGISTER;
 
 public class RegistrationRequest extends AbstractHttpRequest<ErrorEntity>{
 
-    private UserEntity params;
+    private UserEntity user;
 
-    public RegistrationRequest(UserEntity params, Context ctx) {
+    public RegistrationRequest(UserEntity user, Context ctx) {
         super(URL_REGISTER, ErrorEntity.class, HttpMethod.POST, ctx);
 
-        this.params = params;
+        this.user = user;
     }
 
     @Override

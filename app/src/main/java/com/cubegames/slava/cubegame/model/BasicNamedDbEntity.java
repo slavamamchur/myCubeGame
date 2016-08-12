@@ -4,14 +4,13 @@ import android.os.Parcel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class BasicNamedDbEntity extends BasicDbEntity {
+public class BasicNamedDbEntity extends BasicDbEntity {
     @JsonProperty(required = true)
     protected String name;
 
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -28,5 +27,9 @@ public abstract class BasicNamedDbEntity extends BasicDbEntity {
         super.loadFromParcel(in);
 
         setName(in.readString());
+    }
+
+    public static String getActionName(){
+        return null;
     }
 }

@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.BasicDbEntity;
 import com.cubegames.slava.cubegame.model.BasicEntity;
+import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,10 +22,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.cubegames.slava.cubegame.api.RestConst.NET_CONNECT_TIMEOUT_MILLIS;
 import static com.cubegames.slava.cubegame.api.RestConst.NET_READ_TIMEOUT_MILLIS;
+import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_CREATE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_DELETE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_FIND;
@@ -38,7 +42,7 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     protected final Context ctx;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class ResponseList<T> {
+    public class ResponsesList<T> {
         @JsonProperty(required = false)
         private ArrayList<T> collection;
 
@@ -124,10 +128,10 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     public ArrayList<T> getResponseList()  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<ResponseList> responseEntity;
+        ResponseEntity<ResponsesList> responseEntity;
         try {
             responseEntity =
-                    restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class);
+                    restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponsesList.class);
         }
         catch (Exception e){
             throw new WebServiceException(HttpStatus.OK,"");
@@ -139,8 +143,8 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     /*public byte[] getBinaryData(BasicDbEntity entity)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<ResponseList> responseEntity = restTemplate.
-                //restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponseList.class, entity.getId());
+        ResponseEntity<ResponsesList> responseEntity = restTemplate.
+                //restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponsesList.class, entity.getId());
 
         return responseEntity.getBody().getResponseData().getCollection();
     }*/
@@ -179,5 +183,19 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         }
         else
             return new HttpEntity<>(requestHeaders);
+    }
+
+    public void addChild(BasicNamedDbEntity child){
+        //TODO: add child
+    }
+
+    public void removeChild(String id, String childName, int index) throws WebServiceException{
+        String actionURL = mUrl + "/{id}" + childName + "/{index}";
+
+        Map<String, String> params = new HashMap<>();
+        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+
+        RestTemplate restTemplate = getRestTemplate();
+        restTemplate.exchange(actionURL, HttpMethod.GET, getHeaderAndObjectParamsHttpEntity(params, null), ErrorEntity.class, id, index);
     }
 }

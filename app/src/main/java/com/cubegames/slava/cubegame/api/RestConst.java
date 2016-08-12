@@ -9,6 +9,7 @@ public class RestConst {
 
     // game controller
     public static final String URL_GAME = "/game";
+    public static final String URL_GAME_POINT = "/point";
     public static final String URL_GAME_NEW_POINT = "/{gameId}/point/{xPos}/{yPos}/{type}/{nextIndex}/{flyIndex}";
     public static final String URL_GAME_REMOVE_POINT = "/{gameId}/point/{index}";
 
@@ -41,7 +42,7 @@ public class RestConst {
     public static final String PARAM_LOGIN_USER_PASS = "user-pass";
     public static final String PARAM_HEADER_AUTH_TOKEN = "user-token";
 
-    public static final int NET_READ_TIMEOUT_MILLIS = 60000;  // 15 seconds
+    public static final int NET_READ_TIMEOUT_MILLIS = 60000;  // 60 seconds
     public static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
 
 }
