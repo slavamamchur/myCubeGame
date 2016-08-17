@@ -2,7 +2,7 @@ package com.cubegames.slava.cubegame.api;
 
 import android.content.Context;
 
-import com.cubegames.slava.cubegame.model.DbPlayer;
+import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -12,10 +12,10 @@ import java.util.Map;
 
 import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 
-public class DBPlayerController extends AbstractHttpRequest<DbPlayer> {
+public class GetEntityController<T extends BasicNamedDbEntity> extends AbstractHttpRequest<T> {
 
-    protected DBPlayerController(Context ctx) {
-        super(DbPlayer.ACTION_NAME, DbPlayer.class, HttpMethod.GET, ctx);
+    protected GetEntityController(String action, Class<T> responseType, Context ctx) {
+        super(action, responseType, HttpMethod.GET, ctx);
     }
 
     @Override

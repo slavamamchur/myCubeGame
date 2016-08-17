@@ -90,7 +90,5 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
         createdDate = in.readLong();
     }
 
-    public static String getActionName(){
-        return URL_GAME;
-    }
+    public static String ACTION_NAME =  URL_GAME;
 }

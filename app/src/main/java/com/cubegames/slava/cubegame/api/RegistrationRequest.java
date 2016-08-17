@@ -26,7 +26,7 @@ public class RegistrationRequest extends AbstractHttpRequest<ErrorEntity>{
     }
 
     public void doRegister() throws WebServiceException {
-        sendRequestWithParams("");
+        sendRequestWithParams("", mHttpMethod, user);
     }
 
 }

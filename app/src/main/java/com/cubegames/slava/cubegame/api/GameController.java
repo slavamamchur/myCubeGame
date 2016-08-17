@@ -16,7 +16,7 @@ import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN
 public class GameController extends AbstractHttpRequest<Game>{
 
     protected GameController(Context ctx) {
-        super(Game.getActionName(), Game.class, HttpMethod.GET, ctx);
+        super(Game.ACTION_NAME, Game.class, HttpMethod.GET, ctx);
     }
 
     @Override
@@ -27,6 +27,7 @@ public class GameController extends AbstractHttpRequest<Game>{
         return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
 
+    //todo: move to Game
     public void removePoint(Game game, int index){
         removeChild(game.getId(), AbstractGamePoint.getActionName(), index);
     }

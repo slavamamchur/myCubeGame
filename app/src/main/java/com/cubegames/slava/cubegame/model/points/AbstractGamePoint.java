@@ -3,11 +3,14 @@ package com.cubegames.slava.cubegame.model.points;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_POINT;
 
 /**
  * Abstract game point
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AbstractGamePoint implements Parcelable{
 
     protected int xPos;

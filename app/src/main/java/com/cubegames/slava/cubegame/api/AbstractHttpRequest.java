@@ -4,24 +4,21 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.cubegames.slava.cubegame.SettingsManager;
-import com.cubegames.slava.cubegame.model.BasicDbEntity;
 import com.cubegames.slava.cubegame.model.BasicEntity;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.cubegames.slava.cubegame.model.MyCollectionResponse;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,21 +35,20 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
     private String mUrl;
     protected Class<T> mResponseType;
-    private final HttpMethod mHttpMethod;
+    protected final HttpMethod mHttpMethod;
     protected final Context ctx;
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public class ResponsesList<T> {
-        @JsonProperty(required = false)
-        private ArrayList<T> collection;
+    /*@JsonIgnoreProperties(ignoreUnknown = true)
+    public class CollectionResponse extends MyCollectionResponse<T>{
+        private Collection<T> collection;
 
-        public void setCollection(ArrayList<T> collection) {
+        public Collection<T> getCollection() {
+            return collection;
+        }
+        public void setCollection(Collection<T> collection) {
             this.collection = collection;
         }
-        public ArrayList<T> getCollection() {
-            return this.collection;
-        }
-    }
+    }*/
 
     protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod, Context ctx) {
         this.ctx = ctx;
@@ -113,41 +109,36 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         return getResponse(URL_FIND, id);
     }
 
-    public void create(BasicDbEntity entity)  throws WebServiceException {
+    public void create(BasicNamedDbEntity entity)  throws WebServiceException {
         sendPostRequest(URL_CREATE, entity);
     }
 
-    public void update(BasicDbEntity entity)  throws WebServiceException {
+    public void update(BasicNamedDbEntity entity)  throws WebServiceException {
         sendPostRequest(URL_UPDATE, entity);
     }
 
-    public void delete(BasicDbEntity entity)  throws WebServiceException {
+    public void delete(BasicNamedDbEntity entity)  throws WebServiceException {
         sendRequestWithParams(URL_DELETE, HttpMethod.DELETE, entity.getId());
     }
 
-    public ArrayList<T> getResponseList()  throws WebServiceException {
+    public Collection getResponseList()  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<ResponsesList> responseEntity;
-        try {
-            responseEntity =
-                    restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponsesList.class);
-        }
-        catch (Exception e){
-            throw new WebServiceException(HttpStatus.OK,"");
-        }
+        ResponseEntity<MyCollectionResponse> responseEntity =
+                restTemplate.exchange(mUrl + URL_LIST, HttpMethod.GET, getHttpEntity(), MyCollectionResponse.class);
 
-        return responseEntity.getBody().getCollection();
+        return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    /*public byte[] getBinaryData(BasicDbEntity entity)  throws WebServiceException {
+    //todo: bug report
+    public byte[] getBinaryData(BasicNamedDbEntity entity, String dataUrl)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<ResponsesList> responseEntity = restTemplate.
-                //restTemplate.exchange(mUrl + URL_LIST, mHttpMethod, getHttpEntity(), ResponsesList.class, entity.getId());
+        ResponseEntity<byte[]> responseEntity =
+                restTemplate.exchange(getBaseUrl() + dataUrl, HttpMethod.GET, getHttpEntity(), byte[].class, entity.getId());
 
-        return responseEntity.getBody().getResponseData().getCollection();
-    }*/
+        return responseEntity.getBody();
+    }
 
     @NonNull
     protected RestTemplate getRestTemplate() {

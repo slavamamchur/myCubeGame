@@ -9,9 +9,6 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
-import com.cubegames.slava.cubegame.model.GameMap;
-
-import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -55,7 +52,7 @@ public class SplashActivity extends AppCompatActivity {
         mPingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : GameMapActivity.class;
+                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : GameMapsListActivity.class;
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
                     SettingsManager.getInstance(getApplicationContext()).setAuthToken("");
                 }
@@ -76,14 +73,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void hide() {
-        GameMap map = new GameMap();
-        map.setId("577f83ae129c1d5d011aecc7");
-        map.setName("dima map 01");
-
-        Intent mintent = new Intent(getApplicationContext(), cls);
-        mintent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
-
-        startActivity(mintent);
+        startActivity(new Intent(getApplicationContext(), cls));
         finish();
     }
 

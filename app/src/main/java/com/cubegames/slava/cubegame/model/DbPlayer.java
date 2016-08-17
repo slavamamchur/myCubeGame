@@ -3,8 +3,11 @@ package com.cubegames.slava.cubegame.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import static com.cubegames.slava.cubegame.api.RestConst.URL_PLAYER;
+
 public class DbPlayer extends BasicNamedDbEntity implements Parcelable{
     private int color;
+    public static String ACTION_NAME =  URL_PLAYER;
 
     public DbPlayer() {}
     protected DbPlayer(Parcel in) {

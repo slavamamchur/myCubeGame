@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP;
+
 public class GameMap extends BasicNamedDbEntity implements Parcelable{
     @JsonProperty(required = false)
     private long createdDate;
@@ -74,4 +76,6 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
             binaryData = null;
         }
     }
+
+    public static String ACTION_NAME =  URL_GAME_MAP;
 }

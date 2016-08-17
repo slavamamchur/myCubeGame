@@ -6,23 +6,26 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
-import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.UserEntity;
+
+import java.util.ArrayList;
 
 public class RestApiService extends IntentService {
     @SuppressWarnings("unused")
     private final String TAG = "RestApiService";
 
-    private static final String ACTION_LOGIN = "com.cubegames.slava.cubegame.api.action.LOGIN";
+    public static final String ACTION_LOGIN = "com.cubegames.slava.cubegame.api.action.LOGIN";
     public static final String ACTION_LOGIN_RESPONSE = "com.cubegames.slava.cubegame.api.action.LOGIN_RESPONSE";
-    private static final String ACTION_REGISTRATION = "com.cubegames.slava.cubegame.api.action.REGISTRATION";
+    public static final String ACTION_REGISTRATION = "com.cubegames.slava.cubegame.api.action.REGISTRATION";
     public static final String ACTION_REGISTRATION_RESPONSE = "com.cubegames.slava.cubegame.api.action.REGISTRATION_RESPONSE";
-    private static final String ACTION_PING = "com.cubegames.slava.cubegame.api.action.PING";
+    public static final String ACTION_PING = "com.cubegames.slava.cubegame.api.action.PING";
     public static final String ACTION_PING_RESPONSE = "com.cubegames.slava.cubegame.api.action.PING_RESPONSE";
-    private static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
+    public static final String ACTION_GET_GAME_MAP_LIST = "com.cubegames.slava.cubegame.api.action.GET_MAP_LIST";
+    public static final String ACTION_GAME_MAP_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_LIST_RESPONSE";
+    public static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
     public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
-    //TODO: action get map list & get players list
+    //TODO: action get players list
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -31,6 +34,7 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_REGISTRATION_RESPONSE_TEXT = "REGISTRATION_RESPONSE_TEXT";
     public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
     public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
+    public static final String EXTRA_GAME_MAP_LIST = "GAME_MAP_LIST";
 
     public RestApiService() {
         super("RestApiService");
@@ -58,6 +62,12 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionGetMapList(Context context) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_GET_GAME_MAP_LIST);
+        context.startService(intent);
+    }
+
     public static void startActionGetMapImage(Context context, GameMap map) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_GET_MAP_IMAGE);
@@ -81,6 +91,9 @@ public class RestApiService extends IntentService {
             }
             else if (ACTION_PING.equals(action)) {
                 handleActionPing();
+            }
+            else if (ACTION_GET_GAME_MAP_LIST.equals(action)) {
+                handleActionGetMapList();
             }
             else if (ACTION_GET_MAP_IMAGE.equals(action)) {
                 final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
@@ -132,21 +145,36 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 
-    private void handleActionGetMapImage(GameMap map) {
-        byte[] mapImage;
+    private void handleActionGetMapList(){
+        String message = "";
+        ArrayList<GameMap> mapList = null;
 
         try {
-            GameController gc = new GameController(this);
-            Game game = new Game();//gc.find("576be8118cf855eed81c1aa9");
-            game.setId("576be8118cf855eed81c1aa9");
-            gc.removePoint(game, 1);
+            mapList = new ArrayList<>(new GameMapController(this).getResponseList());
+        }
+        catch (WebServiceException e) {
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+        }
 
+        Bundle params = new Bundle();
+        params.putParcelableArrayList(EXTRA_GAME_MAP_LIST, mapList);
+
+        sendResponseIntent(ACTION_GAME_MAP_LIST_RESPONSE, params);
+    }
+
+    private void handleActionGetMapImage(GameMap map) {
+        byte[] mapImage = null;
+        String message = "";
+
+        try {
+            //todo: change to getBinaryData()
             mapImage = new GameMapController(this).getMapImage(map);
         }
         catch (WebServiceException e) {
-            mapImage = null;
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
 
+        //todo: handle errors
         map.setBinaryData(mapImage);
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);

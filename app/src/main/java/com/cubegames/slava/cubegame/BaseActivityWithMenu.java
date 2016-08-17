@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.AuthToken;
 
-public class BaseActivityWithMenu extends AppCompatActivity {
+public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
     private BroadcastReceiver mPingBroadcastReceiver = null;
     private BroadcastReceiver mLoginBroadcastReceiver = null;
@@ -56,9 +56,10 @@ public class BaseActivityWithMenu extends AppCompatActivity {
         mPingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                hideProgress();
+
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false))
                     if (!SettingsManager.getInstance(getApplicationContext()).isStayLoggedIn()) {
-                        hideProgress();
                         doLogout();
                     }
                     else
@@ -89,6 +90,8 @@ public class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void doRelogin(){
+        showProgress();
+
         RestApiService.startActionLogin(getApplicationContext(), SettingsManager.getInstance(getApplicationContext()).getUserName(),
                 SettingsManager.getInstance(getApplicationContext()).getUserPass());
     }

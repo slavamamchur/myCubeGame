@@ -29,7 +29,8 @@ public class BasicNamedDbEntity extends BasicDbEntity {
         setName(in.readString());
     }
 
-    public static String getActionName(){
-        return null;
+    public static String ACTION_NAME = "";
+    public String getActionName(){
+        return ACTION_NAME;
     }
 }
