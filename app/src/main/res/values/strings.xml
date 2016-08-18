@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CubeGame</string>
+    <string name="game_map_list_title">Map List</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

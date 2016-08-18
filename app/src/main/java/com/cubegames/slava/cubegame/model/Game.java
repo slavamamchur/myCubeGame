@@ -12,6 +12,8 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME;
 
 public class Game extends BasicNamedDbEntity implements Parcelable{
 
+    public static String ACTION_NAME =  URL_GAME;
+
     private List<AbstractGamePoint> gamePoints;
     private String mapId;
     private long createdDate;
@@ -59,7 +61,7 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
         if(point == null) return;
 
         if (gamePoints == null) {
-            gamePoints = new ArrayList<AbstractGamePoint>();
+            gamePoints = new ArrayList<>();
         }
 
         gamePoints.add(point);
@@ -90,5 +92,4 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
         createdDate = in.readLong();
     }
 
-    public static String ACTION_NAME =  URL_GAME;
 }

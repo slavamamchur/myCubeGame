@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.DbPlayer;
+import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.UserEntity;
 
@@ -23,6 +25,10 @@ public class RestApiService extends IntentService {
     public static final String ACTION_PING_RESPONSE = "com.cubegames.slava.cubegame.api.action.PING_RESPONSE";
     public static final String ACTION_GET_GAME_MAP_LIST = "com.cubegames.slava.cubegame.api.action.GET_MAP_LIST";
     public static final String ACTION_GAME_MAP_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_LIST_RESPONSE";
+    public static final String ACTION_GET_GAME_LIST = "com.cubegames.slava.cubegame.api.action.GET_GAME_LIST";
+    public static final String ACTION_GAME_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.GAME_LIST_RESPONSE";
+    public static final String ACTION_GET_PLAYER_LIST = "com.cubegames.slava.cubegame.api.action.GET_PLAYER_LIST";
+    public static final String ACTION_PLAYER_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.PLAYER_LIST_RESPONSE";
     public static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
     public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
     //TODO: action get players list
@@ -35,6 +41,8 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
     public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
     public static final String EXTRA_GAME_MAP_LIST = "GAME_MAP_LIST";
+    public static final String EXTRA_GAME_LIST = "GAME_LIST";
+    public static final String EXTRA_PLAYER_LIST = "PLAYER_LIST";
 
     public RestApiService() {
         super("RestApiService");
@@ -62,9 +70,9 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionGetMapList(Context context) {
+    public static void startActionGetList(Context context, String action) {
         Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_GET_GAME_MAP_LIST);
+        intent.setAction(action);
         context.startService(intent);
     }
 
@@ -94,6 +102,12 @@ public class RestApiService extends IntentService {
             }
             else if (ACTION_GET_GAME_MAP_LIST.equals(action)) {
                 handleActionGetMapList();
+            }
+            else if (ACTION_GET_GAME_LIST.equals(action)) {
+                handleActionGetGameList();
+            }
+            else if (ACTION_GET_PLAYER_LIST.equals(action)) {
+                handleActionGetPlayerList();
             }
             else if (ACTION_GET_MAP_IMAGE.equals(action)) {
                 final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
@@ -160,6 +174,40 @@ public class RestApiService extends IntentService {
         params.putParcelableArrayList(EXTRA_GAME_MAP_LIST, mapList);
 
         sendResponseIntent(ACTION_GAME_MAP_LIST_RESPONSE, params);
+    }
+
+    private void handleActionGetGameList(){
+        String message = "";
+        ArrayList<Game> mapList = null;
+
+        try {
+            mapList = new ArrayList<>(new GameController(this).getResponseList());
+        }
+        catch (WebServiceException e) {
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+        }
+
+        Bundle params = new Bundle();
+        params.putParcelableArrayList(EXTRA_GAME_LIST, mapList);
+
+        sendResponseIntent(ACTION_GAME_LIST_RESPONSE, params);
+    }
+
+    private void handleActionGetPlayerList(){
+        String message = "";
+        ArrayList<DbPlayer> mapList = null;
+
+        try {
+            mapList = new ArrayList<>(new DBPlayerController(this).getResponseList());
+        }
+        catch (WebServiceException e) {
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+        }
+
+        Bundle params = new Bundle();
+        params.putParcelableArrayList(EXTRA_PLAYER_LIST, mapList);
+
+        sendResponseIntent(ACTION_PLAYER_LIST_RESPONSE, params);
     }
 
     private void handleActionGetMapImage(GameMap map) {

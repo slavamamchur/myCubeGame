@@ -9,6 +9,7 @@ import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.MyCollectionResponse;
 
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
@@ -130,14 +133,27 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    //todo: bug report
     public byte[] getBinaryData(BasicNamedDbEntity entity, String dataUrl)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<byte[]> responseEntity =
-                restTemplate.exchange(getBaseUrl() + dataUrl, HttpMethod.GET, getHttpEntity(), byte[].class, entity.getId());
+        return restTemplate.exchange(getBaseUrl() + dataUrl, HttpMethod.GET, getHttpEntity(), byte[].class, entity.getId()).getBody();
+    }
 
-        return responseEntity.getBody();
+    public String uploadFile(BasicNamedDbEntity entity, String keyParamName, String uploadActionNAme, String fileName) throws WebServiceException {
+        RestTemplate restTemplate = getRestTemplate();
+
+        MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+        formData.add("token", getAuthToken());
+        formData.add(keyParamName, entity.getId());
+        formData.add("file", new FileSystemResource(fileName));
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(formData, requestHeaders);
+
+        return restTemplate.exchange(mUrl + uploadActionNAme, HttpMethod.POST, requestEntity, String.class).getBody();
+
     }
 
     @NonNull
@@ -176,8 +192,14 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
             return new HttpEntity<>(requestHeaders);
     }
 
-    public void addChild(BasicNamedDbEntity child){
-        //TODO: add child
+    public void addChild(String id, String childName, Object child){
+        String actionURL = mUrl + "/{id}" + childName;
+
+        Map<String, String> params = new HashMap<>();
+        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+
+        RestTemplate restTemplate = getRestTemplate();
+        restTemplate.exchange(actionURL, HttpMethod.POST, getHeaderAndObjectParamsHttpEntity(params, child), ErrorEntity.class, id);
     }
 
     public void removeChild(String id, String childName, int index) throws WebServiceException{

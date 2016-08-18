@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP_IMAGE2;
+import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
 
 public class GameMapController extends AbstractHttpRequest<GameMap> {
@@ -77,5 +78,9 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
         }
 
         return byteBuffer.toByteArray();
+    }
+
+    public String uploadMapImage(GameMap map, String fileName) throws WebServiceException {
+        return uploadFile(map, "mapid", URL_GAME_MAP_IMAGE_SIMPLE, fileName);
     }
 }

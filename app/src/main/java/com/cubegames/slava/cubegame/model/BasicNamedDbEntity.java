@@ -1,12 +1,37 @@
 package com.cubegames.slava.cubegame.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BasicNamedDbEntity extends BasicDbEntity {
+public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
     @JsonProperty(required = true)
     protected String name;
+
+    public BasicNamedDbEntity(){}
+    protected BasicNamedDbEntity(Parcel in) {
+        loadFromParcel(in);
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        save2Parcel(dest);
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    public static final Creator<BasicNamedDbEntity> CREATOR = new Creator<BasicNamedDbEntity>() {
+        @Override
+        public BasicNamedDbEntity createFromParcel(Parcel in) {
+            return new BasicNamedDbEntity(in);
+        }
+
+        @Override
+        public BasicNamedDbEntity[] newArray(int size) {
+            return new BasicNamedDbEntity[size];
+        }
+    };
 
     public String getName() {
         return name;

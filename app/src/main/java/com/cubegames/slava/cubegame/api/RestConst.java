@@ -11,6 +11,7 @@ public class RestConst {
     public static final String URL_GAME = "/game";
     public static final String URL_GAME_POINT = "/point";
     public static final String URL_GAME_NEW_POINT = "/{gameId}/point/{xPos}/{yPos}/{type}/{nextIndex}/{flyIndex}";
+    public static final String URL_GAME_NEW_POINT_EX = "/{gameId}/point";
     public static final String URL_GAME_REMOVE_POINT = "/{gameId}/point/{index}";
 
     // instance controller
