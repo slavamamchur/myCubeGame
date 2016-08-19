@@ -1,6 +1,9 @@
 package com.cubegames.slava.cubegame.model.points;
 
-public class NewPointRequest {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class NewPointRequest implements Parcelable{
 
     private String gameId;
     private int xPos;
@@ -9,10 +12,44 @@ public class NewPointRequest {
     private int nextIndex;
     private int flyIndex;
 
+    protected NewPointRequest(Parcel in) {
+        gameId = in.readString();
+        xPos = in.readInt();
+        yPos = in.readInt();
+        type = PointType.values()[in.readInt()];
+        nextIndex = in.readInt();
+        flyIndex = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(gameId);
+        dest.writeInt(xPos);
+        dest.writeInt(yPos);
+        dest.writeInt(type.ordinal());
+        dest.writeInt(nextIndex);
+        dest.writeInt(flyIndex);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    public static final Creator<NewPointRequest> CREATOR = new Creator<NewPointRequest>() {
+        @Override
+        public NewPointRequest createFromParcel(Parcel in) {
+            return new NewPointRequest(in);
+        }
+
+        @Override
+        public NewPointRequest[] newArray(int size) {
+            return new NewPointRequest[size];
+        }
+    };
+
     public String getGameId() {
         return gameId;
     }
-
     public void setGameId(String gameId) {
         this.gameId = gameId;
     }
@@ -20,7 +57,6 @@ public class NewPointRequest {
     public int getxPos() {
         return xPos;
     }
-
     public void setxPos(int xPos) {
         this.xPos = xPos;
     }
@@ -28,7 +64,6 @@ public class NewPointRequest {
     public int getyPos() {
         return yPos;
     }
-
     public void setyPos(int yPos) {
         this.yPos = yPos;
     }
@@ -36,7 +71,6 @@ public class NewPointRequest {
     public PointType getType() {
         return type;
     }
-
     public void setType(PointType type) {
         this.type = type;
     }
@@ -44,7 +78,6 @@ public class NewPointRequest {
     public int getNextIndex() {
         return nextIndex;
     }
-
     public void setNextIndex(int nextIndex) {
         this.nextIndex = nextIndex;
     }
@@ -52,7 +85,6 @@ public class NewPointRequest {
     public int getFlyIndex() {
         return flyIndex;
     }
-
     public void setFlyIndex(int flyIndex) {
         this.flyIndex = flyIndex;
     }

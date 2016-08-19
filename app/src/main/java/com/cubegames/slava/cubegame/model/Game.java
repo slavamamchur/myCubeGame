@@ -78,7 +78,7 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
     protected void save2Parcel(Parcel dest) {
         super.save2Parcel(dest);
 
-        dest.writeList(gamePoints);
+        dest.writeTypedList(gamePoints);
         dest.writeString(mapId);
         dest.writeLong(createdDate);
     }
@@ -87,7 +87,7 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
     protected void loadFromParcel(Parcel in) {
         super.loadFromParcel(in);
 
-        in.readTypedList(gamePoints, AbstractGamePoint.CREATOR);
+        gamePoints = in.createTypedArrayList(AbstractGamePoint.CREATOR);
         mapId = in.readString();
         createdDate = in.readLong();
     }

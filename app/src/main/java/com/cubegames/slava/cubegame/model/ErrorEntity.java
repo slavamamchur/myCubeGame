@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+//todo: extends basic response
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ErrorEntity extends BasicEntity implements Parcelable {
 

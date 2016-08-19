@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.cubegames.slava.cubegame.model.AuthToken;
 import com.cubegames.slava.cubegame.model.DbPlayer;
 import com.cubegames.slava.cubegame.model.Game;
+import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.UserEntity;
 
@@ -27,11 +28,12 @@ public class RestApiService extends IntentService {
     public static final String ACTION_GAME_MAP_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_LIST_RESPONSE";
     public static final String ACTION_GET_GAME_LIST = "com.cubegames.slava.cubegame.api.action.GET_GAME_LIST";
     public static final String ACTION_GAME_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.GAME_LIST_RESPONSE";
+    public static final String ACTION_GET_GAME_INSTANCE_LIST = "com.cubegames.slava.cubegame.api.action.GET_GAME_INSTANCE_LIST";
+    public static final String ACTION_GAME_INSTANCE_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.GAME_INSTANCE_LIST_RESPONSE";
     public static final String ACTION_GET_PLAYER_LIST = "com.cubegames.slava.cubegame.api.action.GET_PLAYER_LIST";
     public static final String ACTION_PLAYER_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.PLAYER_LIST_RESPONSE";
     public static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
     public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
-    //TODO: action get players list
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -41,6 +43,8 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
     public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
     public static final String EXTRA_GAME_MAP_LIST = "GAME_MAP_LIST";
+    public static final String EXTRA_GAME_INSTANCE_LIST = "GAME_INSTANCE_LIST";
+    public static final String EXTRA_GAME_INSTANCE = "GAME_INSTANCE";
     public static final String EXTRA_GAME_LIST = "GAME_LIST";
     public static final String EXTRA_PLAYER_LIST = "PLAYER_LIST";
 
@@ -106,6 +110,9 @@ public class RestApiService extends IntentService {
             else if (ACTION_GET_GAME_LIST.equals(action)) {
                 handleActionGetGameList();
             }
+            else if (ACTION_GET_GAME_INSTANCE_LIST.equals(action)) {
+                handleActionGetGameInstanceList();
+            }
             else if (ACTION_GET_PLAYER_LIST.equals(action)) {
                 handleActionGetPlayerList();
             }
@@ -162,7 +169,6 @@ public class RestApiService extends IntentService {
     private void handleActionGetMapList(){
         String message = "";
         ArrayList<GameMap> mapList = null;
-
         try {
             mapList = new ArrayList<>(new GameMapController(this).getResponseList());
         }
@@ -193,6 +199,23 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_GAME_LIST_RESPONSE, params);
     }
 
+    private void handleActionGetGameInstanceList(){
+        String message = "";
+        ArrayList<GameInstance> mapList = null;
+
+        try {
+            mapList = new ArrayList<>(new GameInstanceController(this).getResponseList());
+        }
+        catch (WebServiceException e) {
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+        }
+
+        Bundle params = new Bundle();
+        params.putParcelableArrayList(EXTRA_GAME_INSTANCE_LIST, mapList);
+
+        sendResponseIntent(ACTION_GAME_INSTANCE_LIST_RESPONSE, params);
+    }
+
     private void handleActionGetPlayerList(){
         String message = "";
         ArrayList<DbPlayer> mapList = null;
@@ -215,7 +238,6 @@ public class RestApiService extends IntentService {
         String message = "";
 
         try {
-            //todo: change to getBinaryData()
             mapImage = new GameMapController(this).getMapImage(map);
         }
         catch (WebServiceException e) {

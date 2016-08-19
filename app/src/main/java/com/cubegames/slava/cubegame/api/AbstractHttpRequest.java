@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -135,8 +136,17 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
     public byte[] getBinaryData(BasicNamedDbEntity entity, String dataUrl)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-        return restTemplate.exchange(getBaseUrl() + dataUrl, HttpMethod.GET, getHttpEntity(), byte[].class, entity.getId()).getBody();
+        Map<String, String> params = new HashMap<>();
+        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.IMAGE_JPEG);
+        requestHeaders.setUserAgent("ANDROID");
+        requestHeaders.setAll(params);
+
+        return restTemplate.exchange(mUrl + dataUrl, HttpMethod.GET, new HttpEntity<>(requestHeaders), byte[].class, entity.getId()).getBody();
     }
 
     public String uploadFile(BasicNamedDbEntity entity, String keyParamName, String uploadActionNAme, String fileName) throws WebServiceException {
