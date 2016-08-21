@@ -34,7 +34,7 @@ public class PingRequest extends AbstractHttpRequest<PingResponse> {
         try{
             result = !TextUtils.isEmpty(getResponse().getName());
         }
-        catch (WebServiceException e){
+        catch (Exception e){
             result = false;
         }
 

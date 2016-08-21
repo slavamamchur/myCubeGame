@@ -133,12 +133,15 @@ public class RestApiService extends IntentService {
 
     private void handleActionLogin(String userName, String userPass) {
         AuthToken response;
+        String message = "";
+
         try {
             response = new LoginRequest(userName, userPass, this).doLogin();
         }
         catch (WebServiceException e) {
             //TODO: return error object
             response = new AuthToken((String)null);
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
 
         Bundle params = new Bundle();
