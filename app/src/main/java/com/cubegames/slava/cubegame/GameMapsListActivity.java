@@ -14,11 +14,11 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
         return ACTION_GET_GAME_MAP_LIST;
     }
     @Override
-    protected String getResponseAction() {
+    protected String getListResponseAction() {
         return ACTION_GAME_MAP_LIST_RESPONSE;
     }
     @Override
-    protected String getResponseExtra() {
+    protected String getListResponseExtra() {
         return EXTRA_GAME_MAP_LIST;
     }
     @Override
@@ -26,7 +26,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
         return EXTRA_GAME_MAP_OBJECT;
     }
     @Override
-    protected Class<?> getActivityClass() {
+    protected Class<?> getDetailsActivityClass() {
         return GameMapActivity.class;
     }
     @Override

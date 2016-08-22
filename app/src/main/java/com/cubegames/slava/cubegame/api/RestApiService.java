@@ -19,7 +19,9 @@ public class RestApiService extends IntentService {
     private final String TAG = "RestApiService";
 
     public static final String ACTION_LOGIN = "com.cubegames.slava.cubegame.api.action.LOGIN";
+    public static final String ACTION_RELOGIN = "com.cubegames.slava.cubegame.api.action.RELOGIN";
     public static final String ACTION_LOGIN_RESPONSE = "com.cubegames.slava.cubegame.api.action.LOGIN_RESPONSE";
+    public static final String ACTION_RELOGIN_RESPONSE = "com.cubegames.slava.cubegame.api.action.RELOGIN_RESPONSE";
     public static final String ACTION_REGISTRATION = "com.cubegames.slava.cubegame.api.action.REGISTRATION";
     public static final String ACTION_REGISTRATION_RESPONSE = "com.cubegames.slava.cubegame.api.action.REGISTRATION_RESPONSE";
     public static final String ACTION_PING = "com.cubegames.slava.cubegame.api.action.PING";
@@ -55,6 +57,14 @@ public class RestApiService extends IntentService {
     public static void startActionLogin(Context context, String userName, String userPass) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_LOGIN);
+        intent.putExtra(EXTRA_USER_NAME, userName);
+        intent.putExtra(EXTRA_USER_PASS, userPass);
+        context.startService(intent);
+    }
+
+    public static void startActionRelogin(Context context, String userName, String userPass) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_RELOGIN);
         intent.putExtra(EXTRA_USER_NAME, userName);
         intent.putExtra(EXTRA_USER_PASS, userPass);
         context.startService(intent);
@@ -96,6 +106,11 @@ public class RestApiService extends IntentService {
                 final String userName = intent.getStringExtra(EXTRA_USER_NAME);
                 final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
                 handleActionLogin(userName, userPass);
+            }
+            if (ACTION_RELOGIN.equals(action)) {
+                final String userName = intent.getStringExtra(EXTRA_USER_NAME);
+                final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
+                handleActionRelogin(userName, userPass);
             }
             else if (ACTION_REGISTRATION.equals(action)) {
                 final UserEntity params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
@@ -147,6 +162,24 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
         sendResponseIntent(ACTION_LOGIN_RESPONSE, params);
+    }
+
+    private void handleActionRelogin(String userName, String userPass) {
+        AuthToken response;
+        String message = "";
+
+        try {
+            response = new LoginRequest(userName, userPass, this).doLogin();
+        }
+        catch (WebServiceException e) {
+            //TODO: return error object
+            response = new AuthToken((String)null);
+            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+        }
+
+        Bundle params = new Bundle();
+        params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
+        sendResponseIntent(ACTION_RELOGIN_RESPONSE, params);
     }
 
     private void handleActionRegistration(UserEntity regParams) {

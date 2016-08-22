@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,11 +18,19 @@ import com.cubegames.slava.cubegame.model.AuthToken;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
-    private BroadcastReceiver mPingBroadcastReceiver = null;
-    private BroadcastReceiver mLoginBroadcastReceiver = null;
+    private BroadcastReceiver mBaseBroadcastReceiver = null;
     private ProgressDialog progressDialog = null;
-
+    private final Handler mAlertHandler = new Handler();
     private boolean isFirstResume;
+
+    protected void showAlert(final AlertDialog dialog){
+        mAlertHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                 dialog.show();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -53,46 +63,57 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     protected void registerRestApiResponseReceivers() {
-        mPingBroadcastReceiver = new BroadcastReceiver() {
+        mBaseBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 hideProgress();
 
-                if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false))
-                    if (!SettingsManager.getInstance(getApplicationContext()).isStayLoggedIn()) {
-                        doLogout();
-                    }
-                    else
-                        doRelogin();
+                handleWebServiceResponseAction(context, intent);
             }
         };
 
+        registerReceiver(mBaseBroadcastReceiver, getIntentFilter());
+    }
+
+    protected void unregisterRestApiResponseReceivers() {
+        unregisterReceiver(mBaseBroadcastReceiver);
+    }
+
+    protected IntentFilter getIntentFilter(){
         IntentFilter intentFilter = new IntentFilter(RestApiService.ACTION_PING_RESPONSE);
+        intentFilter.addAction(RestApiService.ACTION_RELOGIN_RESPONSE);
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mPingBroadcastReceiver, intentFilter);
 
+        return intentFilter;
+    }
 
-        mLoginBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                hideProgress();
-
-                AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
-                if (response.getId() != null)
-                    SettingsManager.getInstance(getApplicationContext()).setAuthToken(response.getId());
-                else
+    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
+        if (intent.getAction().equals(RestApiService.ACTION_PING_RESPONSE)) {
+            if (!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false))
+                if (!SettingsManager.getInstance(context.getApplicationContext()).isStayLoggedIn()) {
                     doLogout();
-            }
-        };
-        intentFilter = new IntentFilter(RestApiService.ACTION_LOGIN_RESPONSE);
-        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mLoginBroadcastReceiver, intentFilter);
+                } else
+                    doRelogin();
+
+            return true;
+        }
+        else if (intent.getAction().equals(RestApiService.ACTION_RELOGIN_RESPONSE)) {
+            AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+            if (response.getId() != null)
+                SettingsManager.getInstance(context.getApplicationContext()).setAuthToken(response.getId());
+            else
+                doLogout();
+
+            return true;
+        }
+        else
+            return false;
     }
 
     private void doRelogin(){
         showProgress();
 
-        RestApiService.startActionLogin(getApplicationContext(), SettingsManager.getInstance(getApplicationContext()).getUserName(),
+        RestApiService.startActionRelogin(getApplicationContext(), SettingsManager.getInstance(getApplicationContext()).getUserName(),
                 SettingsManager.getInstance(getApplicationContext()).getUserPass());
     }
 
@@ -101,8 +122,20 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
 
         isFirstResume = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         registerRestApiResponseReceivers();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterRestApiResponseReceivers();
+
+        super.onPause();
     }
 
     @Override
@@ -117,16 +150,14 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(mPingBroadcastReceiver);
-        unregisterReceiver(mLoginBroadcastReceiver);
-
-        super.onDestroy();
+    protected void showProgress(){
+        showProgress(R.string.progress_text);
     }
 
-    protected void showProgress(){
+    protected void showProgress(int messageID){
         progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(R.string.progress_title);
+        progressDialog.setMessage(getResources().getString(messageID));
         progressDialog.show();
     }
 

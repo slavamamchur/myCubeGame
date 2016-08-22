@@ -9,11 +9,11 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
         return RestApiService.ACTION_GET_GAME_INSTANCE_LIST;
     }
     @Override
-    protected String getResponseAction() {
+    protected String getListResponseAction() {
         return RestApiService.ACTION_GAME_INSTANCE_LIST_RESPONSE;
     }
     @Override
-    protected String getResponseExtra() {
+    protected String getListResponseExtra() {
         return RestApiService.EXTRA_GAME_INSTANCE_LIST;
     }
     @Override
@@ -21,7 +21,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
         return RestApiService.EXTRA_GAME_INSTANCE;
     }
     @Override
-    protected Class<?> getActivityClass() {
+    protected Class<?> getDetailsActivityClass() {
         return GameMapActivity.class;
     }
     @Override

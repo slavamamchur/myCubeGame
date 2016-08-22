@@ -4,10 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -32,7 +33,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.AuthToken;
@@ -51,8 +51,6 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    private BroadcastReceiver mLoginBroadcastReceiver = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -73,8 +71,6 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-
-        registerRestApiResponseReceivers();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -119,28 +115,29 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     }
 
     @Override
-    protected void registerRestApiResponseReceivers() {
-        super.registerRestApiResponseReceivers();
+    protected IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = super.getIntentFilter();
+        intentFilter.addAction(RestApiService.ACTION_LOGIN_RESPONSE);
 
-        mLoginBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                showProgress(false);
+        return intentFilter;
+    }
 
-                //TODO: process error object
-                AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
-                if (response.getId() != null) {
-                    SettingsManager.getInstance(getApplicationContext()).setAuthToken(response.getId());
-                    SettingsManager.getInstance(getApplicationContext()).setUserName(mEmailView.getText().toString());
-                    SettingsManager.getInstance(getApplicationContext()).setUserPass(mPasswordView.getText().toString());
+    @Override
+    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
+        if (intent.getAction().equals(RestApiService.ACTION_LOGIN_RESPONSE)){
+            //TODO: process error object
+            AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+            if (response.getId() != null) {
+                SettingsManager.getInstance(getApplicationContext()).setAuthToken(response.getId());
+                SettingsManager.getInstance(getApplicationContext()).setUserName(mEmailView.getText().toString());
+                SettingsManager.getInstance(getApplicationContext()).setUserPass(mPasswordView.getText().toString());
 
-                    Intent mintent = new Intent(getApplicationContext(), GameMapsListActivity.class);
-                    startActivity(mintent);
+                Intent mintent = new Intent(getApplicationContext(), GameMapsListActivity.class);
+                startActivity(mintent);
 
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Invalid password or user name.\nPlease try again.", Toast.LENGTH_LONG).show();
-                    /*AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                finish();
+            } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("Invalid password or user name.\nPlease try again.")
                             .setTitle(R.string.login_error_title);
                     builder.setPositiveButton(R.string.pos_btn_caption, new DialogInterface.OnClickListener() {
@@ -150,20 +147,13 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
                     });
 
                     AlertDialog dialog = builder.create();
-                    dialog.show();*/
-                }
+                    showAlert(dialog);
             }
-        };
-        IntentFilter intentFilter = new IntentFilter(RestApiService.ACTION_LOGIN_RESPONSE);
-        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mLoginBroadcastReceiver, intentFilter);
-    }
 
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(mLoginBroadcastReceiver);
-
-        super.onDestroy();
+            return true;
+        }
+        else
+            return super.handleWebServiceResponseAction(context, intent);
     }
 
     private void populateAutoComplete() {
@@ -260,7 +250,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 
-            showProgress(true);
+            showProgress(R.id.login_progress);
             RestApiService.startActionLogin(getApplicationContext(), email, password);
         }
     }

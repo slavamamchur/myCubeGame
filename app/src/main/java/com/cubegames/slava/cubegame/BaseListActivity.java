@@ -1,11 +1,13 @@
 package com.cubegames.slava.cubegame;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
     private ArrayList<T> items = new ArrayList<>();
     private ListView listView;
-    private BroadcastReceiver mGetListBroadcastReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,11 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             }
         });
         listView.setOnItemClickListener(getOnItemClickListener());
+    }
 
-        registerRestApiResponseReceivers();
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
         showProgress();
 
@@ -59,28 +63,23 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     }
 
     @Override
-    protected void onDestroy() {
-        unregisterReceiver(mGetListBroadcastReceiver);
+    protected IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = super.getIntentFilter();
+        intentFilter.addAction(getListResponseAction());
 
-        super.onDestroy();
+        return intentFilter;
     }
 
     @Override
-    protected void registerRestApiResponseReceivers() {
-        super.registerRestApiResponseReceivers();
+    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
+        if (intent.getAction().equals(getListResponseAction())){
+            ArrayList<T> lst  = intent.getParcelableArrayListExtra(getListResponseExtra());
+            setItems(lst);
 
-        mGetListBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                hideProgress();
-
-                ArrayList<T> lst  = intent.getParcelableArrayListExtra(getResponseExtra());
-                setItems(lst);
-            }
-        };
-        IntentFilter intentFilter = new IntentFilter(getResponseAction());
-        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mGetListBroadcastReceiver, intentFilter);
+            return true;
+        }
+        else
+            return super.handleWebServiceResponseAction(context, intent);
     }
 
     public ArrayList<T> getItems() {
@@ -97,10 +96,10 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     }
 
     protected abstract String getListAction();
-    protected abstract String getResponseAction();
-    protected abstract String getResponseExtra();
+    protected abstract String getListResponseAction();
+    protected abstract String getListResponseExtra();
     protected abstract String getEntityExtra();
-    protected abstract Class<?> getActivityClass();
+    protected abstract Class<?> getDetailsActivityClass();
 
     protected void getData(){
         RestApiService.startActionGetList(getApplicationContext(), getListAction());
@@ -111,7 +110,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             public void onItemClick(AdapterView<?> parentView, View childView, int position, long id) {
                 T item = getItems().get(position);
 
-                Intent intent = new Intent(getApplicationContext(), getActivityClass());
+                Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
                 intent.putExtra(getEntityExtra(), item);
                 startActivity(intent);
             }
@@ -122,5 +121,25 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected abstract int getCaptionResource();
     private void setCaption(int resourceID){
         setTitle(getResources().getString(resourceID));
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_sync).setVisible(true);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_sync:
+                showProgress();
+                getData();
+
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

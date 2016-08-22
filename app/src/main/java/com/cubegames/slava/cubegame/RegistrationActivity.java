@@ -1,6 +1,5 @@
 package com.cubegames.slava.cubegame;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,8 +16,10 @@ import android.widget.Toast;
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.UserEntity;
 
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_REGISTRATION_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_REGISTRATION_RESPONSE_TEXT;
+
 public class RegistrationActivity extends BaseActivityWithMenu {
-    private BroadcastReceiver mRegisterBroadcastReceiver = null;
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -41,20 +42,12 @@ public class RegistrationActivity extends BaseActivityWithMenu {
                 registerNewUser();
             }
         });
-
-        registerRestApiResponseReceivers();
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_logout).setVisible(false);
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(mRegisterBroadcastReceiver);
-        super.onDestroy();
     }
 
     private void setupActionBar() {
@@ -65,30 +58,31 @@ public class RegistrationActivity extends BaseActivityWithMenu {
     }
 
     @Override
-    protected void registerRestApiResponseReceivers() {
-        super.registerRestApiResponseReceivers();
+    protected IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = super.getIntentFilter();
+        intentFilter.addAction(ACTION_REGISTRATION_RESPONSE);
 
-        mRegisterBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                hideProgress();
+        return intentFilter;
+    }
 
-                String error = intent.getStringExtra(RestApiService.EXTRA_REGISTRATION_RESPONSE_TEXT);
-                if(!TextUtils.isEmpty(error)) {
-                    Toast.makeText(RegistrationActivity.this, error, Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(RegistrationActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                }
-
+    @Override
+    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
+        if (intent.getAction().equals(ACTION_REGISTRATION_RESPONSE)){
+            String error = intent.getStringExtra(EXTRA_REGISTRATION_RESPONSE_TEXT);
+            if(!TextUtils.isEmpty(error)) {
+                Toast.makeText(RegistrationActivity.this, error, Toast.LENGTH_LONG).show();
+                //todo:error processing
             }
-        };
-        IntentFilter updateIntentFilter = new IntentFilter(
-                RestApiService.ACTION_REGISTRATION_RESPONSE);
-        updateIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(mRegisterBroadcastReceiver, updateIntentFilter);
+            else {
+                Toast.makeText(RegistrationActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+
+            return true;
+        }
+        else
+            return super.handleWebServiceResponseAction(context, intent);
     }
 
     private void registerNewUser(){
