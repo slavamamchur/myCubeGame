@@ -10,6 +10,10 @@ public class ErrorEntity extends BasicResponse implements Parcelable {
 
 
     public ErrorEntity() {}
+    public ErrorEntity(String error, int errorCode) {
+        setError(error);
+        setErrorCode(errorCode);
+    }
     protected ErrorEntity(Parcel in) {
         loadFromParcel(in);
     }

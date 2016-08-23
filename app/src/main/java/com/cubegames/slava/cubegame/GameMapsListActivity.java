@@ -33,4 +33,20 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     protected int getCaptionResource() {
         return R.string.game_map_list_title;
     }
+    @Override
+    protected int getListItemViewID() {
+        return R.layout.map_list_item;
+    }
+    @Override
+    protected int getListItemTextID() {
+        return R.id.map_name_text;
+    }
+    @Override
+    protected int getListItemDeleteBtnID() {
+        return R.id.delete_btn;
+    }
+    @Override
+    protected int getListItemUserActionBtnID() {
+        return R.id.new_game_btn;
+    }
 }

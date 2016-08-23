@@ -122,7 +122,8 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     }
 
     public void delete(BasicNamedDbEntity entity)  throws WebServiceException {
-        sendRequestWithParams(URL_DELETE, HttpMethod.DELETE, entity.getId());
+        RestTemplate restTemplate = getRestTemplate();
+        restTemplate.exchange(mUrl + URL_DELETE, HttpMethod.DELETE, getHttpEntity(), ErrorEntity.class, entity.getId());
     }
 
     public Collection getResponseList()  throws WebServiceException {

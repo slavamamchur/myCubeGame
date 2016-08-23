@@ -1,8 +1,11 @@
 package com.cubegames.slava.cubegame.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cubegames.slava.cubegame.api.AbstractHttpRequest;
+import com.cubegames.slava.cubegame.api.GameMapController;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP;
@@ -78,4 +81,9 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
     }
 
     public static String ACTION_NAME =  URL_GAME_MAP;
+
+    @Override
+    public AbstractHttpRequest getController(Context ctx) {
+        return new GameMapController(ctx);
+    }
 }

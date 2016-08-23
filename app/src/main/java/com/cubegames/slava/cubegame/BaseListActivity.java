@@ -10,15 +10,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
 
 import java.util.ArrayList;
+
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_DELETE_ENTITY_RESPONSE;
 
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
     private ArrayList<T> items = new ArrayList<>();
@@ -33,25 +36,85 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         setCaption(getCaptionResource());
 
         listView = (ListView) this.findViewById(R.id.list_view);
-        listView.setAdapter(new ArrayAdapter<T>(this, android.R.layout.simple_list_item_1, getItems()){
+        listView.setAdapter(new ArrayAdapter<T>(this, getListItemViewID(), getItems()){
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                View view = convertView;
+                View row = convertView;
+                ItemHolder holder;
 
-                if (view == null) {
+                if (row == null) {
                     LayoutInflater layoutInflater = LayoutInflater.from(BaseListActivity.this);
-                    view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+                    row = layoutInflater.inflate(getListItemViewID(), parent, false);
+
+                    holder = new ItemHolder();
+                    holder.textName = (TextView) row.findViewById(getListItemTextID());
+                    if(getListItemDeleteBtnID() >= 0){
+                        holder.btnDelete = (Button) row.findViewById(getListItemDeleteBtnID());
+                    }
+                    if(getListItemUserActionBtnID() >= 0){
+                        holder.btnUserAction = (Button) row.findViewById(getListItemUserActionBtnID());
+                    }
+
+                    row.setTag(holder);
+                }
+                else {
+                    holder = (ItemHolder) row.getTag();
                 }
 
-                TextView text = (TextView) view.findViewById(android.R.id.text1);
-                text.setText(getItem(position).getName());
+                final T item  = getItem(position);
+                holder.textName.setText(item.getName());
+                holder.textName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
+                        intent.putExtra(getEntityExtra(), item);
+                        startActivity(intent);
+                    }
+                });
+                //todo:enabled by created user
+                if (holder.btnDelete != null){
+                    holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showProgress();
+                            RestApiService.startActionDeleteEntity(getApplicationContext(), item);
+                        }
+                    });
+                }
+                if (holder.btnUserAction != null){
+                    holder.btnUserAction.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            doUserAction(item);
+                        }
+                    });
+                }
 
-                return view;
+                return row;
+            }
+
+            class ItemHolder {
+                TextView textName;
+                Button btnUserAction = null;
+                Button btnDelete = null;
             }
         });
-        listView.setOnItemClickListener(getOnItemClickListener());
     }
+
+    protected int getListItemViewID(){
+        return android.R.layout.simple_list_item_1;
+    }
+    protected int getListItemTextID(){
+        return android.R.id.text1;
+    }
+    protected int getListItemDeleteBtnID(){
+        return -1;
+    }
+    protected int getListItemUserActionBtnID(){
+        return -1;
+    }
+    protected void doUserAction(BasicNamedDbEntity item){}
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +128,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
+        intentFilter.addAction(ACTION_DELETE_ENTITY_RESPONSE);
         intentFilter.addAction(getListResponseAction());
 
         return intentFilter;
@@ -75,6 +139,18 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         if (intent.getAction().equals(getListResponseAction())){
             ArrayList<T> lst  = intent.getParcelableArrayListExtra(getListResponseExtra());
             setItems(lst);
+
+            return true;
+        }
+        else if (intent.getAction().equals(ACTION_DELETE_ENTITY_RESPONSE)){
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            if (error == null){
+                showProgress();
+                getData();
+            }
+            else {
+                //todo: error message
+            }
 
             return true;
         }
@@ -103,19 +179,6 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
     protected void getData(){
         RestApiService.startActionGetList(getApplicationContext(), getListAction());
-    }
-
-    protected AdapterView.OnItemClickListener getOnItemClickListener() {
-        return new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parentView, View childView, int position, long id) {
-                T item = getItems().get(position);
-
-                Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                intent.putExtra(getEntityExtra(), item);
-                startActivity(intent);
-            }
-        };
-
     }
 
     protected abstract int getCaptionResource();

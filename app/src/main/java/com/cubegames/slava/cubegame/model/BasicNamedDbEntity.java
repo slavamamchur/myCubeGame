@@ -1,8 +1,10 @@
 package com.cubegames.slava.cubegame.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cubegames.slava.cubegame.api.AbstractHttpRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
@@ -57,5 +59,9 @@ public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
     public static String ACTION_NAME = "";
     public String getActionName(){
         return ACTION_NAME;
+    }
+
+    public AbstractHttpRequest getController(Context ctx){
+        return null;
     }
 }
