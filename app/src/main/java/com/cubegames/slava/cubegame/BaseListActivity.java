@@ -41,70 +41,38 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View row = convertView;
-                ItemHolder holder;
+                ListItemHolder holder;
+                final T item  = position == 0 ? null : getItem(position);
 
                 if (row == null) {
+                    holder = createHolder();
                     LayoutInflater layoutInflater = LayoutInflater.from(BaseListActivity.this);
-                    row = layoutInflater.inflate(getListItemViewID(), parent, false);
-
-                    holder = new ItemHolder();
-                    holder.textName = (TextView) row.findViewById(getListItemTextID());
-                    if(getListItemDeleteBtnID() >= 0){
-                        holder.btnDelete = (Button) row.findViewById(getListItemDeleteBtnID());
-                    }
-                    if(getListItemUserActionBtnID() >= 0){
-                        holder.btnUserAction = (Button) row.findViewById(getListItemUserActionBtnID());
+                    if (position == 0)
+                        row = layoutInflater.inflate( getListHeaderID(), parent, false);
+                    else {
+                        row = layoutInflater.inflate(getListItemViewID(), parent, false);
+                        initHolder(row, holder, item);
                     }
 
                     row.setTag(holder);
                 }
                 else {
-                    holder = (ItemHolder) row.getTag();
+                    holder = (ListItemHolder) row.getTag();
                 }
 
-                final T item  = getItem(position);
-                holder.textName.setText(item.getName());
-                holder.textName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                        intent.putExtra(getEntityExtra(), item);
-                        startActivity(intent);
-                    }
-                });
-                //todo:enabled by created user
-                if (holder.btnDelete != null){
-                    holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            showProgress();
-                            RestApiService.startActionDeleteEntity(getApplicationContext(), item);
-                        }
-                    });
-                }
-                if (holder.btnUserAction != null){
-                    holder.btnUserAction.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            doUserAction(item);
-                        }
-                    });
-                }
+                if (position > 0)
+                    fillHolder(holder, item);
 
                 return row;
             }
 
-            class ItemHolder {
-                TextView textName;
-                Button btnUserAction = null;
-                Button btnDelete = null;
-            }
         });
     }
 
     protected int getListItemViewID(){
         return android.R.layout.simple_list_item_1;
     }
+    protected int getListHeaderID(){ return -1;}
     protected int getListItemTextID(){
         return android.R.id.text1;
     }
@@ -115,6 +83,49 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         return -1;
     }
     protected void doUserAction(BasicNamedDbEntity item){}
+    protected ListItemHolder createHolder(){
+        return new ListItemHolder();
+    }
+    protected void initHolder(View row, ListItemHolder holder, final T item){
+        holder.textName = (TextView) row.findViewById(getListItemTextID());
+
+        if(getListItemDeleteBtnID() >= 0){
+            holder.btnDelete = (Button) row.findViewById(getListItemDeleteBtnID());
+        }
+        if(getListItemUserActionBtnID() >= 0){
+            holder.btnUserAction = (Button) row.findViewById(getListItemUserActionBtnID());
+        }
+
+        holder.textName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
+                intent.putExtra(getEntityExtra(), item);
+                startActivity(intent);
+            }
+        });
+        if (holder.btnDelete != null){
+            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showProgress();
+                    RestApiService.startActionDeleteEntity(getApplicationContext(), item);
+                }
+            });
+            holder.btnDelete.setEnabled(item.getTenantId() != null);
+        }
+        if (holder.btnUserAction != null){
+            holder.btnUserAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    doUserAction(item);
+                }
+            });
+        }
+    }
+    protected  void fillHolder(ListItemHolder holder, final T item){
+        holder.textName.setText(item.getName());
+    }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -163,7 +174,10 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     }
 
     public void setItems(ArrayList<T> items) {
-        this.items = items;
+        this.items  = new ArrayList<>();
+        if (items.size() > 0)
+            this.items.add(items.get(0));
+        this.items.addAll(items);
 
         ArrayAdapter adapter = (ArrayAdapter) listView.getAdapter();
         adapter.clear();
@@ -176,6 +190,8 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected abstract String getListResponseExtra();
     protected abstract String getEntityExtra();
     protected abstract Class<?> getDetailsActivityClass();
+    protected abstract T getNewItem();
+    protected abstract String getNewItemActionName();
 
     protected void getData(){
         RestApiService.startActionGetList(getApplicationContext(), getListAction());
@@ -189,6 +205,8 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_sync).setVisible(true);
+        menu.findItem(R.id.action_new).setVisible(getNewItemActionName() != null);
+        menu.findItem(R.id.action_new).setTitle(getNewItemActionName());
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -199,6 +217,12 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             case R.id.action_sync:
                 showProgress();
                 getData();
+
+                return true;
+            case R.id.action_new:
+                Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
+                intent.putExtra(getEntityExtra(), getNewItem());
+                startActivity(intent);
 
                 return true;
         }

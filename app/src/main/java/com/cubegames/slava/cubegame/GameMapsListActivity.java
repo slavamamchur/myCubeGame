@@ -49,4 +49,20 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     protected int getListItemUserActionBtnID() {
         return R.id.new_game_btn;
     }
+
+    @Override
+    protected int getListHeaderID() {
+        return R.layout.map_list_header;
+    }
+
+    @Override
+    protected GameMap getNewItem() {
+        return new GameMap();
+    }
+    @Override
+    protected String getNewItemActionName() {
+        return getString(R.string.add_new_map_caption);
+    }
+
+    //todo: implement list columns
 }

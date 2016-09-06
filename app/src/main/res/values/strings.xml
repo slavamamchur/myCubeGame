@@ -84,5 +84,6 @@
     <string name="title_activity_base_activity_with_menu">Cube Game</string>
     <string name="login_error_title">Login Error</string>
     <string name="pos_btn_caption">OK</string>
+    <string name="add_new_map_caption">Add new Map</string>
 
 </resources>

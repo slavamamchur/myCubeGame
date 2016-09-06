@@ -30,6 +30,7 @@ public class GameMapActivity extends BaseActivityWithMenu {
         super.onPostCreate(savedInstanceState);
 
         GameMap map = getIntent().getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
+        //todo: new map
         if(map != null){
             setTitle(map.getName());
             showProgress();

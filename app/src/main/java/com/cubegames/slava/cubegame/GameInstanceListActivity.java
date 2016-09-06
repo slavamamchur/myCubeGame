@@ -28,4 +28,16 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     protected int getCaptionResource() {
         return R.string.game_map_list_title;
     }
+
+    @Override
+    protected GameInstance getNewItem() {
+        return null;
+        //todo: implement
+    }
+
+    @Override
+    protected String getNewItemActionName() {
+        return null;
+        //todo: implement
+    }
 }
