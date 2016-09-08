@@ -9,7 +9,13 @@
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_new"
-        android:icon="@android:drawable/ic_input_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/action_save"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="Save"
         android:visible="false"
         app:showAsAction="always|withText"/>
     <item android:id="@+id/menu_settings"

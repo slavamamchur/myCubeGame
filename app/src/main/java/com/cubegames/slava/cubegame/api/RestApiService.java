@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.BasicEntity;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.DbPlayer;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
@@ -40,6 +41,8 @@ public class RestApiService extends IntentService {
     public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
     public static final String ACTION_DELETE_ENTITY = "com.cubegames.slava.cubegame.api.action.DELETE_ENTITY";
     public static final String ACTION_DELETE_ENTITY_RESPONSE = "com.cubegames.slava.cubegame.api.action.DELETE_ENTITY_RESPONSE";
+    public static final String ACTION_SAVE_ENTITY = "com.cubegames.slava.cubegame.api.action.SAVE_ENTITY";
+    public static final String ACTION_SAVE_ENTITY_RESPONSE = "com.cubegames.slava.cubegame.api.action.SAVE_ENTITY_RESPONSE";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -112,6 +115,14 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionSaveEntity(Context context, BasicNamedDbEntity item) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_SAVE_ENTITY);
+        intent.putExtra(EXTRA_ENTITY_OBJECT, item);
+
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -152,6 +163,10 @@ public class RestApiService extends IntentService {
             else if (ACTION_DELETE_ENTITY.equals(action)) {
                 final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionDeleteEntity(item);
+            }
+            else if (ACTION_SAVE_ENTITY.equals(action)) {
+                final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                handleActionSaveEntity(item);
             }
         }
     }
@@ -321,5 +336,24 @@ public class RestApiService extends IntentService {
             params.putParcelable(EXTRA_ERROR_OBJECT, error);
 
         sendResponseIntent(ACTION_DELETE_ENTITY_RESPONSE, params);
+    }
+
+    private void handleActionSaveEntity(BasicNamedDbEntity item) {
+        ErrorEntity error = null;
+        BasicEntity result = null;
+        try {
+            result = item.getController(getApplicationContext()).update(item);
+        }
+        catch (WebServiceException e) {
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+
+        Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+        else
+            params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
+
+        sendResponseIntent(ACTION_SAVE_ENTITY_RESPONSE, params);
     }
 }

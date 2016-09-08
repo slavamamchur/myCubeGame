@@ -113,12 +113,11 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         return getResponse(URL_FIND, id);
     }
 
-    public void create(BasicNamedDbEntity entity)  throws WebServiceException {
-        sendPostRequest(URL_CREATE, entity);
-    }
+    public T update(BasicNamedDbEntity entity)  throws WebServiceException {
+        RestTemplate restTemplate = getRestTemplate();
 
-    public void update(BasicNamedDbEntity entity)  throws WebServiceException {
-        sendPostRequest(URL_UPDATE, entity);
+        return restTemplate.exchange(mUrl + (entity.getId() != null ? URL_UPDATE : URL_CREATE),
+                HttpMethod.POST, getHttpEntity(entity), mResponseType).getBody();
     }
 
     public void delete(BasicNamedDbEntity entity)  throws WebServiceException {

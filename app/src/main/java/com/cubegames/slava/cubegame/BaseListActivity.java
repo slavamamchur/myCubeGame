@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import com.cubegames.slava.cubegame.model.ErrorEntity;
 import java.util.ArrayList;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_DELETE_ENTITY_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
 
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
     private ArrayList<T> items = new ArrayList<>();
@@ -140,6 +142,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
         intentFilter.addAction(ACTION_DELETE_ENTITY_RESPONSE);
+        intentFilter.addAction(ACTION_SAVE_ENTITY_RESPONSE);
         intentFilter.addAction(getListResponseAction());
 
         return intentFilter;
@@ -160,13 +163,36 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                 getData();
             }
             else {
-                //todo: error message
+                showError(error);
+            }
+
+            return true;
+        }
+        else if (intent.getAction().equals(ACTION_SAVE_ENTITY_RESPONSE)){
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            if (error == null){
+                Intent mIntent = new Intent(getApplicationContext(), getDetailsActivityClass());
+                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT));
+                startActivity(mIntent);
+            }
+            else {
+                showError(error);
             }
 
             return true;
         }
         else
             return super.handleWebServiceResponseAction(context, intent);
+    }
+
+    protected void showError(ErrorEntity error){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(error.getError())
+                .setTitle(R.string.error_title);
+        builder.setPositiveButton(R.string.pos_btn_caption, null);
+
+        AlertDialog dialog = builder.create();
+        showAlert(dialog);
     }
 
     public ArrayList<T> getItems() {
@@ -220,13 +246,20 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
                 return true;
             case R.id.action_new:
-                Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                intent.putExtra(getEntityExtra(), getNewItem());
-                startActivity(intent);
-
+                new InputNameDialogFragment().show(getSupportFragmentManager(),
+                        "new_entity");
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void createEntity(String entityName){
+        showProgress();
+
+        T newItem = getNewItem();
+        newItem.setName(entityName);
+
+        RestApiService.startActionSaveEntity(getApplicationContext(), newItem);
     }
 }

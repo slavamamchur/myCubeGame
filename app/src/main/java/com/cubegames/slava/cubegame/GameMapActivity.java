@@ -16,8 +16,9 @@ import com.cubegames.slava.cubegame.model.GameMap;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
-public class GameMapActivity extends BaseActivityWithMenu {
+public class GameMapActivity extends BaseItemDetailsActivity<GameMap> {
 
+    //todo: implement UI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,12 +30,11 @@ public class GameMapActivity extends BaseActivityWithMenu {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        GameMap map = getIntent().getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
-        //todo: new map
-        if(map != null){
-            setTitle(map.getName());
+        setTitle(getString(R.string.edit_map_caption));
+
+        if(getItem() != null && getItem().getId() != null){
             showProgress();
-            RestApiService.startActionGetMapImage(getApplicationContext(), map);
+            RestApiService.startActionGetMapImage(getApplicationContext(), getItem());
         }
     }
 
@@ -65,4 +65,8 @@ public class GameMapActivity extends BaseActivityWithMenu {
             return super.handleWebServiceResponseAction(context, intent);
     }
 
+    @Override
+    protected String getItemExtra() {
+        return EXTRA_GAME_MAP_OBJECT;
+    }
 }
