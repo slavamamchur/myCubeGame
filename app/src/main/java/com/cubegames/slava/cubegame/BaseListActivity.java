@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +21,8 @@ import com.cubegames.slava.cubegame.model.ErrorEntity;
 
 import java.util.ArrayList;
 
+import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EDITOR_REQUEST;
+import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EDITOR_RESULT_OK;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_DELETE_ENTITY_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
 
@@ -94,9 +95,13 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         if(getListItemDeleteBtnID() >= 0){
             holder.btnDelete = (Button) row.findViewById(getListItemDeleteBtnID());
         }
+
         if(getListItemUserActionBtnID() >= 0){
             holder.btnUserAction = (Button) row.findViewById(getListItemUserActionBtnID());
         }
+    }
+    protected  void fillHolder(ListItemHolder holder, final T item){
+        holder.textName.setText(item.getName());
 
         holder.textName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,9 +129,6 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                 }
             });
         }
-    }
-    protected  void fillHolder(ListItemHolder holder, final T item){
-        holder.textName.setText(item.getName());
     }
 
     @Override
@@ -173,7 +175,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             if (error == null){
                 Intent mIntent = new Intent(getApplicationContext(), getDetailsActivityClass());
                 mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT));
-                startActivity(mIntent);
+                startActivityForResult(mIntent, EDITOR_REQUEST);
             }
             else {
                 showError(error);
@@ -185,14 +187,12 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             return super.handleWebServiceResponseAction(context, intent);
     }
 
-    protected void showError(ErrorEntity error){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(error.getError())
-                .setTitle(R.string.error_title);
-        builder.setPositiveButton(R.string.pos_btn_caption, null);
-
-        AlertDialog dialog = builder.create();
-        showAlert(dialog);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == EDITOR_RESULT_OK){
+            //showProgress();
+            getData();
+        }
     }
 
     public ArrayList<T> getItems() {

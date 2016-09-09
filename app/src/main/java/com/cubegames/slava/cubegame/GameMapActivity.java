@@ -8,9 +8,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
@@ -49,14 +49,18 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMap> {
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_MAP_IMAGE_RESPONSE)){
-            GameMap response = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
-            if (response.getBinaryData() != null) {
-                Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(), 0, response.getBinaryData().length);
-                ImageView mMapView = (ImageView) findViewById(R.id.map_image);
-                mMapView.setImageBitmap(mapImage);
-                mMapView.invalidate();
-            } else {
-                Toast.makeText(this, "Can not download image.", Toast.LENGTH_LONG).show();
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            if (error == null) {
+                GameMap response = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
+                if (response.getBinaryData() != null) {
+                    Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(), 0, response.getBinaryData().length);
+                    ImageView mMapView = (ImageView) findViewById(R.id.map_image);
+                    mMapView.setImageBitmap(mapImage);
+                    mMapView.invalidate();
+                }
+            }
+            else {
+                showError(error);
             }
 
             return true;

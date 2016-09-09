@@ -22,6 +22,9 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     private boolean itemChanged = false;
     private T item;
 
+    public static int EDITOR_REQUEST = 1;
+    public static int EDITOR_RESULT_OK = 1;
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -55,8 +58,10 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     }
 
     private void doExit(){
-        if (!isItemChanged())
+        if (!isItemChanged()) {
+            setResult(EDITOR_RESULT_OK);
             finish();
+        }
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.save_confirm_text)
@@ -68,6 +73,7 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
             });
             builder.setNegativeButton(R.string.no_btn_caption, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    setResult(EDITOR_RESULT_OK);
                     finish();
                 }
             });
@@ -96,7 +102,6 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        //todo: error and create
         if (intent.getAction().equals(ACTION_SAVE_ENTITY_RESPONSE)){
             item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
 

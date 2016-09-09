@@ -7,7 +7,9 @@ import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.BasicEntity;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
+import com.cubegames.slava.cubegame.model.IdResponse;
 import com.cubegames.slava.cubegame.model.MyCollectionResponse;
+import com.cubegames.slava.cubegame.model.NamePostPram;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -116,8 +118,12 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     public T update(BasicNamedDbEntity entity)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        return restTemplate.exchange(mUrl + (entity.getId() != null ? URL_UPDATE : URL_CREATE),
-                HttpMethod.POST, getHttpEntity(entity), mResponseType).getBody();
+        NamePostPram en = new NamePostPram();
+        en.setName(entity.getName());
+        IdResponse res = restTemplate.exchange(mUrl + (entity.getId() != null ? URL_UPDATE : URL_CREATE),
+                HttpMethod.POST, getHttpEntity(en), IdResponse.class).getBody();
+        entity.setId(res.getId());
+        return (T) entity;
     }
 
     public void delete(BasicNamedDbEntity entity)  throws WebServiceException {
@@ -175,6 +181,7 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         restTemplate.setErrorHandler(new CustomResponseErrorHandler());
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        //restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
         return restTemplate;
     }

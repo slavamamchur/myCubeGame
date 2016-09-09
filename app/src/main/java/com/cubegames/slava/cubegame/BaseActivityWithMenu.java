@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
@@ -22,6 +23,16 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     private ProgressDialog progressDialog = null;
     private final Handler mAlertHandler = new Handler();
     private boolean isFirstResume;
+
+    protected void showError(ErrorEntity error){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(error.getError())
+                .setTitle(R.string.error_title);
+        builder.setPositiveButton(R.string.pos_btn_caption, null);
+
+        AlertDialog dialog = builder.create();
+        showAlert(dialog);
+    }
 
     protected void showAlert(final AlertDialog dialog){
         mAlertHandler.post(new Runnable() {

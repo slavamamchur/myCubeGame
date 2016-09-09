@@ -304,18 +304,19 @@ public class RestApiService extends IntentService {
 
     private void handleActionGetMapImage(GameMap map) {
         byte[] mapImage = null;
-        String message = "";
+        ErrorEntity error = null;
 
         try {
             mapImage = new GameMapController(this).getMapImage(map);
         }
         catch (WebServiceException e) {
-            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
         }
 
-        //todo: handle errors
         map.setBinaryData(mapImage);
         Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
         params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);
 
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
