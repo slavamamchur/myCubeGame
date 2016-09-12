@@ -18,6 +18,12 @@
         android:title="Save"
         android:visible="false"
         app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/action_upload_file"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="Upload picture"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
     <item android:id="@+id/menu_settings"
           android:title="Settings"
           android:orderInCategory="1" />

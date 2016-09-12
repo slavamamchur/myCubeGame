@@ -36,7 +36,7 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
 
         item = getIntent().getParcelableExtra(getItemExtra());
 
-        setTitle(item.getName());
+        setTitle(item.getName() + "(ID: " + item.getId() + ")");
     }
 
     @Override

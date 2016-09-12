@@ -45,10 +45,10 @@ public class GameController extends AbstractHttpRequest<Game>{
     }
 
     public void removePoint(Game game, int index){
-        removeChild(game.getId(), AbstractGamePoint.getActionName(), index);
+        removeChild(game.getId(), AbstractGamePoint.urlForActionName(), index);
     }
 
     public void addPoint(Game game, NewPointRequest point){
-        addChild(game.getId(), AbstractGamePoint.getActionName(), point);
+        addChild(game.getId(), AbstractGamePoint.urlForActionName(), point);
     }
 }

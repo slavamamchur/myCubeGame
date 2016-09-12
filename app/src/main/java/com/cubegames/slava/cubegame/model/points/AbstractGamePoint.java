@@ -88,7 +88,7 @@ public class AbstractGamePoint implements Parcelable{
         nextPointIndex = in.readInt();
     }
 
-    public static String getActionName(){
+    public static String urlForActionName(){
         return URL_GAME_POINT;
     }
 }

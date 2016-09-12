@@ -33,6 +33,7 @@ public class RestConst {
     // common URLs
     public static final String URL_COUNT = "/count";
     public static final String URL_CREATE = "/create";
+    public static final String URL_NEW = "/new";
     public static final String URL_FIND = "/find/{itemId}";
     public static final String URL_DELETE = "/delete/{itemId}";
     public static final String URL_UPDATE = "/update";

@@ -1,5 +1,8 @@
 package com.cubegames.slava.cubegame;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GAME_MAP_LIST_RESPONSE;
@@ -64,5 +67,21 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
         return getString(R.string.add_new_map_caption);
     }
 
-    //todo: implement list columns
+    @Override
+    protected ListItemHolder createHolder() {
+        return new MapItemHolder();
+    }
+    @Override
+    protected void initHolder(View row, ListItemHolder holder, GameMap item) {
+        super.initHolder(row, holder, item);
+
+        ((MapItemHolder) holder).textCreated = (TextView) row.findViewById(R.id.map_created_text);
+    }
+
+    @Override
+    protected void fillHolder(ListItemHolder holder, GameMap item) {
+        super.fillHolder(holder, item);
+
+        ((MapItemHolder) holder).textCreated.setText(Utils.formatDateTime(item.getCreatedDate()));
+    }
 }

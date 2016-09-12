@@ -7,9 +7,7 @@ import com.cubegames.slava.cubegame.SettingsManager;
 import com.cubegames.slava.cubegame.model.BasicEntity;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
-import com.cubegames.slava.cubegame.model.IdResponse;
 import com.cubegames.slava.cubegame.model.MyCollectionResponse;
-import com.cubegames.slava.cubegame.model.NamePostPram;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -31,10 +29,10 @@ import java.util.Map;
 import static com.cubegames.slava.cubegame.api.RestConst.NET_CONNECT_TIMEOUT_MILLIS;
 import static com.cubegames.slava.cubegame.api.RestConst.NET_READ_TIMEOUT_MILLIS;
 import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN;
-import static com.cubegames.slava.cubegame.api.RestConst.URL_CREATE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_DELETE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_FIND;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
+import static com.cubegames.slava.cubegame.api.RestConst.URL_NEW;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_UPDATE;
 
 public abstract class AbstractHttpRequest<T extends BasicEntity>{
@@ -43,18 +41,6 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     protected Class<T> mResponseType;
     protected final HttpMethod mHttpMethod;
     protected final Context ctx;
-
-    /*@JsonIgnoreProperties(ignoreUnknown = true)
-    public class CollectionResponse extends MyCollectionResponse<T>{
-        private Collection<T> collection;
-
-        public Collection<T> getCollection() {
-            return collection;
-        }
-        public void setCollection(Collection<T> collection) {
-            this.collection = collection;
-        }
-    }*/
 
     protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod, Context ctx) {
         this.ctx = ctx;
@@ -118,12 +104,9 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     public T update(BasicNamedDbEntity entity)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        NamePostPram en = new NamePostPram();
-        en.setName(entity.getName());
-        IdResponse res = restTemplate.exchange(mUrl + (entity.getId() != null ? URL_UPDATE : URL_CREATE),
-                HttpMethod.POST, getHttpEntity(en), IdResponse.class).getBody();
-        entity.setId(res.getId());
-        return (T) entity;
+        T res = restTemplate.exchange(mUrl + (entity.getId() != null ? URL_UPDATE : URL_NEW),
+                HttpMethod.POST, getHttpEntity(entity), mResponseType).getBody();
+        return res;
     }
 
     public void delete(BasicNamedDbEntity entity)  throws WebServiceException {

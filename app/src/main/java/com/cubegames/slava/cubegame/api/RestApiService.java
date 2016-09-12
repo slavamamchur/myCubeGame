@@ -39,6 +39,8 @@ public class RestApiService extends IntentService {
     public static final String ACTION_PLAYER_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.PLAYER_LIST_RESPONSE";
     public static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
     public static final String ACTION_MAP_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_IMAGE_RESPONSE";
+    public static final String ACTION_UPLOAD_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.UPLOAD_MAP_IMAGE";
+    public static final String ACTION_UPLOAD_IMAGE_RESPONSE = "com.cubegames.slava.cubegame.api.action.UPLOAD_IMAGE_RESPONSE";
     public static final String ACTION_DELETE_ENTITY = "com.cubegames.slava.cubegame.api.action.DELETE_ENTITY";
     public static final String ACTION_DELETE_ENTITY_RESPONSE = "com.cubegames.slava.cubegame.api.action.DELETE_ENTITY_RESPONSE";
     public static final String ACTION_SAVE_ENTITY = "com.cubegames.slava.cubegame.api.action.SAVE_ENTITY";
@@ -51,6 +53,7 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_REGISTRATION_RESPONSE_TEXT = "REGISTRATION_RESPONSE_TEXT";
     public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
     public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
+    public static final String EXTRA_GAME_MAP_FILE = "GAME_MAP_FILE";
     public static final String EXTRA_GAME_MAP_LIST = "GAME_MAP_LIST";
     public static final String EXTRA_GAME_INSTANCE_LIST = "GAME_INSTANCE_LIST";
     public static final String EXTRA_GAME_INSTANCE = "GAME_INSTANCE";
@@ -107,6 +110,15 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionUploadMapImage(Context context, GameMap map, String fileName) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_UPLOAD_MAP_IMAGE);
+        intent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
+        intent.putExtra(EXTRA_GAME_MAP_FILE, fileName);
+
+        context.startService(intent);
+    }
+
     public static void startActionDeleteEntity(Context context, BasicNamedDbEntity item) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_DELETE_ENTITY);
@@ -159,6 +171,11 @@ public class RestApiService extends IntentService {
             else if (ACTION_GET_MAP_IMAGE.equals(action)) {
                 final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
                 handleActionGetMapImage(map);
+            }
+            else if (ACTION_UPLOAD_MAP_IMAGE.equals(action)) {
+                final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
+                final String fileName = intent.getStringExtra(EXTRA_GAME_MAP_FILE);
+                handleActionUploadMapImage(map, fileName);
             }
             else if (ACTION_DELETE_ENTITY.equals(action)) {
                 final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
@@ -320,6 +337,24 @@ public class RestApiService extends IntentService {
         params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);
 
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
+    }
+
+    //todo: test
+    private void handleActionUploadMapImage(GameMap map, String fileName) {
+        ErrorEntity error = null;
+
+        try {
+            new GameMapController(getApplicationContext()).uploadMapImage(map, fileName);
+        }
+        catch (WebServiceException e) {
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+
+        Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+
+        sendResponseIntent(ACTION_UPLOAD_IMAGE_RESPONSE, params);
     }
 
     private void handleActionDeleteEntity(BasicNamedDbEntity item) {

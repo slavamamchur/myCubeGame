@@ -57,7 +57,7 @@ public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
     }
 
     public static String ACTION_NAME = "";
-    public String getActionName(){
+    public String urlForActionName(){
         return ACTION_NAME;
     }
 
