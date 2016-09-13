@@ -14,6 +14,7 @@ import android.widget.EditText;
 public class InputNameDialogFragment extends DialogFragment {
 
     private View form=null;
+    private InputNameDelegate delegate = null;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -44,7 +45,9 @@ public class InputNameDialogFragment extends DialogFragment {
                         nameBox.setError(getString(R.string.blank_name_error));
                     }
                     else {
-                        ((BaseListActivity) getActivity()).createEntity(nameBox.getText().toString());
+                        if (getDelegate() != null)
+                            getDelegate().doAction(nameBox.getText().toString());
+
                         d.dismiss();
                     }
 
@@ -60,5 +63,12 @@ public class InputNameDialogFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface unused) {
         super.onCancel(unused);
+    }
+
+    public InputNameDelegate getDelegate() {
+        return delegate;
+    }
+    public void setDelegate(InputNameDelegate delegate) {
+        this.delegate = delegate;
     }
 }

@@ -85,7 +85,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected int getListItemUserActionBtnID(){
         return -1;
     }
-    protected void doUserAction(BasicNamedDbEntity item){}
+    protected void doUserAction(T item){}
     protected ListItemHolder createHolder(){
         return new ListItemHolder();
     }
@@ -246,8 +246,15 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
                 return true;
             case R.id.action_new:
-                new InputNameDialogFragment().show(getSupportFragmentManager(),
-                        "new_entity");
+                InputNameDialogFragment dialog = new InputNameDialogFragment();
+                dialog.setDelegate(new InputNameDelegate() {
+                    @Override
+                    public void doAction(String name) {
+                        createEntity(name);
+                    }
+                });
+                dialog.show(getSupportFragmentManager(), "new_entity");
+
                 return true;
         }
 
@@ -260,6 +267,6 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         T newItem = getNewItem();
         newItem.setName(entityName);
 
-        RestApiService.startActionSaveEntity(getApplicationContext(), newItem);
+        RestApiService.startActionSaveEntity(getApplicationContext(), newItem, ACTION_SAVE_ENTITY_RESPONSE);
     }
 }

@@ -47,8 +47,10 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".GameMapActivity" />
-        <activity android:name=".GameMapsListActivity"></activity>
-        <activity android:name=".GameInstanceListActivity"></activity>
+        <activity android:name=".GameActivity" />
+        <activity android:name=".GameListActivity" />
+        <activity android:name=".GameMapsListActivity" />
+        <activity android:name=".GameInstanceListActivity" />
     </application>
 
 </manifest>

@@ -1,16 +1,23 @@
 package com.cubegames.slava.cubegame;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
+import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GAME_MAP_LIST_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GET_GAME_MAP_LIST;
+import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_LIST;
-import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
 public class GameMapsListActivity extends BaseListActivity<GameMap> {
+    private static final String ACTION_CREATE_NEW_GAME_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_CREATE_NEW_GAME_RESPONSE";
 
     @Override
     protected String getListAction() {
@@ -26,7 +33,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     }
     @Override
     protected String getEntityExtra() {
-        return EXTRA_GAME_MAP_OBJECT;
+        return EXTRA_ENTITY_OBJECT;
     }
     @Override
     protected Class<?> getDetailsActivityClass() {
@@ -83,5 +90,55 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
         super.fillHolder(holder, item);
 
         ((MapItemHolder) holder).textCreated.setText(Utils.formatDateTime(item.getCreatedDate()));
+    }
+
+    @Override
+    protected IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = super.getIntentFilter();
+        intentFilter.addAction(ACTION_CREATE_NEW_GAME_RESPONSE);
+
+        return intentFilter;
+    }
+
+    @Override
+    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
+        if (intent.getAction().equals(ACTION_CREATE_NEW_GAME_RESPONSE)){
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            if (error == null){
+
+                Intent mIntent = new Intent(getApplicationContext(), GameActivity.class);
+                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                startActivity(mIntent);
+            }
+            else {
+                showError(error);
+            }
+
+            return true;
+        }
+        else
+            return super.handleWebServiceResponseAction(context, intent);
+    }
+
+    @Override
+    protected void doUserAction(final GameMap item) {
+        InputNameDialogFragment dialog = new InputNameDialogFragment();
+        dialog.setDelegate(new InputNameDelegate() {
+            @Override
+            public void doAction(String name) {
+                Game game = new Game();
+                game.setName(name);
+                game.setMapId(item.getId());
+
+                newGame(game);
+            }
+        });
+        dialog.show(getSupportFragmentManager(), "new_game");
+    }
+
+    protected void newGame(Game game){
+        showProgress();
+
+        RestApiService.startActionSaveEntity(getApplicationContext(), game, ACTION_CREATE_NEW_GAME_RESPONSE);
     }
 }

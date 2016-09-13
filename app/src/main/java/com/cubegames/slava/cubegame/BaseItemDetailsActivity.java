@@ -87,7 +87,7 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     private boolean saveItem(){
         showProgress();
 
-        RestApiService.startActionSaveEntity(getApplicationContext(), item);
+        RestApiService.startActionSaveEntity(getApplicationContext(), item, ACTION_SAVE_ENTITY_RESPONSE);
 
         return true;
     }

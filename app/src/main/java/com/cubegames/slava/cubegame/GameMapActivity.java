@@ -20,6 +20,7 @@ import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJECT;
 
 public class GameMapActivity extends BaseItemDetailsActivity<GameMap> {
@@ -88,7 +89,7 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMap> {
 
     @Override
     protected String getItemExtra() {
-        return EXTRA_GAME_MAP_OBJECT;
+        return EXTRA_ENTITY_OBJECT;
     }
 
     @Override

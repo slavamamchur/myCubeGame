@@ -61,6 +61,7 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_PLAYER_LIST = "PLAYER_LIST";
     public static final String EXTRA_ENTITY_OBJECT = "ENTITY_OBJECT";
     public static final String EXTRA_ERROR_OBJECT = "ERROR_OBJECT";
+    public static final String EXTRA_RESPONSE_ACTION = "RESPONSE_ACTION";
 
     public RestApiService() {
         super("RestApiService");
@@ -127,10 +128,11 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionSaveEntity(Context context, BasicNamedDbEntity item) {
+    public static void startActionSaveEntity(Context context, BasicNamedDbEntity item, String responseAction) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_SAVE_ENTITY);
         intent.putExtra(EXTRA_ENTITY_OBJECT, item);
+        intent.putExtra(EXTRA_RESPONSE_ACTION, responseAction);
 
         context.startService(intent);
     }
@@ -183,7 +185,8 @@ public class RestApiService extends IntentService {
             }
             else if (ACTION_SAVE_ENTITY.equals(action)) {
                 final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionSaveEntity(item);
+                String responseAction = intent.getStringExtra(EXTRA_RESPONSE_ACTION);
+                handleActionSaveEntity(item, responseAction);
             }
         }
     }
@@ -373,7 +376,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_DELETE_ENTITY_RESPONSE, params);
     }
 
-    private void handleActionSaveEntity(BasicNamedDbEntity item) {
+    private void handleActionSaveEntity(BasicNamedDbEntity item, String responseAction) {
         ErrorEntity error = null;
         BasicEntity result = null;
         try {
@@ -389,6 +392,6 @@ public class RestApiService extends IntentService {
         else
             params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
 
-        sendResponseIntent(ACTION_SAVE_ENTITY_RESPONSE, params);
+        sendResponseIntent(responseAction, params);
     }
 }

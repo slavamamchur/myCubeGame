@@ -1,8 +1,11 @@
 package com.cubegames.slava.cubegame.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cubegames.slava.cubegame.api.AbstractHttpRequest;
+import com.cubegames.slava.cubegame.api.GameController;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
 import java.util.ArrayList;
@@ -92,4 +95,8 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
         createdDate = in.readLong();
     }
 
+    @Override
+    public AbstractHttpRequest getController(Context ctx) {
+        return new GameController(ctx);
+    }
 }
