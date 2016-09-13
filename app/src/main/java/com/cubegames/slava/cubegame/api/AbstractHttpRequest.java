@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -139,7 +141,14 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     }
 
     public String uploadFile(BasicNamedDbEntity entity, String keyParamName, String uploadActionNAme, String fileName) throws WebServiceException {
-        RestTemplate restTemplate = getRestTemplate();
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(NET_CONNECT_TIMEOUT_MILLIS);
+        requestFactory.setReadTimeout(NET_READ_TIMEOUT_MILLIS);
+
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        restTemplate.setErrorHandler(new CustomResponseErrorHandler());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
         formData.add("token", getAuthToken());
@@ -152,7 +161,6 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(formData, requestHeaders);
 
         return restTemplate.exchange(mUrl + uploadActionNAme, HttpMethod.POST, requestEntity, String.class).getBody();
-
     }
 
     @NonNull

@@ -339,7 +339,6 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
     }
 
-    //todo: test
     private void handleActionUploadMapImage(GameMap map, String fileName) {
         ErrorEntity error = null;
 
