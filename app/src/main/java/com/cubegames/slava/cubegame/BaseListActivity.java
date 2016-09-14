@@ -101,7 +101,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         }
     }
     protected  void fillHolder(ListItemHolder holder, final T item){
-        holder.textName.setText(item.getName());
+        holder.textName.setText(item.getName());//todo: bugfix
 
         holder.textName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,6 +254,21 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                     }
                 });
                 dialog.show(getSupportFragmentManager(), "new_entity");
+
+                return true;
+            case R.id.action_maps_list:
+                startActivity(new Intent(getApplicationContext(), GameMapsListActivity.class));
+                finish();
+
+                return true;
+            case R.id.action_games_list:
+                startActivity(new Intent(getApplicationContext(), GameListActivity.class));
+                finish();
+
+                return true;
+            case R.id.action_game_instances_list:
+                startActivity(new Intent(getApplicationContext(), GameInstanceListActivity.class));
+                finish();
 
                 return true;
         }

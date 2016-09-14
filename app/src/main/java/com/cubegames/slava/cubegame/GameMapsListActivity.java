@@ -3,6 +3,7 @@ package com.cubegames.slava.cubegame;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,8 +12,8 @@ import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
 
-import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GAME_MAP_LIST_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GET_GAME_MAP_LIST;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_LIST_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_LIST;
 
@@ -25,7 +26,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     }
     @Override
     protected String getListResponseAction() {
-        return ACTION_GAME_MAP_LIST_RESPONSE;
+        return ACTION_LIST_RESPONSE;
     }
     @Override
     protected String getListResponseExtra() {
@@ -118,6 +119,14 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
         }
         else
             return super.handleWebServiceResponseAction(context, intent);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_games_list).setVisible(true);
+        menu.findItem(R.id.action_game_instances_list).setVisible(true);
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

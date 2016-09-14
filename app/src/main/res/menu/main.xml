@@ -24,6 +24,18 @@
         android:title="Upload picture"
         android:visible="false"
         app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/action_maps_list"
+        android:title="Maps list"
+        android:visible="false" />
+    <item
+        android:id="@+id/action_games_list"
+        android:title="Games list"
+        android:visible="false" />
+    <item
+        android:id="@+id/action_game_instances_list"
+        android:title="Games Instances list"
+        android:visible="false" />
     <item android:id="@+id/menu_settings"
           android:title="Settings"
           android:orderInCategory="1" />

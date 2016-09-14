@@ -30,11 +30,9 @@ public class RestApiService extends IntentService {
     public static final String ACTION_PING = "com.cubegames.slava.cubegame.api.action.PING";
     public static final String ACTION_PING_RESPONSE = "com.cubegames.slava.cubegame.api.action.PING_RESPONSE";
     public static final String ACTION_GET_GAME_MAP_LIST = "com.cubegames.slava.cubegame.api.action.GET_MAP_LIST";
-    public static final String ACTION_GAME_MAP_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.MAP_LIST_RESPONSE";
+    public static final String ACTION_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.LIST_RESPONSE";
     public static final String ACTION_GET_GAME_LIST = "com.cubegames.slava.cubegame.api.action.GET_GAME_LIST";
-    public static final String ACTION_GAME_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.GAME_LIST_RESPONSE";
     public static final String ACTION_GET_GAME_INSTANCE_LIST = "com.cubegames.slava.cubegame.api.action.GET_GAME_INSTANCE_LIST";
-    public static final String ACTION_GAME_INSTANCE_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.GAME_INSTANCE_LIST_RESPONSE";
     public static final String ACTION_GET_PLAYER_LIST = "com.cubegames.slava.cubegame.api.action.GET_PLAYER_LIST";
     public static final String ACTION_PLAYER_LIST_RESPONSE = "com.cubegames.slava.cubegame.api.action.PLAYER_LIST_RESPONSE";
     public static final String ACTION_GET_MAP_IMAGE = "com.cubegames.slava.cubegame.api.action.GET_MAP_IMAGE";
@@ -45,6 +43,8 @@ public class RestApiService extends IntentService {
     public static final String ACTION_DELETE_ENTITY_RESPONSE = "com.cubegames.slava.cubegame.api.action.DELETE_ENTITY_RESPONSE";
     public static final String ACTION_SAVE_ENTITY = "com.cubegames.slava.cubegame.api.action.SAVE_ENTITY";
     public static final String ACTION_SAVE_ENTITY_RESPONSE = "com.cubegames.slava.cubegame.api.action.SAVE_ENTITY_RESPONSE";
+    public static final String ACTION_FINISH_GAME_INSTANCE = "com.cubegames.slava.cubegame.api.action.FINISH_GAME_INSTANCE";
+    public static final String ACTION_FINISH_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.FINISH_GAME_INSTANCE_RESPONSE";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -137,6 +137,14 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionFinishGameInstance(Context context, GameInstance instance) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_FINISH_GAME_INSTANCE);
+        intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
+
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -187,6 +195,10 @@ public class RestApiService extends IntentService {
                 final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 String responseAction = intent.getStringExtra(EXTRA_RESPONSE_ACTION);
                 handleActionSaveEntity(item, responseAction);
+            }
+            else if (ACTION_FINISH_GAME_INSTANCE.equals(action)) {
+                final GameInstance item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                handleActionFinishGameInstance(item);
             }
         }
     }
@@ -268,7 +280,7 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         params.putParcelableArrayList(EXTRA_GAME_MAP_LIST, mapList);
 
-        sendResponseIntent(ACTION_GAME_MAP_LIST_RESPONSE, params);
+        sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
 
     private void handleActionGetGameList(){
@@ -285,7 +297,7 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         params.putParcelableArrayList(EXTRA_GAME_LIST, mapList);
 
-        sendResponseIntent(ACTION_GAME_LIST_RESPONSE, params);
+        sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
 
     private void handleActionGetGameInstanceList(){
@@ -302,7 +314,7 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         params.putParcelableArrayList(EXTRA_GAME_INSTANCE_LIST, mapList);
 
-        sendResponseIntent(ACTION_GAME_INSTANCE_LIST_RESPONSE, params);
+        sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
 
     private void handleActionGetPlayerList(){
@@ -393,5 +405,22 @@ public class RestApiService extends IntentService {
             params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
 
         sendResponseIntent(responseAction, params);
+    }
+
+    private void handleActionFinishGameInstance(GameInstance item) {
+        ErrorEntity error = null;
+
+        try {
+            new GameInstanceController(getApplicationContext()).finishInstance(item);
+        }
+        catch (WebServiceException e) {
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+
+        Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+
+        sendResponseIntent(ACTION_FINISH_GAME_INSTANCE_RESPONSE, params);
     }
 }

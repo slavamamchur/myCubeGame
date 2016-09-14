@@ -48,6 +48,7 @@
 
         <activity android:name=".GameMapActivity" />
         <activity android:name=".GameActivity" />
+        <activity android:name=".GameInstanceActivity" />
         <activity android:name=".GameListActivity" />
         <activity android:name=".GameMapsListActivity" />
         <activity android:name=".GameInstanceListActivity" />

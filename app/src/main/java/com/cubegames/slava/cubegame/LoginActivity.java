@@ -132,7 +132,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
                 SettingsManager.getInstance(getApplicationContext()).setUserName(mEmailView.getText().toString());
                 SettingsManager.getInstance(getApplicationContext()).setUserPass(mPasswordView.getText().toString());
 
-                Intent mintent = new Intent(getApplicationContext(), GameMapsListActivity.class);
+                Intent mintent = new Intent(getApplicationContext(), GameListActivity.class);
                 startActivity(mintent);
 
                 finish();

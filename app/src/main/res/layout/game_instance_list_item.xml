@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:weightSum="100">
+
+    <TextView
+        android:id="@+id/game_instance_name_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:layout_weight="48" />
+
+    <TextView
+        android:id="@+id/game_state_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:layout_weight="8" />
+
+    <TextView
+        android:id="@+id/game_players_count_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:textSize="18sp"
+        android:layout_weight="11"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/game_started_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:textSize="18sp"
+        android:layout_weight="13" />
+
+    <TextView
+        android:id="@+id/game_last_used_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:textSize="18sp"
+        android:layout_weight="13" />
+
+    <Button
+        android:id="@+id/finish_game_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:text="Finish"
+        android:layout_weight="7" />
+
+</LinearLayout>
