@@ -1,7 +1,11 @@
 package com.cubegames.slava.cubegame.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.cubegames.slava.cubegame.api.AbstractHttpRequest;
+import com.cubegames.slava.cubegame.api.DBPlayerController;
 
 import static com.cubegames.slava.cubegame.api.RestConst.URL_PLAYER;
 
@@ -57,4 +61,8 @@ public class DbPlayer extends BasicNamedDbEntity implements Parcelable{
         setColor(in.readInt());
     }
 
+    @Override
+    public AbstractHttpRequest getController(Context ctx) {
+        return new DBPlayerController(ctx);
+    }
 }

@@ -246,14 +246,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
                 return true;
             case R.id.action_new:
-                InputNameDialogFragment dialog = new InputNameDialogFragment();
-                dialog.setDelegate(new InputNameDelegate() {
-                    @Override
-                    public void doAction(String name) {
-                        createEntity(name);
-                    }
-                });
-                dialog.show(getSupportFragmentManager(), "new_entity");
+                handleActionNew();
 
                 return true;
             case R.id.action_maps_list:
@@ -271,16 +264,31 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                 finish();
 
                 return true;
+            case R.id.action_dbplayers_list:
+                startActivity(new Intent(getApplicationContext(), DBPlayersListActivity.class));
+                finish();
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void createEntity(String entityName){
-        showProgress();
+    protected void handleActionNew(){
+        InputNameDialogFragment dialog = new InputNameDialogFragment();
+        dialog.setDelegate(new InputNameDelegate() {
+            @Override
+            public void doAction(String name) {
+                T newItem = getNewItem();
+                newItem.setName(name);
+                createEntity(newItem);
+            }
+        });
+        dialog.show(getSupportFragmentManager(), "new_entity");
+    }
 
-        T newItem = getNewItem();
-        newItem.setName(entityName);
+    public void createEntity(T newItem){
+        showProgress();
 
         RestApiService.startActionSaveEntity(getApplicationContext(), newItem, ACTION_SAVE_ENTITY_RESPONSE);
     }

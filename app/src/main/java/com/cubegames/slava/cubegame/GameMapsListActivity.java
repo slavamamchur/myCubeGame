@@ -125,6 +125,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_games_list).setVisible(true);
         menu.findItem(R.id.action_game_instances_list).setVisible(true);
+        menu.findItem(R.id.action_dbplayers_list).setVisible(true);
 
         return super.onPrepareOptionsMenu(menu);
     }

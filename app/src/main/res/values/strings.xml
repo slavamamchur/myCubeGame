@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CubeGame</string>
     <string name="game_map_list_title">Map List</string>
+    <string name="players_list_title">Stored players</string>
     <string name="game_list_title">Games</string>
     <string name="game_instance_list_title">Game Instances</string>
     <string name="progress_title">Please wait</string>
@@ -91,6 +92,7 @@
     <string name="no_btn_caption">No</string>
     <string name="cancel_btn_caption">Cancel</string>
     <string name="add_new_map_caption">Add new Map</string>
+    <string name="add_new_player_caption">Add new Player</string>
     <string name="edit_map_caption">Edit map details</string>
     <string name="confirm_title">Confirmation</string>
     <string name="save_confirm_text">Do you want to save changes?</string>

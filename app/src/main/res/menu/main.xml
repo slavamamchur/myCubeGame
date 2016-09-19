@@ -36,6 +36,10 @@
         android:id="@+id/action_game_instances_list"
         android:title="Games Instances list"
         android:visible="false" />
+    <item
+        android:id="@+id/action_dbplayers_list"
+        android:title="Stored players list"
+        android:visible="false" />
     <item android:id="@+id/menu_settings"
           android:title="Settings"
           android:orderInCategory="1" />

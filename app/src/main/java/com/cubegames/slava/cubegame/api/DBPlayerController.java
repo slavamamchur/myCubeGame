@@ -19,7 +19,7 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
 
 public class DBPlayerController extends AbstractHttpRequest<DbPlayer> {
 
-    protected DBPlayerController(Context ctx) {
+    public DBPlayerController(Context ctx) {
         super(DbPlayer.ACTION_NAME, DbPlayer.class, HttpMethod.GET, ctx);
     }
 

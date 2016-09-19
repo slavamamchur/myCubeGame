@@ -331,7 +331,7 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         params.putParcelableArrayList(EXTRA_PLAYER_LIST, mapList);
 
-        sendResponseIntent(ACTION_PLAYER_LIST_RESPONSE, params);
+        sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
 
     private void handleActionGetMapImage(GameMap map) {
