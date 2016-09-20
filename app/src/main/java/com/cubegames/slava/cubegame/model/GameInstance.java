@@ -1,7 +1,10 @@
 package com.cubegames.slava.cubegame.model;
 
+import android.content.Context;
 import android.os.Parcel;
 
+import com.cubegames.slava.cubegame.api.AbstractHttpRequest;
+import com.cubegames.slava.cubegame.api.GameInstanceController;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -110,6 +113,11 @@ public class GameInstance extends BasicNamedDbEntity {
     }
     public void setLastUsedDate(long lastUsedDate) {
         this.lastUsedDate = lastUsedDate;
+    }
+
+    @Override
+    public AbstractHttpRequest getController(Context ctx) {
+        return new GameInstanceController(ctx);
     }
 
     public enum State { WAIT, MOVING, FINISHED }

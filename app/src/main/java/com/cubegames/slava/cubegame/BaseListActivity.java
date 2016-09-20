@@ -103,14 +103,17 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected  void fillHolder(ListItemHolder holder, final T item){
         holder.textName.setText(item.getName());//todo: bugfix
 
-        holder.textName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                intent.putExtra(getEntityExtra(), item);
-                startActivity(intent);
-            }
-        });
+        if (getDetailsActivityClass() != null) {
+            holder.textName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
+                    intent.putExtra(getEntityExtra(), item);
+                    startActivity(intent);
+                }
+            });
+        }
+
         if (holder.btnDelete != null){
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

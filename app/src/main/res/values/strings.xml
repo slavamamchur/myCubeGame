@@ -98,5 +98,8 @@
     <string name="save_confirm_text">Do you want to save changes?</string>
     <string name="input_name_caption">Input Name</string>
     <string name="blank_name_error">Entity name can not be blank</string>
+    <string name="start_new_instance_title">Start New Instance</string>
+    <string name="players_list_empty_error">List of players can not be empty.</string>
+    <string name="player_exists_error">Player already exists.</string>
 
 </resources>

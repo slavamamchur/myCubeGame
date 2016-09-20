@@ -20,6 +20,7 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_LIST;
 public class GameListActivity extends BaseListActivity<Game> {
 
     private static final String ACTION_CREATE_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_CREATE_GAME_INSTANCE_RESPONSE";
+    public static final int START_GAME_INSTANCE_ACTION = 3;
 
     @Override
     protected String getListAction() {
@@ -143,7 +144,21 @@ public class GameListActivity extends BaseListActivity<Game> {
 
     @Override
     protected void doUserAction(Game item) {
-        //todo: start game activity
+        Intent mIntent = new Intent(getApplicationContext(), NewGameInstanceActivity.class);
+        mIntent.putExtra(getEntityExtra(), item);
+        startActivityForResult(mIntent, START_GAME_INSTANCE_ACTION);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == START_GAME_INSTANCE_ACTION && resultCode == RESULT_OK && null != data) {
+            GameInstance instance = data.getParcelableExtra(getEntityExtra());
+            if (instance != null)
+                startGameInstance(instance);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     protected void startGameInstance(GameInstance instance){

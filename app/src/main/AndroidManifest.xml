@@ -53,6 +53,7 @@
         <activity android:name=".GameMapsListActivity" />
         <activity android:name=".GameInstanceListActivity" />
         <activity android:name=".DBPlayersListActivity" />
+        <activity android:name=".NewGameInstanceActivity" />
     </application>
 
 </manifest>

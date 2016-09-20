@@ -2,6 +2,8 @@ package com.cubegames.slava.cubegame;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
@@ -20,6 +22,11 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJEC
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_PLAYER_LIST;
 
 public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
+
+    public static int ACTION_DICTIONARY = 3;
+    public static String EXTRA_STARTED_AS_DICTIONARY = "EXTRA_STARTED_AS_DICTIONARY";
+
+    private boolean isDictionary = false;
 
     @Override
     protected String getListAction() {
@@ -40,7 +47,7 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
 
     @Override
     protected Class<?> getDetailsActivityClass() {
-        return null; //todo:
+        return null;
     }
 
     @Override
@@ -74,6 +81,13 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
     }
 
     @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        isDictionary = getIntent().getBooleanExtra(EXTRA_STARTED_AS_DICTIONARY, false);
+    }
+
+    @Override
     protected ListItemHolder createHolder() {
         return new DBPlayerItemHolder();
     }
@@ -85,8 +99,21 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
     }
 
     @Override
-    protected void fillHolder(ListItemHolder holder, DbPlayer item) {
+    protected void fillHolder(ListItemHolder holder, final DbPlayer item) {
         super.fillHolder(holder, item);
+
+        if (isDictionary) {
+            holder.textName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra(getEntityExtra(), item);
+                    setResult(RESULT_OK, intent);
+
+                    finish();
+                }
+            });
+        }
 
         ((DBPlayerItemHolder) holder).textColor.setBackgroundColor(0xFF000000 | item.getColor());
     }

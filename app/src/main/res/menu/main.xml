@@ -19,6 +19,12 @@
         android:visible="false"
         app:showAsAction="always|withText"/>
     <item
+        android:id="@+id/action_start_instance"
+        android:icon="@android:drawable/ic_media_play"
+        android:title="Start Instance"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+    <item
         android:id="@+id/action_upload_file"
         android:icon="@android:drawable/ic_menu_gallery"
         android:title="Upload picture"

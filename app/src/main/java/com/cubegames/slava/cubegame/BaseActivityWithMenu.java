@@ -34,6 +34,16 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         showAlert(dialog);
     }
 
+    protected void showError(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setTitle(R.string.error_title);
+        builder.setPositiveButton(R.string.pos_btn_caption, null);
+
+        AlertDialog dialog = builder.create();
+        showAlert(dialog);
+    }
+
     protected void showAlert(final AlertDialog dialog){
         mAlertHandler.post(new Runnable() {
             @Override

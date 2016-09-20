@@ -22,7 +22,7 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
 
 public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
 
-    protected GameInstanceController(Context ctx) {
+    public GameInstanceController(Context ctx) {
         super(GameInstance.ACTION_NAME, GameInstance.class, HttpMethod.GET, ctx);
     }
 

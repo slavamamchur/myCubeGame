@@ -80,4 +80,12 @@ public class InstancePlayer implements Parcelable{
     public void setSkipped(boolean skipped) {
         this.skipped = skipped;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof InstancePlayer))
+            return false;
+        else
+            return name != null && name.equals(((InstancePlayer) obj).getName());
+    }
 }
