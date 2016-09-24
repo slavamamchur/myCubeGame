@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
@@ -118,4 +119,8 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
         return item;
     }
     protected abstract String getItemExtra();
+
+    public interface WebErrorHandler {
+        void onError(ErrorEntity error);
+    }
 }

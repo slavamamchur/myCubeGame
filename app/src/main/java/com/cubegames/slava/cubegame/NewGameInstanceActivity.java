@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.cubegames.slava.cubegame.model.DbPlayer;
 import com.cubegames.slava.cubegame.model.Game;
@@ -23,10 +25,15 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
 
     private Game gameEntity;
     private GameInstance instance = new GameInstance();
+    private EditText editName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.start_instance_layout);
+
+        editName = (EditText) findViewById(R.id.edit_name);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -72,12 +79,14 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
             return true;
         }
         else if (id == R.id.action_start_instance) {
-            instance.setName("111");
+            instance.setName(editName.getText().toString());
             if (instance.getPlayers().size() == 0)
                 showError(getString(R.string.players_list_empty_error));
+            else if (TextUtils.isEmpty(editName.getText().toString())){
+                editName.setError(getString(R.string.blank_name_error));
+            }
             else
                 startInstance(instance);
-            //todo: check name
 
             return true;
         }
