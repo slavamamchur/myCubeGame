@@ -13,7 +13,7 @@ import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 
-public class GameMapActivity extends BaseItemDetailsActivity<GameMap> implements BaseItemDetailsActivity.WebErrorHandler{
+public class GameMapActivity extends BaseItemDetailsActivity<GameMap> implements BaseItemDetailsActivity.WebErrorHandler {
 
     public static final int UPLOAD_MAP_IMAGE_ACTION = 2;
 
