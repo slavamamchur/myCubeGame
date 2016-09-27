@@ -14,7 +14,10 @@ public class StartNewGameRequest implements Parcelable{
     private List<InstancePlayer> players;
     private List<String> playersId;
 
-    protected StartNewGameRequest(Parcel in) {
+
+    public StartNewGameRequest(){}
+
+    private StartNewGameRequest(Parcel in) {
         gameId = in.readString();
         name = in.readString();
         players = in.createTypedArrayList(InstancePlayer.CREATOR);

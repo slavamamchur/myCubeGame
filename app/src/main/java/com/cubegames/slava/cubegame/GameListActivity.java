@@ -11,9 +11,11 @@ import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
+import com.cubegames.slava.cubegame.model.StartNewGameRequest;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GET_GAME_LIST;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_LIST_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_START_GAME_INSTANCE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_LIST;
 
@@ -117,20 +119,20 @@ public class GameListActivity extends BaseListActivity<Game> {
     @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
-        intentFilter.addAction(ACTION_CREATE_GAME_INSTANCE_RESPONSE);
+        intentFilter.addAction(ACTION_START_GAME_INSTANCE_RESPONSE);
 
         return intentFilter;
     }
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION_CREATE_GAME_INSTANCE_RESPONSE)){
+        if (intent.getAction().equals(ACTION_START_GAME_INSTANCE_RESPONSE)){
             ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
             if (error == null){
 
-                Intent mIntent = new Intent(getApplicationContext(), GameInstanceActivity.class);
-                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
-                startActivity(mIntent);
+                //Intent mIntent = new Intent(getApplicationContext(), GameInstanceActivity.class);
+                //mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                //startActivity(mIntent);
             }
             else {
                 showError(error);
@@ -164,6 +166,11 @@ public class GameListActivity extends BaseListActivity<Game> {
     protected void startGameInstance(GameInstance instance){
         showProgress();
 
-        RestApiService.startActionSaveEntity(getApplicationContext(), instance, ACTION_CREATE_GAME_INSTANCE_RESPONSE);
+        StartNewGameRequest request = new StartNewGameRequest();
+        request.setName(instance.getName());
+        request.setPlayers(instance.getPlayers());
+        request.setGameId(instance.getGame().getId());
+
+        RestApiService.startActionStartGameInstance(getApplicationContext(), request);
     }
 }

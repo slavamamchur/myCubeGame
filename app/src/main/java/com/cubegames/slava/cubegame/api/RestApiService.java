@@ -13,6 +13,7 @@ import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.GameMap;
+import com.cubegames.slava.cubegame.model.StartNewGameRequest;
 import com.cubegames.slava.cubegame.model.UserEntity;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class RestApiService extends IntentService {
     public static final String ACTION_SAVE_ENTITY_RESPONSE = "com.cubegames.slava.cubegame.api.action.SAVE_ENTITY_RESPONSE";
     public static final String ACTION_FINISH_GAME_INSTANCE = "com.cubegames.slava.cubegame.api.action.FINISH_GAME_INSTANCE";
     public static final String ACTION_FINISH_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.FINISH_GAME_INSTANCE_RESPONSE";
+    public static final String ACTION_START_GAME_INSTANCE = "com.cubegames.slava.cubegame.api.action.START_GAME_INSTANCE";
+    public static final String ACTION_START_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.START_GAME_INSTANCE_RESPONSE";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -145,6 +148,14 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionStartGameInstance(Context context, StartNewGameRequest request) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_START_GAME_INSTANCE);
+        intent.putExtra(EXTRA_ENTITY_OBJECT, request);
+
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -199,6 +210,10 @@ public class RestApiService extends IntentService {
             else if (ACTION_FINISH_GAME_INSTANCE.equals(action)) {
                 final GameInstance item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionFinishGameInstance(item);
+            }
+            else if (ACTION_START_GAME_INSTANCE.equals(action)) {
+                final StartNewGameRequest item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                handleActionStartGameInstance(item);
             }
         }
     }
@@ -423,4 +438,26 @@ public class RestApiService extends IntentService {
 
         sendResponseIntent(ACTION_FINISH_GAME_INSTANCE_RESPONSE, params);
     }
+
+    private void handleActionStartGameInstance(StartNewGameRequest item) {
+        ErrorEntity error = null;
+        BasicEntity result = null;
+
+        try {
+            result =
+            new GameInstanceController(getApplicationContext()).startNewInstance(item);
+        }
+        catch (WebServiceException e) {
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+
+        Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+        //else
+            //params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
+
+        sendResponseIntent(ACTION_START_GAME_INSTANCE_RESPONSE, params);
+    }
+
 }
