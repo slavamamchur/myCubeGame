@@ -12,6 +12,7 @@ import com.cubegames.slava.cubegame.model.DbPlayer;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
+import com.cubegames.slava.cubegame.model.GameInstanceStartedResponse;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.StartNewGameRequest;
 import com.cubegames.slava.cubegame.model.UserEntity;
@@ -441,7 +442,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionStartGameInstance(StartNewGameRequest item) {
         ErrorEntity error = null;
-        BasicEntity result = null;
+        GameInstanceStartedResponse result = null;
 
         try {
             result =
@@ -454,8 +455,9 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         if(error != null)
             params.putParcelable(EXTRA_ERROR_OBJECT, error);
-        //else
-            //params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
+        else {
+            params.putParcelable(EXTRA_ENTITY_OBJECT, result.getInstance());
+        }
 
         sendResponseIntent(ACTION_START_GAME_INSTANCE_RESPONSE, params);
     }

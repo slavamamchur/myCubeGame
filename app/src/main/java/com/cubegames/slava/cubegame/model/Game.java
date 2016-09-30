@@ -7,12 +7,14 @@ import android.os.Parcelable;
 import com.cubegames.slava.cubegame.api.AbstractHttpRequest;
 import com.cubegames.slava.cubegame.api.GameController;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Game extends BasicNamedDbEntity implements Parcelable{
 
     public static String ACTION_NAME =  URL_GAME;

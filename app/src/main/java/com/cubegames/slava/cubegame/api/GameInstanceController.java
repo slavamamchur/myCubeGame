@@ -5,6 +5,7 @@ import android.content.Context;
 import com.cubegames.slava.cubegame.model.CollectionResponseGameInstance;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.GameInstanceResponse;
+import com.cubegames.slava.cubegame.model.GameInstanceStartedResponse;
 import com.cubegames.slava.cubegame.model.IdResponse;
 import com.cubegames.slava.cubegame.model.StartNewGameRequest;
 
@@ -61,12 +62,12 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
                 HttpMethod.GET, getHttpEntity(null), IdResponse.class, instance.getId()).getBody();
     }
 
-    public IdResponse startNewInstance(StartNewGameRequest request) throws WebServiceException {
+    public GameInstanceStartedResponse startNewInstance(StartNewGameRequest request) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();
 
         return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_START,
-                HttpMethod.POST, getHttpEntity(request), IdResponse.class).getBody();
+                HttpMethod.POST, getHttpEntity(request), GameInstanceStartedResponse.class).getBody();
     }
 
     public GameInstanceResponse makeTurn(GameInstance instance, int steps) throws WebServiceException {

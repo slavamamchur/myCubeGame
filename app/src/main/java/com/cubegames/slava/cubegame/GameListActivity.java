@@ -130,9 +130,9 @@ public class GameListActivity extends BaseListActivity<Game> {
             ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
             if (error == null){
 
-                //Intent mIntent = new Intent(getApplicationContext(), GameInstanceActivity.class);
-                //mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
-                //startActivity(mIntent);
+                Intent mIntent = new Intent(getApplicationContext(), GameInstanceActivity.class);
+                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                startActivity(mIntent);
             }
             else {
                 showError(error);
