@@ -118,7 +118,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
                     showError(getString(R.string.player_exists_error));
                 }
 
-                //todo: update list
+                //todo: update list (-> list fragment)
             }
         }
         else

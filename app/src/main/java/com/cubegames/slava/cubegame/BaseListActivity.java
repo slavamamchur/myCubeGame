@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,6 +39,10 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
         setCaption(getCaptionResource());
 
+        //
+        LinearLayout listHeader = (LinearLayout) this.findViewById(R.id.header_view);
+        listHeader.addView(LayoutInflater.from(this).inflate( getListHeaderID(), null, false));
+
         listView = (ListView) this.findViewById(R.id.list_view);
         listView.setAdapter(new ArrayAdapter<T>(this, getListItemViewID(), getItems()){
 
@@ -45,17 +50,17 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             public View getView(int position, View convertView, ViewGroup parent) {
                 View row = convertView;
                 ListItemHolder holder;
-                final T item  = position == 0 ? null : getItem(position);
+                final T item  = /*position == 0 ? null :*/ getItem(position);
 
                 if (row == null) {
                     holder = createHolder();
                     LayoutInflater layoutInflater = LayoutInflater.from(BaseListActivity.this);
-                    if (position == 0)
-                        row = layoutInflater.inflate( getListHeaderID(), parent, false);
-                    else {
+                    //if (position == 0)
+                        //row = layoutInflater.inflate( getListHeaderID(), parent, false);
+                    //else {
                         row = layoutInflater.inflate(getListItemViewID(), parent, false);
                         initHolder(row, holder, item);
-                    }
+                    //}
 
                     row.setTag(holder);
                 }
@@ -63,7 +68,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                     holder = (ListItemHolder) row.getTag();
                 }
 
-                if (position > 0)
+                //if (position > 0)
                     fillHolder(holder, item);
 
                 return row;
@@ -101,7 +106,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         }
     }
     protected  void fillHolder(ListItemHolder holder, final T item){
-        holder.textName.setText(item.getName());//todo: bugfix
+        holder.textName.setText(item.getName());
 
         if (getDetailsActivityClass() != null) {
             holder.textName.setOnClickListener(new View.OnClickListener() {

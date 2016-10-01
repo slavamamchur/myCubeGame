@@ -21,7 +21,6 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_LIST;
 
 public class GameListActivity extends BaseListActivity<Game> {
 
-    private static final String ACTION_CREATE_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_CREATE_GAME_INSTANCE_RESPONSE";
     public static final int START_GAME_INSTANCE_ACTION = 3;
 
     @Override
