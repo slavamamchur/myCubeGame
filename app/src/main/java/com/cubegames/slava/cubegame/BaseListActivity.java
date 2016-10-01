@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
@@ -29,22 +27,25 @@ import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY
 
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
     private ArrayList<T> items = new ArrayList<>();
-    private ListView listView;
+    private DBTableFragment tableFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_base_list);
-
         setCaption(getCaptionResource());
 
-        //
-        LinearLayout listHeader = (LinearLayout) this.findViewById(R.id.header_view);
-        listHeader.addView(LayoutInflater.from(this).inflate( getListHeaderID(), null, false));
+        tableFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.table_fragment);
+    }
 
-        listView = (ListView) this.findViewById(R.id.list_view);
-        listView.setAdapter(new ArrayAdapter<T>(this, getListItemViewID(), getItems()){
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        tableFragment.setHeader_layout_id(getListHeaderID());
+        tableFragment.initTable();
+        tableFragment.getDbTable().setAdapter(new ArrayAdapter<T>(this, getListItemViewID(), getItems()){
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -56,10 +57,10 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                     holder = createHolder();
                     LayoutInflater layoutInflater = LayoutInflater.from(BaseListActivity.this);
                     //if (position == 0)
-                        //row = layoutInflater.inflate( getListHeaderID(), parent, false);
+                    //row = layoutInflater.inflate( getListHeaderID(), parent, false);
                     //else {
-                        row = layoutInflater.inflate(getListItemViewID(), parent, false);
-                        initHolder(row, holder, item);
+                    row = layoutInflater.inflate(getListItemViewID(), parent, false);
+                    initHolder(row, holder, item);
                     //}
 
                     row.setTag(holder);
@@ -69,12 +70,16 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                 }
 
                 //if (position > 0)
-                    fillHolder(holder, item);
+                fillHolder(holder, item);
 
                 return row;
             }
 
         });
+
+        showProgress();
+
+        getData();
     }
 
     protected int getListItemViewID(){
@@ -137,15 +142,6 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                 }
             });
         }
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        showProgress();
-
-        getData();
     }
 
     @Override
@@ -213,7 +209,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             this.items.add(items.get(0));
         this.items.addAll(items);
 
-        ArrayAdapter adapter = (ArrayAdapter) listView.getAdapter();
+        ArrayAdapter adapter = (ArrayAdapter) tableFragment.getDbTable().getAdapter();
         adapter.clear();
         adapter.addAll(getItems());
         adapter.notifyDataSetChanged();

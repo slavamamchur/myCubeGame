@@ -9,13 +9,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cubegames.slava.cubegame.BaseListActivity">
 
-    <fragment
+    <ListView
         android:layout_width="match_parent"
+        android:id="@+id/list_view"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
         android:layout_height="match_parent"
-        android:name="com.cubegames.slava.cubegame.DBTableFragment"
+        android:layout_below="@+id/header_view" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/table_fragment"
-        tools:layout="@layout/db_table_fragment" />
+        android:id="@+id/header_view" />
 
 </RelativeLayout>
