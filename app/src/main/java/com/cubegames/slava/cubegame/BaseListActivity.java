@@ -43,25 +43,21 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        tableFragment.setHeader_layout_id(getListHeaderID());
-        tableFragment.initTable();
+        tableFragment.initTable(getColumnInfo());
+
         tableFragment.getDbTable().setAdapter(new ArrayAdapter<T>(this, getListItemViewID(), getItems()){
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View row = convertView;
                 ListItemHolder holder;
-                final T item  = /*position == 0 ? null :*/ getItem(position);
+                final T item  = getItem(position);
 
                 if (row == null) {
                     holder = createHolder();
                     LayoutInflater layoutInflater = LayoutInflater.from(BaseListActivity.this);
-                    //if (position == 0)
-                    //row = layoutInflater.inflate( getListHeaderID(), parent, false);
-                    //else {
                     row = layoutInflater.inflate(getListItemViewID(), parent, false);
                     initHolder(row, holder, item);
-                    //}
 
                     row.setTag(holder);
                 }
@@ -69,7 +65,6 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
                     holder = (ListItemHolder) row.getTag();
                 }
 
-                //if (position > 0)
                 fillHolder(holder, item);
 
                 return row;
@@ -82,10 +77,12 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         getData();
     }
 
+    protected ArrayList<DBColumnInfo> getColumnInfo() {
+        return null;
+    }
     protected int getListItemViewID(){
         return android.R.layout.simple_list_item_1;
     }
-    protected int getListHeaderID(){ return -1;}
     protected int getListItemTextID(){
         return android.R.id.text1;
     }
@@ -205,9 +202,10 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
     public void setItems(ArrayList<T> items) {
         this.items  = new ArrayList<>();
-        if (items.size() > 0)
-            this.items.add(items.get(0));
-        this.items.addAll(items);
+        //if (items.size() > 0)
+            //this.items.add(items.get(0));
+        //this.items.addAll(items);
+        this.items = items;
 
         ArrayAdapter adapter = (ArrayAdapter) tableFragment.getDbTable().getAdapter();
         adapter.clear();

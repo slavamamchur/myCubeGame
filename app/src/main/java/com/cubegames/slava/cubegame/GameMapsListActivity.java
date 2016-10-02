@@ -62,11 +62,6 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     }
 
     @Override
-    protected int getListHeaderID() {
-        return R.layout.map_list_header;
-    }
-
-    @Override
     protected GameMap getNewItem() {
         return new GameMap();
     }

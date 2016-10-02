@@ -1,21 +1,29 @@
 package com.cubegames.slava.cubegame;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.Collection;
+import java.util.List;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class DBTableFragment extends Fragment {
 
-    public DBTableFragment() {}
-
     private ListView dbTable;
     private LinearLayout header;
-    private int header_layout_id;
+    private List<DBColumnInfo> columns;
+
+    public DBTableFragment() {}
 
     @Nullable
     @Override
@@ -31,14 +39,39 @@ public class DBTableFragment extends Fragment {
         header = (LinearLayout) view.findViewById(R.id.header_view);
     }
 
-    public void initTable(){
-        header.addView(LayoutInflater.from(getContext()).inflate( header_layout_id, null, false));
+    public void initTable(List<DBColumnInfo> columns) {
+        this.columns = columns;
+
+        if (columns != null)
+            initHeaders();
+    }
+
+    private void initHeaders() {
+        header.removeAllViews();
+
+        for (DBColumnInfo column : columns) {
+
+            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0, MATCH_PARENT);
+            lparams.weight = column.getWeight();
+
+            TextView caption = new TextView(getContext());
+            caption.setText(column.getCaption());
+            caption.setTextSize(18);
+            caption.setTypeface(null, Typeface.BOLD);
+
+            header.addView(caption, lparams);
+        }
+    }
+
+    public void setItems(Collection items) {
+        ArrayAdapter adapter = (ArrayAdapter) getDbTable().getAdapter();
+        adapter.clear();
+        adapter.addAll(items);
+        adapter.notifyDataSetChanged();
     }
 
     public ListView getDbTable() {
         return dbTable;
     }
-    public void setHeader_layout_id(int header_layout_id) {
-        this.header_layout_id = header_layout_id;
-    }
+
 }

@@ -75,10 +75,6 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
     protected int getListItemDeleteBtnID() {
         return R.id.delete_btn;
     }
-    @Override
-    protected int getListHeaderID() {
-        return R.layout.dbplayer_list_header;
-    }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {

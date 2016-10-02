@@ -13,6 +13,8 @@ import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.StartNewGameRequest;
 
+import java.util.ArrayList;
+
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GET_GAME_LIST;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_LIST_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_START_GAME_INSTANCE_RESPONSE;
@@ -64,6 +66,17 @@ public class GameListActivity extends BaseListActivity<Game> {
     }
 
     @Override
+    protected ArrayList<DBColumnInfo> getColumnInfo() {
+        return  new ArrayList<DBColumnInfo>() {{
+            add(new DBColumnInfo("Name", 25, DBColumnInfo.ColumnType.COLUMN_REFERENCE, "name", "EDIT_ENTITY"));
+            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, "mapId", null));
+            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, "createdDate", null));
+            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "DELETE_ENTITY"));
+            add(new DBColumnInfo("", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "START_GAME_INSTANCE"));
+        }};
+    }
+
+    @Override
     protected int getListItemViewID() {
         return R.layout.games_list_item;
     }
@@ -78,11 +91,6 @@ public class GameListActivity extends BaseListActivity<Game> {
     @Override
     protected int getListItemUserActionBtnID() {
         return R.id.start_game_btn;
-    }
-
-    @Override
-    protected int getListHeaderID() {
-        return R.layout.game_list_header;
     }
 
     @Override

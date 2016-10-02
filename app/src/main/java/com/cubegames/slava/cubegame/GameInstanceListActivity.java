@@ -63,11 +63,6 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     }
 
     @Override
-    protected int getListHeaderID() {
-        return R.layout.game_instance_list_header;
-    }
-
-    @Override
     protected ListItemHolder createHolder() {
         return new GameInstanceItemHolder();
     }
