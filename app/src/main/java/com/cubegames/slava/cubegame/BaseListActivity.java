@@ -108,7 +108,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         }
     }
     protected  void fillHolder(ListItemHolder holder, final T item){
-        holder.textName.setText(item.getName());
+        tableFragment.fillColumnData(holder.textName, getColumnInfo().get(0), item);
 
         if (getDetailsActivityClass() != null) {
             holder.textName.setOnClickListener(new View.OnClickListener() {

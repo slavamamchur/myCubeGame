@@ -25,6 +25,19 @@ public class GameListActivity extends BaseListActivity<Game> {
 
     public static final int START_GAME_INSTANCE_ACTION = 3;
 
+    private static final ArrayList<DBColumnInfo> GAME_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
+        try {
+            add(new DBColumnInfo("Name", 25, DBColumnInfo.ColumnType.COLUMN_REFERENCE, Game.class.getField("name"), "EDIT_ENTITY"));
+            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField("mapId"), null));
+            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField("createdDate"), null));
+            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "DELETE_ENTITY"));
+            add(new DBColumnInfo("", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "START_GAME_INSTANCE"));
+        }
+        catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }};
+
     @Override
     protected String getListAction() {
         return ACTION_GET_GAME_LIST;
@@ -67,13 +80,7 @@ public class GameListActivity extends BaseListActivity<Game> {
 
     @Override
     protected ArrayList<DBColumnInfo> getColumnInfo() {
-        return  new ArrayList<DBColumnInfo>() {{
-            add(new DBColumnInfo("Name", 25, DBColumnInfo.ColumnType.COLUMN_REFERENCE, "name", "EDIT_ENTITY"));
-            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, "mapId", null));
-            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, "createdDate", null));
-            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "DELETE_ENTITY"));
-            add(new DBColumnInfo("", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "START_GAME_INSTANCE"));
-        }};
+        return  GAME_LIST_COLUMN_INFO;
     }
 
     @Override

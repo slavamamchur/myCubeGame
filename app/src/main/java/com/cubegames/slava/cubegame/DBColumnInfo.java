@@ -1,18 +1,20 @@
 package com.cubegames.slava.cubegame;
 
+import java.lang.reflect.Field;
+
 public class DBColumnInfo {
 
     private String caption;
     private float weight;
     private ColumnType type;
-    private String fieldName;
+    private Field dataField;
     private String TAG;
 
-    public DBColumnInfo(String caption, float weight, ColumnType type, String fieldName, String tag) {
+    public DBColumnInfo(String caption, float weight, ColumnType type, Field dataField, String tag) {
         this.caption = caption;
         this.weight = weight;
         this.type = type;
-        this.fieldName = fieldName;
+        this.dataField = dataField;
         TAG = tag;
     }
 
@@ -25,8 +27,8 @@ public class DBColumnInfo {
     public ColumnType getType() {
         return type;
     }
-    public String getFieldName() {
-        return fieldName;
+    public Field getDataField() {
+        return dataField;
     }
     public String getTAG() {
         return TAG;

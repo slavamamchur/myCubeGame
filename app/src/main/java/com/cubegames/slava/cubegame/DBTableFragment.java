@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -42,24 +44,37 @@ public class DBTableFragment extends Fragment {
     public void initTable(List<DBColumnInfo> columns) {
         this.columns = columns;
 
-        if (columns != null)
-            initHeaders();
+        initHeaders();
     }
 
     private void initHeaders() {
         header.removeAllViews();
 
-        for (DBColumnInfo column : columns) {
+        if (columns != null)
+            for (DBColumnInfo column : columns) {
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0, MATCH_PARENT);
+                lparams.weight = column.getWeight();
 
-            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0, MATCH_PARENT);
-            lparams.weight = column.getWeight();
+                TextView caption = new TextView(getContext());
+                caption.setText(column.getCaption());
+                caption.setTextSize(18);
+                caption.setTypeface(null, Typeface.BOLD);
 
-            TextView caption = new TextView(getContext());
-            caption.setText(column.getCaption());
-            caption.setTextSize(18);
-            caption.setTypeface(null, Typeface.BOLD);
+                header.addView(caption, lparams);
+            }
+    }
 
-            header.addView(caption, lparams);
+    public void fillColumnData(TextView view, DBColumnInfo column, BasicNamedDbEntity item) {
+        try {
+            Object value = column.getDataField().get(item);
+
+            if (column.getType().equals(DBColumnInfo.ColumnType.COLUMN_COLOR_BOX))
+                view.setBackgroundColor((Integer) value);
+            else
+                view.setText((String) value);
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
