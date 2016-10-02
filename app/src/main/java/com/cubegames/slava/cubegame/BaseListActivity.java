@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,6 +27,11 @@ import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_DELETE_ENTI
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
 
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
+
+    public static final String NAME_FIELD_NAME = "name";
+    public static final String EDIT_ENTITY_TAG = "EDIT_ENTITY";
+    public static final String DELETE_ENTITY_TAG = "DELETE_ENTITY";
+
     private ArrayList<T> items = new ArrayList<>();
     private DBTableFragment tableFragment;
 
@@ -92,53 +98,58 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected int getListItemUserActionBtnID(){
         return -1;
     }
+
     protected void doUserAction(T item){}
+
     protected ListItemHolder createHolder(){
         return new ListItemHolder();
     }
+
     protected void initHolder(View row, ListItemHolder holder, final T item){
         holder.textName = (TextView) row.findViewById(getListItemTextID());
+        holder.textName.setTag(getColumnInfo().get(0).getTAG());
 
         if(getListItemDeleteBtnID() >= 0){
             holder.btnDelete = (Button) row.findViewById(getListItemDeleteBtnID());
+            holder.btnDelete.setTag(getColumnInfo().get(3).getTAG());
         }
 
         if(getListItemUserActionBtnID() >= 0){
             holder.btnUserAction = (Button) row.findViewById(getListItemUserActionBtnID());
+            holder.btnUserAction.setTag(getColumnInfo().get(4).getTAG());
         }
     }
+
     protected  void fillHolder(ListItemHolder holder, final T item){
         tableFragment.fillColumnData(holder.textName, getColumnInfo().get(0), item);
 
-        if (getDetailsActivityClass() != null) {
-            holder.textName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        OnClickListener onClickDelegate = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (EDIT_ENTITY_TAG.equals(v.getTag())) {
                     Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
                     intent.putExtra(getEntityExtra(), item);
                     startActivity(intent);
                 }
-            });
-        }
-
-        if (holder.btnDelete != null){
-            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                else if (DELETE_ENTITY_TAG.equals(v.getTag())) {
                     showProgress();
                     RestApiService.startActionDeleteEntity(getApplicationContext(), item);
                 }
-            });
+                else
+                    doUserAction(item);
+            }
+        };
+
+        if (getDetailsActivityClass() != null)
+            holder.textName.setOnClickListener(onClickDelegate);
+
+        if (holder.btnDelete != null){
+            holder.btnDelete.setOnClickListener(onClickDelegate);
             holder.btnDelete.setEnabled(item.getTenantId() != null);
         }
-        if (holder.btnUserAction != null){
-            holder.btnUserAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    doUserAction(item);
-                }
-            });
-        }
+
+        if (holder.btnUserAction != null)
+            holder.btnUserAction.setOnClickListener(onClickDelegate);
     }
 
     @Override

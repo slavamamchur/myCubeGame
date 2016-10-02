@@ -24,14 +24,17 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_LIST;
 public class GameListActivity extends BaseListActivity<Game> {
 
     public static final int START_GAME_INSTANCE_ACTION = 3;
+    private static final String START_GAME_INSTANCE_TAG = "START_GAME_INSTANCE";
+    private static final String MAP_ID_FIELD_NAME = "mapId";
+    private static final String CREATED_DATE_FIELD_NAME = "createdDate";
 
     private static final ArrayList<DBColumnInfo> GAME_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
-            add(new DBColumnInfo("Name", 25, DBColumnInfo.ColumnType.COLUMN_REFERENCE, Game.class.getField("name"), "EDIT_ENTITY"));
-            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField("mapId"), null));
-            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField("createdDate"), null));
-            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "DELETE_ENTITY"));
-            add(new DBColumnInfo("", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, "START_GAME_INSTANCE"));
+            add(new DBColumnInfo("Name", 25, DBColumnInfo.ColumnType.COLUMN_REFERENCE, Game.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField(MAP_ID_FIELD_NAME), null));
+            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField(CREATED_DATE_FIELD_NAME), null));
+            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG));
+            add(new DBColumnInfo("", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, START_GAME_INSTANCE_TAG));
         }
         catch (NoSuchFieldException e) {
             e.printStackTrace();
