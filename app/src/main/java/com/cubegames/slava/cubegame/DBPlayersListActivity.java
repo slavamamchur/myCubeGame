@@ -6,15 +6,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
-import android.view.View;
-import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.colorpicker.AmbilWarnaDialogFragment;
 import com.cubegames.slava.cubegame.colorpicker.OnAmbilWarnaListener;
+import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.DbPlayer;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 
+import java.util.ArrayList;
+
+import static com.cubegames.slava.cubegame.DBTableFragment.DELETE_ENTITY_TAG;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GET_PLAYER_LIST;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_LIST_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
@@ -24,10 +26,27 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_PLAYER_LIST;
 public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
 
     public static int ACTION_DICTIONARY = 3;
-    public static String EXTRA_STARTED_AS_DICTIONARY = "EXTRA_STARTED_AS_DICTIONARY";
+    public static final String EXTRA_STARTED_AS_DICTIONARY = "EXTRA_STARTED_AS_DICTIONARY";
+
+    public static final String COLOR_FIELD_NAME = "color";
+
+    private static final ArrayList<DBColumnInfo> PLAYERS_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
+        try {
+            add(new DBColumnInfo("Name", 80, DBColumnInfo.ColumnType.COLUMN_REFERENCE, DbPlayer.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("Color", 10, DBColumnInfo.ColumnType.COLUMN_COLOR_BOX, DbPlayer.class.getDeclaredField(COLOR_FIELD_NAME), null));
+            add(new DBColumnInfo("Remove", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG));
+        }
+        catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }};
 
     private boolean isDictionary = false;
 
+    @Override
+    protected ArrayList<DBColumnInfo> getColumnInfo() {
+        return PLAYERS_LIST_COLUMN_INFO;
+    }
     @Override
     protected String getListAction() {
         return ACTION_GET_PLAYER_LIST;
@@ -44,12 +63,10 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
     protected String getEntityExtra() {
         return EXTRA_ENTITY_OBJECT;
     }
-
     @Override
     protected Class<?> getDetailsActivityClass() {
         return null;
     }
-
     @Override
     protected DbPlayer getNewItem() {
         return new DbPlayer();
@@ -64,19 +81,6 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
     }
 
     @Override
-    protected int getListItemViewID() {
-        return R.layout.dbplayer_list_item;
-    }
-    @Override
-    protected int getListItemTextID() {
-        return R.id.player_name_text;
-    }
-    @Override
-    protected int getListItemDeleteBtnID() {
-        return R.id.delete_btn;
-    }
-
-    @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
@@ -84,34 +88,14 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
     }
 
     @Override
-    protected ListItemHolder createHolder() {
-        return new DBPlayerItemHolder();
-    }
-    @Override
-    protected void initHolder(View row, ListItemHolder holder, DbPlayer item) {
-        super.initHolder(row, holder, item);
-
-        ((DBPlayerItemHolder) holder).textColor = (TextView) row.findViewById(R.id.player_color_text);
-    }
-
-    @Override
-    protected void fillHolder(ListItemHolder holder, final DbPlayer item) {
-        super.fillHolder(holder, item);
-
+    protected void performEditAction(BasicNamedDbEntity item) {
         if (isDictionary) {
-            holder.textName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra(getEntityExtra(), item);
-                    setResult(RESULT_OK, intent);
+            Intent intent = new Intent();
+            intent.putExtra(getEntityExtra(), item);
+            setResult(RESULT_OK, intent);
 
-                    finish();
-                }
-            });
+            finish();
         }
-
-        ((DBPlayerItemHolder) holder).textColor.setBackgroundColor(0xFF000000 | item.getColor());
     }
 
     @Override

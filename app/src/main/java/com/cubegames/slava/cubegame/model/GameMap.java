@@ -12,7 +12,7 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP;
 
 public class GameMap extends BasicNamedDbEntity implements Parcelable{
     @JsonProperty(required = false)
-    private long createdDate;
+    protected long createdDate;
     @JsonProperty(required = false)
     private byte[] binaryData;
 

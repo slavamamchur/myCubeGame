@@ -10,7 +10,7 @@ import com.cubegames.slava.cubegame.api.DBPlayerController;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_PLAYER;
 
 public class DbPlayer extends BasicNamedDbEntity implements Parcelable{
-    private int color;
+    protected int color;
     public static String ACTION_NAME =  URL_PLAYER;
 
     public DbPlayer() {}

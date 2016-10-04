@@ -5,15 +5,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
@@ -23,16 +16,17 @@ import java.util.ArrayList;
 
 import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EDITOR_REQUEST;
 import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EDITOR_RESULT_OK;
+import static com.cubegames.slava.cubegame.DBTableFragment.DELETE_ENTITY_TAG;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_DELETE_ENTITY_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
 
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
 
     public static final String NAME_FIELD_NAME = "name";
-    public static final String EDIT_ENTITY_TAG = "EDIT_ENTITY";
-    public static final String DELETE_ENTITY_TAG = "DELETE_ENTITY";
+    public static final String CREATED_DATE_FIELD_NAME = "createdDate";
 
-    private ArrayList<T> items = new ArrayList<>();
+    public static final String EDIT_ENTITY_TAG = "EDIT_ENTITY";
+
     private DBTableFragment tableFragment;
 
     @Override
@@ -49,108 +43,47 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        tableFragment.initTable(getColumnInfo());
-
-        tableFragment.getDbTable().setAdapter(new ArrayAdapter<T>(this, getListItemViewID(), getItems()){
-
+        DBTableFragment.OnItemClickDelegate onItemClickDelegate = new DBTableFragment.OnItemClickDelegate() {
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View row = convertView;
-                ListItemHolder holder;
-                final T item  = getItem(position);
-
-                if (row == null) {
-                    holder = createHolder();
-                    LayoutInflater layoutInflater = LayoutInflater.from(BaseListActivity.this);
-                    row = layoutInflater.inflate(getListItemViewID(), parent, false);
-                    initHolder(row, holder, item);
-
-                    row.setTag(holder);
+            public void onClick(String tag, BasicNamedDbEntity item) {
+                if (EDIT_ENTITY_TAG.equals(tag)) {
+                    performEditAction(item);
                 }
-                else {
-                    holder = (ListItemHolder) row.getTag();
+                else if (DELETE_ENTITY_TAG.equals(tag)) {
+                    showProgress();
+                    RestApiService.startActionDeleteEntity(getApplicationContext(), item);
                 }
-
-                fillHolder(holder, item);
-
-                return row;
+                else
+                    doUserAction((T) item, tag);
             }
 
-        });
+            @Override
+            public boolean isEnabled(String tag, BasicNamedDbEntity item) {
+                return isUserButtonEnabled(tag, item);
+            }
+        };
+
+        tableFragment.initTable(getColumnInfo(), onItemClickDelegate);
 
         showProgress();
-
         getData();
+    }
+
+    protected void performEditAction(BasicNamedDbEntity item) {
+        Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
+        intent.putExtra(getEntityExtra(), item);
+        startActivity(intent);
+    }
+
+    protected boolean isUserButtonEnabled(String tag, BasicNamedDbEntity item) {
+        return true;
     }
 
     protected ArrayList<DBColumnInfo> getColumnInfo() {
         return null;
     }
-    protected int getListItemViewID(){
-        return android.R.layout.simple_list_item_1;
-    }
-    protected int getListItemTextID(){
-        return android.R.id.text1;
-    }
-    protected int getListItemDeleteBtnID(){
-        return -1;
-    }
-    protected int getListItemUserActionBtnID(){
-        return -1;
-    }
 
-    protected void doUserAction(T item){}
-
-    protected ListItemHolder createHolder(){
-        return new ListItemHolder();
-    }
-
-    protected void initHolder(View row, ListItemHolder holder, final T item){
-        holder.textName = (TextView) row.findViewById(getListItemTextID());
-        holder.textName.setTag(getColumnInfo().get(0).getTAG());
-
-        if(getListItemDeleteBtnID() >= 0){
-            holder.btnDelete = (Button) row.findViewById(getListItemDeleteBtnID());
-            holder.btnDelete.setTag(getColumnInfo().get(3).getTAG());
-        }
-
-        if(getListItemUserActionBtnID() >= 0){
-            holder.btnUserAction = (Button) row.findViewById(getListItemUserActionBtnID());
-            holder.btnUserAction.setTag(getColumnInfo().get(4).getTAG());
-        }
-    }
-
-    protected  void fillHolder(ListItemHolder holder, final T item){
-        tableFragment.fillColumnData(holder.textName, getColumnInfo().get(0), item);
-
-        OnClickListener onClickDelegate = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (EDIT_ENTITY_TAG.equals(v.getTag())) {
-                    Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                    intent.putExtra(getEntityExtra(), item);
-                    startActivity(intent);
-                }
-                else if (DELETE_ENTITY_TAG.equals(v.getTag())) {
-                    showProgress();
-                    RestApiService.startActionDeleteEntity(getApplicationContext(), item);
-                }
-                else
-                    doUserAction(item);
-            }
-        };
-
-        if (getDetailsActivityClass() != null)
-            holder.textName.setOnClickListener(onClickDelegate);
-
-        if (holder.btnDelete != null){
-            holder.btnDelete.setOnClickListener(onClickDelegate);
-            holder.btnDelete.setEnabled(item.getTenantId() != null);
-        }
-
-        if (holder.btnUserAction != null)
-            holder.btnUserAction.setOnClickListener(onClickDelegate);
-    }
+    protected void doUserAction(T item, String tag){}
 
     @Override
     protected IntentFilter getIntentFilter() {
@@ -166,7 +99,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(getListResponseAction())){
             ArrayList<T> lst  = intent.getParcelableArrayListExtra(getListResponseExtra());
-            setItems(lst);
+            tableFragment.setItems(lst);
 
             return true;
         }
@@ -205,23 +138,6 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             //showProgress();
             getData();
         }
-    }
-
-    public ArrayList<T> getItems() {
-        return items;
-    }
-
-    public void setItems(ArrayList<T> items) {
-        this.items  = new ArrayList<>();
-        //if (items.size() > 0)
-            //this.items.add(items.get(0));
-        //this.items.addAll(items);
-        this.items = items;
-
-        ArrayAdapter adapter = (ArrayAdapter) tableFragment.getDbTable().getAdapter();
-        adapter.clear();
-        adapter.addAll(getItems());
-        adapter.notifyDataSetChanged();
     }
 
     protected abstract String getListAction();

@@ -4,17 +4,44 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.Menu;
-import android.view.View;
-import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.GameInstance;
+
+import java.util.ArrayList;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_LIST_RESPONSE;
 
 public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
+
+    private static final String STATE_FIELD_NAME = "state";
+    private static final String PLAYERS_FIELD_NAME = "players";
+    private static final String STARTED_FIELD_NAME = "startedDate";
+    private static final String LAST_USED_FIELD_NAME = "lastUsedDate";
+
+    private static final String FINISH_GAME_TAG = "FINISH_GAME";
+
+    private static final ArrayList<DBColumnInfo> GAME_INSTANCE_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
+        try {
+            add(new DBColumnInfo("Name", 48, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameInstance.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("State", 8, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(STATE_FIELD_NAME), null));
+            add(new DBColumnInfo("# of Players", 11, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(PLAYERS_FIELD_NAME), null));
+            add(new DBColumnInfo("Started", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(STARTED_FIELD_NAME), null));
+            add(new DBColumnInfo("Last used", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(LAST_USED_FIELD_NAME), null));
+            add(new DBColumnInfo("Finish", 7, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, FINISH_GAME_TAG));
+        }
+        catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }};
+
+    @Override
+    protected ArrayList<DBColumnInfo> getColumnInfo() {
+        return GAME_INSTANCE_LIST_COLUMN_INFO;
+    }
     @Override
     protected String getListAction() {
         return RestApiService.ACTION_GET_GAME_INSTANCE_LIST;
@@ -50,44 +77,8 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     }
 
     @Override
-    protected int getListItemViewID() {
-        return R.layout.game_instance_list_item;
-    }
-    @Override
-    protected int getListItemTextID() {
-        return R.id.game_instance_name_text;
-    }
-    @Override
-    protected int getListItemUserActionBtnID() {
-        return R.id.finish_game_btn;
-    }
-
-    @Override
-    protected ListItemHolder createHolder() {
-        return new GameInstanceItemHolder();
-    }
-
-    @Override
-    protected void initHolder(View row, ListItemHolder holder, GameInstance item) {
-        super.initHolder(row, holder, item);
-
-        ((GameInstanceItemHolder) holder).textStarted = (TextView) row.findViewById(R.id.game_started_text);
-        ((GameInstanceItemHolder) holder).textLastUsed = (TextView) row.findViewById(R.id.game_last_used_text);
-        ((GameInstanceItemHolder) holder).textState = (TextView) row.findViewById(R.id.game_state_text);
-        ((GameInstanceItemHolder) holder).textPlayersCount = (TextView) row.findViewById(R.id.game_players_count_text);
-    }
-
-    @Override
-    protected void fillHolder(ListItemHolder holder, final GameInstance item) {
-        super.fillHolder(holder, item);
-
-        ((GameInstanceItemHolder) holder).textStarted.setText(Utils.formatDateTime(item.getStartedDate()));
-        ((GameInstanceItemHolder) holder).textLastUsed.setText(Utils.formatDateTime(item.getLastUsedDate()));
-        ((GameInstanceItemHolder) holder).textState.setText(item.getState().name());
-        ((GameInstanceItemHolder) holder).textPlayersCount.setText(
-                String.format("%d", item.getPlayers().size()));
-
-        holder.btnUserAction.setEnabled(!item.getState().equals(GameInstance.State.FINISHED));
+    protected boolean isUserButtonEnabled(String tag, BasicNamedDbEntity item) {
+        return !((GameInstance)item).getState().equals(GameInstance.State.FINISHED);
     }
 
     @Override
@@ -100,7 +91,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     }
 
     @Override
-    protected void doUserAction(GameInstance item) {
+    protected void doUserAction(GameInstance item, String tag) {
         showProgress();
 
         RestApiService.startActionFinishGameInstance(getApplicationContext(), item);

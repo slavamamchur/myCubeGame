@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.Menu;
-import android.view.View;
-import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
@@ -15,6 +13,7 @@ import com.cubegames.slava.cubegame.model.StartNewGameRequest;
 
 import java.util.ArrayList;
 
+import static com.cubegames.slava.cubegame.DBTableFragment.DELETE_ENTITY_TAG;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_GET_GAME_LIST;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_LIST_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_START_GAME_INSTANCE_RESPONSE;
@@ -26,15 +25,14 @@ public class GameListActivity extends BaseListActivity<Game> {
     public static final int START_GAME_INSTANCE_ACTION = 3;
     private static final String START_GAME_INSTANCE_TAG = "START_GAME_INSTANCE";
     private static final String MAP_ID_FIELD_NAME = "mapId";
-    private static final String CREATED_DATE_FIELD_NAME = "createdDate";
 
     private static final ArrayList<DBColumnInfo> GAME_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
             add(new DBColumnInfo("Name", 25, DBColumnInfo.ColumnType.COLUMN_REFERENCE, Game.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
             add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField(MAP_ID_FIELD_NAME), null));
             add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField(CREATED_DATE_FIELD_NAME), null));
-            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG));
-            add(new DBColumnInfo("", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, START_GAME_INSTANCE_TAG));
+            add(new DBColumnInfo("Delete", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG));
+            add(new DBColumnInfo("Start", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, START_GAME_INSTANCE_TAG));
         }
         catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -45,83 +43,37 @@ public class GameListActivity extends BaseListActivity<Game> {
     protected String getListAction() {
         return ACTION_GET_GAME_LIST;
     }
-
     @Override
     protected String getListResponseAction() {
         return ACTION_LIST_RESPONSE;
     }
-
     @Override
     protected String getListResponseExtra() {
         return EXTRA_GAME_LIST;
     }
-
     @Override
     protected String getEntityExtra() {
         return EXTRA_ENTITY_OBJECT;
     }
-
     @Override
     protected Class<?> getDetailsActivityClass() {
         return GameActivity.class;
     }
-
     @Override
     protected Game getNewItem() {
         return new Game();
     }
-
     @Override
     protected String getNewItemActionName() {
         return null;
     }
-
     @Override
     protected int getCaptionResource() {
         return R.string.game_list_title;
     }
-
     @Override
     protected ArrayList<DBColumnInfo> getColumnInfo() {
         return  GAME_LIST_COLUMN_INFO;
-    }
-
-    @Override
-    protected int getListItemViewID() {
-        return R.layout.games_list_item;
-    }
-    @Override
-    protected int getListItemTextID() {
-        return R.id.game_name_text;
-    }
-    @Override
-    protected int getListItemDeleteBtnID() {
-        return R.id.delete_btn;
-    }
-    @Override
-    protected int getListItemUserActionBtnID() {
-        return R.id.start_game_btn;
-    }
-
-    @Override
-    protected ListItemHolder createHolder() {
-        return new GameItemHolder();
-    }
-
-    @Override
-    protected void initHolder(View row, ListItemHolder holder, Game item) {
-        super.initHolder(row, holder, item);
-
-        ((GameItemHolder) holder).textCreated = (TextView) row.findViewById(R.id.game_created_text);
-        ((GameItemHolder) holder).textMapID = (TextView) row.findViewById(R.id.map_id_text);
-    }
-
-    @Override
-    protected void fillHolder(ListItemHolder holder, final Game item) {
-        super.fillHolder(holder, item);
-
-        ((GameItemHolder) holder).textCreated.setText(Utils.formatDateTime(item.getCreatedDate()));
-        ((GameItemHolder) holder).textMapID.setText(item.getMapId());
     }
 
     @Override
@@ -162,7 +114,7 @@ public class GameListActivity extends BaseListActivity<Game> {
     }
 
     @Override
-    protected void doUserAction(Game item) {
+    protected void doUserAction(Game item, String tag) {
         Intent mIntent = new Intent(getApplicationContext(), NewGameInstanceActivity.class);
         mIntent.putExtra(getEntityExtra(), item);
         startActivityForResult(mIntent, START_GAME_INSTANCE_ACTION);

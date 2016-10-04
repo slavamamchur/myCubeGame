@@ -17,12 +17,12 @@ public class GameInstance extends BasicNamedDbEntity {
     public static String ACTION_NAME = URL_GAME_INSTANCE;
 
     private Game game;  // exactly Game, not Game's Id
-    private List<InstancePlayer> players;
-    private int currentPlayer;
-    private int stepsToGo;
-    private State state;
-    private long startedDate;
-    private long lastUsedDate;
+    protected List<InstancePlayer> players;
+    protected int currentPlayer;
+    protected int stepsToGo;
+    protected State state;
+    protected long startedDate;
+    protected long lastUsedDate;
 
     public GameInstance() {}
     public GameInstance(Parcel in) {
