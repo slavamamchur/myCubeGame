@@ -16,16 +16,30 @@ import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 
 import java.util.ArrayList;
 
+import static com.cubegames.slava.cubegame.BaseListActivity.NAME_FIELD_NAME;
 import static com.cubegames.slava.cubegame.DBPlayersListActivity.ACTION_DICTIONARY;
+import static com.cubegames.slava.cubegame.DBPlayersListActivity.COLOR_FIELD_NAME;
 import static com.cubegames.slava.cubegame.DBPlayersListActivity.EXTRA_STARTED_AS_DICTIONARY;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.cubegames.slava.cubegame.model.GameInstance.State.WAIT;
 
 public class NewGameInstanceActivity extends BaseActivityWithMenu {
 
+    private static final ArrayList<DBColumnInfo> PLAYERS_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
+        try {
+            add(new DBColumnInfo("Name", 50, DBColumnInfo.ColumnType.COLUMN_TEXT, InstancePlayer.class.getDeclaredField(NAME_FIELD_NAME), null));
+            add(new DBColumnInfo("Color", 10, DBColumnInfo.ColumnType.COLUMN_COLOR_BOX, InstancePlayer.class.getDeclaredField(COLOR_FIELD_NAME), null));
+            add(new DBColumnInfo("", 40, DBColumnInfo.ColumnType.COLUMN_TEXT, null, null));
+        }
+        catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }};
+
     private Game gameEntity;
     private GameInstance instance = new GameInstance();
     private EditText editName;
+    private DBTableFragment tableFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +53,8 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        tableFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.players_list_fragment);
     }
 
     @Override
@@ -46,11 +62,15 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
         super.onPostCreate(savedInstanceState);
 
         gameEntity = getIntent().getParcelableExtra(EXTRA_ENTITY_OBJECT);
+
         setTitle(getString(R.string.start_new_instance_title) + " (Game ID: " + gameEntity.getId() + ")");
 
         instance.setGame(gameEntity);
         instance.setPlayers( new ArrayList<InstancePlayer>());
         instance.setState(WAIT);
+
+        tableFragment.initTable(PLAYERS_LIST_COLUMN_INFO, null);
+        tableFragment.setItems(instance.getPlayers());
     }
 
     @Override
@@ -58,6 +78,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
         menu.findItem(R.id.action_new).setVisible(true);
         menu.findItem(R.id.action_new).setTitle(R.string.add_new_player_caption);
         menu.findItem(R.id.action_start_instance).setVisible(true);
+        menu.findItem(R.id.action_remove_all_players).setVisible(true);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -90,6 +111,10 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
 
             return true;
         }
+        else if(id == R.id.action_remove_all_players) {
+            instance.getPlayers().clear();
+            tableFragment.setItems(instance.getPlayers());
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -112,13 +137,13 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
                 iplayer.setColor(newPlayer.getColor());
                 iplayer.setName(newPlayer.getName());
 
-                if (!instance.getPlayers().contains(iplayer))
+                if (!instance.getPlayers().contains(iplayer)) {
                     instance.getPlayers().add(iplayer);
+                    tableFragment.setItems(instance.getPlayers());
+                }
                 else {
                     showError(getString(R.string.player_exists_error));
                 }
-
-                //todo: update list (-> list fragment)
             }
         }
         else

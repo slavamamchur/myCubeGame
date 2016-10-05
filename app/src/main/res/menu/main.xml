@@ -25,6 +25,12 @@
         android:visible="false"
         app:showAsAction="always|withText"/>
     <item
+        android:id="@+id/action_remove_all_players"
+        android:icon="@android:drawable/ic_delete"
+        android:title="Remove All"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+    <item
         android:id="@+id/action_upload_file"
         android:icon="@android:drawable/ic_menu_gallery"
         android:title="Upload picture"

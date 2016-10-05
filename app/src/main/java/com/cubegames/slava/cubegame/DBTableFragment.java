@@ -31,8 +31,8 @@ public class DBTableFragment extends Fragment {
     public static final String DELETE_ENTITY_TAG = "DELETE_ENTITY";
 
     public interface OnItemClickDelegate {
-        void onClick(String tag, BasicNamedDbEntity item);
-        boolean isEnabled(String tag, BasicNamedDbEntity item);
+        void onClick(String tag, Object item);
+        boolean isEnabled(String tag, Object item);
     }
 
     private OnItemClickDelegate onItemClickDelegate;
@@ -91,7 +91,7 @@ public class DBTableFragment extends Fragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View row = convertView;
                 ArrayList<View> holder;
-                final BasicNamedDbEntity item  = getItem(position);
+                final Object item  = getItem(position);
 
                 if (row == null) {
                     row = createRowView();
@@ -117,7 +117,7 @@ public class DBTableFragment extends Fragment {
         return holder;
     }
 
-    private void fillHolder(ArrayList<View> holder, final BasicNamedDbEntity item) {
+    private void fillHolder(ArrayList<View> holder, final Object item) {
         View.OnClickListener onClickListener =
                 new View.OnClickListener() {
                     @Override
@@ -167,7 +167,7 @@ public class DBTableFragment extends Fragment {
         return row;
     }
 
-    public void fillColumnData(View view, DBColumnInfo column, BasicNamedDbEntity item) {
+    public void fillColumnData(View view, DBColumnInfo column, Object item) {
         try {
             Object value = column.getDataField() != null ? column.getDataField().get(item) : "";
 
@@ -177,8 +177,8 @@ public class DBTableFragment extends Fragment {
                 if (!column.getType().equals(COLUMN_BUTTON))
                     ((TextView)view).setText(getStringValue(value));
                 else
-                    if (DELETE_ENTITY_TAG.equals(column.getTAG()))
-                        view.setEnabled(item.getTenantId() != null);
+                    if (DELETE_ENTITY_TAG.equals(column.getTAG()) && (item instanceof BasicNamedDbEntity))
+                        view.setEnabled(((BasicNamedDbEntity)item).getTenantId() != null);
                     else if (onItemClickDelegate != null)
                             view.setEnabled(onItemClickDelegate.isEnabled(column.getTAG(), item));
 

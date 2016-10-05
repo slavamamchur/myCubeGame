@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 public class InstancePlayer implements Parcelable{
 
-    private String name;
-    private int color;
+    protected String name;
+    protected int color;
     private int currentPoint;
     private boolean finished;
     private boolean skipped;

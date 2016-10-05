@@ -45,21 +45,21 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
         DBTableFragment.OnItemClickDelegate onItemClickDelegate = new DBTableFragment.OnItemClickDelegate() {
             @Override
-            public void onClick(String tag, BasicNamedDbEntity item) {
+            public void onClick(String tag, Object item) {
                 if (EDIT_ENTITY_TAG.equals(tag)) {
-                    performEditAction(item);
+                    performEditAction((T)item);
                 }
                 else if (DELETE_ENTITY_TAG.equals(tag)) {
                     showProgress();
-                    RestApiService.startActionDeleteEntity(getApplicationContext(), item);
+                    RestApiService.startActionDeleteEntity(getApplicationContext(), (T)item);
                 }
                 else
                     doUserAction((T) item, tag);
             }
 
             @Override
-            public boolean isEnabled(String tag, BasicNamedDbEntity item) {
-                return isUserButtonEnabled(tag, item);
+            public boolean isEnabled(String tag, Object item) {
+                return isUserButtonEnabled(tag, (T)item);
             }
         };
 
