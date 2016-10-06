@@ -7,9 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,6 +25,7 @@ import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
+import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
@@ -78,21 +80,7 @@ public class MapFragment extends Fragment {
                     bitmapOptions.inMutable = true;
                     Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(), 0, response.getBinaryData().length, bitmapOptions);
 
-                    if (gameEntity != null) {
-                        Canvas canvas = new Canvas(mapImage);
-
-                        Paint paint = new Paint();
-                        paint.setColor(Color.GREEN); // Text Color
-                        paint.setStrokeWidth(12); // Text Size
-                        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)); // Text Overlapping Pattern
-                        // some more settings...
-
-                        canvas.drawBitmap(mapImage, 0, 0, paint);
-                        canvas.drawText(String.format("Game points count: %d", gameEntity.getGamePoints().size()), 10, 10, paint);
-                    }
-
-                    mMapImage.setImageBitmap(mapImage);
-                    mMapImage.invalidate();
+                    DrawMap(mapImage);
                 }
             }
             else {
@@ -104,6 +92,59 @@ public class MapFragment extends Fragment {
         }
         else
             return false;
+    }
+
+    private void DrawMap(Bitmap mapImage) {
+        if (gameEntity != null) {
+            Canvas canvas = new Canvas(mapImage);
+
+            Paint paint = new Paint();
+            paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
+
+            canvas.drawBitmap(mapImage, 0, 0, paint);
+
+            Path path = new Path();
+            if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
+                AbstractGamePoint point = gameEntity.getGamePoints().get(0);
+                path.moveTo(point.getxPos(), point.getyPos());
+            }
+            for ( int i = 1; i < gameEntity.getGamePoints().size(); i++) {
+                AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
+                path.lineTo(endPoint.getxPos(), endPoint.getyPos());
+            }
+            paint.setColor(Color.GREEN);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(5);
+            canvas.drawPath(path, paint);
+
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.FILL);
+            for ( int i = 0; i < gameEntity.getGamePoints().size(); i++) {
+                AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
+                canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
+            }
+
+            //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)); // Text Overlapping Pattern
+            //canvas.drawText(String.format("Game points count: %d", gameEntity.getGamePoints().size()), 10, 10, paint);
+        }
+
+        mMapImage.setImageBitmap(mapImage);
+        mMapImage.invalidate();
+    }
+
+
+    private Point getActualMapSize(ImageView imageView) {
+        int ih=imageView.getMeasuredHeight();//height of imageView
+        int iw=imageView.getMeasuredWidth();//width of imageView
+        int iH=imageView.getDrawable().getIntrinsicHeight();//original height of underlying image
+        int iW=imageView.getDrawable().getIntrinsicWidth();//original width of underlying image
+
+        if (ih/iH <= iw/iW)
+            iw = iW*ih/iH;//rescaled width of image within ImageView
+        else
+            ih = iH*iw/iW;//rescaled height of image within ImageView
+
+        return new Point(iw, ih);
     }
 
     public void loadMapImage(GameMap map) {
