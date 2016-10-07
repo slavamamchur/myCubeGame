@@ -19,12 +19,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.cubegames.slava.cubegame.BaseItemDetailsActivity.WebErrorHandler;
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
+import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.GameMap;
+import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
@@ -35,14 +39,16 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_GAME_MAP_OBJ
 public class MapFragment extends Fragment {
 
     private ImageView mMapImage;
-    private BaseItemDetailsActivity.WebErrorHandler webErrorHandler;
-    private Game gameEntity;
+    private WebErrorHandler webErrorHandler;
+    private Game gameEntity = null;
+    private GameInstance gameInstanceEntity = null;
 
     public MapFragment() {}
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.map_fragment, container, false);
     }
 
@@ -58,7 +64,7 @@ public class MapFragment extends Fragment {
         intentFilter.addAction(ACTION_UPLOAD_IMAGE_RESPONSE);
     }
 
-    public void setWebErrorHandler(BaseItemDetailsActivity.WebErrorHandler webErrorHandler) {
+    public void setWebErrorHandler(WebErrorHandler webErrorHandler) {
         this.webErrorHandler = webErrorHandler;
     }
 
@@ -78,7 +84,8 @@ public class MapFragment extends Fragment {
                 if (response.getBinaryData() != null) {
                     final BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
                     bitmapOptions.inMutable = true;
-                    Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(), 0, response.getBinaryData().length, bitmapOptions);
+                    Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(),
+                            0, response.getBinaryData().length, bitmapOptions);
 
                     DrawMap(mapImage);
                 }
@@ -94,13 +101,42 @@ public class MapFragment extends Fragment {
             return false;
     }
 
+    public void InitMap(GameMap map, WebErrorHandler errorHandler) {
+        setWebErrorHandler(errorHandler);
+
+        loadMapImage(map);
+    }
+
+    public void InitMap(Game game, WebErrorHandler errorHandler) {
+        setGameEntity(game);
+        setWebErrorHandler(errorHandler);
+
+        if (game != null && game.getMapId() != null) {
+            GameMap map = new GameMap();
+            map.setId(game.getMapId());
+            loadMapImage(map);
+        }
+    }
+
+    public void InitMap(GameInstance gameInst, WebErrorHandler errorHandler) {
+        setGameInstanceEntity(gameInst);
+        setGameEntity(gameInst == null ? null : gameInst.getGame());
+        setWebErrorHandler(errorHandler);
+
+        if (gameEntity != null && gameEntity.getMapId() != null) {
+            GameMap map = new GameMap();
+            map.setId(gameEntity.getMapId());
+            loadMapImage(map);
+        }
+    }
+
     private void DrawMap(Bitmap mapImage) {
+        Paint paint = new Paint();
+        paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
+
+        Canvas canvas = new Canvas(mapImage);
+
         if (gameEntity != null) {
-            Canvas canvas = new Canvas(mapImage);
-
-            Paint paint = new Paint();
-            paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
-
             canvas.drawBitmap(mapImage, 0, 0, paint);
 
             Path path = new Path();
@@ -124,18 +160,55 @@ public class MapFragment extends Fragment {
                 canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
             }
 
-            //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)); // Text Overlapping Pattern
-            //canvas.drawText(String.format("Game points count: %d", gameEntity.getGamePoints().size()), 10, 10, paint);
+            //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+            //canvas.drawText(String.format("Game points count: %d",
+            // gameEntity.getGamePoints().size()), 10, 10, paint);
         }
 
+        if (gameInstanceEntity != null) {
+            int[] playersOnWayPoints = new int[gameInstanceEntity.getGame().getGamePoints().size()];
+            for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
+                int currentPointIdx = player.getCurrentPoint();
+                playersOnWayPoints[currentPointIdx]++;
+                int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+                AbstractGamePoint point = gameInstanceEntity.getGame().getGamePoints().get(currentPointIdx);
+                int x = point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
+                int y = point.getyPos();
+
+                paint.setColor(0xAA000000 | player.getColor());
+                canvas.drawCircle(x, y, 15f, paint);
+            }
+
+        }
+
+        runJustBeforeBeingDrawn(mMapImage);
         mMapImage.setImageBitmap(mapImage);
-        mMapImage.invalidate();
     }
 
+    private void runJustBeforeBeingDrawn(final View view) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Point pt = getActualMapSize(mMapImage);
+            }
+        };
+
+        final ViewTreeObserver.OnPreDrawListener preDrawListener =
+            new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    runnable.run();
+                    return true;
+                }
+            };
+
+        view.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+    }
 
     private Point getActualMapSize(ImageView imageView) {
-        int ih=imageView.getMeasuredHeight();//height of imageView
-        int iw=imageView.getMeasuredWidth();//width of imageView
+        int ih=imageView.getHeight();//height of imageView
+        int iw=imageView.getWidth();//width of imageView
         int iH=imageView.getDrawable().getIntrinsicHeight();//original height of underlying image
         int iW=imageView.getDrawable().getIntrinsicWidth();//original width of underlying image
 
@@ -147,7 +220,7 @@ public class MapFragment extends Fragment {
         return new Point(iw, ih);
     }
 
-    public void loadMapImage(GameMap map) {
+    private void loadMapImage(GameMap map) {
         RestApiService.startActionGetMapImage(getContext(), map);
     }
 
@@ -172,5 +245,8 @@ public class MapFragment extends Fragment {
 
     public void setGameEntity(Game gameEntity) {
         this.gameEntity = gameEntity;
+    }
+    public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
+        this.gameInstanceEntity = gameInstanceEntity;
     }
 }

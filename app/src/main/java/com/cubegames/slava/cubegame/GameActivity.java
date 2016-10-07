@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
-import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 
@@ -33,16 +32,9 @@ public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseI
         setTitle(getItem().getName() + "(ID: " + getItem().getId() + ", created: " +
                 Utils.formatDateTime(getItem().getCreatedDate()) + ")");
 
-        mMapFragment.setWebErrorHandler(this);
-
         if(getItem() != null && getItem().getId() != null){
-            mMapFragment.setGameEntity(getItem());
-
             showProgress();
-
-            GameMap map = new GameMap();
-            map.setId(getItem().getMapId());
-            mMapFragment.loadMapImage(map);
+            mMapFragment.InitMap(getItem(), this);
         }
     }
 
@@ -71,6 +63,5 @@ public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseI
         else
             return super.handleWebServiceResponseAction(context, intent);
     }
-
 
 }

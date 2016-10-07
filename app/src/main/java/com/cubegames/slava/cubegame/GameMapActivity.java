@@ -35,11 +35,9 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMap> implements
         setTitle(getItem().getName() + "(ID: " + getItem().getId() + ", created: " +
                 Utils.formatDateTime(getItem().getCreatedDate()) + ")");
 
-        mMapFragment.setWebErrorHandler(this);
-
         if(getItem() != null && getItem().getId() != null){
             showProgress();
-            mMapFragment.loadMapImage(getItem());
+            mMapFragment.InitMap(getItem(), this);
         }
     }
 
