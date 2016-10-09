@@ -5,13 +5,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+
+import com.cubegames.slava.cubegame.model.points.NewPointRequest;
+import com.cubegames.slava.cubegame.model.points.PointType;
 
 
-public class InputNameDialogFragment extends DialogFragment {
+public class NewGamePointDialogFragment extends DialogFragment {
 
     private View form=null;
     private DialogOnClickDelegate delegate = null;
@@ -40,16 +41,14 @@ public class InputNameDialogFragment extends DialogFragment {
                 @Override
                 public void onClick(View v)
                 {
-                    EditText nameBox=(EditText)form.findViewById(R.id.entity_name);
-                    if (TextUtils.isEmpty(nameBox.getText().toString())){
-                        nameBox.setError(getString(R.string.blank_name_error));
-                    }
-                    else {
+                    NewPointRequest result = new NewPointRequest();
+                    result.setxPos(100); //TODO: init from UI
+                    result.setyPos(200);
+                    result.setType(PointType.START);
                         if (getDelegate() != null)
-                            getDelegate().doAction(nameBox.getText().toString());
+                            getDelegate().doAction(result);
 
                         d.dismiss();
-                    }
 
                 }
             });

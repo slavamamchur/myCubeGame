@@ -9,13 +9,19 @@ public class DBColumnInfo {
     private ColumnType type;
     private Field dataField;
     private String TAG;
+    private int iconResId;
 
     public DBColumnInfo(String caption, float weight, ColumnType type, Field dataField, String tag) {
+        this(caption, weight, type, dataField, tag, -1);
+    }
+
+    public DBColumnInfo(String caption, float weight, ColumnType type, Field dataField, String tag, int iconResId) {
         this.caption = caption;
         this.weight = weight;
         this.type = type;
         this.dataField = dataField;
         TAG = tag;
+        this.iconResId = iconResId;
     }
 
     public String getCaption() {
@@ -32,6 +38,9 @@ public class DBColumnInfo {
     }
     public String getTAG() {
         return TAG;
+    }
+    public int getIconResId() {
+        return iconResId;
     }
 
     public enum ColumnType { COLUMN_TEXT, COLUMN_REFERENCE, COLUMN_BUTTON, COLUMN_COLOR_BOX }

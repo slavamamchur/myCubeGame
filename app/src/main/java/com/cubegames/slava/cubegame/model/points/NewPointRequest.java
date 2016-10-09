@@ -12,6 +12,15 @@ public class NewPointRequest implements Parcelable{
     private int nextIndex;
     private int flyIndex;
 
+    public NewPointRequest() {}
+
+    public NewPointRequest(AbstractGamePoint other) {
+        this.xPos = other.xPos;
+        this.yPos = other.yPos;
+        this.type = other.type;
+        this.nextIndex = other.nextPointIndex;
+    }
+
     protected NewPointRequest(Parcel in) {
         gameId = in.readString();
         xPos = in.readInt();

@@ -1,13 +1,11 @@
 package com.cubegames.slava.cubegame;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -25,6 +23,9 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
 
     public static int EDITOR_REQUEST = 1;
     public static int EDITOR_RESULT_OK = 1;
+    public static int EDITOR_RESULT_CANCEL = 2;
+
+    public static final String EXTRA_ENTITY_CHANGED = "EXTRA_ENTITY_CHANGED";
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
         }
 
         item = getIntent().getParcelableExtra(getItemExtra());
+        setItemChanged(getIntent().getBooleanExtra(EXTRA_ENTITY_CHANGED, false));
 
         setTitle(item.getName() + "(ID: " + item.getId() + ")");
     }
@@ -60,28 +62,31 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
 
     private void doExit(){
         if (!isItemChanged()) {
-            setResult(EDITOR_RESULT_OK);
+            setResult(EDITOR_RESULT_CANCEL);
             finish();
         }
         else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.save_confirm_text)
-                    .setTitle(R.string.confirm_title);
-            builder.setPositiveButton(R.string.yes_btn_caption, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    saveItem();
-                }
-            });
-            builder.setNegativeButton(R.string.no_btn_caption, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    setResult(EDITOR_RESULT_OK);
-                    finish();
-                }
-            });
-            builder.setNeutralButton(R.string.cancel_btn_caption, null);
+            setResult(EDITOR_RESULT_OK);
+            finish();
 
-            AlertDialog dialog = builder.create();
-            showAlert(dialog);
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setMessage(R.string.save_confirm_text)
+//                    .setTitle(R.string.confirm_title);
+//            builder.setPositiveButton(R.string.yes_btn_caption, new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    saveItem();
+//                }
+//            });
+//            builder.setNegativeButton(R.string.no_btn_caption, new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    setResult(EDITOR_RESULT_OK);
+//                    finish();
+//                }
+//            });
+//            builder.setNeutralButton(R.string.cancel_btn_caption, null);
+//
+//            AlertDialog dialog = builder.create();
+//            showAlert(dialog);
         }
     }
 
@@ -105,6 +110,8 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_SAVE_ENTITY_RESPONSE)){
             item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+            setItemChanged(true);
+            finish();
 
             return true;
         }
@@ -113,8 +120,12 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     }
 
     public boolean isItemChanged() {
-        return itemChanged || item.getId() == null;
+        return itemChanged;
     }
+    public void setItemChanged(boolean itemChanged) {
+        this.itemChanged = itemChanged;
+    }
+
     public T getItem() {
         return item;
     }

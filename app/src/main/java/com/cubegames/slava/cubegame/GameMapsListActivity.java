@@ -112,11 +112,11 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     @Override
     protected void doUserAction(final GameMap item, String tag) {
         InputNameDialogFragment dialog = new InputNameDialogFragment();
-        dialog.setDelegate(new InputNameDelegate() {
+        dialog.setDelegate(new DialogOnClickDelegate() {
             @Override
-            public void doAction(String name) {
+            public void doAction(Object result) {
                 Game game = new Game();
-                game.setName(name);
+                game.setName((String)result);
                 game.setMapId(item.getId());
 
                 newGame(game);

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EDITOR_REQUEST;
 import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EDITOR_RESULT_OK;
+import static com.cubegames.slava.cubegame.BaseItemDetailsActivity.EXTRA_ENTITY_CHANGED;
 import static com.cubegames.slava.cubegame.DBTableFragment.DELETE_ENTITY_TAG;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_DELETE_ENTITY_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
@@ -28,6 +29,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     public static final String EDIT_ENTITY_TAG = "EDIT_ENTITY";
 
     private DBTableFragment tableFragment;
+    private ArrayList<T> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     protected void performEditAction(BasicNamedDbEntity item) {
         Intent intent = new Intent(getApplicationContext(), getDetailsActivityClass());
         intent.putExtra(getEntityExtra(), item);
-        startActivity(intent);
+        startActivityForResult(intent, EDITOR_REQUEST);
     }
 
     protected boolean isUserButtonEnabled(String tag, BasicNamedDbEntity item) {
@@ -100,6 +102,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
         if (intent.getAction().equals(getListResponseAction())){
             ArrayList<T> lst  = intent.getParcelableArrayListExtra(getListResponseExtra());
             tableFragment.setItems(lst);
+            items = lst;
 
             return true;
         }
@@ -120,6 +123,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             if (error == null){
                 Intent mIntent = new Intent(getApplicationContext(), getDetailsActivityClass());
                 mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT));
+                mIntent.putExtra(EXTRA_ENTITY_CHANGED, true);
                 startActivityForResult(mIntent, EDITOR_REQUEST);
             }
             else {
@@ -135,8 +139,9 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == EDITOR_RESULT_OK){
-            //showProgress();
+            ///showProgress();
             getData();
+            //tableFragment.setItems(items);
         }
     }
 
@@ -205,11 +210,11 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
 
     protected void handleActionNew(){
         InputNameDialogFragment dialog = new InputNameDialogFragment();
-        dialog.setDelegate(new InputNameDelegate() {
+        dialog.setDelegate(new DialogOnClickDelegate() {
             @Override
-            public void doAction(String name) {
+            public void doAction(Object result) {
                 T newItem = getNewItem();
-                newItem.setName(name);
+                newItem.setName((String)result);
                 createEntity(newItem);
             }
         });

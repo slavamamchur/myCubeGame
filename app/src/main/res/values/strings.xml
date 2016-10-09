@@ -101,5 +101,6 @@
     <string name="start_new_instance_title">Start New Instance</string>
     <string name="players_list_empty_error">List of players can not be empty.</string>
     <string name="player_exists_error">Player already exists.</string>
+    <string name="new_game_point_caption">New point</string>
 
 </resources>

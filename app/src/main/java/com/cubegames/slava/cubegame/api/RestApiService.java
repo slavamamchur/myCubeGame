@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.cubegames.slava.cubegame.model.AuthToken;
 import com.cubegames.slava.cubegame.model.BasicEntity;
@@ -49,6 +50,10 @@ public class RestApiService extends IntentService {
     public static final String ACTION_FINISH_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.FINISH_GAME_INSTANCE_RESPONSE";
     public static final String ACTION_START_GAME_INSTANCE = "com.cubegames.slava.cubegame.api.action.START_GAME_INSTANCE";
     public static final String ACTION_START_GAME_INSTANCE_RESPONSE = "com.cubegames.slava.cubegame.api.action.START_GAME_INSTANCE_RESPONSE";
+    public static final String ACTION_REMOVE_CHILD = "com.cubegames.slava.cubegame.api.action.ACTION_REMOVE_CHILD";
+    public static final String ACTION_ACTION_REMOVE_CHILD_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_REMOVE_CHILD_RESPONSE";
+    public static final String ACTION_ADD_CHILD = "com.cubegames.slava.cubegame.api.action.ACTION_ADD_CHILD";
+    public static final String ACTION_ACTION_ADD_CHILD_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_ADD_CHILD_RESPONSE";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -66,6 +71,9 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_ENTITY_OBJECT = "ENTITY_OBJECT";
     public static final String EXTRA_ERROR_OBJECT = "ERROR_OBJECT";
     public static final String EXTRA_RESPONSE_ACTION = "RESPONSE_ACTION";
+    public static final String EXTRA_PARENT_ID = "PARENT_ID";
+    public static final String EXTRA_CHILD_NAME = "CHILD_NAME";
+    public static final String EXTRA_CHILD_INDEX = "CHILD_INDEX";
 
     public RestApiService() {
         super("RestApiService");
@@ -157,6 +165,24 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionRemoveChild(Context context, String parentId, String childName, int childIndex) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_REMOVE_CHILD);
+        intent.putExtra(EXTRA_PARENT_ID, parentId);
+        intent.putExtra(EXTRA_CHILD_NAME, childName);
+        intent.putExtra(EXTRA_CHILD_INDEX, childIndex);
+        context.startService(intent);
+    }
+
+    public static void startActionAddChild(Context context, String parentId, String childName, Parcelable childEntity) {
+        Intent intent = new Intent(context, RestApiService.class);
+        intent.setAction(ACTION_ADD_CHILD);
+        intent.putExtra(EXTRA_PARENT_ID, parentId);
+        intent.putExtra(EXTRA_CHILD_NAME, childName);
+        intent.putExtra(EXTRA_ENTITY_OBJECT, childEntity);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -216,6 +242,19 @@ public class RestApiService extends IntentService {
                 final StartNewGameRequest item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionStartGameInstance(item);
             }
+            else if (ACTION_REMOVE_CHILD.equals(action)) {
+                final String parentId = intent.getStringExtra(EXTRA_PARENT_ID);
+                final String childName = intent.getStringExtra(EXTRA_CHILD_NAME);
+                final int childIndex = intent.getIntExtra(EXTRA_CHILD_INDEX, -1);
+                handleActionRemoveChild(parentId, childName, childIndex);
+            }
+            else if (ACTION_ADD_CHILD.equals(action)) {
+                final String parentId = intent.getStringExtra(EXTRA_PARENT_ID);
+                final String childName = intent.getStringExtra(EXTRA_CHILD_NAME);
+                final Parcelable childEntity = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                handleActionAddChild(parentId, childName, childEntity);
+            }
+
         }
     }
 
@@ -460,6 +499,44 @@ public class RestApiService extends IntentService {
         }
 
         sendResponseIntent(ACTION_START_GAME_INSTANCE_RESPONSE, params);
+    }
+
+    private void handleActionRemoveChild(String parentId, String childName, int childIndex) {
+        ErrorEntity error = null;
+
+        try {
+            new GameController(getApplicationContext()).removeChild(parentId, childName, childIndex);
+        }
+        catch (WebServiceException e) {
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+
+        Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+        else
+            params.putInt(EXTRA_CHILD_INDEX, childIndex);
+
+        sendResponseIntent(ACTION_ACTION_REMOVE_CHILD_RESPONSE, params);
+    }
+
+    private void handleActionAddChild(String parentId, String childName, Parcelable childEntity) {
+        ErrorEntity error = null;
+
+        try {
+            new GameController(getApplicationContext()).addChild(parentId, childName, childEntity);
+        }
+        catch (WebServiceException e) {
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+
+        Bundle params = new Bundle();
+        if(error != null)
+            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+        else
+            params.putParcelable(EXTRA_ENTITY_OBJECT, childEntity);
+
+        sendResponseIntent(ACTION_ACTION_ADD_CHILD_RESPONSE, params);
     }
 
 }

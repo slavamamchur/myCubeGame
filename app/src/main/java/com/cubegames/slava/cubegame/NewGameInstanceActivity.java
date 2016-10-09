@@ -114,6 +114,8 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
         else if(id == R.id.action_remove_all_players) {
             instance.getPlayers().clear();
             tableFragment.setItems(instance.getPlayers());
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

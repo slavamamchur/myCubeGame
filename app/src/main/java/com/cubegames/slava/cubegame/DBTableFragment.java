@@ -4,24 +4,26 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.GameInstance;
+import com.cubegames.slava.cubegame.model.points.PointType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_BUTTON;
 import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_COLOR_BOX;
 import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_REFERENCE;
@@ -78,6 +80,8 @@ public class DBTableFragment extends Fragment {
                 caption.setText(column.getType().equals(COLUMN_BUTTON) ? "" : column.getCaption());
                 caption.setTextSize(18);
                 caption.setTypeface(null, Typeface.BOLD);
+                if (!column.getType().equals(COLUMN_BUTTON) && column.getIconResId() > 0)
+                    caption.setBackgroundResource(column.getIconResId());
 
                 header.addView(caption, lparams);
             }
@@ -142,7 +146,7 @@ public class DBTableFragment extends Fragment {
 
         if (columns != null)
             for (DBColumnInfo column : columns) {
-                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0, WRAP_CONTENT);
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(0, MATCH_PARENT);
                 lparams.weight = column.getWeight();
 
                 View col;
@@ -150,13 +154,24 @@ public class DBTableFragment extends Fragment {
                     col = new TextView(getContext());
                     ((TextView)col).setTextSize(18);
                     //col.setPadding(8, 0, 0, 0);
+                    ((TextView)col).setGravity(Gravity.CENTER_VERTICAL);
                 }
                 else {
                     //ContextThemeWrapper newContext = new ContextThemeWrapper(getContext(), android.R.style.Theme_DeviceDefault);
                     col = new Button(getContext());
                     col.setPadding(0, 0, 5, 0);
-                    ((Button) col).setText(column.getCaption());
-                    col.setBackgroundResource(android.R.drawable.btn_default_small);
+
+                    if (column.getIconResId() < 0) {
+                        ((Button) col).setText(column.getCaption());
+                        col.setBackgroundResource(android.R.drawable.btn_default_small);
+                    }
+                    else {
+                        col = new ImageButton(getContext());
+                        col.setBackgroundResource(android.R.drawable.btn_default_small);
+                        ((ImageButton) col).setImageDrawable(
+                                getResources().getDrawable(column.getIconResId()));
+                    }
+
                 }
 
                 col.setTag(column.getTAG());
@@ -194,6 +209,10 @@ public class DBTableFragment extends Fragment {
             return String.valueOf(((List) value).size());
         else if (value instanceof GameInstance.State)
             return ((GameInstance.State) value).name();
+        else if (value instanceof PointType)
+            return ((PointType) value).name();
+        else if (value instanceof Integer)
+            return String.format("%d", value);
         else
             return (String)value;
     }
@@ -201,7 +220,8 @@ public class DBTableFragment extends Fragment {
     public void setItems(Collection items) {
         ArrayAdapter adapter = (ArrayAdapter) dbTable.getAdapter();
         adapter.clear();
-        adapter.addAll(items);
+        if (items != null)
+            adapter.addAll(items);
         adapter.notifyDataSetChanged();
     }
 

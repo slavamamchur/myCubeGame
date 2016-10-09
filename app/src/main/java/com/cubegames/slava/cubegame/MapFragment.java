@@ -11,6 +11,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -143,39 +144,39 @@ public class MapFragment extends Fragment {
             if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
                 AbstractGamePoint point = gameEntity.getGamePoints().get(0);
                 path.moveTo(point.getxPos(), point.getyPos());
-            }
-            for ( int i = 1; i < gameEntity.getGamePoints().size(); i++) {
-                AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
-                path.lineTo(endPoint.getxPos(), endPoint.getyPos());
-            }
-            paint.setColor(Color.GREEN);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
-            canvas.drawPath(path, paint);
 
-            paint.setColor(Color.RED);
-            paint.setStyle(Paint.Style.FILL);
-            for ( int i = 0; i < gameEntity.getGamePoints().size(); i++) {
-                AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
-                canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
+                for (int i = 1; i < gameEntity.getGamePoints().size(); i++) {
+                    AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
+                    path.lineTo(endPoint.getxPos(), endPoint.getyPos());
+                }
+                paint.setColor(Color.GREEN);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(5);
+                canvas.drawPath(path, paint);
+
+                paint.setColor(Color.RED);
+                paint.setStyle(Paint.Style.FILL);
+                for (int i = 0; i < gameEntity.getGamePoints().size(); i++) {
+                    AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
+                    canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
+                }
             }
 
             //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-            //canvas.drawText(String.format("Game points count: %d",
-            // gameEntity.getGamePoints().size()), 10, 10, paint);
+            //canvas.drawText(String.format("Game points count: %d"), 88, 10, 10, paint);
         }
 
-        if (gameInstanceEntity != null) {
-            int[] playersOnWayPoints = new int[gameInstanceEntity.getGame().getGamePoints().size()];
+        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
+            int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
             for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
                 int currentPointIdx = player.getCurrentPoint();
                 playersOnWayPoints[currentPointIdx]++;
                 int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
-                AbstractGamePoint point = gameInstanceEntity.getGame().getGamePoints().get(currentPointIdx);
+                AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
                 int x = point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
                 int y = point.getyPos();
 
-                paint.setColor(0xAA000000 | player.getColor());
+                paint.setColor(0xFF000000 | player.getColor());
                 canvas.drawCircle(x, y, 15f, paint);
             }
 
@@ -248,5 +249,29 @@ public class MapFragment extends Fragment {
     }
     public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
+    }
+
+    @Override
+    public void onDetach() {
+        clearImage();
+
+        super.onDetach();
+    }
+
+    private void clearImage() {
+        Bitmap bmp = ((BitmapDrawable)mMapImage.getDrawable()).getBitmap();
+        mMapImage.setImageBitmap(null);
+        if (bmp != null)
+            bmp.recycle();
+    }
+
+    public void updateMap() {
+        if (gameEntity != null && gameEntity.getMapId() != null) {
+            clearImage();
+
+            GameMap map = new GameMap();
+            map.setId(gameEntity.getMapId());
+            loadMapImage(map);
+        }
     }
 }

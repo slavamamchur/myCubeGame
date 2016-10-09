@@ -20,6 +20,13 @@ public class AbstractGamePoint implements Parcelable{
 
     public AbstractGamePoint() {}
 
+    public AbstractGamePoint(NewPointRequest other) {
+        this.xPos = other.getxPos();
+        this.yPos = other.getyPos();
+        this.type = other.getType();
+        this.nextPointIndex = other.getNextIndex();
+    }
+
     protected AbstractGamePoint(Parcel in) {
         loadFromParcel(in);
     }
