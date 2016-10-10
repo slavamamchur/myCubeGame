@@ -138,7 +138,7 @@ public class MapFragment extends Fragment {
         Canvas canvas = new Canvas(mapImage);
 
         if (gameEntity != null) {
-            canvas.drawBitmap(mapImage, 0, 0, paint);
+            //canvas.drawBitmap(mapImage, 0, 0, paint);
 
             Path path = new Path();
             if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
@@ -161,6 +161,20 @@ public class MapFragment extends Fragment {
                     canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
                 }
             }
+
+//            Bitmap source = mapImage;
+//            Matrix matrix = new Matrix();
+//            matrix.postRotate(45f, source.getWidth()/2, source.getHeight()/2);
+//            canvas.drawBitmap(Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true), 0, 0, paint);
+
+//            RotateAnimation rotateAnimation = new RotateAnimation(from, to,
+//                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+//                    0.5f);
+//            rotateAnimation.setInterpolator(new LinearInterpolator());
+//            rotateAnimation.setDuration(ANIMATION_DURATION);
+//            rotateAnimation.setFillAfter(true);
+//
+//            imageView.startAnimation(rotateAnimation);
 
             //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
             //canvas.drawText(String.format("Game points count: %d"), 88, 10, 10, paint);
@@ -259,10 +273,14 @@ public class MapFragment extends Fragment {
     }
 
     private void clearImage() {
-        Bitmap bmp = ((BitmapDrawable)mMapImage.getDrawable()).getBitmap();
+        Bitmap bmp = getBitmap();
         mMapImage.setImageBitmap(null);
         if (bmp != null)
             bmp.recycle();
+    }
+
+    public Bitmap getBitmap() {
+        return ((BitmapDrawable)mMapImage.getDrawable()).getBitmap();
     }
 
     public void updateMap() {
@@ -274,4 +292,5 @@ public class MapFragment extends Fragment {
             loadMapImage(map);
         }
     }
+
 }

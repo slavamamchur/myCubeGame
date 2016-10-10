@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:layout_gravity="center"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:text="X pos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginRight="5dp" />
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/xpos_picker" />
+        <TextView
+            android:text="Y pos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginRight="5dp" />
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ypos_picker" />
+
+    </LinearLayout>
+
+    <TextView
+        android:text="Point Type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_point_type"
+        android:layout_marginTop="10dp"
+        android:dropDownWidth="match_parent" />
+
+    <TextView
+        android:text="Fly Index"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_fly_caption"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp" />
+
+    <SeekBar
+        android:layout_height="wrap_content"
+        android:id="@+id/seekbar_fly_index"
+        android:layout_width="match_parent"
+        android:progress="1"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:paddingEnd="0dp"
+        android:paddingStart="0dp"
+        android:layout_marginTop="10dp" />
+</LinearLayout>
