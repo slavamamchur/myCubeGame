@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:paddingBottom="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp"
+
+    tools:context="com.cubegames.slava.cubegame.GameInstanceActivity"
+    android:background="#FFCC8000">
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.cubegames.slava.cubegame.MapFragment"
+        tools:layout="@layout/map_fragment"
+        android:id="@+id/map_fragment" />
+
+    <fragment
+        android:layout_height="200dp"
+        android:name="com.cubegames.slava.cubegame.DBTableFragment"
+        android:id="@+id/players_fragment"
+        tools:layout="@layout/db_table_fragment"
+        android:layout_gravity="right|center_vertical"
+        android:layout_width="250dp" />
+
+</FrameLayout>

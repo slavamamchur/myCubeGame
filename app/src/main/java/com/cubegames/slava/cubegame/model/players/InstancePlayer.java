@@ -7,9 +7,9 @@ public class InstancePlayer implements Parcelable{
 
     protected String name;
     protected int color;
-    private int currentPoint;
-    private boolean finished;
-    private boolean skipped;
+    protected int currentPoint;
+    protected boolean finished;
+    protected boolean skipped;
 
     public InstancePlayer() {}
 

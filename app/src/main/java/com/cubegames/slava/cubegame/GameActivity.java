@@ -34,7 +34,7 @@ public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseI
             add(new DBColumnInfo("X pos", 20, DBColumnInfo.ColumnType.COLUMN_TEXT, AbstractGamePoint.class.getDeclaredField(X_POS_FIELD_NAME), null));
             add(new DBColumnInfo("Y pos", 20, DBColumnInfo.ColumnType.COLUMN_TEXT, AbstractGamePoint.class.getDeclaredField(Y_POS_FIELD_NAME), null));
             add(new DBColumnInfo("Type", 50, DBColumnInfo.ColumnType.COLUMN_REFERENCE, AbstractGamePoint.class.getDeclaredField(TYPE_FIELD_NAME), EDIT_ENTITY_TAG));
-            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG, android.R.drawable.ic_delete));
+            add(new DBColumnInfo("", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG, android.R.drawable.ic_delete, null));
         }
         catch (NoSuchFieldException e) {
             e.printStackTrace();

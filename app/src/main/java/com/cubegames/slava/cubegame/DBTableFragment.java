@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,12 +20,14 @@ import com.cubegames.slava.cubegame.model.BasicNamedDbEntity;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.points.PointType;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_BUTTON;
+import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_CHECK_BOX;
 import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_COLOR_BOX;
 import static com.cubegames.slava.cubegame.DBColumnInfo.ColumnType.COLUMN_REFERENCE;
 
@@ -42,6 +45,8 @@ public class DBTableFragment extends Fragment {
     private ListView dbTable;
     private LinearLayout header;
     private List<DBColumnInfo> columns;
+    private Integer captionColor = null;
+    private Integer selectedPos = -1;
 
     public DBTableFragment() {}
 
@@ -82,6 +87,8 @@ public class DBTableFragment extends Fragment {
                 caption.setTypeface(null, Typeface.BOLD);
                 if (!column.getType().equals(COLUMN_BUTTON) && column.getIconResId() > 0)
                     caption.setBackgroundResource(column.getIconResId());
+                if (captionColor != null)
+                    caption.setTextColor(0xFF000000 | captionColor);
 
                 header.addView(caption, lparams);
             }
@@ -98,7 +105,7 @@ public class DBTableFragment extends Fragment {
                 final Object item  = getItem(position);
 
                 if (row == null) {
-                    row = createRowView();
+                    row = createRowView(position);
                     holder = createHolder((LinearLayout) row);
                     row.setTag(holder);
                 }
@@ -139,10 +146,12 @@ public class DBTableFragment extends Fragment {
         }
     }
 
-    private LinearLayout createRowView() {
+    private LinearLayout createRowView(int pos) {
         LinearLayout row = new LinearLayout(getContext());
         row.setWeightSum(100);
         row.setOrientation(LinearLayout.HORIZONTAL);
+        if (pos == selectedPos)
+            row.setBackgroundColor(0x700080FF);
 
         if (columns != null)
             for (DBColumnInfo column : columns) {
@@ -150,7 +159,11 @@ public class DBTableFragment extends Fragment {
                 lparams.weight = column.getWeight();
 
                 View col;
-                if (!column.getType().equals(COLUMN_BUTTON)) {
+                if (column.getType().equals(COLUMN_CHECK_BOX)) {
+                    col = new CheckBox(getContext());
+                    ((CheckBox)col).setGravity(Gravity.CENTER);
+                }
+                else if (!column.getType().equals(COLUMN_BUTTON)) {
                     col = new TextView(getContext());
                     ((TextView)col).setTextSize(18);
                     //col.setPadding(8, 0, 0, 0);
@@ -186,11 +199,17 @@ public class DBTableFragment extends Fragment {
         try {
             Object value = column.getDataField() != null ? column.getDataField().get(item) : "";
 
-            if (column.getType().equals(COLUMN_COLOR_BOX))
+            if (column.getType().equals(COLUMN_CHECK_BOX))
+                ((CheckBox)view).setChecked((Boolean)value);
+            else if (column.getType().equals(COLUMN_COLOR_BOX))
                 view.setBackgroundColor(0xFF000000 | (Integer) value);
             else
-                if (!column.getType().equals(COLUMN_BUTTON))
-                    ((TextView)view).setText(getStringValue(value));
+                if (!column.getType().equals(COLUMN_BUTTON)) {
+                    ((TextView) view).setText(getStringValue(value));
+                    Integer color = getColorFromRef(column, item);
+                    if (color != null)
+                        ((TextView) view).setTextColor(color);
+                }
                 else
                     if (DELETE_ENTITY_TAG.equals(column.getTAG()) && (item instanceof BasicNamedDbEntity))
                         view.setEnabled(((BasicNamedDbEntity)item).getTenantId() != null);
@@ -200,6 +219,20 @@ public class DBTableFragment extends Fragment {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private Integer getColorFromRef(DBColumnInfo column, Object item) {
+        Object colorRef = column.getColorRef();
+        if (colorRef == null)
+            return null;
+        else if (colorRef instanceof Integer)
+            return 0xFF000000 | (Integer) colorRef;
+        else
+            try {
+                return 0xFF000000 | (Integer) ((Field) colorRef).get(item);
+            } catch (IllegalAccessException e) {
+                return null;
+            }
     }
 
     private String getStringValue(Object value){
@@ -225,4 +258,11 @@ public class DBTableFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void selecItem(int pos) {
+       selectedPos = pos;
+    }
+
+    public void setCaptionColor(Integer captionColor) {
+        this.captionColor = captionColor;
+    }
 }

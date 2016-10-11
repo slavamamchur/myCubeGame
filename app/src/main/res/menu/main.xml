@@ -37,6 +37,21 @@
         android:visible="false"
         app:showAsAction="always|withText"/>
     <item
+        android:id="@+id/action_move"
+        android:title="Move"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/action_finish"
+        android:title="Finish"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/action_restart"
+        android:title="Restart"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+    <item
         android:id="@+id/action_maps_list"
         android:title="Maps list"
         android:visible="false" />

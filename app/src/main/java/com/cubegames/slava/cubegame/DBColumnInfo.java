@@ -10,18 +10,20 @@ public class DBColumnInfo {
     private Field dataField;
     private String TAG;
     private int iconResId;
+    private Object colorRef;
 
     public DBColumnInfo(String caption, float weight, ColumnType type, Field dataField, String tag) {
-        this(caption, weight, type, dataField, tag, -1);
+        this(caption, weight, type, dataField, tag, -1, null);
     }
 
-    public DBColumnInfo(String caption, float weight, ColumnType type, Field dataField, String tag, int iconResId) {
+    public DBColumnInfo(String caption, float weight, ColumnType type, Field dataField, String tag, int iconResId, Object colorRef) {
         this.caption = caption;
         this.weight = weight;
         this.type = type;
         this.dataField = dataField;
         TAG = tag;
         this.iconResId = iconResId;
+        this.colorRef = colorRef;
     }
 
     public String getCaption() {
@@ -42,6 +44,9 @@ public class DBColumnInfo {
     public int getIconResId() {
         return iconResId;
     }
+    public Object getColorRef() {
+        return colorRef;
+    }
 
-    public enum ColumnType { COLUMN_TEXT, COLUMN_REFERENCE, COLUMN_BUTTON, COLUMN_COLOR_BOX }
+    public enum ColumnType { COLUMN_TEXT, COLUMN_REFERENCE, COLUMN_BUTTON, COLUMN_COLOR_BOX, COLUMN_CHECK_BOX }
 }
