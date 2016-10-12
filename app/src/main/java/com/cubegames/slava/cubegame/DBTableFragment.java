@@ -112,6 +112,8 @@ public class DBTableFragment extends Fragment {
                 else
                     holder = (ArrayList<View>) row.getTag();
 
+                row.setBackgroundColor(position == selectedPos ? 0x70000000 : 0);
+
                 fillHolder(holder, item);
 
                 return row;
@@ -150,8 +152,6 @@ public class DBTableFragment extends Fragment {
         LinearLayout row = new LinearLayout(getContext());
         row.setWeightSum(100);
         row.setOrientation(LinearLayout.HORIZONTAL);
-        if (pos == selectedPos)
-            row.setBackgroundColor(0x700080FF);
 
         if (columns != null)
             for (DBColumnInfo column : columns) {

@@ -70,12 +70,12 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
                 HttpMethod.POST, getHttpEntity(request), GameInstanceStartedResponse.class).getBody();
     }
 
-    public GameInstanceResponse makeTurn(GameInstance instance, int steps) throws WebServiceException {
+    public GameInstance makeTurn(GameInstance instance) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();
 
         return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_MOVE,
-                HttpMethod.GET, getHttpEntity(null), GameInstanceResponse.class, instance.getId(), steps).getBody();
+                HttpMethod.GET, getHttpEntity(null), GameInstance.class, instance.getId(), instance.getStepsToGo()).getBody();
     }
 
 }

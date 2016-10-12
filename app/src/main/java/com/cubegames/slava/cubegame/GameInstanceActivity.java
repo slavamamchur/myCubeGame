@@ -8,16 +8,28 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
+import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.cubegames.slava.cubegame.BaseListActivity.NAME_FIELD_NAME;
 import static com.cubegames.slava.cubegame.DBPlayersListActivity.COLOR_FIELD_NAME;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
+import static com.cubegames.slava.cubegame.api.RestApiService.startActionFinishGameInstance;
+import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
+import static com.cubegames.slava.cubegame.api.RestApiService.startActionRestartGameInstance;
 
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> implements BaseItemDetailsActivity.WebErrorHandler {
 
@@ -80,6 +92,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
+
+        intentFilter.addAction(ACTION_FINISH_GAME_INSTANCE_RESPONSE);
+        intentFilter.addAction(ACTION_RESTART_GAME_INSTANCE_RESPONSE);
+        intentFilter.addAction(ACTION_MOOVE_GAME_INSTANCE_RESPONSE);
+
         mMapFragment.setIntentFilters(intentFilter);
 
         return intentFilter;
@@ -89,14 +106,96 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (mMapFragment.handleWebServiceResponseAction(intent))
             return  true;
+        else if (intent.getAction().equals(ACTION_FINISH_GAME_INSTANCE_RESPONSE)) {
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+
+            if (error == null){
+                getItem().setState(GameInstance.State.FINISHED);
+                setItemChanged(true);
+                updateTitle ();
+            }
+            else {
+                showError(error);
+            }
+
+            return true;
+        }
+        else if (intent.getAction().equals(ACTION_RESTART_GAME_INSTANCE_RESPONSE)) {
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+
+            if (error == null){
+                resetGame();
+            }
+            else {
+                showError(error);
+            }
+
+            return true;
+        }
+        else if (intent.getAction().equals(ACTION_MOOVE_GAME_INSTANCE_RESPONSE)) {
+            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+
+            if (error == null){
+                GameInstance instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
+                updateGame(instance);
+                if (!GameInstance.State.WAIT.equals(instance.getState()))
+                    startActionMooveGameInstance(this, getItem());
+            }
+            else {
+                showError(error);
+            }
+
+            return true;
+        }
         else
             return super.handleWebServiceResponseAction(context, intent);
+    }
+
+    private void updateTitle () {
+        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
+        supportInvalidateOptionsMenu();
+    }
+
+    private void resetGame() {
+        getItem().setState(GameInstance.State.WAIT);
+        getItem().setCurrentPlayer(0);
+        getItem().setStepsToGo(0);
+        for (InstancePlayer player : getItem().getPlayers()) {
+            player.setCurrentPoint(0);
+            player.setFinished(false);
+            player.setSkipped(false);
+        }
+        setItemChanged(true);
+
+        updateTitle ();
+
+        playersFragment.selecItem(getItem().getCurrentPlayer());
+        playersFragment.setItems(getItem().getPlayers());
+
+        mMapFragment.updateMap();
+    }
+
+    private void updateGame(GameInstance instance) {
+        setItem(instance);
+        setItemChanged(true);
+
+        updateTitle ();
+
+        playersFragment.selecItem(getItem().getCurrentPlayer());
+        playersFragment.setItems(getItem().getPlayers());
+
+        mMapFragment.setGameInstanceEntity(getItem());
+        mMapFragment.updateMap();
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_move).setVisible(true);
+        menu.findItem(R.id.action_move).setEnabled(!GameInstance.State.FINISHED.equals(getItem().getState()));
+
         menu.findItem(R.id.action_finish).setVisible(true);
+        menu.findItem(R.id.action_finish).setEnabled(!GameInstance.State.FINISHED.equals(getItem().getState()));
+
         menu.findItem(R.id.action_restart).setVisible(true);
 
         return super.onPrepareOptionsMenu(menu);
@@ -104,14 +203,47 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_move) {
-
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_move:
+                playTurn();
+                return true;
+            case R.id.action_restart:
+                restartGame();
+                return true;
+            case R.id.action_finish:
+                finishGame();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        //TODO: menu
+    }
 
-        return super.onOptionsItemSelected(item);
+    private void playTurn() {
+        Random rnd = new Random(System.currentTimeMillis());
+        int steps2Go = rnd.nextInt(5) + 1;
+
+        TextView steps = (TextView) findViewById(R.id.tv_steps_to_go);
+        steps.setText(String.format("%d\nSteps\nto GO", steps2Go));
+        steps.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.view_growing);
+        steps.setAnimation(animation);
+        steps.animate();
+        animation.start();
+        steps.setVisibility(View.INVISIBLE);
+
+        //TODO: skip finished, autofinish game
+        //showProgress();
+        getItem().setStepsToGo(steps2Go);
+        startActionMooveGameInstance(this, getItem());
+    }
+
+    private void finishGame() {
+        showProgress();
+        startActionFinishGameInstance(this, getItem());
+    }
+
+    private void restartGame() {
+        showProgress();
+        startActionRestartGameInstance(this, getItem());
     }
 }

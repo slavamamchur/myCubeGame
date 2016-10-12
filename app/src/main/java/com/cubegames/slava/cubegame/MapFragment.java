@@ -14,6 +14,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,12 @@ import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
@@ -41,6 +48,7 @@ public class MapFragment extends Fragment {
 
     private ImageView mMapImage;
     private WebErrorHandler webErrorHandler;
+    private GameMap mapEntity = null;
     private Game gameEntity = null;
     private GameInstance gameInstanceEntity = null;
 
@@ -82,11 +90,18 @@ public class MapFragment extends Fragment {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null) {
                 GameMap response = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
-                if (response.getBinaryData() != null) {
+                byte[] bitmapArray = response.getBinaryData();
+                if (bitmapArray != null) {
                     final BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
                     bitmapOptions.inMutable = true;
-                    Bitmap mapImage = BitmapFactory.decodeByteArray(response.getBinaryData(),
-                            0, response.getBinaryData().length, bitmapOptions);
+                    Bitmap mapImage = BitmapFactory.decodeByteArray(bitmapArray,
+                            0, bitmapArray.length, bitmapOptions);
+
+                    try {
+                        saveBitmap2File(mapImage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     DrawMap(mapImage);
                 }
@@ -102,7 +117,22 @@ public class MapFragment extends Fragment {
             return false;
     }
 
+    private void saveBitmap2File(Bitmap bmp) throws IOException {
+        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                "/CubegameBitmapCache";
+        File dir = new File(file_path);
+        if(!dir.exists())
+            dir.mkdirs();
+        File file = new File(dir, mapEntity.getId() + ".png");
+        FileOutputStream fOut = new FileOutputStream(file);
+
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        fOut.flush();
+        fOut.close();
+    }
+
     public void InitMap(GameMap map, WebErrorHandler errorHandler) {
+        setMapEntity(map);
         setWebErrorHandler(errorHandler);
 
         loadMapImage(map);
@@ -115,6 +145,7 @@ public class MapFragment extends Fragment {
         if (game != null && game.getMapId() != null) {
             GameMap map = new GameMap();
             map.setId(game.getMapId());
+            setMapEntity(map);
             loadMapImage(map);
         }
     }
@@ -127,6 +158,7 @@ public class MapFragment extends Fragment {
         if (gameEntity != null && gameEntity.getMapId() != null) {
             GameMap map = new GameMap();
             map.setId(gameEntity.getMapId());
+            setMapEntity(map);
             loadMapImage(map);
         }
     }
@@ -244,6 +276,13 @@ public class MapFragment extends Fragment {
 
         mMapImage.setImageURI(selectedImage);
 
+        try {
+            saveBitmap2File(getBitmap());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
         Cursor cursor = getActivity().getContentResolver().query(selectedImage,
                 filePathColumn, null, null, null);
@@ -258,6 +297,9 @@ public class MapFragment extends Fragment {
         }
     }
 
+    public void setMapEntity(GameMap mapEntity) {
+        this.mapEntity = mapEntity;
+    }
     public void setGameEntity(Game gameEntity) {
         this.gameEntity = gameEntity;
     }
@@ -283,13 +325,31 @@ public class MapFragment extends Fragment {
         return ((BitmapDrawable)mMapImage.getDrawable()).getBitmap();
     }
 
+    private Bitmap loadFromFile(String path) {
+        Bitmap bitmap = null;
+        File f = new File(path, mapEntity.getId() + ".png");
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inMutable = true;
+        try {
+            bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+
+    }
+
     public void updateMap() {
         if (gameEntity != null && gameEntity.getMapId() != null) {
             clearImage();
 
             GameMap map = new GameMap();
             map.setId(gameEntity.getMapId());
-            loadMapImage(map);
+
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/CubegameBitmapCache";
+            DrawMap(loadFromFile(path));
         }
     }
 

@@ -129,6 +129,9 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     public T getItem() {
         return item;
     }
+    public void setItem(T item) {
+        this.item = item;
+    }
     protected abstract String getItemExtra();
 
     public interface WebErrorHandler {

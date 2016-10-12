@@ -30,4 +30,16 @@
         android:layout_gravity="right|center_vertical"
         android:layout_width="250dp" />
 
+    <TextView
+        android:text="%d\nsteps\ntogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_steps_to_go"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        android:textColor="#FFFFFF00"
+        android:typeface="serif"
+        android:textStyle="bold" />
+
 </FrameLayout>

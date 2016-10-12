@@ -11,9 +11,7 @@ public class GameInstanceResponse extends IdResponse {
     private boolean usersAreFinished;
 
 
-    public GameInstanceResponse() {
-        // constructor for serializer
-    }
+    public GameInstanceResponse() {}
 
     public GameInstanceResponse(GameInstance instance) {
         super(instance.getId());
