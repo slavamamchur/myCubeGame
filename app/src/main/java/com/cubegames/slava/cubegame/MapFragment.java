@@ -20,7 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.cubegames.slava.cubegame.BaseItemDetailsActivity.WebErrorHandler;
 import com.cubegames.slava.cubegame.api.RestApiService;
@@ -42,6 +44,8 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT
 public class MapFragment extends Fragment {
 
     private ImageView mMapImage;
+    private ScrollView mScrollContainerY;
+    private HorizontalScrollView mScrollContainerX;
     private WebErrorHandler webErrorHandler;
     private GameMap mapEntity = null;
     private Game gameEntity = null;
@@ -61,6 +65,8 @@ public class MapFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mMapImage = (ImageView)view.findViewById(R.id.map_image);
+        mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
+        mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
     }
 
     public void setIntentFilters(IntentFilter intentFilter) {
