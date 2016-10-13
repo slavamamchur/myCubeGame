@@ -189,6 +189,11 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         }
     }
 
+    protected void toggleActionBarProgress(boolean isVisible) {
+        setProgressBarIndeterminateVisibility(isVisible);
+        setProgressBarVisibility(isVisible);
+    }
+
     private void checkAuthentication(){
         if(SettingsManager.getInstance(getApplicationContext()).isLoggedIn()) {
             showProgress();

@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -52,9 +53,15 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     private MapFragment mMapFragment;
     private DBTableFragment playersFragment;
 
+    private int prev_player_index;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+        //getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         setContentView(R.layout.activity_game_instance);
 
@@ -140,6 +147,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                 updateGame(instance);
                 if (!GameInstance.State.WAIT.equals(instance.getState()))
                     startActionMooveGameInstance(this, getItem());
+                else {
+                    toggleActionBarProgress(false);
+                    if (getItem().getPlayers().get(prev_player_index).isSkipped())
+                        showAnimatedText("Skip\nnext turn");
+                }
             }
             else {
                 showError(error);
@@ -219,22 +231,28 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     }
 
     private void playTurn() {
+        prev_player_index = getItem().getCurrentPlayer();
+
         Random rnd = new Random(System.currentTimeMillis());
         int steps2Go = rnd.nextInt(5) + 1;
+        showAnimatedText(String.format("%d\nSteps\nto GO", steps2Go));
 
+        //TODO: skip finished, autofinish game
+        //showProgress();
+        toggleActionBarProgress(true);
+        getItem().setStepsToGo(steps2Go);
+        startActionMooveGameInstance(this, getItem());
+    }
+
+    private void showAnimatedText(String text) {
         TextView steps = (TextView) findViewById(R.id.tv_steps_to_go);
-        steps.setText(String.format("%d\nSteps\nto GO", steps2Go));
+        steps.setText(text);
         steps.setVisibility(View.VISIBLE);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.view_growing);
         steps.setAnimation(animation);
         steps.animate();
         animation.start();
         steps.setVisibility(View.INVISIBLE);
-
-        //TODO: skip finished, autofinish game
-        //showProgress();
-        getItem().setStepsToGo(steps2Go);
-        startActionMooveGameInstance(this, getItem());
     }
 
     private void finishGame() {
