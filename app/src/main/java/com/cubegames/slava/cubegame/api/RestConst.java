@@ -44,7 +44,7 @@ public class RestConst {
     public static final String PARAM_LOGIN_USER_PASS = "user-pass";
     public static final String PARAM_HEADER_AUTH_TOKEN = "user-token";
 
-    public static final int NET_READ_TIMEOUT_MILLIS = 60000;  // 60 seconds
-    public static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
+    public static final int NET_READ_TIMEOUT_MILLIS = 80000;  // 60 seconds
+    public static final int NET_CONNECT_TIMEOUT_MILLIS = 60000;  // 15 seconds
 
 }

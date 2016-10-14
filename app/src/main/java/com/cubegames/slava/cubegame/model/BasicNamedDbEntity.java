@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
     @JsonProperty(required = true)
-    protected String name;
+    public String name;
 
     public BasicNamedDbEntity(){}
     protected BasicNamedDbEntity(Parcel in) {

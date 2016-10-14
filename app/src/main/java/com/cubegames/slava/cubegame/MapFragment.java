@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -151,8 +152,6 @@ public class MapFragment extends Fragment {
         Canvas canvas = new Canvas(mapImage);
 
         if (gameEntity != null) {
-            //canvas.drawBitmap(mapImage, 0, 0, paint);
-
             Path path = new Path();
             if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
                 AbstractGamePoint point = gameEntity.getGamePoints().get(0);
@@ -175,11 +174,6 @@ public class MapFragment extends Fragment {
                 }
             }
 
-//            Bitmap source = mapImage;
-//            Matrix matrix = new Matrix();
-//            matrix.postRotate(45f, source.getWidth()/2, source.getHeight()/2);
-//            canvas.drawBitmap(Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true), 0, 0, paint);
-
 //            RotateAnimation rotateAnimation = new RotateAnimation(from, to,
 //                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
 //                    0.5f);
@@ -187,10 +181,8 @@ public class MapFragment extends Fragment {
 //            rotateAnimation.setDuration(ANIMATION_DURATION);
 //            rotateAnimation.setFillAfter(true);
 //
-//            imageView.startAnimation(rotateAnimation);
+//            mMapImage.startAnimation(rotateAnimation);
 
-            //paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-            //canvas.drawText(String.format("Game points count: %d"), 88, 10, 10, paint);
         }
 
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
@@ -294,5 +286,47 @@ public class MapFragment extends Fragment {
             DrawMap(loadBitmapFromFile(mapEntity.getId()));
         }
     }
+
+    private Point getCurrentPointOffsetInViewPort() {
+        AbstractGamePoint point = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers()
+                .get(gameInstanceEntity.getCurrentPlayer()).getCurrentPoint());
+
+        int xOffset;
+        int yOffset;
+
+        if (!mapViewPort.contains(point.getxPos(), mapViewPort.top))
+            xOffset = Math.abs(point.getxPos() - mapViewPort.left) < Math.abs(point.getxPos() - mapViewPort.right) ?
+                    point.getxPos() - mapViewPort.left : point.getxPos() - mapViewPort.right;
+        else
+            xOffset = 0;
+
+        if (!mapViewPort.contains(mapViewPort.left, point.getyPos()))
+            yOffset = Math.abs(point.getyPos() - mapViewPort.top) < Math.abs(point.getyPos() - mapViewPort.bottom) ?
+                    point.getyPos() - mapViewPort.top : point.getyPos() - mapViewPort.bottom;
+        else
+            yOffset = 0;
+
+        return new Point(xOffset, yOffset);
+    }
+
+    public void scrollMap() {
+        final Point offset = getCurrentPointOffsetInViewPort();
+
+        mScrollContainerX.post(new Runnable() {
+            public void run() {
+                mScrollContainerX.scrollBy(offset.x, 0);
+            }
+        });
+
+        mScrollContainerY.post(new Runnable() {
+            public void run() {
+                mScrollContainerY.scrollBy(0, offset.y);
+            }
+        });
+
+        mapViewPort.offset(offset.x, offset.y);
+    }
+
+    //TODO: on scroll listener - > update viewport coords
 
 }

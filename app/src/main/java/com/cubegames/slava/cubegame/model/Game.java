@@ -20,8 +20,8 @@ public class Game extends BasicNamedDbEntity implements Parcelable{
     public static String ACTION_NAME =  URL_GAME;
 
     protected List<AbstractGamePoint> gamePoints;
-    protected String mapId;
-    protected long createdDate;
+    public String mapId;
+    public long createdDate;
 
     public Game() {}
 

@@ -184,6 +184,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
 
+        mMapFragment.scrollMap();
         mMapFragment.updateMap();
     }
 
@@ -197,6 +198,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.setItems(getItem().getPlayers());
 
         mMapFragment.setGameInstanceEntity(getItem());
+        mMapFragment.scrollMap();
         mMapFragment.updateMap();
     }
 
