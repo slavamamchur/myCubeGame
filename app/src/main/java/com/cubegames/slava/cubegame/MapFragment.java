@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +50,7 @@ public class MapFragment extends Fragment {
     private GameMap mapEntity = null;
     private Game gameEntity = null;
     private GameInstance gameInstanceEntity = null;
+    private Rect mapViewPort = new Rect(0,0,0,0);
 
     public MapFragment() {}
 
@@ -98,8 +99,9 @@ public class MapFragment extends Fragment {
         else if (intent.getAction().equals(ACTION_MAP_IMAGE_RESPONSE)){
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
-            if (error == null)
+            if (error == null) {
                 DrawMap(loadBitmapFromFile(mapEntity.getId()));
+            }
             else
                 if (webErrorHandler != null)
                     webErrorHandler.onError(error);
@@ -207,7 +209,6 @@ public class MapFragment extends Fragment {
 
         }
 
-        runJustBeforeBeingDrawn(mMapImage);
         mMapImage.setImageBitmap(mapImage);
     }
 
@@ -215,7 +216,7 @@ public class MapFragment extends Fragment {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Point pt = getActualMapSize(mMapImage);
+                mapViewPort = getActualViewPort(view);
             }
         };
 
@@ -232,27 +233,17 @@ public class MapFragment extends Fragment {
         view.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
     }
 
-    private Point getActualMapSize(ImageView imageView) {
-        int ih=imageView.getHeight();//height of imageView
-        int iw=imageView.getWidth();//width of imageView
-        int iH=imageView.getDrawable().getIntrinsicHeight();//original height of underlying image
-        int iW=imageView.getDrawable().getIntrinsicWidth();//original width of underlying image
-
-        if (ih/iH <= iw/iW)
-            iw = iW*ih/iH;//rescaled width of image within ImageView
-        else
-            ih = iH*iw/iW;//rescaled height of image within ImageView
-
-        return new Point(iw, ih);
+    private Rect getActualViewPort(View view) {
+        return new Rect(0, 0, view.getWidth(), view.getHeight());
     }
 
     private void loadMapImage(GameMap map) {
+        runJustBeforeBeingDrawn(mScrollContainerY);
         RestApiService.startActionGetMapImage(getContext(), map);
     }
 
     public void saveMapImage(Intent data, GameMap map){
         Uri selectedImage = data.getData();
-
         mMapImage.setImageURI(selectedImage);
 
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
