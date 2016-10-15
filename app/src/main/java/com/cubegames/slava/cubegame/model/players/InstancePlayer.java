@@ -5,10 +5,10 @@ import android.os.Parcelable;
 
 public class InstancePlayer implements Parcelable{
 
-    protected String name;
-    protected int color;
+    public String name;
+    public int color;
     protected int currentPoint;
-    protected boolean finished;
+    public boolean finished;
     protected boolean skipped;
 
     public InstancePlayer() {}

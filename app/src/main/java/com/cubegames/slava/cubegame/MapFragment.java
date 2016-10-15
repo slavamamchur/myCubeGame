@@ -52,6 +52,7 @@ public class MapFragment extends Fragment {
     private Game gameEntity = null;
     private GameInstance gameInstanceEntity = null;
     private Rect mapViewPort = new Rect(0,0,0,0);
+    private Bitmap cachedBitmap;
 
     public MapFragment() {}
 
@@ -69,6 +70,15 @@ public class MapFragment extends Fragment {
         mMapImage = (ImageView)view.findViewById(R.id.map_image);
         mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
         mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
+
+        mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = mScrollContainerY.getScrollY();
+                int scrollX = mScrollContainerX.getScrollX();
+                mapViewPort.offset(scrollX - mapViewPort.left, scrollY - mapViewPort.top);
+            }
+        });
     }
 
     public void setIntentFilters(IntentFilter intentFilter) {
@@ -101,7 +111,11 @@ public class MapFragment extends Fragment {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null) {
-                DrawMap(loadBitmapFromFile(mapEntity.getId()));
+                cachedBitmap = loadBitmapFromFile(mapEntity.getId());
+                mMapImage.setImageBitmap(loadBitmapFromFile(mapEntity.getId()));
+                DrawMap(cachedBitmap);
+                if (gameInstanceEntity != null)
+                    scrollMap();
             }
             else
                 if (webErrorHandler != null)
@@ -146,10 +160,51 @@ public class MapFragment extends Fragment {
     }
 
     private void DrawMap(Bitmap mapImage) {
-        Paint paint = new Paint();
-        paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
 
-        Canvas canvas = new Canvas(mapImage);
+        final Paint paint = new Paint();
+        paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
+        final Canvas canvas = new Canvas(getBitmap());
+        //final Canvas canvas = new Canvas(mapImage);
+
+        //------------------------------------------------------------------------------------------
+//        final Bitmap fmapImage = mapImage;
+//        final float centerX = mapImage.getWidth() / 2.0f;
+//        final float centerY = mapImage.getHeight() / 2.0f;
+//        final RotateXY3DAnimation rotation = new RotateXY3DAnimation(0, 60, centerX, centerY);
+//        rotation.setDuration(1);
+//        rotation.setFillAfter(true);
+//        rotation.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//                //mMapImage.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                mMapImage.setImageBitmap(fmapImage);
+//                //mMapImage.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
+//
+//        drawPath(fmapImage, paint, canvas);
+//        //mMapImage.setVisibility(View.INVISIBLE);
+//        mMapImage.startAnimation(rotation);
+        //------------------------------------------------------------------------------------------
+
+
+        drawPath(mapImage, paint, canvas);
+        mMapImage.invalidate();
+
+    }
+
+    private void drawPath(Bitmap mapImage, Paint paint, Canvas canvas) {
+        canvas.drawBitmap(mapImage, 0, 0, paint);
+        //mapImage.recycle();
 
         if (gameEntity != null) {
             Path path = new Path();
@@ -174,15 +229,6 @@ public class MapFragment extends Fragment {
                 }
             }
 
-//            RotateAnimation rotateAnimation = new RotateAnimation(from, to,
-//                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-//                    0.5f);
-//            rotateAnimation.setInterpolator(new LinearInterpolator());
-//            rotateAnimation.setDuration(ANIMATION_DURATION);
-//            rotateAnimation.setFillAfter(true);
-//
-//            mMapImage.startAnimation(rotateAnimation);
-
         }
 
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
@@ -200,8 +246,6 @@ public class MapFragment extends Fragment {
             }
 
         }
-
-        mMapImage.setImageBitmap(mapImage);
     }
 
     private void runJustBeforeBeingDrawn(final View view) {
@@ -265,6 +309,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onDetach() {
         clearImage();
+        cachedBitmap.recycle();
 
         super.onDetach();
     }
@@ -282,8 +327,9 @@ public class MapFragment extends Fragment {
 
     public void updateMap() {
         if (mapEntity != null && mapEntity.getId() != null) {
-            clearImage();
-            DrawMap(loadBitmapFromFile(mapEntity.getId()));
+            //clearImage();
+            //DrawMap(loadBitmapFromFile(mapEntity.getId()));
+            DrawMap(cachedBitmap);
         }
     }
 
@@ -309,24 +355,20 @@ public class MapFragment extends Fragment {
         return new Point(xOffset, yOffset);
     }
 
+    //TODO: smooth scrolling
     public void scrollMap() {
         final Point offset = getCurrentPointOffsetInViewPort();
 
         mScrollContainerX.post(new Runnable() {
             public void run() {
-                mScrollContainerX.scrollBy(offset.x, 0);
+                mScrollContainerX.scrollBy((int) (offset.x * 1.2), 0);
             }
         });
-
         mScrollContainerY.post(new Runnable() {
             public void run() {
-                mScrollContainerY.scrollBy(0, offset.y);
+                mScrollContainerY.scrollBy(0, (int) (offset.y * 1.2));
             }
         });
-
-        mapViewPort.offset(offset.x, offset.y);
     }
-
-    //TODO: on scroll listener - > update viewport coords
 
 }

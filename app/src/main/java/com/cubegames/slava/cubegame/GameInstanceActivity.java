@@ -145,7 +145,9 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             if (error == null){
                 GameInstance instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
                 updateGame(instance);
-                if (!GameInstance.State.WAIT.equals(instance.getState()))
+                if (!GameInstance.State.WAIT.equals(instance.getState())
+                    && !GameInstance.State.FINISHED.equals(instance.getState())
+                   )
                     startActionMooveGameInstance(this, getItem());
                 else {
                     toggleActionBarProgress(false);
@@ -184,8 +186,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
 
-        mMapFragment.scrollMap();
         mMapFragment.updateMap();
+        mMapFragment.scrollMap();
     }
 
     private void updateGame(GameInstance instance) {
@@ -198,8 +200,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.setItems(getItem().getPlayers());
 
         mMapFragment.setGameInstanceEntity(getItem());
-        mMapFragment.scrollMap();
         mMapFragment.updateMap();
+        mMapFragment.scrollMap();
     }
 
     @Override
@@ -239,8 +241,6 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         int steps2Go = rnd.nextInt(5) + 1;
         showAnimatedText(String.format("%d\nSteps\nto GO", steps2Go));
 
-        //TODO: skip finished, autofinish game
-        //showProgress();
         toggleActionBarProgress(true);
         getItem().setStepsToGo(steps2Go);
         startActionMooveGameInstance(this, getItem());
