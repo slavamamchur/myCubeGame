@@ -360,7 +360,6 @@ public class MapFragment extends Fragment {
     //TODO: smooth scrolling
     public void scrollMap() {
         final Point offset = getCurrentPointOffsetInViewPort();
-
         mScrollContainerY.post(new Runnable() {
             public void run() {
                 mScrollContainerY.scrollBy(0, (int) (offset.y * 1.2));
