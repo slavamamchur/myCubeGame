@@ -69,7 +69,9 @@ public class MapFragment extends Fragment {
 
         mMapImage = (ImageView)view.findViewById(R.id.map_image);
         mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
+        mScrollContainerY.setSmoothScrollingEnabled(true);
         mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
+        mScrollContainerX.setSmoothScrollingEnabled(true);
 
         mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
@@ -359,14 +361,10 @@ public class MapFragment extends Fragment {
     public void scrollMap() {
         final Point offset = getCurrentPointOffsetInViewPort();
 
-        mScrollContainerX.post(new Runnable() {
-            public void run() {
-                mScrollContainerX.scrollBy((int) (offset.x * 1.2), 0);
-            }
-        });
         mScrollContainerY.post(new Runnable() {
             public void run() {
                 mScrollContainerY.scrollBy(0, (int) (offset.y * 1.2));
+                mScrollContainerX.scrollBy((int) (offset.x * 1.2), 0);
             }
         });
     }

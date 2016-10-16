@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.AuthToken;
+import com.cubegames.slava.cubegame.model.ErrorEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,8 +138,11 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
 
                 finish();
             } else {
+                    ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+                    String message = error != null ? error.getError() : "Invalid password or user name.\nPlease try again.";
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                    builder.setMessage("Invalid password or user name.\nPlease try again.")
+                    builder.setMessage(message)
                             .setTitle(R.string.login_error_title);
                     builder.setPositiveButton(R.string.pos_btn_caption, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

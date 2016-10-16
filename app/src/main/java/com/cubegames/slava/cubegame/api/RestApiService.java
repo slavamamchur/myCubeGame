@@ -296,18 +296,22 @@ public class RestApiService extends IntentService {
 
     private void handleActionLogin(String userName, String userPass) {
         AuthToken response;
-        String message = "";
+        ErrorEntity error = null;
 
         try {
             response = new LoginRequest(userName, userPass, this).doLogin();
         }
         catch (WebServiceException e) {
-            //TODO: return error object
             response = new AuthToken((String)null);
-            message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
+            error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), 404);
+        }
+        catch (Exception e) {
+            response = new AuthToken((String)null);
+            error = new ErrorEntity(e.getMessage(), 404);
         }
 
         Bundle params = new Bundle();
+        params.putParcelable(EXTRA_ERROR_OBJECT, error);
         params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
         sendResponseIntent(ACTION_LOGIN_RESPONSE, params);
     }
@@ -324,6 +328,10 @@ public class RestApiService extends IntentService {
             response = new AuthToken((String)null);
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
+        catch (Exception e) {
+            response = new AuthToken((String)null);
+            message = e.getMessage();
+        }
 
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
@@ -338,6 +346,9 @@ public class RestApiService extends IntentService {
         } catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
+        catch (Exception e) {
+            message = e.getMessage();
+        }
 
         Bundle params = new Bundle();
         params.putString(EXTRA_REGISTRATION_RESPONSE_TEXT, message);
@@ -345,8 +356,17 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionPing() {
+        boolean result = false;
+
+        try {
+            result = new PingRequest(this).doPing();
+        }
+        catch (Exception e) {
+            result = false;
+        }
+
         Bundle params = new Bundle();
-        params.putBoolean(EXTRA_BOOLEAN_RESULT, new PingRequest(this).doPing());
+        params.putBoolean(EXTRA_BOOLEAN_RESULT, result);
         sendResponseIntent(ACTION_PING_RESPONSE, params);
     }
 

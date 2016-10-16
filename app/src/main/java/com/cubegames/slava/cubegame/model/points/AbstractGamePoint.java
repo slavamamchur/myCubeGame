@@ -13,10 +13,10 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_POINT;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AbstractGamePoint implements Parcelable{
 
-    protected int xPos;
-    protected int yPos;
-    protected PointType type;
-    protected int nextPointIndex;
+    public int xPos;
+    public int yPos;
+    public PointType type;
+    public int nextPointIndex;
 
     public AbstractGamePoint() {}
 
