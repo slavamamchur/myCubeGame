@@ -147,12 +147,19 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                 updateGame(instance);
                 if (!GameInstance.State.WAIT.equals(instance.getState())
                     && !GameInstance.State.FINISHED.equals(instance.getState())
-                   )
+                   ) {
+                    mMapFragment.scrollMap();
                     startActionMooveGameInstance(this, getItem());
+                }
                 else {
                     toggleActionBarProgress(false);
                     if (getItem().getPlayers().get(prev_player_index).isSkipped())
                         showAnimatedText("Skip\nnext turn");
+
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {}
+                    mMapFragment.scrollMap();
                 }
             }
             else {
@@ -201,7 +208,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
         mMapFragment.setGameInstanceEntity(getItem());
         mMapFragment.updateMap();
-        mMapFragment.scrollMap();
+        //mMapFragment.scrollMap();
     }
 
     @Override

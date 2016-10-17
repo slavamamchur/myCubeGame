@@ -1,5 +1,7 @@
 package com.cubegames.slava.cubegame;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -53,6 +55,7 @@ public class MapFragment extends Fragment {
     private GameInstance gameInstanceEntity = null;
     private Rect mapViewPort = new Rect(0,0,0,0);
     private Bitmap cachedBitmap;
+    private ViewTreeObserver.OnScrollChangedListener onScrollChangedListener;
 
     public MapFragment() {}
 
@@ -73,15 +76,17 @@ public class MapFragment extends Fragment {
         mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
         mScrollContainerX.setSmoothScrollingEnabled(true);
 
-        mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        onScrollChangedListener = new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 int scrollY = mScrollContainerY.getScrollY();
                 int scrollX = mScrollContainerX.getScrollX();
                 mapViewPort.offset(scrollX - mapViewPort.left, scrollY - mapViewPort.top);
             }
-        });
+        };
+        mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(onScrollChangedListener);
     }
+
 
     public void setIntentFilters(IntentFilter intentFilter) {
         intentFilter.addAction(ACTION_MAP_IMAGE_RESPONSE);
@@ -113,6 +118,9 @@ public class MapFragment extends Fragment {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null) {
+                mMapImage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                ObjectAnimator.ofFloat(mMapImage, "rotationX", 60).start();
+
                 cachedBitmap = loadBitmapFromFile(mapEntity.getId());
                 mMapImage.setImageBitmap(loadBitmapFromFile(mapEntity.getId()));
                 DrawMap(cachedBitmap);
@@ -166,48 +174,14 @@ public class MapFragment extends Fragment {
         final Paint paint = new Paint();
         paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
         final Canvas canvas = new Canvas(getBitmap());
-        //final Canvas canvas = new Canvas(mapImage);
 
-        //------------------------------------------------------------------------------------------
-//        final Bitmap fmapImage = mapImage;
-//        final float centerX = mapImage.getWidth() / 2.0f;
-//        final float centerY = mapImage.getHeight() / 2.0f;
-//        final RotateXY3DAnimation rotation = new RotateXY3DAnimation(0, 60, centerX, centerY);
-//        rotation.setDuration(1);
-//        rotation.setFillAfter(true);
-//        rotation.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//                //mMapImage.setVisibility(View.INVISIBLE);
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                mMapImage.setImageBitmap(fmapImage);
-//                //mMapImage.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-//
-//        drawPath(fmapImage, paint, canvas);
-//        //mMapImage.setVisibility(View.INVISIBLE);
-//        mMapImage.startAnimation(rotation);
-        //------------------------------------------------------------------------------------------
-
-
-        drawPath(mapImage, paint, canvas);
+        canvas.drawBitmap(mapImage, 0, 0, paint);
+        drawPath(paint, canvas);
         mMapImage.invalidate();
 
     }
 
-    private void drawPath(Bitmap mapImage, Paint paint, Canvas canvas) {
-        canvas.drawBitmap(mapImage, 0, 0, paint);
-        //mapImage.recycle();
-
+    private void drawPath(Paint paint, Canvas canvas) {
         if (gameEntity != null) {
             Path path = new Path();
             if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
@@ -354,18 +328,42 @@ public class MapFragment extends Fragment {
         else
             yOffset = 0;
 
-        return new Point(xOffset, yOffset);
+        return new Point(Math.round(xOffset * 1.2f), Math.round(yOffset * 1.2f));
     }
 
-    //TODO: smooth scrolling
+    //TODO: scrolling animation bug fix
     public void scrollMap() {
         final Point offset = getCurrentPointOffsetInViewPort();
-        mScrollContainerY.post(new Runnable() {
-            public void run() {
-                mScrollContainerY.scrollBy(0, (int) (offset.y * 1.2));
-                mScrollContainerX.scrollBy((int) (offset.x * 1.2), 0);
+        mapViewPort.offset(offset.x, offset.y);
+
+        mScrollContainerY.getViewTreeObserver().removeOnScrollChangedListener(onScrollChangedListener);
+
+        ObjectAnimator animatorY = ObjectAnimator.ofInt(mScrollContainerY, "scrollY", offset.y).setDuration(10 * Math.abs(offset.y));
+        animatorY.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(onScrollChangedListener);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
             }
         });
+        animatorY.start();
+
+        ObjectAnimator animatorX = ObjectAnimator.ofInt(mScrollContainerX, "scrollX", offset.x).setDuration(10 * Math.abs(offset.x));
+        animatorX.start();
+
     }
 
 }
