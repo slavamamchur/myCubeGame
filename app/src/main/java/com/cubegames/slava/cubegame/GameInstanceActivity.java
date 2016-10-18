@@ -35,15 +35,17 @@ import static com.cubegames.slava.cubegame.api.RestApiService.startActionRestart
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> implements BaseItemDetailsActivity.WebErrorHandler {
 
     public static final String FINISHED_FIELD_NAME = "finished";
+    public static final String SKIPPED_FIELD_NAME = "skipped";
 
     private static final ArrayList<DBColumnInfo> PLAYERS_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
-            add(new DBColumnInfo("Player", 70,
+            add(new DBColumnInfo("Player", 45,
                     DBColumnInfo.ColumnType.COLUMN_TEXT,
                     InstancePlayer.class.getDeclaredField(NAME_FIELD_NAME), null, -1,
                     InstancePlayer.class.getDeclaredField(COLOR_FIELD_NAME)));
 
             add(new DBColumnInfo("Finished", 30, DBColumnInfo.ColumnType.COLUMN_CHECK_BOX, InstancePlayer.class.getDeclaredField(FINISHED_FIELD_NAME), null));
+            add(new DBColumnInfo("Skipped", 25, DBColumnInfo.ColumnType.COLUMN_CHECK_BOX, InstancePlayer.class.getDeclaredField(SKIPPED_FIELD_NAME), null));
         }
         catch (NoSuchFieldException e) {
             e.printStackTrace();

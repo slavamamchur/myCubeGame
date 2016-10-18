@@ -1,6 +1,5 @@
 package com.cubegames.slava.cubegame;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -56,6 +55,7 @@ public class MapFragment extends Fragment {
     private Rect mapViewPort = new Rect(0,0,0,0);
     private Bitmap cachedBitmap;
     private ViewTreeObserver.OnScrollChangedListener onScrollChangedListener;
+    private boolean canRotateMap = false;
 
     public MapFragment() {}
 
@@ -71,6 +71,8 @@ public class MapFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mMapImage = (ImageView)view.findViewById(R.id.map_image);
+        mMapImage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
         mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
         mScrollContainerY.setSmoothScrollingEnabled(true);
         mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
@@ -118,10 +120,10 @@ public class MapFragment extends Fragment {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null) {
-                mMapImage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                ObjectAnimator.ofFloat(mMapImage, "rotationX", 60).start();
-
                 cachedBitmap = loadBitmapFromFile(mapEntity.getId());
+
+                rotateMap();
+
                 mMapImage.setImageBitmap(loadBitmapFromFile(mapEntity.getId()));
                 DrawMap(cachedBitmap);
                 if (gameInstanceEntity != null)
@@ -157,6 +159,8 @@ public class MapFragment extends Fragment {
     }
 
     public void InitMap(GameInstance gameInst, WebErrorHandler errorHandler) {
+        canRotateMap = true;
+
         setGameInstanceEntity(gameInst);
         setGameEntity(gameInst == null ? null : gameInst.getGame());
         setWebErrorHandler(errorHandler);
@@ -331,39 +335,40 @@ public class MapFragment extends Fragment {
         return new Point(Math.round(xOffset * 1.2f), Math.round(yOffset * 1.2f));
     }
 
-    //TODO: scrolling animation bug fix
     public void scrollMap() {
         final Point offset = getCurrentPointOffsetInViewPort();
-        mapViewPort.offset(offset.x, offset.y);
+        //mapViewPort.offset(offset.x, offset.y);
 
-        mScrollContainerY.getViewTreeObserver().removeOnScrollChangedListener(onScrollChangedListener);
+        mScrollContainerY.smoothScrollBy(0, offset.y);
+        mScrollContainerX.smoothScrollBy(offset.x, 0); //TODO: rotate after scroll and translate srollY if < viewport + scroll bottom
+        ObjectAnimator.ofFloat(mMapImage, "rotationX", 35 + getRotationAngle()).setDuration(1).start();
+    }
 
-        ObjectAnimator animatorY = ObjectAnimator.ofInt(mScrollContainerY, "scrollY", offset.y).setDuration(10 * Math.abs(offset.y));
-        animatorY.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+    private void rotateMap() {
+        if (!canRotateMap)
+            return;
 
-            }
+        ObjectAnimator.ofFloat(mMapImage, "pivotX", cachedBitmap.getWidth() / 2).setDuration(1).start();
+        ObjectAnimator.ofFloat(mMapImage, "pivotY", cachedBitmap.getHeight()).setDuration(1).start();
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(onScrollChangedListener);
-            }
+        if (mapViewPort.height() < cachedBitmap.getHeight())
+            ObjectAnimator.ofFloat(mMapImage, "translationY", getCameraDistance()).setDuration(1).start();
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+        //ObjectAnimator.ofFloat(mMapImage, "rotationX", 45).setDuration(1).start();
+    }
 
-            }
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+    private float getCameraDistance() {
+        if (mapViewPort == null || cachedBitmap ==null)
+            return 0;
+        else
+            return (mapViewPort.bottom - mapViewPort.top - cachedBitmap.getHeight()) / 1f;
+    }
 
-            }
-        });
-        animatorY.start();
+    private float getRotationAngle() {
+        int y = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers()
+                .get(gameInstanceEntity.getCurrentPlayer()).getCurrentPoint()).getyPos();
 
-        ObjectAnimator animatorX = ObjectAnimator.ofInt(mScrollContainerX, "scrollX", offset.x).setDuration(10 * Math.abs(offset.x));
-        animatorX.start();
-
+        return  20f * y / mapViewPort.height();
     }
 
 }

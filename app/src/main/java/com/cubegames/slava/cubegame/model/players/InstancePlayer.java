@@ -9,7 +9,7 @@ public class InstancePlayer implements Parcelable{
     public int color;
     protected int currentPoint;
     public boolean finished;
-    protected boolean skipped;
+    public boolean skipped;
 
     public InstancePlayer() {}
 
