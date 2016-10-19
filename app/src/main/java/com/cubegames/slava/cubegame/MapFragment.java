@@ -339,9 +339,9 @@ public class MapFragment extends Fragment {
         final Point offset = getCurrentPointOffsetInViewPort();
         //mapViewPort.offset(offset.x, offset.y);
 
-        mScrollContainerY.smoothScrollBy(0, offset.y);
-        mScrollContainerX.smoothScrollBy(offset.x, 0); //TODO: rotate after scroll and translate srollY if < viewport + scroll bottom
-        ObjectAnimator.ofFloat(mMapImage, "rotationX", 35 + getRotationAngle()).setDuration(1).start();
+        //mScrollContainerY.smoothScrollBy(0, offset.y);
+        mScrollContainerX.smoothScrollBy(offset.x, 0);
+        ObjectAnimator.ofFloat(mMapImage, "rotationX", 35 + getRotationAngle()).setDuration(300).start();
     }
 
     private void rotateMap() {
@@ -351,8 +351,10 @@ public class MapFragment extends Fragment {
         ObjectAnimator.ofFloat(mMapImage, "pivotX", cachedBitmap.getWidth() / 2).setDuration(1).start();
         ObjectAnimator.ofFloat(mMapImage, "pivotY", cachedBitmap.getHeight()).setDuration(1).start();
 
-        if (mapViewPort.height() < cachedBitmap.getHeight())
+        if (mapViewPort.height() < cachedBitmap.getHeight()) {
+            mScrollContainerY.smoothScrollBy(0, cachedBitmap.getHeight() - mapViewPort.height());
             ObjectAnimator.ofFloat(mMapImage, "translationY", getCameraDistance()).setDuration(1).start();
+        }
 
         //ObjectAnimator.ofFloat(mMapImage, "rotationX", 45).setDuration(1).start();
     }
