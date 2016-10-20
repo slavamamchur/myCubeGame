@@ -158,9 +158,9 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                     if (getItem().getPlayers().get(prev_player_index).isSkipped())
                         showAnimatedText("Skip\nnext turn");
 
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {}
+//                    try {
+//                        Thread.sleep(1500);
+//                    } catch (InterruptedException e) {}
                     mMapFragment.scrollMap();
                 }
             }

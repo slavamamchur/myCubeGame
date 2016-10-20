@@ -336,34 +336,30 @@ public class MapFragment extends Fragment {
     }
 
     public void scrollMap() {
-        final Point offset = getCurrentPointOffsetInViewPort();
-        //mapViewPort.offset(offset.x, offset.y);
-
-        //mScrollContainerY.smoothScrollBy(0, offset.y);
+        Point offset = getCurrentPointOffsetInViewPort();
         mScrollContainerX.smoothScrollBy(offset.x, 0);
-        ObjectAnimator.ofFloat(mMapImage, "rotationX", 35 + getRotationAngle()).setDuration(300).start();
+
+        ObjectAnimator.ofFloat(mMapImage, "pivotX", cachedBitmap.getWidth() / 2).setDuration(1).start();
+        ObjectAnimator.ofFloat(mMapImage, "pivotY", cachedBitmap.getHeight()).setDuration(1).start();
+        ObjectAnimator.ofFloat(mMapImage, "rotationX", 35 + getRotationAngle()).setDuration(500).start();
     }
 
     private void rotateMap() {
         if (!canRotateMap)
             return;
 
-        ObjectAnimator.ofFloat(mMapImage, "pivotX", cachedBitmap.getWidth() / 2).setDuration(1).start();
-        ObjectAnimator.ofFloat(mMapImage, "pivotY", cachedBitmap.getHeight()).setDuration(1).start();
+        mScrollContainerY.scrollBy(0, Math.abs(cachedBitmap.getHeight() - mapViewPort.height()));
 
-        if (mapViewPort.height() < cachedBitmap.getHeight()) {
-            mScrollContainerY.smoothScrollBy(0, cachedBitmap.getHeight() - mapViewPort.height());
-            ObjectAnimator.ofFloat(mMapImage, "translationY", getCameraDistance()).setDuration(1).start();
-        }
-
-        //ObjectAnimator.ofFloat(mMapImage, "rotationX", 45).setDuration(1).start();
+        if (mapViewPort.height() < cachedBitmap.getHeight())
+            ObjectAnimator.ofFloat(mapViewPort.height() < cachedBitmap.getHeight() ? mMapImage : mScrollContainerX,
+                    "translationY", getCameraDistance()).setDuration(1).start();
     }
 
     private float getCameraDistance() {
         if (mapViewPort == null || cachedBitmap ==null)
             return 0;
         else
-            return (mapViewPort.bottom - mapViewPort.top - cachedBitmap.getHeight()) / 1f;
+            return (mapViewPort.height() - cachedBitmap.getHeight()) / 1f;
     }
 
     private float getRotationAngle() {
@@ -371,6 +367,10 @@ public class MapFragment extends Fragment {
                 .get(gameInstanceEntity.getCurrentPlayer()).getCurrentPoint()).getyPos();
 
         return  20f * y / mapViewPort.height();
+    }
+
+    public void animatePlayerChip(InstancePlayer player, int fromPointIndex) {
+        //TODO: implement
     }
 
 }
