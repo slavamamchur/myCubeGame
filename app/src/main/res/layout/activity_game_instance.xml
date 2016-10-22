@@ -7,13 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:paddingBottom="5dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="5dp"
-
     tools:context="com.cubegames.slava.cubegame.GameInstanceActivity"
-    android:background="#FFCC8000">
+    android:id="@+id/map_container">
 
     <fragment
         android:layout_width="match_parent"

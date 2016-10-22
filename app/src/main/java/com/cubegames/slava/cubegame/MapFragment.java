@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -35,15 +36,17 @@ import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
-import java.io.IOException;
+import java.util.HashMap;
 
 import static com.cubegames.slava.cubegame.Utils.loadBitmapFromFile;
-import static com.cubegames.slava.cubegame.Utils.saveBitmap2File;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
 
 public class MapFragment extends Fragment {
+
+    public static final float START_ROTATION_ANGLE = 35;
+    public static final float INTERPOLATED_ROTATION_RANGE = 20;
 
     private ImageView mMapImage;
     private ScrollView mScrollContainerY;
@@ -56,6 +59,9 @@ public class MapFragment extends Fragment {
     private Bitmap cachedBitmap;
     private ViewTreeObserver.OnScrollChangedListener onScrollChangedListener;
     private boolean canRotateMap = false;
+    private boolean isFirstScroll = true;
+    FrameLayout parentView;
+    private HashMap<String, View> playerChips;
 
     public MapFragment() {}
 
@@ -107,11 +113,8 @@ public class MapFragment extends Fragment {
                 webErrorHandler.onError(error);
             }
             else {
-                try {
-                    saveBitmap2File(getBitmap(), mapEntity.getId());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                clearImage();
+                RestApiService.startActionGetMapImage(getContext(), mapEntity);
             }
 
             return true;
@@ -120,6 +123,7 @@ public class MapFragment extends Fragment {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null) {
+                clearImage();
                 cachedBitmap = loadBitmapFromFile(mapEntity.getId());
 
                 rotateMap();
@@ -161,6 +165,8 @@ public class MapFragment extends Fragment {
     public void InitMap(GameInstance gameInst, WebErrorHandler errorHandler) {
         canRotateMap = true;
 
+        parentView = (FrameLayout) getActivity().findViewById(R.id.map_container);
+
         setGameInstanceEntity(gameInst);
         setGameEntity(gameInst == null ? null : gameInst.getGame());
         setWebErrorHandler(errorHandler);
@@ -177,12 +183,12 @@ public class MapFragment extends Fragment {
 
         final Paint paint = new Paint();
         paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
-        final Canvas canvas = new Canvas(getBitmap());
+        paint.setFilterBitmap(true);
 
-        canvas.drawBitmap(mapImage, 0, 0, paint);
+        final Canvas canvas = new Canvas(getBitmap());
+        canvas.drawBitmap(mapImage, null, new Rect(0, 0, mapImage.getWidth() * 2, mapImage.getHeight() * 2), paint);
         drawPath(paint, canvas);
         mMapImage.invalidate();
-
     }
 
     private void drawPath(Paint paint, Canvas canvas) {
@@ -211,21 +217,22 @@ public class MapFragment extends Fragment {
 
         }
 
-        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
-            int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
-            for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
-                int currentPointIdx = player.getCurrentPoint();
-                playersOnWayPoints[currentPointIdx]++;
-                int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
-                AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
-                int x = point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
-                int y = point.getyPos();
-
-                paint.setColor(0xFF000000 | player.getColor());
-                canvas.drawCircle(x, y, 15f, paint);
-            }
-
-        }
+        //TODO: animated redraw chip - > interpolate on line
+//        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
+//            int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+//            for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
+//                int currentPointIdx = player.getCurrentPoint();
+//                playersOnWayPoints[currentPointIdx]++;
+//                int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+//                AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
+//                int x = point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
+//                int y = point.getyPos();
+//
+//                paint.setColor(0xFF000000 | player.getColor());
+//                canvas.drawCircle(x, y, 15f, paint);
+//            }
+//
+//        }
     }
 
     private void runJustBeforeBeingDrawn(final View view) {
@@ -260,9 +267,8 @@ public class MapFragment extends Fragment {
 
     public void saveMapImage(Intent data, GameMap map){
         Uri selectedImage = data.getData();
-        mMapImage.setImageURI(selectedImage);
-
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
         Cursor cursor = getActivity().getContentResolver().query(selectedImage,
                 filePathColumn, null, null, null);
         if (cursor != null){
@@ -289,7 +295,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onDetach() {
         clearImage();
-        cachedBitmap.recycle();
 
         super.onDetach();
     }
@@ -299,16 +304,24 @@ public class MapFragment extends Fragment {
         mMapImage.setImageBitmap(null);
         if (bmp != null)
             bmp.recycle();
+
+        if (cachedBitmap != null) {
+            cachedBitmap.recycle();
+            cachedBitmap = null;
+        }
     }
 
     public Bitmap getBitmap() {
-        return ((BitmapDrawable)mMapImage.getDrawable()).getBitmap();
+        try {
+            return ((BitmapDrawable) mMapImage.getDrawable()).getBitmap();
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     public void updateMap() {
         if (mapEntity != null && mapEntity.getId() != null) {
-            //clearImage();
-            //DrawMap(loadBitmapFromFile(mapEntity.getId()));
             DrawMap(cachedBitmap);
         }
     }
@@ -341,17 +354,21 @@ public class MapFragment extends Fragment {
 
         ObjectAnimator.ofFloat(mMapImage, "pivotX", cachedBitmap.getWidth() / 2).setDuration(1).start();
         ObjectAnimator.ofFloat(mMapImage, "pivotY", cachedBitmap.getHeight()).setDuration(1).start();
-        ObjectAnimator.ofFloat(mMapImage, "rotationX", 35 + getRotationAngle()).setDuration(500).start();
+        ObjectAnimator.ofFloat(mMapImage, "rotationX", START_ROTATION_ANGLE + getRotationAngle()).setDuration(isFirstScroll?1:500).start();
+
+        isFirstScroll = false;
     }
 
+
     private void rotateMap() {
+        isFirstScroll = true;
+
         if (!canRotateMap)
             return;
 
         mScrollContainerY.scrollBy(0, Math.abs(cachedBitmap.getHeight() - mapViewPort.height()));
 
-        if (mapViewPort.height() < cachedBitmap.getHeight())
-            ObjectAnimator.ofFloat(mapViewPort.height() < cachedBitmap.getHeight() ? mMapImage : mScrollContainerX,
+        ObjectAnimator.ofFloat(mapViewPort.height() < cachedBitmap.getHeight() ? mMapImage : mScrollContainerX,
                     "translationY", getCameraDistance()).setDuration(1).start();
     }
 
@@ -366,11 +383,37 @@ public class MapFragment extends Fragment {
         int y = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers()
                 .get(gameInstanceEntity.getCurrentPlayer()).getCurrentPoint()).getyPos();
 
-        return  20f * y / mapViewPort.height();
+        return  INTERPOLATED_ROTATION_RANGE * y / mapViewPort.height();
     }
 
-    public void animatePlayerChip(InstancePlayer player, int fromPointIndex) {
-        //TODO: implement
+    public void animatePlayersChip(InstancePlayer player) {
+        View playersChip = playerChips.get(player.getName());
+        AbstractGamePoint toPoint = gameEntity.getGamePoints().get(player.getCurrentPoint());
+        float deltaX = 1f * toPoint.xPos - playersChip.getX();
+        float deltaY = 1f * toPoint.yPos - playersChip.getY();
+
+    }
+
+    private Point getNextYOnLine(Point start, Point end, int x) {
+        if (start.x == end.x)
+            return new Point(start.x, start.y);
+
+        float k = (start.y - end.y) / (start.x - end.x);
+        float b = end.y - k * end.x;
+
+        return new Point(x, Math.round(k * x + b));
+    }
+
+    private Point getNextXOnLine(Point start, Point end, int y) {
+        if (start.x == end.x)
+            return new Point(start.x, y);
+
+        else {
+            float k = (start.y - end.y) / (start.x - end.x);
+            float b = end.y - k * end.x;
+
+            return new Point(Math.round((y - b) / k), y);
+        }
     }
 
 }
