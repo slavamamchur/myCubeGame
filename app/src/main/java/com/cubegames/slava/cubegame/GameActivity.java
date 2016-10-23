@@ -172,8 +172,8 @@ public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseI
         if (id == R.id.action_new) {
             NewGamePointDialogFragment dialog = new NewGamePointDialogFragment();
             dialog.setNextPointIndex(getItem().getGamePoints().size() + 1);
-            dialog.setMapWidth(mMapFragment.getBitmap().getWidth());
-            dialog.setMapHeight(mMapFragment.getBitmap().getHeight());
+            dialog.setMapWidth(mMapFragment.getBitmap().getWidth() * 2);
+            dialog.setMapHeight(mMapFragment.getBitmap().getHeight() * 2);
             dialog.setDelegate(new DialogOnClickDelegate() {
                 @Override
                 public void doAction(Object result) {

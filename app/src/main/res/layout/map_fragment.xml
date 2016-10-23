@@ -14,12 +14,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/map_scroll_container_x">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/map_image"
-                android:scaleType="matrix">
-            </ImageView>
+            <com.cubegames.slava.cubegame.MapView
+                android:layout_width="1000dp"
+                android:layout_height="1000dp"
+                class="com.cubegames.slava.cubegame.MapView"
+                android:id="@+id/map_view" />
 
         </HorizontalScrollView>
 
