@@ -26,7 +26,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
 import com.cubegames.slava.cubegame.BaseItemDetailsActivity.WebErrorHandler;
-import com.cubegames.slava.cubegame.MapView.DrawMapViewDelegate;
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
@@ -42,7 +41,7 @@ import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_R
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
 
-public class MapFragment extends Fragment implements DrawMapViewDelegate {
+public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate {
 
     public static final float START_ROTATION_ANGLE = 35;
     public static final float INTERPOLATED_ROTATION_RANGE = 20;
@@ -50,6 +49,7 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
     private MapView mMapImage;
     private ScrollView mScrollContainerY;
     private HorizontalScrollView mScrollContainerX;
+    private FrameLayout mMapContainer;
     private WebErrorHandler webErrorHandler;
     private GameMap mapEntity = null;
     private Game gameEntity = null;
@@ -91,7 +91,7 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
         };
         mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(onScrollChangedListener);
 
-        mMapImage = (MapView) view.findViewById(R.id.map_view);
+        mMapContainer = (FrameLayout) view.findViewById(R.id.map_container);
 
     }
 
@@ -109,9 +109,7 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
         if (intent.getAction().equals(ACTION_UPLOAD_IMAGE_RESPONSE)){
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error != null && webErrorHandler != null) {
-                //DrawMap(loadBitmapFromFile(mapEntity.getId()));
                 mMapImage.invalidate();
-
                 webErrorHandler.onError(error);
             }
             else {
@@ -128,9 +126,7 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
                 clearImage();
                 cachedBitmap = loadBitmapFromFile(mapEntity.getId());
 
-                //createNewMapView();
-                mMapImage.postInvalidate();
-                mScrollContainerY.postInvalidate();
+                createNewMapView();
 
                 rotateMap();
                 if (gameInstanceEntity != null)
@@ -150,12 +146,26 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
         mMapImage = new MapView(getContext(), this);
         mMapImage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-        mScrollContainerX.removeAllViews();
-        HorizontalScrollView.LayoutParams lp = new FrameLayout.LayoutParams(cachedBitmap.getWidth() * 2, cachedBitmap.getHeight() * 2);
-        mScrollContainerX.addView(mMapImage, lp);
+        mMapContainer.removeAllViews();
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(cachedBitmap.getWidth() * 2, cachedBitmap.getHeight() * 2);
+        mMapContainer.addView(mMapImage, lp);
         mMapImage.invalidate();
     }
 
+//    private void mapSurfaceInvalidate() {
+//        SurfaceHolder surfaceHolder = mMapImage.getHolder();
+//        Canvas canvas = null;
+//
+//        try {
+//            canvas = surfaceHolder.lockCanvas(null);
+//            mMapImage.draw(canvas);
+//        }
+//        finally {
+//            if (canvas != null) {
+//                surfaceHolder.unlockCanvasAndPost(canvas);
+//            }
+//        }
+//    }
 
     public void InitMap(GameMap map, WebErrorHandler errorHandler) {
         setMapEntity(map);
@@ -199,17 +209,15 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
     }
 
     private void DrawMap(Bitmap mapImage, Canvas canvas) {
-        if (mapImage == null)
+        if (mapImage == null || canvas == null)
             return;
 
         final Paint paint = new Paint();
         paint.setPathEffect(new DashPathEffect(new float[] {10, 5}, 0));
         paint.setFilterBitmap(true);
 
-        //final Canvas canvas = new Canvas(getBitmap());
         canvas.drawBitmap(mapImage, null, new Rect(0, 0, mapImage.getWidth() * 2, mapImage.getHeight() * 2), paint);
         drawPath(paint, canvas);
-        //mMapImage.invalidate();
     }
 
     private void drawPath(Paint paint, Canvas canvas) {
@@ -321,11 +329,6 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
     }
 
     private void clearImage() {
-//        Bitmap bmp = getBitmap();
-//        mMapImage.setImageBitmap(null);
-//        if (bmp != null)
-//            bmp.recycle();
-
         if (cachedBitmap != null) {
             cachedBitmap.recycle();
             cachedBitmap = null;
@@ -333,18 +336,11 @@ public class MapFragment extends Fragment implements DrawMapViewDelegate {
     }
 
     public Bitmap getBitmap() {
-//        try {
-//            return ((BitmapDrawable) mMapImage.getDrawable()).getBitmap();
-//        }
-//        catch (Exception e) {
-//            return null;
-//        }
         return cachedBitmap;
     }
 
     public void updateMap() {
         if (mapEntity != null && mapEntity.getId() != null) {
-            //DrawMap(cachedBitmap);
             mMapImage.invalidate();
         }
     }
