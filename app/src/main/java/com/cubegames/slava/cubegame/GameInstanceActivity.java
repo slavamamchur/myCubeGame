@@ -201,6 +201,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
 
+        mMapFragment.savedPlayers = getItem().getPlayers();
         mMapFragment.updateMap();
         mMapFragment.scrollMap();
     }
@@ -249,6 +250,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         }
     }
 
+    //TODO: disable buttons while animation in progress
     private void playTurn() {
         prev_player_index = getItem().getCurrentPlayer();
 

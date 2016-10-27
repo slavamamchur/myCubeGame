@@ -60,7 +60,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     private ViewTreeObserver.OnScrollChangedListener onScrollChangedListener;
     private boolean canRotateMap = false;
     private boolean isFirstScroll = true;
-    private List<InstancePlayer> savedPlayers = null;
+    public List<InstancePlayer> savedPlayers = null;
     private int movedPlayerIndex = -1;
 
     public MapFragment() {}
@@ -370,11 +370,18 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             AbstractGamePoint endGamePoint = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers().get(movedPlayerIndex).getCurrentPoint());
             Point end = new Point(endGamePoint.getxPos(), endGamePoint.getyPos());
 
-            //TODO: interpolate step by fixed time ???
-            for (int x = 0; x <= Math.abs(end.x - start.x); x+=3) {
-                nextPoint = getNextPointOnLineByXvalue(start, end, end.x > start.x ? start.x + x : start.x - x);//TODO: check formula !!!
-                waitWhileDrawingMap();
+            //TODO: interpolate step by fixed time ??? (property animation)
+            if (end.x == start.x) {
+                for (int y = 0; y <= Math.abs(end.y - start.y); y+=3) {
+                    nextPoint = new Point(start.x, end.y > start.y ? start.y + y : start.y - y);
+                    waitWhileDrawingMap();
+                }
             }
+            else
+                for (int x = 0; x <= Math.abs(end.x - start.x); x+=3) {
+                    nextPoint = getNextPointOnLineByXvalue(start, end, end.x > start.x ? start.x + x : start.x - x);
+                    waitWhileDrawingMap();
+                }
 
             nextPoint = null;
             movedPlayerIndex = -1;
@@ -458,22 +465,10 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         if (start.x == end.x)
             return new Point(start.x, start.y);
 
-        float k = (start.y - end.y) / (start.x - end.x);
+        float k = (start.y - end.y)*1f / (start.x - end.x);
         float b = end.y - k * end.x;
 
         return new Point(x, Math.round(k * x + b));
-    }
-
-    private Point getNextPointOnLineByYvalue(Point start, Point end, int y) {
-        if (start.x == end.x)
-            return new Point(start.x, y);
-
-        else {
-            float k = (start.y - end.y) / (start.x - end.x);
-            float b = end.y - k * end.x;
-
-            return new Point(Math.round((y - b) / k), y);
-        }
     }
 
 }
