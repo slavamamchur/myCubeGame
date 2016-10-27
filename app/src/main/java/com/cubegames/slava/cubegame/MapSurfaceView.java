@@ -18,8 +18,6 @@ public class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void draw(Canvas canvas) {
-        //super.draw(canvas);
-
         if (drawMapViewDelegate != null )
             drawMapViewDelegate.onDrawMap(canvas);
     }

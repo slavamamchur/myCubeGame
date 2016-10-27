@@ -145,24 +145,30 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
 
             if (error == null){
-                GameInstance instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
+                final GameInstance instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
                 updateGame(instance);
+
                 if (!GameInstance.State.WAIT.equals(instance.getState())
                     && !GameInstance.State.FINISHED.equals(instance.getState())
                    ) {
-                    mMapFragment.scrollMap();
-                    startActionMooveGameInstance(this, getItem());
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //mMapFragment.isChipAnimates = true;
+                            while (mMapFragment.isChipAnimates)
+                                try {Thread.sleep(300);} catch (InterruptedException e) {}
+
+                            startActionMooveGameInstance(GameInstanceActivity.this, getItem());
+                        }
+                    }).start();
                 }
                 else {
                     toggleActionBarProgress(false);
                     if (getItem().getPlayers().get(prev_player_index).isSkipped())
                         showAnimatedText("Skip\nnext turn");
-
-//                    try {
-//                        Thread.sleep(1500);
-//                    } catch (InterruptedException e) {}
-                    mMapFragment.scrollMap();
                 }
+
             }
             else {
                 showError(error);
@@ -210,7 +216,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
         mMapFragment.setGameInstanceEntity(getItem());
         mMapFragment.updateMap();
-        //mMapFragment.scrollMap();
+        mMapFragment.scrollMap();
     }
 
     @Override
