@@ -337,6 +337,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     public final Object lockFrame = new Object();
     public boolean isChipAnimates = false;
 
+    //TODO: use thtead-protected variables
     public void updateMap() {
         if (mapEntity == null || mapEntity.getId() == null)
             return;
@@ -351,8 +352,13 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         if (    false
              || movedPlayerIndex < 0
              || !GameInstance.State.MOVING.equals(gameInstanceEntity.getState())
-            )
+            ) {
+
+            savedPlayers.clear();
+            savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
+
             mMapImage.invalidate();
+        }
         else
             new Thread(new Runnable() {
                 @Override
@@ -370,18 +376,20 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             AbstractGamePoint endGamePoint = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers().get(movedPlayerIndex).getCurrentPoint());
             Point end = new Point(endGamePoint.getxPos(), endGamePoint.getyPos());
 
-            //TODO: interpolate step by fixed time ??? (property animation)
             if (end.x == start.x) {
-                for (int y = 0; y <= Math.abs(end.y - start.y); y+=3) {
+                int delta = Math.abs(end.y - start.y);
+                for (int y = 0; y <= delta; y+= delta /15) { //1500ms / 100 = 15 frames by 100ms
                     nextPoint = new Point(start.x, end.y > start.y ? start.y + y : start.y - y);
                     waitWhileDrawingMap();
                 }
             }
-            else
-                for (int x = 0; x <= Math.abs(end.x - start.x); x+=3) {
+            else {
+                int delta = Math.abs(end.x - start.x);
+                for (int x = 0; x <= delta; x+= delta /15) { //1500ms / 100 = 15 frames by 100ms
                     nextPoint = getNextPointOnLineByXvalue(start, end, end.x > start.x ? start.x + x : start.x - x);
                     waitWhileDrawingMap();
                 }
+            }
 
             nextPoint = null;
             movedPlayerIndex = -1;
@@ -396,8 +404,12 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
     private void waitWhileDrawingMap() {
         synchronized (lockFrame) {
+            long startAnimationTime = System.currentTimeMillis();
             mMapImage.postInvalidate();
             try {lockFrame.wait();} catch (InterruptedException e) {}
+
+            long wastedTime = 100 - System.currentTimeMillis() + startAnimationTime;
+            try {Thread.sleep(wastedTime);} catch (InterruptedException | IllegalArgumentException e) {}
         }
     }
 

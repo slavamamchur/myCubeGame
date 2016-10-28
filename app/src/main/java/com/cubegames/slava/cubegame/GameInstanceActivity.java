@@ -157,16 +157,28 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                         public void run() {
                             //mMapFragment.isChipAnimates = true;
                             while (mMapFragment.isChipAnimates)
-                                try {Thread.sleep(300);} catch (InterruptedException e) {}
+                                try {Thread.sleep(150);} catch (InterruptedException e) {} //divides by 2000ms
 
                             startActionMooveGameInstance(GameInstanceActivity.this, getItem());
                         }
                     }).start();
                 }
                 else {
-                    toggleActionBarProgress(false);
+                    //toggleActionBarProgress(false);
                     if (getItem().getPlayers().get(prev_player_index).isSkipped())
                         showAnimatedText("Skip\nnext turn");
+
+                    //TODO: ???
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            while (mMapFragment.isChipAnimates)
+//                                try {Thread.sleep(150);} catch (InterruptedException e) {} //divides by 2000ms
+//
+//                            mMapFragment.savedPlayers.clear();
+//                            mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());
+//                        }
+//                    }).start();
                 }
 
             }
