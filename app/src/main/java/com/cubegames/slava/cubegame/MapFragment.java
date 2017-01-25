@@ -1,5 +1,7 @@
 package com.cubegames.slava.cubegame;
 
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +14,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -41,6 +45,7 @@ import static com.cubegames.slava.cubegame.Utils.loadBitmapFromFile;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
+import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 
 public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate {
 
@@ -207,6 +212,8 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             canvas.drawBitmap(mapImage, null, new Rect(0, 0, mapImage.getWidth() * 2, mapImage.getHeight() * 2), paint);
             drawPath(paint, canvas, nextPoint);
             lockFrame.notifyAll();
+
+            //clearImage();//???
         }
     }
 
@@ -236,7 +243,11 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         }
 
+        //
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
+            if (mMapContainer.getChildCount() > 1)
+                mMapContainer.removeViews(1, gameInstanceEntity.getPlayers().size());
+
             int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
             for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
@@ -245,16 +256,83 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
                 playersOnWayPoints[currentPointIdx]++;
                 int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
                 AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
-                boolean isMovingPlayer = movedPlayerIndex == i;
 
-                int x = movedPt != null && isMovingPlayer ? movedPt.x : point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
-                int y = movedPt != null && isMovingPlayer ? movedPt.y : point.getyPos();
+                //boolean isMovingPlayer = movedPlayerIndex == i;
+                int x = /*movedPt != null && isMovingPlayer ? movedPt.x :*/ point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
+                int y = /*movedPt != null && isMovingPlayer ? movedPt.y :*/ point.getyPos();
 
-                paint.setColor(0xFF000000 | player.getColor());
-                canvas.drawCircle(x, y, 15f, paint);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(30,30);
+                lp.leftMargin = x - 15;
+                lp.topMargin = y - 15;
+                View chipView = createChip(0xFF000000 | player.getColor());
+                mMapContainer.addView(chipView, lp);
+
+                //paint.setColor(0xFF000000 | player.getColor());
+                //canvas.drawCircle(x, y, 15f, paint);
             }
         }
 
+    }
+
+    public void moovingChipAnimation(AnimatorListenerAdapter delegate) {
+        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+        int movedPlayerIndex = -1;
+
+        AbstractGamePoint endGamePoint = null;
+        int playersCnt = 0;
+
+        if (savedPlayers != null)
+            for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
+                int currentPointIdx = gameInstanceEntity.getPlayers().get(i).getCurrentPoint();
+                playersOnWayPoints[currentPointIdx]++;
+
+                if (savedPlayers.get(i).getCurrentPoint() != currentPointIdx) {
+                    movedPlayerIndex = i;
+                    endGamePoint = gameEntity.getGamePoints().get(currentPointIdx);
+                    playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+
+                    break;
+                }
+            }
+
+        if (movedPlayerIndex >= 0)
+            try {
+                animateChip(delegate, endGamePoint, playersCnt, mMapContainer.getChildAt(movedPlayerIndex + 1));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        else
+            startActionMooveGameInstance(getContext(), gameInstanceEntity);
+
+        if (savedPlayers != null)
+            savedPlayers.clear();
+        savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
+    }
+
+    private void animateChip(AnimatorListenerAdapter delegate, AbstractGamePoint endGamePoint, int playersCnt, View chip) throws Exception {
+        playersCnt = playersCnt < 0 ? 0 : playersCnt;
+        if (endGamePoint == null)
+            throw new Exception("Invalid game point.");
+
+        int toX = endGamePoint.getxPos() + (7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1)) - 15;//TODO: fix
+        int toY = endGamePoint.getyPos() - 45;
+        ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", toX);
+        ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", toY);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(moveX).with(moveY);
+        animatorSet.setDuration(1500);
+        animatorSet.addListener(delegate);
+        animatorSet.start();
+    }
+
+    private View createChip(int color) {
+        ShapeDrawable chip = new ShapeDrawable(new OvalShape());
+        chip.getPaint().setColor(color);
+        View chipView = new View(getContext());
+        chipView.setBackground(chip);
+
+        return chipView;
     }
 
     private void runJustBeforeBeingDrawn(final View view) {
@@ -336,6 +414,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     private Point nextPoint = null;
     public final Object lockFrame = new Object();
     public boolean isChipAnimates = false;
+    private boolean isFrameDrawnInTime = true;
 
     //TODO: use thtead-protected variables
     public void updateMap() {
@@ -349,7 +428,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
                     break;
                 }
 
-        if (    false
+        if (    true //false
              || movedPlayerIndex < 0
              || !GameInstance.State.MOVING.equals(gameInstanceEntity.getState())
             ) {
@@ -357,7 +436,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             savedPlayers.clear();
             savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
 
-            mMapImage.invalidate();
+            mMapImage.postInvalidate();
         }
         else
             new Thread(new Runnable() {
@@ -370,6 +449,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
     private void playChipAnimation() {
             isChipAnimates = true;
+            isFrameDrawnInTime = true;
 
             AbstractGamePoint startGamePoint = gameEntity.getGamePoints().get(savedPlayers.get(movedPlayerIndex).getCurrentPoint());
             Point start = new Point(startGamePoint.getxPos(), startGamePoint.getyPos());
@@ -378,14 +458,14 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
             if (end.x == start.x) {
                 int delta = Math.abs(end.y - start.y);
-                for (int y = 0; y <= delta; y+= delta /15) { //1500ms / 100 = 15 frames by 100ms
+                for (int y = 0; y <= delta; y+= delta /15 * (isFrameDrawnInTime ? 1 : 2)) { //1500ms / 50 = 30 frames by 50ms
                     nextPoint = new Point(start.x, end.y > start.y ? start.y + y : start.y - y);
                     waitWhileDrawingMap();
                 }
             }
             else {
                 int delta = Math.abs(end.x - start.x);
-                for (int x = 0; x <= delta; x+= delta /15) { //1500ms / 100 = 15 frames by 100ms
+                for (int x = 0; x <= delta; x+= delta /15 * (isFrameDrawnInTime ? 1 : 2)) { //1500ms / 50 = 30 frames by 50ms
                     nextPoint = getNextPointOnLineByXvalue(start, end, end.x > start.x ? start.x + x : start.x - x);
                     waitWhileDrawingMap();
                 }
@@ -409,6 +489,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             try {lockFrame.wait();} catch (InterruptedException e) {}
 
             long wastedTime = 100 - System.currentTimeMillis() + startAnimationTime;
+            isFrameDrawnInTime = wastedTime >= 0;
             try {Thread.sleep(wastedTime);} catch (InterruptedException | IllegalArgumentException e) {}
         }
     }
@@ -439,9 +520,9 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         Point offset = getCurrentPointOffsetInViewPort();
         mScrollContainerX.smoothScrollBy(offset.x, 0);
 
-        ObjectAnimator.ofFloat(mMapImage, "pivotX", cachedBitmap.getWidth()).setDuration(1).start();
-        ObjectAnimator.ofFloat(mMapImage, "pivotY", cachedBitmap.getHeight() * 2).setDuration(1).start();
-        ObjectAnimator.ofFloat(mMapImage, "rotationX", START_ROTATION_ANGLE /*+ getRotationAngle()*/).setDuration(isFirstScroll?1:500).start();
+        ObjectAnimator.ofFloat(mMapContainer, "pivotX", cachedBitmap.getWidth()).setDuration(1).start();
+        ObjectAnimator.ofFloat(mMapContainer, "pivotY", cachedBitmap.getHeight() * 2).setDuration(1).start();
+        ObjectAnimator.ofFloat(mMapContainer, "rotationX", START_ROTATION_ANGLE /*+ getRotationAngle()*/).setDuration(isFirstScroll?1:500).start();
 
         isFirstScroll = false;
     }
@@ -455,7 +536,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         mScrollContainerY.scrollBy(0, Math.abs(cachedBitmap.getHeight()*2 - mapViewPort.height()));
 
-        ObjectAnimator.ofFloat(mapViewPort.height() < cachedBitmap.getHeight()*2 ? mMapImage : mScrollContainerX,
+        ObjectAnimator.ofFloat(mapViewPort.height() < cachedBitmap.getHeight()*2 ? mMapContainer : mScrollContainerX,
                     "translationY", getCameraDistance()).setDuration(1).start();
     }
 

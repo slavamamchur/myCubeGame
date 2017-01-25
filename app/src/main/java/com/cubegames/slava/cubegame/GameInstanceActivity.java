@@ -1,5 +1,7 @@
 package com.cubegames.slava.cubegame;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -150,37 +152,14 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
                 if (!GameInstance.State.WAIT.equals(instance.getState())
                     && !GameInstance.State.FINISHED.equals(instance.getState())
-                   ) {
+                   )
+                    mMapFragment.moovingChipAnimation(animationListener);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //mMapFragment.isChipAnimates = true;
-                            while (mMapFragment.isChipAnimates)
-                                try {Thread.sleep(150);} catch (InterruptedException e) {} //divides by 2000ms
-
-                            startActionMooveGameInstance(GameInstanceActivity.this, getItem());
-                        }
-                    }).start();
-                }
                 else {
                     //toggleActionBarProgress(false);
                     if (getItem().getPlayers().get(prev_player_index).isSkipped())
                         showAnimatedText("Skip\nnext turn");
-
-                    //TODO: ???
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            while (mMapFragment.isChipAnimates)
-//                                try {Thread.sleep(150);} catch (InterruptedException e) {} //divides by 2000ms
-//
-//                            mMapFragment.savedPlayers.clear();
-//                            mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());
-//                        }
-//                    }).start();
                 }
-
             }
             else {
                 showError(error);
@@ -191,6 +170,13 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         else
             return super.handleWebServiceResponseAction(context, intent);
     }
+
+    AnimatorListenerAdapter animationListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            startActionMooveGameInstance(GameInstanceActivity.this, getItem());
+        }
+    };
 
     private void updateTitle () {
         setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
@@ -213,7 +199,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
 
-        mMapFragment.savedPlayers = getItem().getPlayers();
+        mMapFragment.savedPlayers.clear();
+        mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());
         mMapFragment.updateMap();
         mMapFragment.scrollMap();
     }
@@ -228,8 +215,9 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.setItems(getItem().getPlayers());
 
         mMapFragment.setGameInstanceEntity(getItem());
-        mMapFragment.updateMap();
-        mMapFragment.scrollMap();
+
+        //mMapFragment.updateMap();
+        //mMapFragment.scrollMap();
     }
 
     @Override
