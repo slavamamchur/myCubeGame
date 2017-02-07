@@ -314,16 +314,23 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        int toX = endGamePoint.getxPos() + (7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1)) - 15;//TODO: fix
+        int toX = endGamePoint.getxPos() + (7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1)) - 45;
         int toY = endGamePoint.getyPos() - 45;
         ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", toX);
         ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", toY);
 
+        toY = toY - 45;
+        ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", toY);
+
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(moveX).with(moveY);
+        animatorSet.playTogether(moveX, moveY);
+        if (gameInstanceEntity.getStepsToGo() == 0)
+                animatorSet.playSequentially(moveY2);
         animatorSet.setDuration(1500);
         animatorSet.addListener(delegate);
         animatorSet.start();
+
+        //TODO: rotate aroung waypoint!!!
     }
 
     private View createChip(int color) {
