@@ -15,7 +15,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -265,7 +265,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
                 lp.leftMargin = x - 15;
                 lp.topMargin = y - 15;
                 View chipView = createChip(0xFF000000 | player.getColor());
-                mMapContainer.addView(chipView, lp);
+                mMapContainer.addView(chipView, lp); //TODO: rotate
 
                 //paint.setColor(0xFF000000 | player.getColor());
                 //canvas.drawCircle(x, y, 15f, paint);
@@ -314,27 +314,31 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        int toX = endGamePoint.getxPos() + (7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1)) - 45;
+        int toX = endGamePoint.getxPos()  /* + (7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1)) - 45*/;
         int toY = endGamePoint.getyPos() - 45;
-        ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", toX);
+        ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", toX - 45);
         ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", toY);
 
-        toY = toY - 45;
-        ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", toY);
-
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(moveX, moveY);
-        if (gameInstanceEntity.getStepsToGo() == 0)
-                animatorSet.playSequentially(moveY2);
+        if (gameInstanceEntity.getStepsToGo() == 0) {
+
+//            animatorSet.play(moveX).with(moveY).before(moveY2).before(px).before(py).before(rotate);
+            double alnge = Math.toRadians(playersCnt == 0 ? 0 : (360 / (2 * playersCnt)));
+            int toX2 = (int) (endGamePoint.getxPos() + (toX - endGamePoint.getxPos())*Math.cos(alnge) - (toY - endGamePoint.getyPos())*Math.sin(alnge));
+            int toY2 = (int) (endGamePoint.getyPos() + (toX - endGamePoint.getxPos())*Math.sin(alnge) + (toY - endGamePoint.getyPos())*Math.cos(alnge));
+            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", toX2 - 22);
+            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", toY2 - 45);
+            animatorSet.play(moveX2).with(moveY2);
+        }
+        else
+            animatorSet.play(moveX).with(moveY);
         animatorSet.setDuration(1500);
         animatorSet.addListener(delegate);
         animatorSet.start();
-
-        //TODO: rotate aroung waypoint!!!
     }
 
     private View createChip(int color) {
-        ShapeDrawable chip = new ShapeDrawable(new OvalShape());
+        ShapeDrawable chip = new ShapeDrawable(new RectShape());
         chip.getPaint().setColor(color);
         View chipView = new View(getContext());
         chipView.setBackground(chip);
