@@ -311,30 +311,55 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
     private void animateChip(AnimatorListenerAdapter delegate, AbstractGamePoint endGamePoint, int playersCnt, View chip) throws Exception {
         playersCnt = playersCnt < 0 ? 0 : playersCnt;
+
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        int toX = endGamePoint.getxPos()  /* + (7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1)) - 45*/;
-        int toY = endGamePoint.getyPos() - 45;
-        ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", toX - 45);
-        ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", toY);
-
         AnimatorSet animatorSet = new AnimatorSet();
+
         if (gameInstanceEntity.getStepsToGo() == 0) {
 
 //            animatorSet.play(moveX).with(moveY).before(moveY2).before(px).before(py).before(rotate);
-            double alnge = Math.toRadians(playersCnt == 0 ? 0 : (360 / (2 * playersCnt)));
-            int toX2 = (int) (endGamePoint.getxPos() + (toX - endGamePoint.getxPos())*Math.cos(alnge) - (toY - endGamePoint.getyPos())*Math.sin(alnge));
-            int toY2 = (int) (endGamePoint.getyPos() + (toX - endGamePoint.getxPos())*Math.sin(alnge) + (toY - endGamePoint.getyPos())*Math.cos(alnge));
-            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", toX2 - 22);
-            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", toY2 - 45);
+            Point chipPlace = getChipPlace(endGamePoint, playersCnt);
+            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 22);
+            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 45);
             animatorSet.play(moveX2).with(moveY2);
         }
-        else
+        else {
+            ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", endGamePoint.getxPos() - 45);
+            ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", endGamePoint.getyPos() - 45);
             animatorSet.play(moveX).with(moveY);
+        }
+
         animatorSet.setDuration(1500);
         animatorSet.addListener(delegate);
         animatorSet.start();
+    }
+
+    private Point getChipPlace(AbstractGamePoint endGamePoint, int playersCnt) {
+        double angle = getChipRotationAngle(playersCnt);
+
+        int toX2 = (int) (endGamePoint.getxPos() - 45 * Math.sin(angle));
+        int toY2 = (int) (endGamePoint.getyPos() - 45 * Math.cos(angle));
+
+        return new Point(toX2, toY2);
+    }
+
+    private double getChipRotationAngle(int playersCnt) {
+        if (playersCnt == 0)
+            return  0;
+
+        int part = 8, b;
+        double angle;
+
+        do {
+            angle = 360 / part;
+            b = part - 1;
+
+            part /= 2;
+        } while ( ((playersCnt & part) == 0) && (part != 1) );
+
+        return Math.toRadians(playersCnt == 0 ? 0 : (2 * playersCnt - b) * angle);
     }
 
     private View createChip(int color) {
