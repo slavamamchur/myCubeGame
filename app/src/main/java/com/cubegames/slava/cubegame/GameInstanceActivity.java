@@ -153,7 +153,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                 if (!GameInstance.State.WAIT.equals(instance.getState())
                     && !GameInstance.State.FINISHED.equals(instance.getState())
                    )
-                    mMapFragment.moovingChipAnimation(animationListener);
+                    mMapFragment.movingChipAnimation(animationListener);
 
                 else {
                     //toggleActionBarProgress(false);

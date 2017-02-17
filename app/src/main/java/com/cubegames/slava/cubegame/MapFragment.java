@@ -15,7 +15,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -210,14 +210,14 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             paint.setFilterBitmap(true);
 
             canvas.drawBitmap(mapImage, null, new Rect(0, 0, mapImage.getWidth() * 2, mapImage.getHeight() * 2), paint);
-            drawPath(paint, canvas, nextPoint);
+            drawPath(paint, canvas);
             lockFrame.notifyAll();
 
             //clearImage();//???
         }
     }
 
-    private void drawPath(Paint paint, Canvas canvas, Point movedPt) {
+    private void drawPath(Paint paint, Canvas canvas) {
         if (gameEntity != null) {
             Path path = new Path();
             if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
@@ -243,7 +243,6 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         }
 
-        //
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
             if (mMapContainer.getChildCount() > 1)
                 mMapContainer.removeViews(1, gameInstanceEntity.getPlayers().size());
@@ -257,24 +256,18 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
                 int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
                 AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
 
-                //boolean isMovingPlayer = movedPlayerIndex == i;
-                int x = /*movedPt != null && isMovingPlayer ? movedPt.x :*/ point.getxPos() + ( 7 * playersCnt * (((playersCnt & 1) == 0) ? 1 : -1));
-                int y = /*movedPt != null && isMovingPlayer ? movedPt.y :*/ point.getyPos();
-
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(30,30);
-                lp.leftMargin = x - 15;
-                lp.topMargin = y - 15;
+                lp.leftMargin = point.getxPos() - 15;
+                lp.topMargin = point.getyPos() - 15;
                 View chipView = createChip(0xFF000000 | player.getColor());
                 mMapContainer.addView(chipView, lp); //TODO: rotate
 
-                //paint.setColor(0xFF000000 | player.getColor());
-                //canvas.drawCircle(x, y, 15f, paint);
             }
         }
 
     }
 
-    public void moovingChipAnimation(AnimatorListenerAdapter delegate) {
+    public void movingChipAnimation(AnimatorListenerAdapter delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;
 
@@ -321,13 +314,13 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
 //            animatorSet.play(moveX).with(moveY).before(moveY2).before(px).before(py).before(rotate);
             Point chipPlace = getChipPlace(endGamePoint, playersCnt);
-            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 22);
-            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 45);
+            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 50);
+            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 50);
             animatorSet.play(moveX2).with(moveY2);
         }
         else {
-            ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", endGamePoint.getxPos() - 45);
-            ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", endGamePoint.getyPos() - 45);
+            ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", endGamePoint.getxPos() - 50);
+            ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", endGamePoint.getyPos() - 50);
             animatorSet.play(moveX).with(moveY);
         }
 
@@ -339,8 +332,8 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     private Point getChipPlace(AbstractGamePoint endGamePoint, int playersCnt) {
         double angle = getChipRotationAngle(playersCnt);
 
-        int toX2 = (int) (endGamePoint.getxPos() - 45 * Math.sin(angle));
-        int toY2 = (int) (endGamePoint.getyPos() - 45 * Math.cos(angle));
+        int toX2 = (int) (endGamePoint.getxPos() - 35 * Math.sin(angle));
+        int toY2 = (int) (endGamePoint.getyPos() - 35 * Math.cos(angle));
 
         return new Point(toX2, toY2);
     }
@@ -363,7 +356,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     }
 
     private View createChip(int color) {
-        ShapeDrawable chip = new ShapeDrawable(new RectShape());
+        ShapeDrawable chip = new ShapeDrawable(new OvalShape());
         chip.getPaint().setColor(color);
         View chipView = new View(getContext());
         chipView.setBackground(chip);
