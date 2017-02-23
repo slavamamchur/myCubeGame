@@ -255,7 +255,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         prev_player_index = getItem().getCurrentPlayer();
 
         Random rnd = new Random(System.currentTimeMillis());
-        int steps2Go = 2; //rnd.nextInt(5) + 1;
+        int steps2Go = rnd.nextInt(5) + 1;
         showAnimatedText(String.format("%d\nSteps\nto GO", steps2Go));
 
         toggleActionBarProgress(true);

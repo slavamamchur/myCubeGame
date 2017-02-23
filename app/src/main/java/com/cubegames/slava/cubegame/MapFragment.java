@@ -211,6 +211,10 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
             canvas.drawBitmap(mapImage, null, new Rect(0, 0, mapImage.getWidth() * 2, mapImage.getHeight() * 2), paint);
             drawPath(paint, canvas);
+            if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
+                drawChips();
+            }
+
             lockFrame.notifyAll();
 
             //clearImage();//???
@@ -240,31 +244,39 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
                     canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
                 }
             }
-
         }
+    }
 
-        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) {
-            if (mMapContainer.getChildCount() > 1)
-                mMapContainer.removeViews(1, gameInstanceEntity.getPlayers().size());
+    private void drawChips() {
+        if (mMapContainer.getChildCount() > 1)
+            mMapContainer.removeViews(1, gameInstanceEntity.getPlayers().size());
 
-            int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
-            for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
-                InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-                int currentPointIdx = player.getCurrentPoint();
-                playersOnWayPoints[currentPointIdx]++;
-                int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
-                AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
+        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
+            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
+            int currentPointIdx = player.getCurrentPoint();
+            playersOnWayPoints[currentPointIdx]++;
+            int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+            AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
 
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(30,30);
-                lp.leftMargin = point.getxPos() - 15;
-                lp.topMargin = point.getyPos() - 15;
-                View chipView = createChip(0xFF000000 | player.getColor());
-                mMapContainer.addView(chipView, lp); //TODO: rotate
+            //todo: error if pos !=0
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(30,30);
+            Point chipPlace = getChipPlace(point, playersCnt);
+            lp.leftMargin = point.getxPos() - 15;
+            lp.topMargin = point.getyPos() - 15;
+            View chip = createChip(0xFF000000 | player.getColor());
+            mMapContainer.addView(chip, lp);
 
-            }
+            AnimatorSet animatorSet = new AnimatorSet();
+
+            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 50);
+            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 50);
+            animatorSet.play(moveX2).with(moveY2);
+
+            animatorSet.setDuration(1);
+            animatorSet.start();
         }
-
     }
 
     public void movingChipAnimation(AnimatorListenerAdapter delegate) {
