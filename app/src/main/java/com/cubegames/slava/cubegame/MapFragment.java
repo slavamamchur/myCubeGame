@@ -25,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
@@ -260,28 +259,31 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             playersOnWayPoints[currentPointIdx]++;
             int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
             AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
+            AbstractGamePoint base_point = gameEntity.getGamePoints().get(0);
 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(30,30);
-            Point chipPlace = getChipPlace(point, playersCnt);
-            lp.leftMargin = point.getxPos() - 15;//TODO: set position to game_point[0]
-            lp.topMargin = point.getyPos() - 15;
+            lp.leftMargin = base_point.getxPos() - 15;
+            lp.topMargin = base_point.getyPos() - 15;
             View chip = createChip(0xFF000000 | player.getColor());
             mMapContainer.addView(chip, lp);
 
-
-            TranslateAnimation anim = new TranslateAnimation( 0, chipPlace.x - point.getxPos() , 0, chipPlace.y - point.getyPos() );
+            /*TranslateAnimation anim = new TranslateAnimation( 0, chipPlace.x - point.getxPos() , 0, chipPlace.y - point.getyPos() );
             anim.setDuration(1);
             anim.setFillAfter( true );
-            chip.startAnimation(anim);
+            chip.startAnimation(anim);*/
 
-            /*AnimatorSet animatorSet = new AnimatorSet();
+
+            ///---new
+            Point chipPlace = getChipPlace(point, playersCnt);
+
+            AnimatorSet animatorSet = new AnimatorSet();
 
             ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 50);
             ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 50);
             animatorSet.play(moveX2).with(moveY2);
 
             animatorSet.setDuration(1);
-            animatorSet.start();*/
+            animatorSet.start();
         }
     }
 
