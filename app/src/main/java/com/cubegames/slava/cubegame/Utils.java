@@ -22,7 +22,7 @@ public class Utils {
         Bitmap bitmap = null;
 
         try {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/CubegameBitmapCache";
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/CubegameBitmapCache";
             File f = new File(path, fname + ".png");
             FileInputStream is = new FileInputStream(f);
 
@@ -68,7 +68,7 @@ public class Utils {
     }
 
     public static void saveBitmap2File(Bitmap bmp, String fname) throws IOException {
-        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
+        String file_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() +
                 "/CubegameBitmapCache";
         File dir = new File(file_path);
         if(!dir.exists())
@@ -82,7 +82,8 @@ public class Utils {
     }
 
     public static void saveBitmap2File(byte[] bitmapArray, String fname) throws IOException {
-        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
+        //TODO: Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        String file_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() +
                 "/CubegameBitmapCache";
         File dir = new File(file_path);
         if(!dir.exists())

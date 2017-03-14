@@ -132,7 +132,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
             if (error == null) {
                 clearImage();
-                cachedBitmap = loadBitmapFromFile(mapEntity.getId());
+                cachedBitmap = loadBitmapFromFile(mapEntity.getId());//TODO: load from map object
 
                 createNewMapView();
                 rotateMap();
@@ -267,13 +267,6 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             View chip = createChip(0xFF000000 | player.getColor());
             mMapContainer.addView(chip, lp);
 
-            /*TranslateAnimation anim = new TranslateAnimation( 0, chipPlace.x - point.getxPos() , 0, chipPlace.y - point.getyPos() );
-            anim.setDuration(1);
-            anim.setFillAfter( true );
-            chip.startAnimation(anim);*/
-
-
-            ///---new
             Point chipPlace = getChipPlace(point, playersCnt);
 
             AnimatorSet animatorSet = new AnimatorSet();
@@ -459,88 +452,16 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         return cachedBitmap;
     }
 
-
-    private Point nextPoint = null;
     public final Object lockFrame = new Object();
-    public boolean isChipAnimates = false;
-    private boolean isFrameDrawnInTime = true;
 
-    //TODO: use thtead-protected variables
     public void updateMap() {
         if (mapEntity == null || mapEntity.getId() == null)
             return;
 
-        if (savedPlayers != null)
-            for (int i = 0; i < savedPlayers.size(); i++)
-                if (savedPlayers.get(i).getCurrentPoint() != gameInstanceEntity.getPlayers().get(i).getCurrentPoint()) {
-                    movedPlayerIndex = i;
-                    break;
-                }
+        savedPlayers.clear();
+        savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
 
-        if (    true //false
-             || movedPlayerIndex < 0
-             || !GameInstance.State.MOVING.equals(gameInstanceEntity.getState())
-            ) {
-
-            savedPlayers.clear();
-            savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
-
-            mMapImage.postInvalidate();
-        }
-        else
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    playChipAnimation();
-                }
-            }).start();
-    }
-
-    private void playChipAnimation() {
-            isChipAnimates = true;
-            isFrameDrawnInTime = true;
-
-            AbstractGamePoint startGamePoint = gameEntity.getGamePoints().get(savedPlayers.get(movedPlayerIndex).getCurrentPoint());
-            Point start = new Point(startGamePoint.getxPos(), startGamePoint.getyPos());
-            AbstractGamePoint endGamePoint = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers().get(movedPlayerIndex).getCurrentPoint());
-            Point end = new Point(endGamePoint.getxPos(), endGamePoint.getyPos());
-
-            if (end.x == start.x) {
-                int delta = Math.abs(end.y - start.y);
-                for (int y = 0; y <= delta; y+= delta /15 * (isFrameDrawnInTime ? 1 : 2)) { //1500ms / 50 = 30 frames by 50ms
-                    nextPoint = new Point(start.x, end.y > start.y ? start.y + y : start.y - y);
-                    waitWhileDrawingMap();
-                }
-            }
-            else {
-                int delta = Math.abs(end.x - start.x);
-                for (int x = 0; x <= delta; x+= delta /15 * (isFrameDrawnInTime ? 1 : 2)) { //1500ms / 50 = 30 frames by 50ms
-                    nextPoint = getNextPointOnLineByXvalue(start, end, end.x > start.x ? start.x + x : start.x - x);
-                    waitWhileDrawingMap();
-                }
-            }
-
-            nextPoint = null;
-            movedPlayerIndex = -1;
-            savedPlayers.clear();
-            savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
-
-            waitWhileDrawingMap();
-
-            isChipAnimates = false;
-
-    }
-
-    private void waitWhileDrawingMap() {
-        synchronized (lockFrame) {
-            long startAnimationTime = System.currentTimeMillis();
-            mMapImage.postInvalidate();
-            try {lockFrame.wait();} catch (InterruptedException e) {}
-
-            long wastedTime = 100 - System.currentTimeMillis() + startAnimationTime;
-            isFrameDrawnInTime = wastedTime >= 0;
-            try {Thread.sleep(wastedTime);} catch (InterruptedException | IllegalArgumentException e) {}
-        }
+        mMapImage.postInvalidate();
     }
 
     private Point getCurrentPointOffsetInViewPort() {
@@ -601,16 +522,6 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
                 .get(gameInstanceEntity.getCurrentPlayer()).getCurrentPoint()).getyPos();
 
         return  INTERPOLATED_ROTATION_RANGE * y / mapViewPort.height();
-    }
-
-    private Point getNextPointOnLineByXvalue(Point start, Point end, int x) {
-        if (start.x == end.x)
-            return new Point(start.x, start.y);
-
-        float k = (start.y - end.y)*1f / (start.x - end.x);
-        float b = end.y - k * end.x;
-
-        return new Point(x, Math.round(k * x + b));
     }
 
 }
