@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.cubegames.slava.cubegame.Utils.saveBitmap2File;
+import static com.cubegames.slava.cubegame.Utils.saveBitmap2DB;
 import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_LIST;
@@ -53,7 +53,8 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
             throw new WebServiceException(HttpStatus.NOT_FOUND, "Game map is empty.");
         else
             try {
-                saveBitmap2File(mapArray, map.getId());//TODO: create bitmap and save into map
+                //saveBitmap2File(mapArray, map.getId());//TODO: create bitmap and save into map
+                saveBitmap2DB(ctx, mapArray, map.getId());
             } catch (IOException e) {
                 throw new WebServiceException(HttpStatus.NOT_FOUND, "Game map is empty.");
             }

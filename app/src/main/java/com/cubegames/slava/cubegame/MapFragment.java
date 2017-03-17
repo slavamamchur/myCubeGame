@@ -41,7 +41,7 @@ import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cubegames.slava.cubegame.Utils.loadBitmapFromFile;
+import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
@@ -132,7 +132,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
             if (error == null) {
                 clearImage();
-                cachedBitmap = loadBitmapFromFile(mapEntity.getId());//TODO: load from map object
+                cachedBitmap = loadBitmapFromDB(getContext(), mapEntity.getId());//loadBitmapFromFile(mapEntity.getId());//TODO: load from map object
 
                 createNewMapView();
                 rotateMap();

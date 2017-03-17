@@ -1,6 +1,10 @@
 package com.cubegames.slava.cubegame;
 
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -96,6 +100,61 @@ public class Utils {
             fOut.flush();
             fOut.close();
         }
+    }
+
+    public static void saveBitmap2DB(Context context, byte[] bitmapArray, String map_id) throws IOException {
+        SQLiteDBHelper dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(SQLiteDBHelper.MAP_ID_FIELD, map_id);
+        cv.put(SQLiteDBHelper.MAP_IMAGE_FIELD, bitmapArray);
+
+        db.replaceOrThrow(SQLiteDBHelper.TABLE_NAME, null, cv);
+        db.close();
+
+        dbHelper.close();
+    }
+
+    public static Bitmap loadBitmapFromDB(Context context, String map_id) {
+        Bitmap bitmap = null;
+        Cursor imageData = null;
+        SQLiteDBHelper dbHelper = null;
+        SQLiteDatabase db = null;
+
+        try {
+            dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
+            db = dbHelper.getReadableDatabase();
+            byte[] bitmapArray = null;
+
+            imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_IMAGE_FIELD +
+                            " from " + SQLiteDBHelper.TABLE_NAME +
+                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?",
+                    new String[] { map_id });
+
+            if (imageData != null && imageData.moveToFirst())
+                bitmapArray = imageData.getBlob(imageData.getColumnIndex(SQLiteDBHelper.MAP_IMAGE_FIELD));
+
+            imageData.close();
+            db.close();
+            dbHelper.close();
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inMutable = true;
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+            options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+
+        }
+        finally {
+            if (imageData != null) imageData.close();
+            if (db != null) db.close();
+            if (dbHelper != null) dbHelper.close();
+        }
+
+        return bitmap;
     }
 
 }
