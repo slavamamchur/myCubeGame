@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cubegames.slava.cubegame.Utils.isBitmapCached;
 import static com.cubegames.slava.cubegame.Utils.saveBitmap2DB;
 import static com.cubegames.slava.cubegame.api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
@@ -47,6 +48,11 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
     }
 
     public void saveMapImage(GameMap map) throws WebServiceException {
+
+        if (isBitmapCached(ctx, map.getId()))
+            return;
+
+
         byte[] mapArray = getBinaryData(map, RestConst.URL_GAME_MAP_IMAGE);
 
         if (mapArray == null)

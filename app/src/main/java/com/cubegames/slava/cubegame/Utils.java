@@ -157,4 +157,35 @@ public class Utils {
         return bitmap;
     }
 
+    public static boolean isBitmapCached(Context context, String map_id) { //TODO: check image hashe
+        Cursor imageData = null;
+        SQLiteDBHelper dbHelper = null;
+        SQLiteDatabase db = null;
+        boolean result = false;
+
+        try {
+            dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
+            db = dbHelper.getReadableDatabase();
+
+            imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_ID_FIELD +
+                            " from " + SQLiteDBHelper.TABLE_NAME +
+                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?",
+                    new String[] { map_id });
+
+            result = imageData != null && imageData.moveToFirst();
+
+            imageData.close();
+            db.close();
+            dbHelper.close();
+
+        }
+        finally {
+            if (imageData != null) imageData.close();
+            if (db != null) db.close();
+            if (dbHelper != null) dbHelper.close();
+        }
+
+        return result;
+    }
+
 }
