@@ -102,12 +102,13 @@ public class Utils {
         }
     }
 
-    public static void saveBitmap2DB(Context context, byte[] bitmapArray, String map_id) throws IOException {
+    public static void saveBitmap2DB(Context context, byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
         SQLiteDBHelper dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(SQLiteDBHelper.MAP_ID_FIELD, map_id);
+        cv.put(SQLiteDBHelper.MAP_UPDATED_DATE, updatedDate);
         cv.put(SQLiteDBHelper.MAP_IMAGE_FIELD, bitmapArray);
 
         db.replaceOrThrow(SQLiteDBHelper.TABLE_NAME, null, cv);
@@ -157,7 +158,7 @@ public class Utils {
         return bitmap;
     }
 
-    public static boolean isBitmapCached(Context context, String map_id) { //TODO: check image hashe
+    public static boolean isBitmapCached(Context context, String map_id, Long updatedDate) {
         Cursor imageData = null;
         SQLiteDBHelper dbHelper = null;
         SQLiteDatabase db = null;
@@ -169,8 +170,9 @@ public class Utils {
 
             imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_ID_FIELD +
                             " from " + SQLiteDBHelper.TABLE_NAME +
-                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?",
-                    new String[] { map_id });
+                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?" +
+                            " and " + SQLiteDBHelper.MAP_UPDATED_DATE + " >= ?",
+                    new String[] { map_id, String.valueOf(updatedDate) });
 
             result = imageData != null && imageData.moveToFirst();
 

@@ -47,4 +47,12 @@ public class RestConst {
     public static final int NET_READ_TIMEOUT_MILLIS = 80000;  // 60 seconds
     public static final int NET_CONNECT_TIMEOUT_MILLIS = 60000;  // 15 seconds
 
+    public final static String PAGE_SORT_BY_HEADER = "PAGE_SORT_BY";
+    public final static String PAGE_SORT_HEADER = "PAGE_SORT";
+    public final static String PAGE_OFFSET_HEADER = "PAGE_OFFSET";
+    public final static String PAGE_LIMIT_HEADER = "PAGE_LIMIT";
+    public final static String FILTER_BY_NAME = "FILTER_NAME";
+    public final static String FILTER_BY_SIZE = "FILTER_SIZE";
+    public final static String FILTER_BY_PLAYERS = "FILTER_PLAYERS";
+
 }

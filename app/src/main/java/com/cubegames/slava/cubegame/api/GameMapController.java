@@ -32,7 +32,9 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
     protected HttpEntity<?> getHttpEntity(Object entity) {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
-
+        //params.put(PAGE_OFFSET_HEADER, "1");
+        //params.put(PAGE_LIMIT_HEADER, "2");
+        //params.put(FILTER_BY_NAME, "test_");
         return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
 
@@ -49,7 +51,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
 
     public void saveMapImage(GameMap map) throws WebServiceException {
 
-        if (isBitmapCached(ctx, map.getId()))
+        if (isBitmapCached(ctx, map.getId(), map.getUpdatedDate()))
             return;
 
 
@@ -60,7 +62,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
         else
             try {
                 //saveBitmap2File(mapArray, map.getId());//TODO: create bitmap and save into map
-                saveBitmap2DB(ctx, mapArray, map.getId());
+                saveBitmap2DB(ctx, mapArray, map.getId(), map.getUpdatedDate());
             } catch (IOException e) {
                 throw new WebServiceException(HttpStatus.NOT_FOUND, "Game map is empty.");
             }
