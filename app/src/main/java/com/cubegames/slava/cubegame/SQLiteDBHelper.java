@@ -1,6 +1,5 @@
 package com.cubegames.slava.cubegame;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -20,17 +19,17 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE CACHED_IMAGES (MAP_ID TEXT PRIMARY KEY, MAP_IMAGE BLOB);");
+        db.execSQL("CREATE TABLE CACHED_IMAGES (MAP_ID TEXT PRIMARY KEY, MAP_IMAGE BLOB, MAP_UPDATED_DATE NUMERIC);");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 200) {
+        /*if (oldVersion < 200) {
             db.execSQL("ALTER TABLE CACHED_IMAGES ADD COLUMN MAP_UPDATED_DATE NUMERIC;");
 
             ContentValues cv = new ContentValues();
             cv.put(MAP_UPDATED_DATE, (Long) null);
             db.update(TABLE_NAME, cv, null, null);
-        }
+        }*/
     }
 }

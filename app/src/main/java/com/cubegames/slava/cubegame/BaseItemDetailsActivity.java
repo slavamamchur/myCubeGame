@@ -28,8 +28,8 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
     public static final String EXTRA_ENTITY_CHANGED = "EXTRA_ENTITY_CHANGED";
 
     @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

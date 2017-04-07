@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -41,7 +42,6 @@ import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
@@ -50,7 +50,6 @@ import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGa
 public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate {
 
     public static final float START_ROTATION_ANGLE = 35;
-    public static final float INTERPOLATED_ROTATION_RANGE = 20;
 
     private MapView mMapImage;
     private ScrollView mScrollContainerY;
@@ -66,7 +65,9 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     private boolean canRotateMap = false;
     private boolean isFirstScroll = true;
     public List<InstancePlayer> savedPlayers = null;
-    private int movedPlayerIndex = -1;
+
+    public GLSurfaceView glMapSurfaceView = null;
+    public MapGLRenderer glRenderer;
 
     public MapFragment() {}
 
@@ -74,7 +75,14 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.map_fragment, container, false);
+
+        ///OGL:
+        glMapSurfaceView = new GLSurfaceView(getContext());
+        glMapSurfaceView.setEGLContextClientVersion(2);
+        glRenderer = new MapGLRenderer(getContext());
+        ///glMapSurfaceView.setRenderer(glRenderer);
+
+        return  glMapSurfaceView; //inflater.inflate(R.layout.map_fragment, container, false);
     }
 
     @Override
@@ -82,7 +90,9 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         super.onViewCreated(view, savedInstanceState);
 
-        mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
+        glMapSurfaceView.setRenderer(glRenderer);
+        ///OGL:
+        /*mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
         mScrollContainerY.setSmoothScrollingEnabled(true);
         mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
         mScrollContainerX.setSmoothScrollingEnabled(true);
@@ -97,10 +107,23 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         };
         mScrollContainerY.getViewTreeObserver().addOnScrollChangedListener(onScrollChangedListener);
 
-        mMapContainer = (FrameLayout) view.findViewById(R.id.map_container);
+        mMapContainer = (FrameLayout) view.findViewById(R.id.map_container);*/
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        ///OGL:
+        glMapSurfaceView.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ///OGL:
+        glMapSurfaceView.onResume();
+    }
 
     public void setIntentFilters(IntentFilter intentFilter) {
         intentFilter.addAction(ACTION_MAP_IMAGE_RESPONSE);
@@ -132,12 +155,14 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
             if (error == null) {
                 clearImage();
-                cachedBitmap = loadBitmapFromDB(getContext(), mapEntity.getId());//loadBitmapFromFile(mapEntity.getId());//TODO: load from map object
+
+                ///OGL:
+                /*cachedBitmap = loadBitmapFromDB(getContext(), mapEntity.getId());
 
                 createNewMapView();
                 rotateMap();
                 if (gameInstanceEntity != null)
-                    scrollMap();
+                    scrollMap();*/
             }
             else
                 if (webErrorHandler != null)
@@ -163,7 +188,9 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         setMapEntity(map);
         setWebErrorHandler(errorHandler);
 
-        loadMapImage(map);
+        ///OGL:
+        glRenderer.setMapID(map.getId());
+        //loadMapImage(map);
     }
 
     public void InitMap(Game game, WebErrorHandler errorHandler) {
@@ -174,7 +201,10 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             GameMap map = new GameMap();
             map.setId(game.getMapId());
             setMapEntity(map);
-            loadMapImage(map);
+
+            ///OGL:
+            glRenderer.setMapID(map.getId());
+            //loadMapImage(map);
         }
     }
 
@@ -191,7 +221,10 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             GameMap map = new GameMap();
             map.setId(gameEntity.getMapId());
             setMapEntity(map);
-            loadMapImage(map);
+
+            ///OGL:
+            glRenderer.setMapID(map.getId());
+            //loadMapImage(map);
         }
     }
 
@@ -324,8 +357,6 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         AnimatorSet animatorSet = new AnimatorSet();
 
         if (gameInstanceEntity.getStepsToGo() == 0) {
-
-//            animatorSet.play(moveX).with(moveY).before(moveY2).before(px).before(py).before(rotate);
             Point chipPlace = getChipPlace(endGamePoint, playersCnt);
             ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 50);
             ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 50);
@@ -403,7 +434,9 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     }
 
     private void loadMapImage(GameMap map) {
-        runJustBeforeBeingDrawn(mScrollContainerY);
+        ///OGL:
+        //runJustBeforeBeingDrawn(mScrollContainerY);
+
         RestApiService.startActionGetMapImage(getContext(), map);
     }
 
@@ -492,7 +525,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         ObjectAnimator.ofFloat(mMapContainer, "pivotX", cachedBitmap.getWidth()).setDuration(1).start();
         ObjectAnimator.ofFloat(mMapContainer, "pivotY", cachedBitmap.getHeight() * 2).setDuration(1).start();
-        ObjectAnimator.ofFloat(mMapContainer, "rotationX", START_ROTATION_ANGLE /*+ getRotationAngle()*/).setDuration(isFirstScroll?1:500).start();
+        ObjectAnimator.ofFloat(mMapContainer, "rotationX", START_ROTATION_ANGLE).setDuration(isFirstScroll?1:500).start();
 
         isFirstScroll = false;
     }
@@ -515,13 +548,6 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             return 0;
         else
             return (mapViewPort.height() - cachedBitmap.getHeight()*2) / 1f;
-    }
-
-    private float getRotationAngle() {
-        int y = gameEntity.getGamePoints().get(gameInstanceEntity.getPlayers()
-                .get(gameInstanceEntity.getCurrentPlayer()).getCurrentPoint()).getyPos();
-
-        return  INTERPOLATED_ROTATION_RANGE * y / mapViewPort.height();
     }
 
 }

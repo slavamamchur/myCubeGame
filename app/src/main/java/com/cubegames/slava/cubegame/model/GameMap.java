@@ -19,6 +19,11 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
 
     public GameMap() {}
 
+    public GameMap(String id) {
+        this.id = id;
+        this.createdDate = System.currentTimeMillis();
+    }
+
     protected GameMap(Parcel in) {
         loadFromParcel(in);
     }
@@ -72,7 +77,7 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
         dest.writeLong(createdDate);
         dest.writeLong(updatedDate);
         dest.writeByteArray(binaryData);
-        //TODO: sourceBitmap.writeToParcel(dest, 0);
+        //sourceBitmap.writeToParcel(dest, 0);
     }
 
     @Override
@@ -84,7 +89,7 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
 
         try {
             binaryData = in.createByteArray();
-            //TODO: destinationBitmap = Bitmap.CREATOR.createFromParcel(in);
+            //destinationBitmap = Bitmap.CREATOR.createFromParcel(in);
         }
         catch(Exception e){
             binaryData = null;

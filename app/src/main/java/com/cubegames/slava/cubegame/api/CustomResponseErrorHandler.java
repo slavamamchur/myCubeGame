@@ -9,6 +9,8 @@ import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
 
+import static com.cubegames.slava.cubegame.Utils.convertStreamToString;
+
 public class CustomResponseErrorHandler implements ResponseErrorHandler {
 
     private ResponseErrorHandler errorHandler = new DefaultResponseErrorHandler();
@@ -40,8 +42,4 @@ public class CustomResponseErrorHandler implements ResponseErrorHandler {
                 response.getStatusCode(), response.getStatusCode().getReasonPhrase(), fetchErrorEntity(response));
     }
 
-    private String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
 }

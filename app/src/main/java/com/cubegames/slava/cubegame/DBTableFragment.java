@@ -221,6 +221,7 @@ public class DBTableFragment extends Fragment {
         }
     }
 
+    @Nullable
     private Integer getColorFromRef(DBColumnInfo column, Object item) {
         Object colorRef = column.getColorRef();
         if (colorRef == null)
