@@ -22,17 +22,23 @@ import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_CULL_FACE;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
+import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_STATIC_DRAW;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glDrawElements;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGenBuffers;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1i;
@@ -81,6 +87,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private FloatBuffer vertexData;
     private FloatBuffer normalData;
     private ShortBuffer indexData;
+    private int indexDataVBO;
 
     private int aPositionLocation;
     private int aTextureLocation;
@@ -159,8 +166,8 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         //bindTextures();*/
 
         /** Scene draw call to OpenGL*/
-        indexData.position(0);
-        GLES20.glDrawElements(GL_TRIANGLE_STRIP, facesCounter, GL_UNSIGNED_SHORT, indexData);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataVBO);
+        glDrawElements(GL_TRIANGLE_STRIP, facesCounter, GL_UNSIGNED_SHORT, 0);
     }
 
     private void bindCamera() {
@@ -349,6 +356,10 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void bindData() {
+        /**GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mCubePositionsBufferIdx);
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        GLES20.glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GLES20.GL_FLOAT, false, 0, 0);*/
+
         // координаты вершин
         vertexData.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
@@ -361,11 +372,28 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
                 false, STRIDE, vertexData);
         glEnableVertexAttribArray(aTextureLocation);
 
+        vertexData.limit(0);
+        vertexData = null;
+
         //normals
         normalData.position(0);
-        GLES20.glVertexAttribPointer(aNormalLocation, POSITION_COUNT, GLES20.GL_FLOAT, false,
+        glVertexAttribPointer(aNormalLocation, POSITION_COUNT, GLES20.GL_FLOAT, false,
                 0, normalData);
-        GLES20.glEnableVertexAttribArray(aNormalLocation);
+        glEnableVertexAttribArray(aNormalLocation);
+
+        normalData.limit(0);
+        normalData = null;
+
+        //faces
+        final int buffers[] = new int[1];
+        glGenBuffers(1, buffers, 0);
+        indexDataVBO = buffers[0];
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataVBO);
+        indexData.position(0);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.capacity() * 2, indexData, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        indexData.limit(0);
+        indexData = null;
 
         bindCamera();
         bindTextures();
