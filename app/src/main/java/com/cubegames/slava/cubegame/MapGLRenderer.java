@@ -58,9 +58,9 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LAND_WIDTH = 2.0f;
     private final static float LAND_HEIGHT = 2.0f;
 
-    private final static float LIGHT_X = 0.5f; //-3f;
+    private final static float LIGHT_X = 1f; //-3f;
     private final static float LIGHT_Y = 2.5f; //2f;
-    private final static float LIGHT_Z = -3.2f; //-3f;
+    private final static float LIGHT_Z = -3.2f; //-3f; ///???
 
     private final static float CAMERA_X = 0f;
     private final static float CAMERA_Y = 2.5f;
@@ -105,11 +105,11 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      104      *  we multiply this by our transformation matrices. */
-    private float[] mLightPosInModelSpace = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
+    private final float[] mLightPosInModelSpace = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
     /** Used to hold the current position of the light in world space (after transformation via model matrix). */
-    private final float[] mLightPosInWorldSpace = new float[4];
+    private float[] mLightPosInWorldSpace = new float[4];
     /** Used to hold the transformed position of the light in eye space (after transformation via modelview matrix) */
-    private final float[] mLightPosInEyeSpace = new float[4];
+    private float[] mLightPosInEyeSpace = new float[4];
 
     MapGLRenderer(Context context) {
         this.context = context;
@@ -127,9 +127,11 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         //glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 
         createAndUseProgram();
+
         getLocations();
         prepareData();
         bindData();
+
         createViewMatrix();
     }
 
@@ -137,23 +139,20 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
         createProjectionMatrix(width, height);
-        //bindMatrix();
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //сбрасываем model матрицу
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.setIdentityM(mLightModelMatrix, 0);
         setModelMatrix();
 
         bindMatrix();
-        bindCamera();
+        //bindCamera();
         bindLightSource();
-        bindTextures();
+        //bindTextures();
 
+        //Scene draw call to OpenGL
         indexData.position(0);
         GLES20.glDrawElements(GL_TRIANGLE_STRIP, facesCounter, GL_UNSIGNED_SHORT, indexData);
     }
@@ -163,10 +162,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void bindLightSource() {
-        //Matrix.setIdentityM(mLightModelMatrix, 0);
-        mLightPosInModelSpace = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        //Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
         glUniform3fv(uLightPositionLocation, 1, mLightPosInWorldSpace, 0);
     }
 
@@ -356,6 +351,9 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glVertexAttribPointer(aNormalLocation, POSITION_COUNT, GLES20.GL_FLOAT, false,
                 0, normalData);
         GLES20.glEnableVertexAttribArray(aNormalLocation);
+
+        bindCamera();
+        bindTextures();
     }
 
     private void createViewMatrix() {
@@ -405,11 +403,17 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void setModelMatrix() {
+        //сбрасываем model матрицу
+        Matrix.setIdentityM(mModelMatrix, 0);
         //В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.
         float angle = -(float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
         //Rotates matrix m in place by angle a (in degrees) around the axis (x, y, z).
         Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 0);
+
+        Matrix.setIdentityM(mLightModelMatrix, 0);
         Matrix.rotateM(mLightModelMatrix, 0, -angle, 0, 1, 0);
+        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
+        //Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
     }
 
 }
