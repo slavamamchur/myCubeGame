@@ -58,13 +58,13 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LAND_WIDTH = 2.0f;
     private final static float LAND_HEIGHT = 2.0f;
 
-    private final static float LIGHT_X = 1f; //-3f;
-    private final static float LIGHT_Y = 2.5f; //2f;
-    private final static float LIGHT_Z = -3.2f; //-3f; ///???
+    private final static float LIGHT_X = 3.5f;
+    private final static float LIGHT_Y = -7f;//-6
+    private final static float LIGHT_Z = 6f;//3
 
     private final static float CAMERA_X = 0f;
-    private final static float CAMERA_Y = 2.5f;
-    private final static float CAMERA_Z = -3.2f;
+    private final static float CAMERA_Y = 2f;
+    private final static float CAMERA_Z = -3.5f;
 
     private final static float CAMERA_LOOK_X = 0f;
     private final static float CAMERA_LOOK_Y = 0f;
@@ -89,7 +89,8 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private int uCameraLocation;
     private int uLightPositionLocation;
     private int uTextureUnitLocation;
-    private int uMatrixLocation;
+    private int uMVPMatrixLocation;
+    private int uMVMatrixLocation;
 
     private int facesCounter = 0;
     private int programId;
@@ -99,12 +100,12 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private float[] mMatrix = new float[16];
     private float[] mModelMatrix = new float[16];
     /**
-     60      * Stores a copy of the model matrix specifically for the light position.
-     61      */
+     * Stores a copy of the model matrix specifically for the light position.
+     */
     private float[] mLightModelMatrix = new float[16];
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
-     104      *  we multiply this by our transformation matrices. */
+     *  we multiply this by our transformation matrices. */
     private final float[] mLightPosInModelSpace = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
     /** Used to hold the current position of the light in world space (after transformation via model matrix). */
     private float[] mLightPosInWorldSpace = new float[4];
@@ -133,6 +134,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         bindData();
 
         createViewMatrix();
+        bindLightSource();
     }
 
     @Override
@@ -149,7 +151,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
         bindMatrix();
         //bindCamera();
-        bindLightSource();
+        //bindLightSource();
         //bindTextures();
 
         //Scene draw call to OpenGL
@@ -162,6 +164,10 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void bindLightSource() {
+        Matrix.setIdentityM(mLightModelMatrix, 0);
+        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
+        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
+
         glUniform3fv(uLightPositionLocation, 1, mLightPosInWorldSpace, 0);
     }
 
@@ -182,7 +188,8 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         aNormalLocation = glGetAttribLocation(programId, "a_Normal");
         aTextureLocation = glGetAttribLocation(programId, "a_Texture");
         uTextureUnitLocation = glGetUniformLocation(programId, "u_TextureUnit");
-        uMatrixLocation = glGetUniformLocation(programId, "u_Matrix");
+        uMVPMatrixLocation = glGetUniformLocation(programId, "u_MVP_Matrix");
+        uMVMatrixLocation = glGetUniformLocation(programId, "u_MV_Matrix");
         uLightPositionLocation = glGetUniformLocation(programId, "u_lightPosition");
         uCameraLocation = glGetUniformLocation(programId, "u_camera");
     }
@@ -398,8 +405,10 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private void bindMatrix() {
         Matrix.multiplyMM(mMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        glUniformMatrix4fv(uMVMatrixLocation, 1, false, mMatrix, 0);
+
         Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mMatrix, 0);
-        glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0);
+        glUniformMatrix4fv(uMVPMatrixLocation, 1, false, mMatrix, 0);
     }
 
     private void setModelMatrix() {
@@ -409,11 +418,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         float angle = -(float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
         //Rotates matrix m in place by angle a (in degrees) around the axis (x, y, z).
         Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 0);
-
-        Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.rotateM(mLightModelMatrix, 0, -angle, 0, 1, 0);
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        //Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
     }
 
 }
