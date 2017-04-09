@@ -58,9 +58,9 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LAND_WIDTH = 2.0f;
     private final static float LAND_HEIGHT = 2.0f;
 
-    private final static float LIGHT_X = 3.5f;
-    private final static float LIGHT_Y = -7f;//-6
-    private final static float LIGHT_Z = 6f;//3
+    private final static float LIGHT_X = -2f;
+    private final static float LIGHT_Y = -1f;
+    private final static float LIGHT_Z = -4f;
 
     private final static float CAMERA_X = 0f;
     private final static float CAMERA_Y = 2f;
@@ -68,7 +68,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private final static float CAMERA_LOOK_X = 0f;
     private final static float CAMERA_LOOK_Y = 0f;
-    private final static float CAMERA_LOOK_Z = 0f;
+    private final static float CAMERA_LOOK_Z = 0.5f;
 
     private final static float CAMERA_UP_X = 0f;
     private final static float CAMERA_UP_Y = 1f;
@@ -101,14 +101,16 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private float[] mModelMatrix = new float[16];
     /**
      * Stores a copy of the model matrix specifically for the light position.
+     * private float[] mLightModelMatrix = new float[16];
      */
-    private float[] mLightModelMatrix = new float[16];
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
     private final float[] mLightPosInModelSpace = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
-    /** Used to hold the current position of the light in world space (after transformation via model matrix). */
-    private float[] mLightPosInWorldSpace = new float[4];
+
+    /** Used to hold the current position of the light in world space (after transformation via model matrix).
+     * private float[] mLightPosInWorldSpace = new float[4];*/
+
     /** Used to hold the transformed position of the light in eye space (after transformation via modelview matrix) */
     private float[] mLightPosInEyeSpace = new float[4];
 
@@ -125,7 +127,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         glClearColor(0f, 0.7f, 1f, 1f);
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
-        //glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+        /** glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);*/
 
         createAndUseProgram();
 
@@ -150,11 +152,13 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         setModelMatrix();
 
         bindMatrix();
-        //bindCamera();
-        //bindLightSource();
-        //bindTextures();
 
-        //Scene draw call to OpenGL
+        /** for dynamic scene
+         * bindCamera();
+        //bindLightSource();
+        //bindTextures();*/
+
+        /** Scene draw call to OpenGL*/
         indexData.position(0);
         GLES20.glDrawElements(GL_TRIANGLE_STRIP, facesCounter, GL_UNSIGNED_SHORT, indexData);
     }
@@ -164,16 +168,20 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void bindLightSource() {
-        Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
+        /** //for mooving light
+        //Matrix.setIdentityM(mLightModelMatrix, 0);
+        //Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
+        //Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
+        //glUniform3fv(uLightPositionLocation, 1, mLightPosInEyeSpace, 0);*/
 
-        glUniform3fv(uLightPositionLocation, 1, mLightPosInWorldSpace, 0);
+        /** for static light*/
+        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInModelSpace, 0);
+        glUniform3fv(uLightPositionLocation, 1, mLightPosInEyeSpace, 0);
     }
 
     private void bindTextures() {
         glBindTexture(GL_TEXTURE_2D, mapGLTexture);
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        /** Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.*/
         glUniform1i(uTextureUnitLocation, 0);
     }
 
