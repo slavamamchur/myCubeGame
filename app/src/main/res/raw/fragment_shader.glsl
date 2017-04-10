@@ -15,7 +15,7 @@ void main()
       vec3 lookvector = normalize(u_camera - v_Position);
       float distance = length(u_lightPosition - v_Position);
 
-      float ambient = 0.5;
+      float ambient = 0.1;
       float k_diffuse = 1.0;
       float k_specular = 1.0;
 

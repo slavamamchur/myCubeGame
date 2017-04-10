@@ -84,9 +84,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private int mapGLTexture = 0;
     private String mapID;
 
-    private FloatBuffer vertexData;
-    private FloatBuffer normalData;
-    private ShortBuffer indexData;
     private int indexDataVBO;
 
     private int aPositionLocation;
@@ -140,7 +137,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
         getLocations();
         prepareData();
-        bindData();
 
         createViewMatrix();
         bindLightSource();
@@ -175,7 +171,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void bindLightSource() {
-        /** //for mooving light
+        /** //for moving light
         //Matrix.setIdentityM(mLightModelMatrix, 0);
         //Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
         //Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
@@ -212,29 +208,64 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private void prepareData() {
         final Bitmap bitmap = getMapTextureFromDB();
 
+        /** vertexes---------------------------------------------------------------------------------*/
+        /** using VBO
+         * GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mCubePositionsBufferIdx);
+         GLES20.glEnableVertexAttribArray(mPositionHandle);
+         GLES20.glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GLES20.GL_FLOAT, false, 0, 0);*/
         float[] vertices = generateLandMeshUV(bitmap, 30, 30);
-        vertexData = ByteBuffer
+        FloatBuffer vertexData = ByteBuffer
                 .allocateDirect(vertices.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         vertexData.put(vertices);
+        /** координаты вершин*/
+        vertexData.position(0);
+        glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
+                false, STRIDE, vertexData);
+        glEnableVertexAttribArray(aPositionLocation);
+        /** координаты текстур*/
+        vertexData.position(POSITION_COUNT);
+        glVertexAttribPointer(aTextureLocation, TEXTURE_COUNT, GL_FLOAT,
+                false, STRIDE, vertexData);
+        glEnableVertexAttribArray(aTextureLocation);
+        vertexData.limit(0);
 
+        /** normals----------------------------------------------------------------------------------*/
         float[] normals = generateLandNormals(vertices, 30, 30);
-        normalData = ByteBuffer
+        FloatBuffer normalData = ByteBuffer
                 .allocateDirect(normals.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
         normalData.put(normals);
+        normalData.position(0);
+        glVertexAttribPointer(aNormalLocation, POSITION_COUNT, GLES20.GL_FLOAT, false,
+                0, normalData);
+        glEnableVertexAttribArray(aNormalLocation);
+        normalData.limit(0);
 
+        /** faces------------------------------------------------------------------------------------*/
         short[] index = generateLandFaces(30, 30);
-        indexData = ByteBuffer
+        ShortBuffer indexData = ByteBuffer
                 .allocateDirect(index.length * 2)
                 .order(ByteOrder.nativeOrder())
                 .asShortBuffer();
         indexData.put(index);
         facesCounter = index.length;
+        final int buffers[] = new int[1];
+        glGenBuffers(1, buffers, 0);
+        indexDataVBO = buffers[0];
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataVBO);
+        indexData.position(0);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.capacity() * 2, indexData, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        indexData.limit(0);
 
+        /** textures---------------------------------------------------------------------------------*/
         mapGLTexture = loadGLTexture(bitmap);
+
+        bindCamera();
+        bindTextures();
     }
 
     private short chain(int j, int i, int imax){
@@ -247,7 +278,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         int k=0;
         int j=0;
         while (j < jmax) {
-            // лента слева направо
+            /** лента слева направо*/
             for (int i = 0; i <= imax; i++) {
                 index[k] = chain(j,i,imax);
                 k++;
@@ -255,16 +286,16 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
                 k++;
             }
             if (j < jmax-1){
-                // вставим хвостовой индекс для связки
+                /** вставим хвостовой индекс для связки*/
                 index[k] = chain(j+1,imax,imax);
                 k++;
             }
-            // переводим ряд
+            /** переводим ряд*/
             j++;
 
-            // проверяем достижение конца
+            /** проверяем достижение конца*/
             if (j < jmax){
-                // лента справа налево
+                /** лента справа налево*/
                 for (int i = imax; i >= 0; i--) {
                     index[k] = chain(j,i,imax);
                     k++;
@@ -272,11 +303,11 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
                     k++;
                 }
                 if (j < jmax-1){
-                    // вставим хвостовой индекс для связки
+                    /** вставим хвостовой индекс для связки*/
                     index[k] = chain(j+1,0,imax);
                     k++;
                 }
-                // переводим ряд
+                /** переводим ряд*/
                 j++;
             }
         }
@@ -304,13 +335,13 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
         for (int j = 0; j <= jmax; j++){
             for (int i = 0; i <= imax; i++){
-                vertex[k] = x0 + i*dx; //x
-                vertex[k + 2] = z0 + j*dz; //z
+                vertex[k] = x0 + i * dx; /** x*/
+                vertex[k + 2] = z0 + j * dz; /** z*/
                 //TODO: generate by texture
-                vertex[k + 1] = (float)Math.exp(-3*(vertex[k]*vertex[k]+vertex[k + 2]*vertex[k + 2])); //y = (float)Math.exp(-3*(x[i]*x[i]+z[j]*z[j]));
+                vertex[k + 1] = (float)Math.exp(-3 * (vertex[k] * vertex[k] + vertex[k + 2] * vertex[k + 2]));
 
-                vertex[k + 3] = i*tdx; //u
-                vertex[k + 4] = j*tdy; //v
+                vertex[k + 3] = i * tdx; /** u*/
+                vertex[k + 4] = j * tdy; /** v*/
 
                 k += 5;
             }
@@ -319,7 +350,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         return vertex;
     }
 
-    private int toLinear(int i, int j, int i_max, int el_size){
+    private int coord2idx(int i, int j, int i_max, int el_size){
         return j * (i_max + 1) * el_size + i * el_size;
     }
 
@@ -327,27 +358,34 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
         float dx = LAND_WIDTH / imax;
         float dz = LAND_HEIGHT / jmax;
-        float [] normal = new float[(jmax+1)*(imax+1)*POSITION_COUNT];
+        float [] normal = new float[(jmax + 1) * (imax + 1) * POSITION_COUNT];
         int k = 0;
 
         for (int j = 0; j <= jmax; j++)
             for (int i = 0; i <= imax; i++) {
-
                 if ((i == imax) && (j == jmax)) {
-                    normal[k] = vertex[toLinear(i - 1, j, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1] * dz; //(y[jmax][imax-1] - y[jmax][imax])*dz;
-                    normal[k + 2] = dx * (vertex[toLinear(i, j - 1, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1]); //dx * (y [jmax-1] [imax] - y[jmax ] [imax]);
+                    /** Nx = (y[jmax][imax - 1] - y[jmax][imax]) * dz*/
+                    normal[k] = vertex[coord2idx(i - 1, j, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1] * dz;
+                    /** Nz = dx * (y[jmax - 1][imax] - y[jmax][imax])*/
+                    normal[k + 2] = dx * (vertex[coord2idx(i, j - 1, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1]);
                 } else if (i == imax) {
-                    normal[k] = vertex[toLinear(i - 1, j, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1] * dz; //( y [ j ] [ imax -1] - y [ j ] [ imax] ) * dz;
-                    normal[k + 2] = -dx * (vertex[toLinear(i, j + 1, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1]); //- dx * ( y [ j+1 ] [ imax] - y [ j ] [ imax ] );
+                    /** Nx = (y[j][imax - 1] - y[j][imax]) * dz*/
+                    normal[k] = vertex[coord2idx(i - 1, j, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1] * dz;
+                    /** Nz = -dx * (y[j + 1][imax] - y[j][imax])*/
+                    normal[k + 2] = -dx * (vertex[coord2idx(i, j + 1, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1]);
                 } else if (j == jmax) {
-                    normal[k] = -(vertex[toLinear(i + 1, j, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1]) * dz; //- ( y [ jmax ] [ i+1 ] - y [ jmax ] [ i ] ) * dz;
-                    normal[k + 2] = dx * (vertex[toLinear(i, j - 1, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1]); //dx * ( y [ jmax-1 ] [ i ] - y [ jmax ] [ i ] );
+                    /** Nx = -(y[jmax][i + 1] - y[jmax][i]) * dz*/
+                    normal[k] = -(vertex[coord2idx(i + 1, j, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1]) * dz;
+                    /** Nz = dx * (y[jmax - 1][i] - y[jmax][i])*/
+                    normal[k + 2] = dx * (vertex[coord2idx(i, j - 1, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1]);
                 } else {
-                    normal[k] = -(vertex[toLinear(i + 1, j, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1]) * dz; //- ( y [j] [i+1] - y [j] [i] ) * dz;
-                    normal[k + 2] = -dx * (vertex[toLinear(i, j + 1, imax, V_SIZE) + 1] - vertex[toLinear(i, j, imax, V_SIZE) + 1]); //- dx * ( y [j+1] [i] - y [j] [i] );
+                    /** Nx = -(y[j][i + 1] - y[j][i]) * dz*/
+                    normal[k] = -(vertex[coord2idx(i + 1, j, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1]) * dz;
+                    /** Nz = -dx * (y[j + 1][i] - y[j][i])*/
+                    normal[k + 2] = -dx * (vertex[coord2idx(i, j + 1, imax, V_SIZE) + 1] - vertex[coord2idx(i, j, imax, V_SIZE) + 1]);
                 }
 
-                normal[k + 1] = dx * dz; //set y value
+                normal[k + 1] = dx * dz; /**set Ny value*/
 
                 k += 3;
             }
@@ -355,62 +393,18 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         return normal;
     }
 
-    private void bindData() {
-        /**GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mCubePositionsBufferIdx);
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-        GLES20.glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GLES20.GL_FLOAT, false, 0, 0);*/
-
-        // координаты вершин
-        vertexData.position(0);
-        glVertexAttribPointer(aPositionLocation, POSITION_COUNT, GL_FLOAT,
-                false, STRIDE, vertexData);
-        glEnableVertexAttribArray(aPositionLocation);
-
-        // координаты текстур
-        vertexData.position(POSITION_COUNT);
-        glVertexAttribPointer(aTextureLocation, TEXTURE_COUNT, GL_FLOAT,
-                false, STRIDE, vertexData);
-        glEnableVertexAttribArray(aTextureLocation);
-
-        vertexData.limit(0);
-        vertexData = null;
-
-        //normals
-        normalData.position(0);
-        glVertexAttribPointer(aNormalLocation, POSITION_COUNT, GLES20.GL_FLOAT, false,
-                0, normalData);
-        glEnableVertexAttribArray(aNormalLocation);
-
-        normalData.limit(0);
-        normalData = null;
-
-        //faces
-        final int buffers[] = new int[1];
-        glGenBuffers(1, buffers, 0);
-        indexDataVBO = buffers[0];
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataVBO);
-        indexData.position(0);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.capacity() * 2, indexData, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        indexData.limit(0);
-        indexData = null;
-
-        bindCamera();
-        bindTextures();
-    }
-
     private void createViewMatrix() {
-        // точка полоения камеры
+        /** точка полоения камеры */
         float eyeX = CAMERA_X;
         float eyeY = CAMERA_Y;
         float eyeZ = CAMERA_Z;
 
-        // точка направления камеры
+        /** точка направления камеры */
         float centerX = CAMERA_LOOK_X;
         float centerY = CAMERA_LOOK_Y;
         float centerZ = CAMERA_LOOK_Z;
 
-        // up-вектор
+        /** up-вектор */
         float upX = CAMERA_UP_X;
         float upY = CAMERA_UP_Y;
         float upZ = CAMERA_UP_Z;
@@ -448,11 +442,11 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void setModelMatrix() {
-        //сбрасываем model матрицу
+        /** сбрасываем model матрицу */
         Matrix.setIdentityM(mModelMatrix, 0);
-        //В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.
+        /** В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.*/
         float angle = -(float)(SystemClock.uptimeMillis() % TIME) / TIME * 360;
-        //Rotates matrix m in place by angle a (in degrees) around the axis (x, y, z).
+        /** Rotates matrix m in place by angle a (in degrees) around the axis (x, y, z).*/
         Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 0);
     }
 
