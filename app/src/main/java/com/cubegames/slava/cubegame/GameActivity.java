@@ -53,6 +53,7 @@ public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseI
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         tableFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.game_points_list_fragment);
 
+        //OGL
         if(getItem() != null && getItem().getId() != null){
             //showProgress();
             mMapFragment.InitMap(getItem(), this);
@@ -89,7 +90,8 @@ public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseI
         tableFragment.initTable(GAME_POINTS_LIST_COLUMN_INFO, onItemClickDelegate);
         tableFragment.setItems(getItem().getGamePoints());
 
-        /*if(getItem() != null && getItem().getId() != null){
+        /*//OGL
+        if(getItem() != null && getItem().getId() != null){
             //showProgress();
             mMapFragment.InitMap(getItem(), this);
         }*/

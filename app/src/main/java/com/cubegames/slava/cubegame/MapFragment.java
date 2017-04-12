@@ -75,24 +75,22 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         ///OGL:
         glMapSurfaceView = new GLSurfaceView(getContext());
         glMapSurfaceView.setEGLContextClientVersion(2);
         glRenderer = new MapGLRenderer(getContext());
         ///glMapSurfaceView.setRenderer(glRenderer);
-
         return  glMapSurfaceView; //inflater.inflate(R.layout.map_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
 
         glMapSurfaceView.setRenderer(glRenderer);
-        ///OGL:
-        /*mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
+
+        /*//OGL:
+        mScrollContainerY = (ScrollView) view.findViewById(R.id.map_scroll_container_y);
         mScrollContainerY.setSmoothScrollingEnabled(true);
         mScrollContainerX = (HorizontalScrollView)view.findViewById(R.id.map_scroll_container_x);
         mScrollContainerX.setSmoothScrollingEnabled(true);
@@ -114,6 +112,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     @Override
     public void onPause() {
         super.onPause();
+
         ///OGL:
         glMapSurfaceView.onPause();
     }
@@ -121,6 +120,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     @Override
     public void onResume() {
         super.onResume();
+
         ///OGL:
         glMapSurfaceView.onResume();
     }
@@ -156,8 +156,8 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             if (error == null) {
                 clearImage();
 
-                ///OGL:
-                /*cachedBitmap = loadBitmapFromDB(getContext(), mapEntity.getId());
+                /*//OGL:
+                cachedBitmap = loadBitmapFromDB(getContext(), mapEntity.getId());
 
                 createNewMapView();
                 rotateMap();
@@ -213,7 +213,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         setGameInstanceEntity(gameInst);
         setGameEntity(gameInst == null ? null : gameInst.getGame());
-        savedPlayers = new ArrayList<>(gameInst.getPlayers());
+        savedPlayers = new ArrayList<>(gameInst != null ? gameInst.getPlayers() : null);
 
         setWebErrorHandler(errorHandler);
 
@@ -249,8 +249,6 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             }
 
             lockFrame.notifyAll();
-
-            //clearImage();//???
         }
     }
 
@@ -396,7 +394,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             part /= 2;
         } while ( ((playersCnt & part) == 0) && (part != 1) );
 
-        return Math.toRadians(playersCnt == 0 ? 0 : (2 * playersCnt - b) * angle);
+        return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
     private View createChip(int color) {
@@ -434,8 +432,8 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     }
 
     private void loadMapImage(GameMap map) {
-        ///OGL:
-        //runJustBeforeBeingDrawn(mScrollContainerY);
+        /*//OGL:
+        runJustBeforeBeingDrawn(mScrollContainerY);*/
 
         RestApiService.startActionGetMapImage(getContext(), map);
     }

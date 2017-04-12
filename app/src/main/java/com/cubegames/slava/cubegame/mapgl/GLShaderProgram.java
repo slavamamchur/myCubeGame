@@ -41,10 +41,13 @@ public abstract class GLShaderProgram {
     public void useProgram() {
         glUseProgram(programId);
     }
-    public abstract void createParams();
+
     public GLShaderParam paramByName (String name) {
         return params.get(name);
     }
+
+    public abstract void createParams();
+    public abstract void bindMatrix(GLSceneObject object, GLCamera camera);
 
     public static int createProgram(int vertexShaderId, int fragmentShaderId) {
         final int programId = glCreateProgram();

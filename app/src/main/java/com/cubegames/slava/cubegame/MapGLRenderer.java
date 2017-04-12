@@ -75,7 +75,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private String mapID;
     private int indexDataTerrainIBO;
     private TerrainShader mainShader;
-
     private GLShaderParamVBO vertexVBO;
     private GLShaderParamVBO texelVBO;
     private GLShaderParamVBO normalVBO;
@@ -85,16 +84,9 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private float[] mMatrix = new float[16];
     private float[] mModelMatrix = new float[16];
 
-    /** Stores a copy of the model matrix specifically for the light position.
-     *  private float[] mLightModelMatrix = new float[16];*/
-
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
     private static final float[] LIGHT_POS_IN_MODEL_SPACE = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
-
-    /** Used to hold the current position of the light in world space (after transformation via model matrix).
-     *  private float[] mLightPosInWorldSpace = new float[4];*/
-
     private float[] mLightPosInEyeSpace = new float[4];
 
     MapGLRenderer(Context context) {
@@ -113,10 +105,7 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
         /** glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);*/
 
         mainShader = new TerrainShader(context);
-        mainShader.useProgram();
-
         createViewMatrix();
-
         prepareData();
     }
 
@@ -132,19 +121,26 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
         setModelMatrix();
 
-        bindMatrix();
-
-        /** for dynamic scene
-         * bindCamera();
-        //bindLightSource();
-        //bindTextures();*/
-
         /** Scene draw call #1 (Terrain object) */
-        mainShader.linkVertexData(vertexVBO);
-        mainShader.linkTexelData(texelVBO);
-        mainShader.linkNormalData(normalVBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataTerrainIBO);
-        glDrawElements(GL_TRIANGLE_STRIP, getFaceIdxCount(30), GL_UNSIGNED_SHORT, 0);
+        try {
+            mainShader.useProgram();
+
+            bindCamera();
+            bindLightSource();
+            bindMatrix();
+
+            mainShader.linkVertexData(vertexVBO);
+            mainShader.linkTexelData(texelVBO);
+            mainShader.linkNormalData(normalVBO);
+
+            glBindTexture(GL_TEXTURE_2D, mapGLTexture);
+            mainShader.setTextureSlotData(0);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataTerrainIBO);
+            glDrawElements(GL_TRIANGLE_STRIP, getFaceIdxCount(30), GL_UNSIGNED_SHORT, 0);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void bindCamera() {
@@ -152,28 +148,17 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void bindLightSource() {
-        /** //for moving light
-        Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
-        mainShader.setLightSourceData(mLightPosInEyeSpace);*/
-
-        /** for static light*/
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, LIGHT_POS_IN_MODEL_SPACE, 0);
         mainShader.setLightSourceData(mLightPosInEyeSpace);
     }
 
     private void prepareData() {
-        bindCamera();
-        bindLightSource();
-
-
-
         /** terran creation */
         final Bitmap bitmap = getMapTextureFromDB();
         mapGLTexture = loadGLTexture(bitmap);
-        glBindTexture(GL_TEXTURE_2D, mapGLTexture);
-        mainShader.setTextureSlotlData(0);
+
+        //glBindTexture(GL_TEXTURE_2D, mapGLTexture);
+        //mainShader.setTextureSlotData(0);
 
         /** vertexes---------------------------------------------------------------------------------*/
         float[] vertices = generateLandMeshUV(bitmap, 30, 30);
@@ -396,7 +381,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void setModelMatrix() {
-        /** В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.*/
         float angle = -(float)(SystemClock.uptimeMillis() % ANIMATION_DELAY_MS) / ANIMATION_DELAY_MS * 360;
 
         Matrix.setIdentityM(mModelMatrix, 0);

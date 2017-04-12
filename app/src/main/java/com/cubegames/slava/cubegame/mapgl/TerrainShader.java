@@ -1,27 +1,27 @@
 package com.cubegames.slava.cubegame.mapgl;
 
 import android.content.Context;
+import android.opengl.Matrix;
 
 import com.cubegames.slava.cubegame.R;
 
 import java.nio.FloatBuffer;
 
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.MV_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.NORMALS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXELS_PARAM_NAME;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXEL_UV_SIZE;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEXES_PARAM_NAME;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEX_SIZE;
-import static com.cubegames.slava.cubegame.mapgl.GLShaderParam.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
-import static com.cubegames.slava.cubegame.mapgl.GLShaderParam.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
-import static com.cubegames.slava.cubegame.mapgl.GLShaderParam.GLParamType.INTEGER_UNIFORM_PARAM;
 
 public class TerrainShader extends GLShaderProgram {
-
-    private static final String VERTEXES_PARAM_NAME = "a_Position";
-    private static final String TEXELS_PARAM_NAME = "a_Texture";
-    private static final String NORMALS_PARAM_NAME = "a_Normal";
-    private static final String ACTIVE_TEXTURE_SLOT_PARAM_NAME = "u_TextureUnit";
-    private static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
-    private static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
-    private static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
-    private static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
 
     public TerrainShader(Context context) {
         super(context, R.raw.vertex_shader, R.raw.fragment_shader);
@@ -72,7 +72,7 @@ public class TerrainShader extends GLShaderProgram {
         return paramVBO;
     }
 
-    public void linkVertexData(GLShaderParamVBO paramVBO) {
+    public void linkVertexData(GLShaderParamVBO paramVBO) throws IllegalAccessException {
         ((GLShaderParamVBO)paramByName(VERTEXES_PARAM_NAME)).linkParamValue(paramVBO);
     }
 
@@ -83,7 +83,7 @@ public class TerrainShader extends GLShaderProgram {
         return paramVBO;
     }
 
-    public void linkTexelData(GLShaderParamVBO paramVBO) {
+    public void linkTexelData(GLShaderParamVBO paramVBO) throws IllegalAccessException {
         ((GLShaderParamVBO)paramByName(TEXELS_PARAM_NAME)).linkParamValue(paramVBO);
     }
 
@@ -94,11 +94,17 @@ public class TerrainShader extends GLShaderProgram {
         return paramVBO;
     }
 
-    public void linkNormalData(GLShaderParamVBO paramVBO) {
+    public void linkNormalData(GLShaderParamVBO paramVBO) throws IllegalAccessException {
         ((GLShaderParamVBO)paramByName(NORMALS_PARAM_NAME)).linkParamValue(paramVBO);
     }
 
-    public void setTextureSlotlData(int data) {
+    public void linkVBOData(GLSceneObject object) throws IllegalAccessException {
+        linkVertexData(object.getVertexVBO());
+        linkTexelData(object.getTexelVBO());
+        linkNormalData(object.getNormalVBO());
+    }
+
+    public void setTextureSlotData(int data) {
         paramByName(ACTIVE_TEXTURE_SLOT_PARAM_NAME).setParamValue(data);
     }
 
@@ -118,4 +124,14 @@ public class TerrainShader extends GLShaderProgram {
         paramByName(MV_MATRIX_PARAM_NAME).setParamValue(data);
     }
 
+    @Override
+    public void bindMatrix(GLSceneObject object, GLCamera camera) {
+        float[] mMatrix = new float[16];
+
+        Matrix.multiplyMM(mMatrix, 0, camera.getmViewMatrix(), 0, object.getModelMatrix(), 0);
+        setMVMatrixData(mMatrix);
+
+        Matrix.multiplyMM(mMatrix, 0, camera.getProjectionMatrix(), 0, mMatrix, 0);
+        setMVPMatrixData(mMatrix);
+    }
 }
