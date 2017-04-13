@@ -17,6 +17,7 @@ import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
 
 public class GLScene {
 
@@ -26,7 +27,10 @@ public class GLScene {
     private GLCamera camera;
     private GLLightSource lightSource;
 
+    /** Objects cache*/
     private Map<String, GLSceneObject> objects = new HashMap<>();
+    /** Shaders cache*/
+    private Map<GLObjectType, GLShaderProgram> shaders = new HashMap<>();
 
     public GLScene(Context context) {
         this.context = context;
@@ -58,16 +62,47 @@ public class GLScene {
         }
     }
 
-    public void clearScene() {
-        for (GLSceneObject object : objects.values()) {
+    public void clearData() {
+        clearObjectsCache();
+        clearShadersCache();
+    }
+
+    public void clearObjectsCache() {
+        for (GLSceneObject object : objects.values())
             object.clearVBOData();
-        }
 
         objects.clear();
     }
 
+    public void clearShadersCache() {
+        for (GLShaderProgram program : shaders.values())
+            for (GLShaderParam param : program.getParams().values())
+                if (param instanceof GLShaderParamVBO)
+                    ((GLShaderParamVBO)param).clearVBOPtr();
+
+        shaders.clear();
+    }
+
     public GLSceneObject getObject(String name) {
         return objects.get(name);
+    }
+
+    public GLShaderProgram getCachedShader(GLObjectType type) {
+        GLShaderProgram program = shaders.get(type);
+
+        if (program == null) {
+            switch (type) {
+                case TERRAIN_OBJECT:
+                    program = new TerrainShader(context);
+                    break;
+                default:
+                    program = new TerrainShader(context);
+            }
+
+            shaders.put(type, program);
+        }
+
+        return program;
     }
 
     public void drawScene() {
@@ -82,15 +117,15 @@ public class GLScene {
 
             program.bindMatrix(object, getCamera());
 
-            if (program instanceof TerrainShader) {
-                ((TerrainShader) program).setCameraData(getCamera().getCameraPosition());
-                ((TerrainShader) program).setLightSourceData(getLightSource().getLightPosInEyeSpace());
+            if (program instanceof VBOShaderFromResource) {
+                ((VBOShaderFromResource) program).setCameraData(getCamera().getCameraPosition());
+                ((VBOShaderFromResource) program).setLightSourceData(getLightSource().getLightPosInEyeSpace());
 
                 try {
-                    ((TerrainShader) program).linkVBOData(object);
+                    ((VBOShaderFromResource) program).linkVBOData(object);
 
                     glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
-                    ((TerrainShader) program).setTextureSlotData(0);
+                    ((VBOShaderFromResource) program).setTextureSlotData(0);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -109,4 +144,10 @@ public class GLScene {
         Matrix.rotateM(object.getModelMatrix(), 0, angle, 0, 1, 0);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        clearData();
+
+        super.finalize();
+    }
 }

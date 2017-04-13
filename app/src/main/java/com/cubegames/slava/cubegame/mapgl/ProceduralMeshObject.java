@@ -1,10 +1,6 @@
 package com.cubegames.slava.cubegame.mapgl;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-
-import com.cubegames.slava.cubegame.api.GameMapController;
-import com.cubegames.slava.cubegame.model.GameMap;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,35 +14,29 @@ import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glGenBuffers;
 import static com.cubegames.slava.cubegame.Utils.chain;
 import static com.cubegames.slava.cubegame.Utils.coord2idx;
-import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_ITEM_SIZE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_STRIDE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEX_SIZE;
 
-public class TerrainObject extends GLSceneObject {
+public abstract class ProceduralMeshObject extends GLSceneObject {
 
-    private final static float LAND_WIDTH = 2.0F;
-    private final static float LAND_HEIGHT = 2.0F;
+    private float LAND_WIDTH;
+    private float LAND_HEIGHT;
 
     private float[] vertexes;
     private int dimension;
-    private String mapID;
 
-    public TerrainObject(Context context, int dimension, GLShaderProgram program, String mapID) {
-        super(context, TERRAIN_OBJECT, program);
+    public ProceduralMeshObject(Context context, GLObjectType type, float landWidth, float landHeight, int dimension, GLShaderProgram program) {
+        super(context, type, program);
 
         this.dimension = dimension;
-        this.mapID = mapID;
+        LAND_WIDTH = landWidth;
+        LAND_HEIGHT = landHeight;
     }
 
-    @Override
-    protected Bitmap getTextureBitmap() {
-        GameMapController gmc = new GameMapController(context);
-        gmc.saveMapImage(new GameMap(mapID));
-        return loadBitmapFromDB(context, mapID);
-    }
+    protected abstract float getValueY(float valX, float valZ, float tu, float tv);
 
     @Override
     public int getFacesCount() {
@@ -58,20 +48,22 @@ public class TerrainObject extends GLSceneObject {
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
         float td = 1f / dimension;
-        float vd = LAND_WIDTH / dimension;
-        float xz0 = -LAND_WIDTH / 2f;
+        float dx = LAND_WIDTH / dimension;
+        float dz = LAND_HEIGHT / dimension;
+        float x0 = -LAND_WIDTH / 2f;
+        float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
 
         for (int j = 0; j <= dimension; j++){
+            //TODO: bitmap line to array
             for (int i = 0; i <= dimension; i++){
-                vertexes[k] = xz0 + i * vd; /** x*/
-                vertexes[k + 2] = xz0 + j * vd; /** z*/
-                //TODO: generate Y value by texture point color
-                /** y*/
-                vertexes[k + 1] = 0;//(float)Math.exp(-3 * (vertex[k] * vertex[k] + vertex[k + 2] * vertex[k + 2]));
+                vertexes[k] = x0 + i * dx; /** x*/
+                vertexes[k + 2] = z0 + j * dz; /** z*/
 
                 vertexes[k + 3] = i * td; /** u*/
                 vertexes[k + 4] = j * td; /** v*/
+
+                vertexes[k + 1] = getValueY(vertexes[k], vertexes[k + 2], vertexes[k + 3], vertexes[k + 4]); /** y*/
 
                 k += 5;
             }

@@ -7,8 +7,7 @@ import com.cubegames.slava.cubegame.mapgl.GLCamera;
 import com.cubegames.slava.cubegame.mapgl.GLLightSource;
 import com.cubegames.slava.cubegame.mapgl.GLScene;
 import com.cubegames.slava.cubegame.mapgl.GLSceneObject;
-import com.cubegames.slava.cubegame.mapgl.TerrainObject;
-import com.cubegames.slava.cubegame.mapgl.TerrainShader;
+import com.cubegames.slava.cubegame.mapgl.LandObject;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -18,6 +17,7 @@ import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LAND_INTERPOLATOR_DIM;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TERRAIN_MESH_OBJECT;
 
@@ -29,11 +29,11 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private final static float CAMERA_X = 0;
     private final static float CAMERA_Y = 2;
-    private final static float CAMERA_Z = -3.5F;
+    private final static float CAMERA_Z = -4;
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;
-    private final static float CAMERA_LOOK_Z = 0.5F;
+    private final static float CAMERA_LOOK_Z = 0;
 
     private final static float CAMERA_UP_X = 0;
     private final static float CAMERA_UP_Y = 1;
@@ -42,8 +42,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private Context context;
 
     private String mapID;
-
-    private TerrainShader mainShader;
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
@@ -85,7 +83,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void initScene() {
-        mainShader = new TerrainShader(context);
         mScene = new GLScene(context);
 
         mScene.setCamera(new GLCamera(CAMERA_X, CAMERA_Y, CAMERA_Z,
@@ -96,12 +93,13 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        GLSceneObject terrain = new TerrainObject(context, LAND_INTERPOLATOR_DIM, mainShader, mapID);
+        GLSceneObject terrain = new LandObject(context, LAND_INTERPOLATOR_DIM, mScene.getCachedShader(TERRAIN_OBJECT), mapID);
         terrain.loadObject();
 
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 
         System.gc();
+        /** wait for garbage collector finished*/
         try {Thread.sleep(3000);} catch (InterruptedException e) {}
     }
 

@@ -7,6 +7,7 @@ import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_STATIC_DRAW;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBufferData;
+import static android.opengl.GLES20.glDeleteBuffers;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGenBuffers;
 import static android.opengl.GLES20.glVertexAttribPointer;
@@ -77,6 +78,13 @@ public class GLShaderParamVBO extends GLShaderParam {
         pos = newValue.getPos();
 
         linkParamValue();
+    }
+
+    public void clearVBOPtr() {
+        if (vboPtr != 0) {
+            glDeleteBuffers(1, new int[]{vboPtr}, 0);
+            vboPtr = 0;
+        }
     }
 
 }

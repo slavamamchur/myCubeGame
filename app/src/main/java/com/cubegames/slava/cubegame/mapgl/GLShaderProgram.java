@@ -37,6 +37,9 @@ public abstract class GLShaderProgram {
     public int getProgramId() {
         return programId;
     }
+    public Map<String, GLShaderParam> getParams() {
+        return params;
+    }
 
     public void useProgram() {
         glUseProgram(programId);

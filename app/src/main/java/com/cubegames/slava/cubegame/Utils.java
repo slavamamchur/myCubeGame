@@ -100,6 +100,7 @@ public class Utils {
         return textureIds[0];
     }
 
+    //TODO: Implement
     public static ColorType CheckColorType(Integer color){
         int R = Color.red(color);
         int G = Color.green(color);
