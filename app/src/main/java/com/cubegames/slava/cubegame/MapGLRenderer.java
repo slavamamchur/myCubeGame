@@ -1,56 +1,27 @@
 package com.cubegames.slava.cubegame;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
-import android.os.SystemClock;
 
-import com.cubegames.slava.cubegame.api.GameMapController;
-import com.cubegames.slava.cubegame.mapgl.GLShaderParamVBO;
+import com.cubegames.slava.cubegame.mapgl.GLCamera;
+import com.cubegames.slava.cubegame.mapgl.GLLightSource;
+import com.cubegames.slava.cubegame.mapgl.GLScene;
+import com.cubegames.slava.cubegame.mapgl.GLSceneObject;
+import com.cubegames.slava.cubegame.mapgl.TerrainObject;
 import com.cubegames.slava.cubegame.mapgl.TerrainShader;
-import com.cubegames.slava.cubegame.model.GameMap;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
-import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_STATIC_DRAW;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBindTexture;
-import static android.opengl.GLES20.glBufferData;
-import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glDrawElements;
 import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glGenBuffers;
 import static android.opengl.GLES20.glViewport;
-import static com.cubegames.slava.cubegame.Utils.chain;
-import static com.cubegames.slava.cubegame.Utils.coord2idx;
-import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
-import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_ITEM_SIZE;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_STRIDE;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEX_SIZE;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LAND_INTERPOLATOR_DIM;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TERRAIN_MESH_OBJECT;
 
 class MapGLRenderer implements GLSurfaceView.Renderer {
-
-    private final static long ANIMATION_DELAY_MS = 10000L;
-
-    private final static float LAND_WIDTH = 2.0F;
-    private final static float LAND_HEIGHT = 2.0F;
 
     private final static float LIGHT_X = -1.2F;
     private final static float LIGHT_Y = 2.2F;
@@ -59,8 +30,6 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float CAMERA_X = 0;
     private final static float CAMERA_Y = 2;
     private final static float CAMERA_Z = -3.5F;
-
-    private static final float[] CAMERA_POS_IN_WORLD_SPACE = new float[] {CAMERA_X, CAMERA_Y, CAMERA_Z, 1.0f};
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;
@@ -71,23 +40,16 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float CAMERA_UP_Z = 0;
 
     private Context context;
-    private int mapGLTexture = 0;
-    private String mapID;
-    private int indexDataTerrainIBO;
-    private TerrainShader mainShader;
-    private GLShaderParamVBO vertexVBO;
-    private GLShaderParamVBO texelVBO;
-    private GLShaderParamVBO normalVBO;
 
-    private float[] mProjectionMatrix = new float[16];
-    private float[] mViewMatrix = new float[16];
-    private float[] mMatrix = new float[16];
-    private float[] mModelMatrix = new float[16];
+    private String mapID;
+
+    private TerrainShader mainShader;
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
     private static final float[] LIGHT_POS_IN_MODEL_SPACE = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
-    private float[] mLightPosInEyeSpace = new float[4];
+
+    private GLScene mScene;
 
     MapGLRenderer(Context context) {
         this.context = context;
@@ -99,292 +61,52 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        glClearColor(0f, 0.7f, 1f, 1f);
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-        /** glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);*/
-
-        mainShader = new TerrainShader(context);
-        createViewMatrix();
-        prepareData();
+        initGLRender();
+        initScene();
+        loadScene();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
-        createProjectionMatrix(width, height);
+
+        mScene.getCamera().setProjectionMatrix(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        setModelMatrix();
-
-        /** Scene draw call #1 (Terrain object) */
-        try {
-            mainShader.useProgram();
-
-            bindCamera();
-            bindLightSource();
-            bindMatrix();
-
-            mainShader.linkVertexData(vertexVBO);
-            mainShader.linkTexelData(texelVBO);
-            mainShader.linkNormalData(normalVBO);
-
-            glBindTexture(GL_TEXTURE_2D, mapGLTexture);
-            mainShader.setTextureSlotData(0);
-
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataTerrainIBO);
-            glDrawElements(GL_TRIANGLE_STRIP, getFaceIdxCount(30), GL_UNSIGNED_SHORT, 0);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        drawScene();
     }
 
-    private void bindCamera() {
-        mainShader.setCameraData(CAMERA_POS_IN_WORLD_SPACE);
+    private void initGLRender() {
+        glClearColor(0f, 0.7f, 1f, 1f);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
     }
 
-    private void bindLightSource() {
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, LIGHT_POS_IN_MODEL_SPACE, 0);
-        mainShader.setLightSourceData(mLightPosInEyeSpace);
+    private void initScene() {
+        mainShader = new TerrainShader(context);
+        mScene = new GLScene(context);
+
+        mScene.setCamera(new GLCamera(CAMERA_X, CAMERA_Y, CAMERA_Z,
+                                      CAMERA_LOOK_X, CAMERA_LOOK_Y, CAMERA_LOOK_Z,
+                                      CAMERA_UP_X, CAMERA_UP_Y, CAMERA_UP_Z));
+
+        mScene.setLightSource(new GLLightSource(LIGHT_POS_IN_MODEL_SPACE, mScene.getCamera()));
     }
 
-    private void prepareData() {
-        /** terran creation */
-        final Bitmap bitmap = getMapTextureFromDB();
-        mapGLTexture = loadGLTexture(bitmap);
+    private void loadScene() {
+        GLSceneObject terrain = new TerrainObject(context, LAND_INTERPOLATOR_DIM, mainShader, mapID);
+        terrain.loadObject();
 
-        //glBindTexture(GL_TEXTURE_2D, mapGLTexture);
-        //mainShader.setTextureSlotData(0);
-
-        /** vertexes---------------------------------------------------------------------------------*/
-        float[] vertices = generateLandMeshUV(bitmap, 30, 30);
-        FloatBuffer vertexData = ByteBuffer
-                .allocateDirect(vertices.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        vertexData.put(vertices);
-        /** координаты вершин*/
-        vertexData.position(0);
-        vertexVBO = mainShader.setVertexData(vertexData, VBO_STRIDE, 0);
-        /** координаты текстур*/
-        texelVBO = mainShader.setTexelData(vertexData, VBO_STRIDE, VERTEX_SIZE * 4);
-        vertexData.limit(0);
-        vertexData = null;
-
-        /** normals----------------------------------------------------------------------------------*/
-        FloatBuffer normalData = generateLandNormals(vertices, 30, 30);
-        vertices = null;
-        normalData.position(0);
-        normalVBO = mainShader.setNormalData(normalData, 0, 0);
-        normalData.limit(0);
-        normalData = null;
-
-        /** faces------------------------------------------------------------------------------------*/
-        short[] index = generateLandFaces(30, 30);
-        ShortBuffer indexData = ByteBuffer
-                .allocateDirect(index.length * 2)
-                .order(ByteOrder.nativeOrder())
-                .asShortBuffer();
-        indexData.put(index);
-        index = null;
-        final int buffers[] = new int[1];
-        glGenBuffers(1, buffers, 0);
-        indexDataTerrainIBO = buffers[0];
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexDataTerrainIBO);
-        indexData.position(0);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.capacity() * 2, indexData, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        indexData.limit(0);
-        indexData = null;
+        mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 
         System.gc();
+        try {Thread.sleep(3000);} catch (InterruptedException e) {}
     }
 
-    private int getFaceIdxCount(int dim) {
-        return 2 * (dim + 1) * dim + (dim - 1);
-    }
-
-    private short[] generateLandFaces(int imax, int jmax) {
-
-        short[] index = new short[2*(imax+1)*jmax + (jmax-1)];
-        int k=0;
-        int j=0;
-        while (j < jmax) {
-            /** лента слева направо*/
-            for (int i = 0; i <= imax; i++) {
-                index[k] = chain(j,i,imax);
-                k++;
-                index[k] = chain(j+1,i,imax);
-                k++;
-            }
-            if (j < jmax-1){
-                /** вставим хвостовой индекс для связки*/
-                index[k] = chain(j+1,imax,imax);
-                k++;
-            }
-            /** переводим ряд*/
-            j++;
-
-            /** проверяем достижение конца*/
-            if (j < jmax){
-                /** лента справа налево*/
-                for (int i = imax; i >= 0; i--) {
-                    index[k] = chain(j,i,imax);
-                    k++;
-                    index[k] = chain(j+1,i,imax);
-                    k++;
-                }
-                if (j < jmax-1){
-                    /** вставим хвостовой индекс для связки*/
-                    index[k] = chain(j+1,0,imax);
-                    k++;
-                }
-                /** переводим ряд*/
-                j++;
-            }
-        }
-
-        return index;
-    }
-
-    private Bitmap getMapTextureFromDB() {
-        GameMapController gmc = new GameMapController(context);
-        gmc.saveMapImage(new GameMap(mapID));
-        return loadBitmapFromDB(context, mapID);
-    }
-
-    private float[] generateLandMeshUV(Bitmap bitmap, int imax, int jmax) {
-
-        float[] vertex = new float[(jmax + 1) * (imax + 1) * VBO_ITEM_SIZE];
-
-        float tdx = 1f / imax;
-        float tdy = 1f / jmax;
-        float dx = LAND_WIDTH / imax;
-        float dz = LAND_HEIGHT / jmax;
-        float x0 = -LAND_WIDTH / 2f;
-        float z0 = -LAND_HEIGHT / 2f;
-        int k = 0;
-
-        for (int j = 0; j <= jmax; j++){
-            for (int i = 0; i <= imax; i++){
-                vertex[k] = x0 + i * dx; /** x*/
-                vertex[k + 2] = z0 + j * dz; /** z*/
-                //TODO: generate Y value by texture point color
-                vertex[k + 1] = 0;//(float)Math.exp(-3 * (vertex[k] * vertex[k] + vertex[k + 2] * vertex[k + 2]));
-
-                vertex[k + 3] = i * tdx; /** u*/
-                vertex[k + 4] = j * tdy; /** v*/
-
-                k += 5;
-            }
-        }
-
-        return vertex;
-    }
-
-    private FloatBuffer generateLandNormals(float [] vertex, int imax, int jmax) {
-
-        float dx = LAND_WIDTH / imax;
-        float dz = LAND_HEIGHT / jmax;
-        float [] normal = new float[(jmax + 1) * (imax + 1) * VERTEX_SIZE];
-        int k = 0;
-
-        for (int j = 0; j <= jmax; j++)
-            for (int i = 0; i <= imax; i++) {
-                if ((i == imax) && (j == jmax)) {
-                    /** Nx = (y[jmax][imax - 1] - y[jmax][imax]) * dz*/
-                    normal[k] = vertex[coord2idx(i - 1, j, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1] * dz;
-                    /** Nz = dx * (y[jmax - 1][imax] - y[jmax][imax])*/
-                    normal[k + 2] = dx * (vertex[coord2idx(i, j - 1, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1]);
-                } else if (i == imax) {
-                    /** Nx = (y[j][imax - 1] - y[j][imax]) * dz*/
-                    normal[k] = vertex[coord2idx(i - 1, j, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1] * dz;
-                    /** Nz = -dx * (y[j + 1][imax] - y[j][imax])*/
-                    normal[k + 2] = -dx * (vertex[coord2idx(i, j + 1, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1]);
-                } else if (j == jmax) {
-                    /** Nx = -(y[jmax][i + 1] - y[jmax][i]) * dz*/
-                    normal[k] = -(vertex[coord2idx(i + 1, j, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1]) * dz;
-                    /** Nz = dx * (y[jmax - 1][i] - y[jmax][i])*/
-                    normal[k + 2] = dx * (vertex[coord2idx(i, j - 1, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1]);
-                } else {
-                    /** Nx = -(y[j][i + 1] - y[j][i]) * dz*/
-                    normal[k] = -(vertex[coord2idx(i + 1, j, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1]) * dz;
-                    /** Nz = -dx * (y[j + 1][i] - y[j][i])*/
-                    normal[k + 2] = -dx * (vertex[coord2idx(i, j + 1, imax, VBO_ITEM_SIZE) + 1] - vertex[coord2idx(i, j, imax, VBO_ITEM_SIZE) + 1]);
-                }
-
-                normal[k + 1] = dx * dz; /**set Ny value*/
-
-                k += 3;
-            }
-
-        FloatBuffer normalData = ByteBuffer
-                .allocateDirect(normal.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        normalData.put(normal);
-
-        return normalData;
-    }
-
-    private void createViewMatrix() {
-        /** точка полоения камеры */
-        float eyeX = CAMERA_X;
-        float eyeY = CAMERA_Y;
-        float eyeZ = CAMERA_Z;
-
-        /** точка направления камеры */
-        float centerX = CAMERA_LOOK_X;
-        float centerY = CAMERA_LOOK_Y;
-        float centerZ = CAMERA_LOOK_Z;
-
-        /** up-вектор */
-        float upX = CAMERA_UP_X;
-        float upY = CAMERA_UP_Y;
-        float upZ = CAMERA_UP_Z;
-
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-    }
-
-    private void createProjectionMatrix(int width, int height) {
-        float ratio;
-        float left = -0.5f;
-        float right = 0.5f;
-        float bottom = -0.5f;
-        float top = 0.5f;
-        float near = 2;
-        float far = 12;
-
-        if (width > height) {
-            ratio = (float) width / height;
-            left *= ratio;
-            right *= ratio;
-        } else {
-            ratio = (float) height / width;
-            bottom *= ratio;
-            top *= ratio;
-        }
-
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
-    }
-
-    private void bindMatrix() {
-        Matrix.multiplyMM(mMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-        mainShader.setMVMatrixData(mMatrix);
-
-        Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mMatrix, 0);
-        mainShader.setMVPMatrixData(mMatrix);
-    }
-
-    private void setModelMatrix() {
-        float angle = -(float)(SystemClock.uptimeMillis() % ANIMATION_DELAY_MS) / ANIMATION_DELAY_MS * 360;
-
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.rotateM(mModelMatrix, 0, angle, 0, 1, 0);
+    private void drawScene() {
+        mScene.drawScene();
     }
 
 }

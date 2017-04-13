@@ -7,12 +7,15 @@ import android.os.SystemClock;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
 
 public class GLScene {
@@ -68,12 +71,15 @@ public class GLScene {
     }
 
     public void drawScene() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for (GLSceneObject object : objects.values()) {
             GLShaderProgram program = object.getProgram();
             program.useProgram();
 
-            setModelMatrix(object);
+            if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
+                setModelMatrix(object);
+
             program.bindMatrix(object, getCamera());
 
             if (program instanceof TerrainShader) {

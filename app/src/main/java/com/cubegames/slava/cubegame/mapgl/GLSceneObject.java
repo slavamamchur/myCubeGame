@@ -1,6 +1,8 @@
 package com.cubegames.slava.cubegame.mapgl;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.opengl.Matrix;
 
 import java.nio.FloatBuffer;
 
@@ -13,21 +15,23 @@ import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEXES_PARAM_N
 
 public abstract class GLSceneObject {
 
+    protected Context context;
     private GLObjectType objectType;
     private int glTextureId = 0;
     private GLShaderParamVBO vertexVBO = null;
     private GLShaderParamVBO texelVBO = null;
     private GLShaderParamVBO normalVBO = null;
     protected int facesIBOPtr = 0;
-    private float[] modelMatrix = null;
+    private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
 
-    public GLSceneObject(GLObjectType type, GLShaderProgram program) {
+    public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
+        this.context = context;
         objectType = type;
         this.program = program;
+        Matrix.setIdentityM(modelMatrix, 0);
 
         createVBOParams();
-        loadObject();
     }
 
     public GLObjectType getObjectType() {
@@ -65,7 +69,7 @@ public abstract class GLSceneObject {
         param.setParamValue(size, stride, pos, data);
     }
 
-    private void loadObject() {
+    public void loadObject() {
         glTextureId = loadTexture();
         createVertexesVBO();
         createTexelsVBO();

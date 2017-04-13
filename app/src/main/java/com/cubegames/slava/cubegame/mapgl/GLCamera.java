@@ -8,11 +8,22 @@ public class GLCamera {
     private float[] projectionMatrix;
     private float[] cameraPosition;
 
-    public GLCamera() {
+    public GLCamera(float eyeX,
+                    float eyeY,
+                    float eyeZ,
+
+                    float centerX,
+                    float centerY,
+                    float centerZ,
+
+                    float upX,
+                    float upY,
+                    float upZ) {
+
         viewMatrix = new float[16];
         projectionMatrix = new float[16];
 
-        initCamera(0, 0, -2f, 0, 0, 0, 0, 1, 0);
+        initCamera(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
     }
 
     public void initCamera(

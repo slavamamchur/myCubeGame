@@ -30,15 +30,13 @@ public class TerrainObject extends GLSceneObject {
     private final static float LAND_WIDTH = 2.0F;
     private final static float LAND_HEIGHT = 2.0F;
 
-    private Context context;
     private float[] vertexes;
     private int dimension;
     private String mapID;
 
     public TerrainObject(Context context, int dimension, GLShaderProgram program, String mapID) {
-        super(TERRAIN_OBJECT, program);
+        super(context, TERRAIN_OBJECT, program);
 
-        this.context = context;
         this.dimension = dimension;
         this.mapID = mapID;
     }
