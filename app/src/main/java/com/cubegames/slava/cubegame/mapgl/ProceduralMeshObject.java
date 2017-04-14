@@ -26,16 +26,22 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
 
     private float LAND_WIDTH;
     private float LAND_HEIGHT;
+    private float landScale;
 
     private float[] vertexes;
     private int dimension;
 
-    public ProceduralMeshObject(Context context, GLObjectType type, float landWidth, float landHeight, int dimension, GLShaderProgram program) {
+    public ProceduralMeshObject(Context context, GLObjectType type, float landScale, float landWidth, float landHeight, int dimension, GLShaderProgram program) {
         super(context, type, program);
 
         this.dimension = dimension;
         LAND_WIDTH = landWidth;
         LAND_HEIGHT = landHeight;
+        this.landScale = landScale;
+    }
+
+    public float getLandScale() {
+        return landScale;
     }
 
     protected abstract float getValueY(float valX, float valZ, int[] rowPixels, float tv);

@@ -8,7 +8,7 @@ import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.WAT
 public class WaterObject extends ProceduralMeshObject {
 
     public WaterObject(Context context, int dimension, GLShaderProgram program) {
-        super(context, WATER_OBJECT, 10.0f, 10.0f, dimension, program);
+        super(context, WATER_OBJECT, 10.0f/95, 10.0f, 10.0f, dimension, program);
     }
 
     @Override

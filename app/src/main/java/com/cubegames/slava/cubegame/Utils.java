@@ -23,10 +23,9 @@ import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
+import static com.cubegames.slava.cubegame.Utils.ColorType.BROWN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.CYAN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.GREEN;
-import static com.cubegames.slava.cubegame.Utils.ColorType.UNKNOWN;
-import static com.cubegames.slava.cubegame.Utils.ColorType.WHITE;
 import static com.cubegames.slava.cubegame.Utils.ColorType.YELLOW;
 
 public class Utils {
@@ -57,13 +56,46 @@ public class Utils {
 
     /** Texture utils ----------------------------------------------------------------------------*/
     public enum ColorType {
-        BLUE,
         CYAN,
+        BLUE,
         GREEN,
         YELLOW,
+        BROWN,
         WHITE,
         UNKNOWN
     }
+
+    public static final float MIN_CYAN = 130f + 160f + 232f;
+    public static final float MIN_BLUE = 13f + 30f + 70f;
+    public static final float MIN_GREEN = 0f + 56f + 17f;
+    public static final float MIN_YELLOW = 145f + 133f + 30f;
+    public static final float MIN_BROWN = 83f + 17f + 0f;
+    public static final float MIN_WHITE = 127f + 127f + 127f;
+
+    public static final float MAX_CYAN = 220f + 245f + 245f;
+    public static final float MAX_BLUE = 129f + 159f + 231f;
+    public static final float MAX_GREEN = 85f + 255f + 164f;//TODO:
+    public static final float MAX_YELLOW = 246f + 246f + 162f;
+    public static final float MAX_BROWN = 192f + 135f + 58f;
+    public static final float MAX_WHITE = 255f + 255f + 255f;
+
+    public static final float[] MIN_HEIGHT_VALUES = {0.05f, 0.55f, 0.0f, 0.21f, 1.21f, 2.55f};
+    public static final float[] MAX_HEIGHT_VALUES = {0.5f, 10f, 0.2f, 1.2f, 2.5f, 10f};
+    public static final float[] DELTA_COLOR_VALUES = {MAX_CYAN - MIN_CYAN,
+                                                      MAX_BLUE - MIN_BLUE,
+                                                      MAX_GREEN - MIN_GREEN,
+                                                      MAX_YELLOW - MIN_YELLOW,
+                                                      MAX_BROWN - MIN_BROWN,
+                                                      MAX_WHITE - MIN_WHITE};
+
+    public static final float[] MIN_COLOR_VALUES = {MIN_CYAN,
+                                                    MIN_BLUE,
+                                                    MIN_GREEN,
+                                                    MIN_YELLOW,
+                                                    MIN_BROWN,
+                                                    MIN_WHITE};
+
+    public static final boolean[] INVERT_LIGHT_FACTOR = {true, true, false, true, true, false};
 
     public static int loadGLTexture(Bitmap bitmap) {
         /** создание объекта текстуры*/
@@ -107,20 +139,15 @@ public class Utils {
         int B = Color.blue(color);
 
         if ((G <= B) && (R < G))
-            return G <= 0.5 * B ? CYAN : BLUE;
+            return G <= 0.5 * B ? BLUE : CYAN; //B <= 231 ? BLUE : CYAN;//
         else if ((R < G) && (B < G))
             return GREEN;
         else if ((G < R) && (B < G))
-            return YELLOW;
-        else if ((G == R) && (B == G) && (R >= 180))
-            return WHITE;
+            return G <= 0.7 * R ? BROWN : YELLOW;
+        /*else if ((G == R) && (B == G) && (R >= 180))
+            return WHITE;*/
         else
-            return UNKNOWN;
-    }
-
-    public static float calcHeightByColor(int color, float maxHeight) {
-        //TODO: Implement
-        return 0f;
+            return CYAN; //TODO: UNKNOWN;
     }
 
     public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, float dTy) {

@@ -24,7 +24,7 @@ import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TERRAIN_MESH_OBJ
 class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private final static float LIGHT_X = -1.2F;
-    private final static float LIGHT_Y = 0.3F;//1.2
+    private final static float LIGHT_Y = 1.2F;//1.2
     private final static float LIGHT_Z = -1.2F;
 
     private final static float CAMERA_X = 0;

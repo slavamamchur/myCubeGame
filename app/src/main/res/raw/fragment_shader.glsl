@@ -15,7 +15,7 @@ void main()
       vec3 lookvector = normalize(u_camera - v_Position);
       float distance = length(u_lightPosition - v_Position);
 
-      float ambient = 0.3;//0.1
+      float ambient = 0.2;//0.1
       float k_diffuse = 1.0;
       float k_specular = 1.0;
 
@@ -36,8 +36,8 @@ void main()
       vec4 lightColor = vec4(lightFactor * vec3(1.0, 1.0, 0.6), 1.0);
 
       vec4 textureColor = texture2D(u_TextureUnit, v_Texture);
-      if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]))
-            textureColor = vec4(1.0, 1.0, 0, 1.0);
+      //if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]))
+            //textureColor = vec4(1.0, 1.0, 0, 1.0);
 
       gl_FragColor = lightColor * textureColor;
 }
