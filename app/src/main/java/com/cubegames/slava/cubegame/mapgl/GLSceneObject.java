@@ -38,6 +38,9 @@ public abstract class GLSceneObject {
     public GLObjectType getObjectType() {
         return objectType;
     }
+    public Bitmap getTextureBmp() {
+        return textureBmp;
+    }
     public int getGlTextureId() {
         return glTextureId;
     }

@@ -23,6 +23,7 @@ import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
+import static com.cubegames.slava.cubegame.Utils.ColorType.CYAN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.GREEN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.UNKNOWN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.WHITE;
@@ -100,23 +101,34 @@ public class Utils {
         return textureIds[0];
     }
 
-    //TODO: Implement
     public static ColorType CheckColorType(Integer color){
         int R = Color.red(color);
         int G = Color.green(color);
         int B = Color.blue(color);
 
         if ((G <= B) && (R < G))
-            return BLUE; // h = 0
+            return G <= 0.5 * B ? CYAN : BLUE;
         else if ((R < G) && (B < G))
-            return GREEN; // h from 0 to 30%
+            return GREEN;
         else if ((G < R) && (B < G))
-            return YELLOW; // h from 30 to 60%
+            return YELLOW;
         else if ((G == R) && (B == G) && (R >= 180))
-            return WHITE; // h from 60 to 100%
+            return WHITE;
         else
             return UNKNOWN;
     }
+
+    public static float calcHeightByColor(int color, float maxHeight) {
+        //TODO: Implement
+        return 0f;
+    }
+
+    public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, float dTy) {
+        bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, Math.round((bmp.getHeight() - 1) * dTy), bmp.getWidth(), 1);
+
+        return rowPixels;
+    }
+
     /** ------------------------------------------------------------------------------------------*/
 
     /** DB utils ---------------------------------------------------------------------------------*/

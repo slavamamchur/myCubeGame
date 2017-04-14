@@ -1,6 +1,7 @@
 package com.cubegames.slava.cubegame.mapgl;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -14,6 +15,7 @@ import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glGenBuffers;
 import static com.cubegames.slava.cubegame.Utils.chain;
 import static com.cubegames.slava.cubegame.Utils.coord2idx;
+import static com.cubegames.slava.cubegame.Utils.getRowPixels;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_ITEM_SIZE;
@@ -36,7 +38,7 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
         LAND_HEIGHT = landHeight;
     }
 
-    protected abstract float getValueY(float valX, float valZ, float tu, float tv);
+    protected abstract float getValueY(float valX, float valZ, int[] rowPixels, float tv);
 
     @Override
     public int getFacesCount() {
@@ -54,8 +56,12 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
         float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
 
+        Bitmap bmp = (getTextureBmp() == null) || getTextureBmp().isRecycled() ? getTextureBitmap() : getTextureBmp();
+        int[] rowPixels = new int[bmp.getWidth()];
+
         for (int j = 0; j <= dimension; j++){
-            //TODO: bitmap line to array
+            getRowPixels(bmp, rowPixels, j * td);
+
             for (int i = 0; i <= dimension; i++){
                 vertexes[k] = x0 + i * dx; /** x*/
                 vertexes[k + 2] = z0 + j * dz; /** z*/
@@ -63,7 +69,7 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
                 vertexes[k + 3] = i * td; /** u*/
                 vertexes[k + 4] = j * td; /** v*/
 
-                vertexes[k + 1] = getValueY(vertexes[k], vertexes[k + 2], vertexes[k + 3], vertexes[k + 4]); /** y*/
+                vertexes[k + 1] = getValueY(vertexes[k], vertexes[k + 2], rowPixels, vertexes[k + 3]); /** y*/
 
                 k += 5;
             }
@@ -80,7 +86,6 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
         /** координаты текстур*/
         setVBOParamData(getTexelVBO(), TEXEL_UV_SIZE, VBO_STRIDE, VERTEX_SIZE * 4, vertexData);
         vertexData.limit(0);
-        vertexData = null;
     }
 
     @Override

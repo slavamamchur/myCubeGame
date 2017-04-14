@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import com.cubegames.slava.cubegame.api.GameMapController;
 import com.cubegames.slava.cubegame.model.GameMap;
 
+import static com.cubegames.slava.cubegame.Utils.CheckColorType;
+import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
 import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
@@ -20,16 +22,12 @@ public class LandObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getValueY(float valX, float valZ, float tu, float tv) {
-        //TODO: generate Y value by texture point color -> bmp -> ByteBuffer -> optimize or line(dz) to array
-        /*int color = getTextureBitmap().getPixel(Math.round((getTextureBitmap().getWidth() - 1) * tu),
-                                                Math.round((getTextureBitmap().getHeight() - 1) * tv));
-        float y = (float)Math.exp(-3 * (valX * valX + valZ * valZ));
+    protected float getValueY(float valX, float valZ, int[] rowPixels, float tv) {
+        //TODO: generate Y value by texture point color
+        float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ));
+        y = CheckColorType(rowPixels[Math.round((getTextureBmp().getWidth() - 1) * tv)]).equals(BLUE) ? -y : y;
 
-        if (CheckColorType(color).equals(BLUE))
-            y = -y;*/
-
-        return 0;//y;
+        return y; //TODO: rivers layer as separate texture!!!
     }
 
     @Override
