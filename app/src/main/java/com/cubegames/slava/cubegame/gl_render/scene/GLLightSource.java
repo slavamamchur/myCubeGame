@@ -1,4 +1,4 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene;
 
 import android.opengl.Matrix;
 

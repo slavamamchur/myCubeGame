@@ -1,8 +1,15 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene;
 
 import android.content.Context;
 import android.opengl.Matrix;
 import android.os.SystemClock;
+
+import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +24,7 @@ import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 
 public class GLScene {
 
@@ -115,20 +122,16 @@ public class GLScene {
             if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
                 setModelMatrix(object);
 
-            program.bindMatrix(object, getCamera());
+            bindMVPMatrix(program, object, getCamera());
+            program.setCameraData(getCamera().getCameraPosition());
+            program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
+            glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
+            program.setTextureSlotData(0);
 
-            if (program instanceof VBOShaderFromResource) {
-                ((VBOShaderFromResource) program).setCameraData(getCamera().getCameraPosition());
-                ((VBOShaderFromResource) program).setLightSourceData(getLightSource().getLightPosInEyeSpace());
-
-                try {
-                    ((VBOShaderFromResource) program).linkVBOData(object);
-
-                    glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
-                    ((VBOShaderFromResource) program).setTextureSlotData(0);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+            try {
+                linkVBOData(program, object);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
 
             /** USING VBO BUFFER */
@@ -139,6 +142,22 @@ public class GLScene {
             /*object.getIndexData().position(0);
             glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
         }
+    }
+
+    public void linkVBOData(GLShaderProgram program, GLSceneObject object) throws IllegalAccessException {
+        program.linkVertexData(object.getVertexVBO());
+        program.linkTexelData(object.getTexelVBO());
+        program.linkNormalData(object.getNormalVBO());
+    }
+
+    public void bindMVPMatrix(GLShaderProgram program, GLSceneObject object, GLCamera camera) {
+        float[] mMatrix = new float[16];
+
+        Matrix.multiplyMM(mMatrix, 0, camera.getmViewMatrix(), 0, object.getModelMatrix(), 0);
+        program.setMVMatrixData(mMatrix);
+
+        Matrix.multiplyMM(mMatrix, 0, camera.getProjectionMatrix(), 0, mMatrix, 0);
+        program.setMVPMatrixData(mMatrix);
     }
 
     private void setModelMatrix(GLSceneObject object) {

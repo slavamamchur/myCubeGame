@@ -1,4 +1,4 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.shaders.params;
 
 import java.nio.FloatBuffer;
 
@@ -11,7 +11,7 @@ import static android.opengl.GLES20.glDeleteBuffers;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGenBuffers;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
 
 public class GLShaderParamVBO extends GLShaderParam {
 

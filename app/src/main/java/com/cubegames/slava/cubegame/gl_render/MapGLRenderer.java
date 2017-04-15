@@ -1,13 +1,13 @@
-package com.cubegames.slava.cubegame;
+package com.cubegames.slava.cubegame.gl_render;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
-import com.cubegames.slava.cubegame.mapgl.GLCamera;
-import com.cubegames.slava.cubegame.mapgl.GLLightSource;
-import com.cubegames.slava.cubegame.mapgl.GLScene;
-import com.cubegames.slava.cubegame.mapgl.GLSceneObject;
-import com.cubegames.slava.cubegame.mapgl.LandObject;
+import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
+import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
+import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -17,14 +17,14 @@ import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LAND_INTERPOLATOR_DIM;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TERRAIN_MESH_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_INTERPOLATOR_DIM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 
-class MapGLRenderer implements GLSurfaceView.Renderer {
+public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private final static float LIGHT_X = -1.2F;
-    private final static float LIGHT_Y = 1.2F;//1.2
+    private final static float LIGHT_Y = 1.2F;
     private final static float LIGHT_Z = -1.2F;
 
     private final static float CAMERA_X = 0;
@@ -49,11 +49,11 @@ class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private GLScene mScene;
 
-    MapGLRenderer(Context context) {
+    public MapGLRenderer(Context context) {
         this.context = context;
     }
 
-    void setMapID(String mapID) {
+    public void setMapID(String mapID) {
         this.mapID = mapID;
     }
 

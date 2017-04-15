@@ -1,11 +1,12 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.cubegames.slava.cubegame.api.GameMapController;
-import com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
+import com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;

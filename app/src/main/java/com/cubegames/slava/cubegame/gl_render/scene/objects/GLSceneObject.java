@@ -1,18 +1,21 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.Matrix;
+
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.glDeleteBuffers;
 import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.NORMALS_PARAM_NAME;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXELS_PARAM_NAME;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEXES_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEXES_PARAM_NAME;
 
 public abstract class GLSceneObject {
 

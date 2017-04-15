@@ -1,7 +1,10 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.shaders;
 
 import android.content.Context;
 
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
+
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +53,24 @@ public abstract class GLShaderProgram {
     }
 
     public abstract void createParams();
-    public abstract void bindMatrix(GLSceneObject object, GLCamera camera);
+
+    public abstract void setMVMatrixData(float[] data);
+    public abstract void setMVPMatrixData(float[] data);
+
+    public abstract void setCameraData(float[] data);
+
+    public abstract void setLightSourceData(float[] data);
+
+    public abstract void setTextureSlotData(int data);
+
+    public abstract void setVertexData(FloatBuffer data, int stride, int pos);
+    public abstract void linkVertexData(GLShaderParam param) throws IllegalAccessException;
+
+    public abstract void setTexelData(FloatBuffer data, int stride, int pos);
+    public abstract void linkTexelData(GLShaderParam param) throws IllegalAccessException;
+
+    public abstract void setNormalData(FloatBuffer data, int stride, int pos);
+    public abstract void linkNormalData(GLShaderParam param) throws IllegalAccessException;
 
     public static int createProgram(int vertexShaderId, int fragmentShaderId) {
         final int programId = glCreateProgram();

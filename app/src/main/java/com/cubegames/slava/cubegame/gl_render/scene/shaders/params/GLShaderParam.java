@@ -1,4 +1,4 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.shaders.params;
 
 import java.nio.FloatBuffer;
 
@@ -10,16 +10,16 @@ import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniform3fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
 
 public class GLShaderParam {
 
     private int programId;
-    private GLRenderConsts.GLParamType paramType;
+    private GLParamType paramType;
     private String paramName;
     protected int paramReference;
 

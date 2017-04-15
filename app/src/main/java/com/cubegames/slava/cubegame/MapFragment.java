@@ -32,6 +32,7 @@ import android.widget.ScrollView;
 
 import com.cubegames.slava.cubegame.BaseItemDetailsActivity.WebErrorHandler;
 import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.gl_render.MapGLRenderer;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;

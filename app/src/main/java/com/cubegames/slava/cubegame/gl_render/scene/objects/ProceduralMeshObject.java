@@ -1,7 +1,9 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -16,12 +18,12 @@ import static android.opengl.GLES20.glGenBuffers;
 import static com.cubegames.slava.cubegame.Utils.chain;
 import static com.cubegames.slava.cubegame.Utils.coord2idx;
 import static com.cubegames.slava.cubegame.Utils.getRowPixels;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LAND_SIZE_IN_KM;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXEL_UV_SIZE;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_ITEM_SIZE;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_STRIDE;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEX_SIZE;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_KM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VBO_ITEM_SIZE;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VBO_STRIDE;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class ProceduralMeshObject extends BitmapTexturedObject {
 

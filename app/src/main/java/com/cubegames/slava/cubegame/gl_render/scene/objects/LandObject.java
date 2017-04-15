@@ -1,9 +1,10 @@
-package com.cubegames.slava.cubegame.mapgl;
+package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Color;
 
 import com.cubegames.slava.cubegame.Utils.ColorType;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 
 import static com.cubegames.slava.cubegame.Utils.CheckColorType;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
@@ -13,8 +14,8 @@ import static com.cubegames.slava.cubegame.Utils.INVERT_LIGHT_FACTOR;
 import static com.cubegames.slava.cubegame.Utils.MAX_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_HEIGHT_VALUES;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 
 public class LandObject extends ProceduralMeshObject {
 
