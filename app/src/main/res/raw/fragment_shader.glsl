@@ -33,11 +33,11 @@ void main()
       float specular = k_specular * pow(max(dot(lookvector, reflectvector), 0.0), 40.0);
 
       float lightFactor = ambient + diffuse + specular;
-      vec4 lightColor = vec4(lightFactor * vec3(1.0, 1.0, 0.6), 1.0);
+      vec4 lightColor = vec4(lightFactor * vec3(1.0, 1.0, 1.0), 1.0);
 
       vec4 textureColor = texture2D(u_TextureUnit, v_Texture);
-      //if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]))
-            //textureColor = vec4(1.0, 1.0, 0, 1.0);
+      if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]))
+            textureColor = vec4(textureColor[0], textureColor[1], textureColor[2], 0.7);
 
       gl_FragColor = lightColor * textureColor;
 }

@@ -1,14 +1,15 @@
 package com.cubegames.slava.cubegame.mapgl;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType.WATER_OBJECT;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.SEA_SIZE_IN_WORLD_SPACE;
 
 public class WaterObject extends ProceduralMeshObject {
 
     public WaterObject(Context context, int dimension, GLShaderProgram program) {
-        super(context, WATER_OBJECT, 10.0f/95, 10.0f, 10.0f, dimension, program);
+        //TODO: Water texture and shader
+        super(context, WATER_OBJECT, -1/**textureId*/, SEA_SIZE_IN_WORLD_SPACE, dimension, program);
     }
 
     @Override
@@ -16,8 +17,4 @@ public class WaterObject extends ProceduralMeshObject {
         return 0;
     }
 
-    @Override
-    protected Bitmap getTextureBitmap() {
-        return null; //TODO: load from resource
-    }
 }

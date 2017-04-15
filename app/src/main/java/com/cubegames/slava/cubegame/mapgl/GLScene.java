@@ -21,7 +21,7 @@ import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
 
 public class GLScene {
 
-    private final static long ANIMATION_DELAY_MS = 10000L;
+    private final static long LAND_ANIMATION_DELAY_MS = 10000L;
 
     private Context context;
     private GLCamera camera;
@@ -131,14 +131,19 @@ public class GLScene {
                 }
             }
 
+            /** USING VBO BUFFER */
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getFacesIBOPtr());
             glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, 0);
+
+            /** USING RAM BUFFER */
+            /*object.getIndexData().position(0);
+            glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
         }
     }
 
     private void setModelMatrix(GLSceneObject object) {
         /** В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.*/
-        float angle = -(float)(SystemClock.uptimeMillis() % ANIMATION_DELAY_MS) / ANIMATION_DELAY_MS * 360;
+        float angle = -(float)(SystemClock.uptimeMillis() % LAND_ANIMATION_DELAY_MS) / LAND_ANIMATION_DELAY_MS * 360;
 
         Matrix.setIdentityM(object.getModelMatrix(), 0);
         Matrix.rotateM(object.getModelMatrix(), 0, angle, 0, 1, 0);

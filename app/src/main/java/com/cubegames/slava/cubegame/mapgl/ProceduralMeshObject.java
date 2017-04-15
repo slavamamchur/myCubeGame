@@ -17,27 +17,40 @@ import static com.cubegames.slava.cubegame.Utils.chain;
 import static com.cubegames.slava.cubegame.Utils.coord2idx;
 import static com.cubegames.slava.cubegame.Utils.getRowPixels;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.GLObjectType;
+import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.LAND_SIZE_IN_KM;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_ITEM_SIZE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VBO_STRIDE;
 import static com.cubegames.slava.cubegame.mapgl.GLRenderConsts.VERTEX_SIZE;
 
-public abstract class ProceduralMeshObject extends GLSceneObject {
+public abstract class ProceduralMeshObject extends BitmapTexturedObject {
 
     private float LAND_WIDTH;
     private float LAND_HEIGHT;
     private float landScale;
-
-    private float[] vertexes;
     private int dimension;
 
-    public ProceduralMeshObject(Context context, GLObjectType type, float landScale, float landWidth, float landHeight, int dimension, GLShaderProgram program) {
-        super(context, type, program);
+    private float[] vertexes;
 
+
+
+    public ProceduralMeshObject(Context context, GLObjectType type, int textureResId, float landSize, int dimension, GLShaderProgram program) {
+        super(context, type, textureResId, program);
+
+        initMesh(landSize, dimension);
+    }
+
+    public ProceduralMeshObject(Context context, GLObjectType type, String mapID, float landSize, int dimension, GLShaderProgram program) {
+        super(context, type, mapID, program);
+
+        initMesh(landSize, dimension);
+    }
+
+    private void initMesh(float landSize, int dimension) {
         this.dimension = dimension;
-        LAND_WIDTH = landWidth;
-        LAND_HEIGHT = landHeight;
-        this.landScale = landScale;
+        LAND_WIDTH = landSize;
+        LAND_HEIGHT = landSize;
+        this.landScale = landSize / LAND_SIZE_IN_KM;
     }
 
     public float getLandScale() {
@@ -55,7 +68,8 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
     protected void createVertexesVBO() {
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
-        float td = 1f / dimension;
+        float tdu = 1.0f / dimension;
+        float tdv = 0.5f / dimension;
         float dx = LAND_WIDTH / dimension;
         float dz = LAND_HEIGHT / dimension;
         float x0 = -LAND_WIDTH / 2f;
@@ -66,14 +80,14 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
         int[] rowPixels = new int[bmp.getWidth()];
 
         for (int j = 0; j <= dimension; j++){
-            getRowPixels(bmp, rowPixels, j * td);
+            getRowPixels(bmp, rowPixels, j * tdv);
 
             for (int i = 0; i <= dimension; i++){
                 vertexes[k] = x0 + i * dx; /** x*/
                 vertexes[k + 2] = z0 + j * dz; /** z*/
 
-                vertexes[k + 3] = i * td; /** u*/
-                vertexes[k + 4] = j * td; /** v*/
+                vertexes[k + 3] = i * tdu; /** u*/
+                vertexes[k + 4] = 0.5f + j * tdv; /** v*/
 
                 vertexes[k + 1] = getValueY(vertexes[k], vertexes[k + 2], rowPixels, vertexes[k + 3]); /** y*/
 
@@ -192,14 +206,17 @@ public abstract class ProceduralMeshObject extends GLSceneObject {
                 .order(ByteOrder.nativeOrder())
                 .asShortBuffer();
         indexData.put(index);
-        index = null;
         final int buffers[] = new int[1];
         glGenBuffers(1, buffers, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[0]);
         indexData.position(0);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.capacity() * 2, indexData, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        /** do not clear for RAM - buffered objects!!! */
         indexData.limit(0);
+        indexData = null;
+        setIndexData(indexData);
 
         return buffers[0];
     }

@@ -6,7 +6,10 @@ public  class GLRenderConsts {
     public static final int TEXEL_UV_SIZE = 2;
     public static final int VBO_ITEM_SIZE = (VERTEX_SIZE + TEXEL_UV_SIZE);
     public static final int VBO_STRIDE = VBO_ITEM_SIZE * 4;
-    public static final int LAND_INTERPOLATOR_DIM = 250; //250 - VBO
+    public static final int LAND_INTERPOLATOR_DIM = 250;
+    public static final float LAND_SIZE_IN_WORLD_SPACE = 5.0f;
+    public static final float LAND_SIZE_IN_KM = 95.0f;
+    public static final float SEA_SIZE_IN_WORLD_SPACE = 10.0f;
 
     public static final String VERTEXES_PARAM_NAME = "a_Position";
     public static final String TEXELS_PARAM_NAME = "a_Texture";

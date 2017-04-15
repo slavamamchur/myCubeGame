@@ -74,7 +74,7 @@ public class Utils {
 
     public static final float MAX_CYAN = 220f + 245f + 245f;
     public static final float MAX_BLUE = 129f + 159f + 231f;
-    public static final float MAX_GREEN = 85f + 255f + 164f;//TODO:
+    public static final float MAX_GREEN = 85f + 255f + 164f;
     public static final float MAX_YELLOW = 246f + 246f + 162f;
     public static final float MAX_BROWN = 192f + 135f + 58f;
     public static final float MAX_WHITE = 255f + 255f + 255f;
@@ -145,7 +145,7 @@ public class Utils {
         else if ((G < R) && (B < G))
             return G <= 0.7 * R ? BROWN : YELLOW;
         /*else if ((G == R) && (B == G) && (R >= 180))
-            return WHITE;*/
+            return WHITE;*/ //TODO: find texture deffect
         else
             return CYAN; //TODO: UNKNOWN;
     }
@@ -189,6 +189,7 @@ public class Utils {
 
         cv.put(SQLiteDBHelper.MAP_ID_FIELD, map_id);
         cv.put(SQLiteDBHelper.MAP_UPDATED_DATE, updatedDate);
+        //TODO: divide blob by 2Mb blocks
         cv.put(SQLiteDBHelper.MAP_IMAGE_FIELD, bitmapArray);
 
         db.replaceOrThrow(SQLiteDBHelper.TABLE_NAME, null, cv);
@@ -214,20 +215,24 @@ public class Utils {
                     new String[] { map_id });
 
             if (imageData != null && imageData.moveToFirst())
+                //TODO: join 2Mb blocks to array
                 bitmapArray = imageData.getBlob(imageData.getColumnIndex(SQLiteDBHelper.MAP_IMAGE_FIELD));
 
             imageData.close();
             db.close();
             dbHelper.close();
 
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            options.inScaled = false;
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-            options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);
-            options.inJustDecodeBounds = false;
-            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+            if (bitmapArray != null) {
+                //TODO: Original size
+                final BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                options.inScaled = false;
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+                options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);
+                options.inJustDecodeBounds = false;
+                bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+            }
 
         }
         finally {

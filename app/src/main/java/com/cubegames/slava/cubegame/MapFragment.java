@@ -75,7 +75,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ///OGL:
+        ///OGL: TODO: GL render build target
         glMapSurfaceView = new GLSurfaceView(getContext());
         glMapSurfaceView.setEGLContextClientVersion(2);
         glRenderer = new MapGLRenderer(getContext());

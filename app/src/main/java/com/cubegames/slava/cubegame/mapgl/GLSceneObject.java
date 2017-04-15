@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.opengl.Matrix;
 
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.glDeleteBuffers;
 import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
@@ -21,6 +22,7 @@ public abstract class GLSceneObject {
     private GLShaderParamVBO vertexVBO = null;
     private GLShaderParamVBO texelVBO = null;
     private GLShaderParamVBO normalVBO = null;
+    private ShortBuffer indexData;
     protected int facesIBOPtr = 0;
     private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
@@ -52,6 +54,12 @@ public abstract class GLSceneObject {
     }
     public GLShaderParamVBO getNormalVBO() {
         return normalVBO;
+    }
+    public ShortBuffer getIndexData() {
+        return indexData;
+    }
+    public void setIndexData(ShortBuffer indexData) {
+        this.indexData = indexData;
     }
     public int getFacesIBOPtr() {
         return facesIBOPtr;
