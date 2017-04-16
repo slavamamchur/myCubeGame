@@ -104,9 +104,9 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         vertexData.put(vertexes);
         /** координаты вершин*/
         vertexData.position(0);
-        setVBOParamData(getVertexVBO(), VERTEX_SIZE, VBO_STRIDE, 0, vertexData);
+        getVertexVBO().setParamValue(VERTEX_SIZE, VBO_STRIDE, 0, vertexData);
         /** координаты текстур*/
-        setVBOParamData(getTexelVBO(), TEXEL_UV_SIZE, VBO_STRIDE, VERTEX_SIZE * 4, vertexData);
+        getTexelVBO().setParamValue(TEXEL_UV_SIZE, VBO_STRIDE, VERTEX_SIZE * 4, vertexData);
         vertexData.limit(0);
     }
 
@@ -156,7 +156,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
                 .asFloatBuffer();
         normalData.put(normal);
         normalData.position(0);
-        setVBOParamData(getNormalVBO(), VERTEX_SIZE, 0, 0, normalData);
+        getNormalVBO().setParamValue(VERTEX_SIZE, 0, 0, normalData);
         normalData.limit(0);
 
         vertexes = null;

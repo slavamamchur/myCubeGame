@@ -85,7 +85,7 @@ public class GLScene {
         for (GLShaderProgram program : shaders.values())
             for (GLShaderParam param : program.getParams().values())
                 if (param instanceof GLShaderParamVBO)
-                    ((GLShaderParamVBO)param).clearVBOPtr();
+                    ((GLShaderParamVBO)param).clearParamDataVBO();
 
         shaders.clear();
     }

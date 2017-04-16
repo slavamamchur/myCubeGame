@@ -24,18 +24,35 @@ import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
 import static android.opengl.GLES20.glUseProgram;
 import static com.cubegames.slava.cubegame.Utils.readTextFromRaw;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEXES_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class GLShaderProgram {
 
     private int programId;
     protected Map<String, GLShaderParam> params = new HashMap<>();
 
-    public GLShaderProgram(Context context, int vShaderId, int fShaderId) {
-        programId = createProgram(createShader(context, GL_VERTEX_SHADER, vShaderId),
-                                  createShader(context, GL_FRAGMENT_SHADER, fShaderId));
+    public GLShaderProgram(Context context) {
+        programId = createProgram(createShader(context, GL_VERTEX_SHADER, getVertexShaderResId()),
+                                  createShader(context, GL_FRAGMENT_SHADER, getFragmentShaderResId()));
 
         createParams();
     }
+
+    protected abstract int getVertexShaderResId();
+    protected abstract int getFragmentShaderResId();
 
     public int getProgramId() {
         return programId;
@@ -52,26 +69,88 @@ public abstract class GLShaderProgram {
         return params.get(name);
     }
 
-    public abstract void createParams();
+    public void createParams() {
+        GLShaderParam param;
 
-    public abstract void setMVMatrixData(float[] data);
-    public abstract void setMVPMatrixData(float[] data);
+        /** Vertexes array*/
+        param = new GLShaderParam(FLOAT_ATTRIB_ARRAY_PARAM, VERTEXES_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
-    public abstract void setCameraData(float[] data);
+        /** Texels array*/
+        param = new GLShaderParam(FLOAT_ATTRIB_ARRAY_PARAM, TEXELS_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
-    public abstract void setLightSourceData(float[] data);
+        /** Normals array*/
+        param = new GLShaderParam(FLOAT_ATTRIB_ARRAY_PARAM, NORMALS_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
-    public abstract void setTextureSlotData(int data);
+        /** Active texture slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_TEXTURE_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
-    public abstract void setVertexData(FloatBuffer data, int stride, int pos);
-    public abstract void linkVertexData(GLShaderParam param) throws IllegalAccessException;
+        /** Model-View-Projection matrix*/
+        param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MVP_MATRIX_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
-    public abstract void setTexelData(FloatBuffer data, int stride, int pos);
-    public abstract void linkTexelData(GLShaderParam param) throws IllegalAccessException;
+        /** Model-View- matrix*/
+        param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MV_MATRIX_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
-    public abstract void setNormalData(FloatBuffer data, int stride, int pos);
-    public abstract void linkNormalData(GLShaderParam param) throws IllegalAccessException;
+        /** Light position*/
+        param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, LIGHT_POSITION_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
 
+        /** Camera position*/
+        param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, CAMERA_POSITION_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+    }
+
+    public void setVertexData(FloatBuffer data, int stride, int pos) {
+        paramByName(VERTEXES_PARAM_NAME).setParamValue(VERTEX_SIZE, stride, pos, data);
+    }
+
+    public void linkVertexData(GLShaderParam param) throws IllegalAccessException {
+        paramByName(VERTEXES_PARAM_NAME).linkParamValue(param);
+    }
+
+    public void setTexelData(FloatBuffer data, int stride, int pos) {
+        paramByName(TEXELS_PARAM_NAME).setParamValue(TEXEL_UV_SIZE, stride, pos, data);
+    }
+
+    public void linkTexelData(GLShaderParam param) throws IllegalAccessException {
+        paramByName(TEXELS_PARAM_NAME).linkParamValue(param);
+    }
+
+    public void setNormalData(FloatBuffer data, int stride, int pos) {
+        paramByName(NORMALS_PARAM_NAME).setParamValue(VERTEX_SIZE, stride, pos, data);
+    }
+
+    public void linkNormalData(GLShaderParam param) throws IllegalAccessException {
+        paramByName(NORMALS_PARAM_NAME).linkParamValue(param);
+    }
+
+    public void setTextureSlotData(int data) {
+        paramByName(ACTIVE_TEXTURE_SLOT_PARAM_NAME).setParamValue(data);
+    }
+
+    public void setCameraData(float[] data) {
+        paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(data);
+    }
+
+    public void setLightSourceData(float[] data) {
+        paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(data);
+    }
+
+    public void setMVPMatrixData(float[] data) {
+        paramByName(MVP_MATRIX_PARAM_NAME).setParamValue(data);
+    }
+
+    public void setMVMatrixData(float[] data) {
+        paramByName(MV_MATRIX_PARAM_NAME).setParamValue(data);
+    }
+
+
+    /** Utils-------------------------------------------------------------------------------------*/
     public static int createProgram(int vertexShaderId, int fragmentShaderId) {
         final int programId = glCreateProgram();
         if (programId == 0) {

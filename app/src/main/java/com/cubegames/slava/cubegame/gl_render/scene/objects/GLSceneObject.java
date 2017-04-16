@@ -7,7 +7,6 @@ import android.opengl.Matrix;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
-import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.glDeleteBuffers;
@@ -78,10 +77,6 @@ public abstract class GLSceneObject {
         vertexVBO = new GLShaderParamVBO(VERTEXES_PARAM_NAME, program.getProgramId());
         texelVBO = new GLShaderParamVBO(TEXELS_PARAM_NAME, program.getProgramId());
         normalVBO = new GLShaderParamVBO(NORMALS_PARAM_NAME, program.getProgramId());
-    }
-
-    public void setVBOParamData(GLShaderParamVBO param, int size, int stride, int pos, FloatBuffer data) {
-        param.setParamValue(size, stride, pos, data);
     }
 
     public void loadObject() {

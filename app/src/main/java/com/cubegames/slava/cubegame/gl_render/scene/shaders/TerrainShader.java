@@ -4,9 +4,19 @@ import android.content.Context;
 
 import com.cubegames.slava.cubegame.R;
 
-public class TerrainShader extends VBOShader {
+public class TerrainShader extends VBOShaderProgram {
 
     public TerrainShader(Context context) {
-        super(context, R.raw.vertex_shader, R.raw.fragment_shader);
+        super(context);
     }
+
+    @Override
+    protected int getVertexShaderResId() {
+        return R.raw.vertex_shader;
+    }
+    @Override
+    protected int getFragmentShaderResId() {
+        return R.raw.fragment_shader;
+    }
+
 }

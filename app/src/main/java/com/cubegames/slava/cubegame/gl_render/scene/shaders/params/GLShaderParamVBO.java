@@ -16,9 +16,6 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 public class GLShaderParamVBO extends GLShaderParam {
 
     private int vboPtr;
-    private int size;
-    private int stride;
-    private int pos;
 
     public GLShaderParamVBO(String paramName, int programId) {
         super(FLOAT_ATTRIB_ARRAY_PARAM, paramName, programId);
@@ -29,15 +26,6 @@ public class GLShaderParamVBO extends GLShaderParam {
     public int getVboPtr() {
         return vboPtr;
     }
-    public int getSize() {
-        return size;
-    }
-    public int getStride() {
-        return stride;
-    }
-    public int getPos() {
-        return pos;
-    }
 
     private void initVBO() {
         final int buffers[] = new int[1];
@@ -47,9 +35,7 @@ public class GLShaderParamVBO extends GLShaderParam {
 
     @Override
     public void setParamValue(int size, int stride, int pos, FloatBuffer data) {
-        this.size = size;
-        this.stride = stride;
-        this.pos = pos;
+        super.setParamValue(size, stride, pos, null);
 
         if (vboPtr == 0)
             initVBO();
@@ -59,28 +45,35 @@ public class GLShaderParamVBO extends GLShaderParam {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    public void linkParamValue() throws IllegalAccessException {
-        if (vboPtr != 0) {
-            glBindBuffer(GL_ARRAY_BUFFER, vboPtr);
-            glVertexAttribPointer(paramReference, size, GL_FLOAT, false, stride, pos);
-            glEnableVertexAttribArray(paramReference);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        else
-            throw new IllegalAccessException();
+    @Override
+    protected void copyBaseParamData(GLShaderParam newValue) {
+        super.copyBaseParamData(newValue);
+
+        vboPtr = ((GLShaderParamVBO)newValue).getVboPtr();
     }
 
-    public void linkParamValue(GLShaderParamVBO newValue) throws IllegalAccessException {
-        vboPtr = newValue.getVboPtr();
-        paramReference = newValue.paramReference;
-        size = newValue.getSize();
-        stride = newValue.getStride();
-        pos = newValue.getPos();
+    @Override
+    public void linkParamValue(GLShaderParam newValue) throws IllegalAccessException {
+        if (
+                !(newValue instanceof GLShaderParamVBO)
+                || (((GLShaderParamVBO)newValue).getVboPtr() == 0)
+            ) throw new IllegalAccessException();
 
-        linkParamValue();
+        copyBaseParamData(newValue);
+        internalLinkParamValue();
     }
 
-    public void clearVBOPtr() {
+    @Override
+    protected void internalLinkParamValue() {
+        glBindBuffer(GL_ARRAY_BUFFER, vboPtr);
+        glVertexAttribPointer(paramReference, size, GL_FLOAT, false, stride, pos);
+        glEnableVertexAttribArray(paramReference);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    public void clearParamDataVBO() {
+        clearParamData();
+
         if (vboPtr != 0) {
             glDeleteBuffers(1, new int[]{vboPtr}, 0);
             vboPtr = 0;
