@@ -5,12 +5,14 @@ attribute vec3 a_Position;
 attribute vec3 a_Normal;
 attribute vec2 a_Texture;
 
+varying vec3 v_PositionWorld;
 varying vec3 v_Position;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
 
 void main()
 {
+    v_PositionWorld = a_Position;
     v_Position = vec3(u_MV_Matrix * vec4(a_Position, 1.0));
     v_Normal = vec3(u_MV_Matrix * vec4(a_Normal, 0.0));
     v_Texture = a_Texture;

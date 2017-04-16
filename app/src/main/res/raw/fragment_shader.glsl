@@ -4,6 +4,7 @@ uniform vec3 u_camera;
 uniform vec3 u_lightPosition;
 uniform sampler2D u_TextureUnit;
 
+varying vec3 v_PositionWorld;
 varying vec3 v_Position;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
@@ -36,8 +37,13 @@ void main()
       vec4 lightColor = vec4(lightFactor * vec3(1.0, 1.0, 1.0), 1.0);
 
       vec4 textureColor = texture2D(u_TextureUnit, v_Texture);
-      if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]))
-            textureColor = vec4(textureColor[0], textureColor[1], textureColor[2], 0.7);
+      if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <=0)) {
+            float deepLightFactor = 1 + v_PositionWorld[1] / 0.333;
+            vec4 deepLightColor = vec4(deepLightFactor * vec3(1.0, 1.0, 1.0), 1.0);
+
+            textureColor = deepLightColor * vec4(1.0, 1.0, 0.8, 1.0);
+
+      }
 
       gl_FragColor = lightColor * textureColor;
 }

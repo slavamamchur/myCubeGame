@@ -24,10 +24,10 @@ public class LandObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getValueY(float valX, float valZ, int[] rowPixels, float tv) {
-        //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ));
+    protected float getYValue(float valX, float valZ, int[] rowPixels, float tu) {
+        //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula
 
-        int vColor = rowPixels[Math.round((getTextureBmp().getWidth() - 1) * tv)];
+        int vColor = rowPixels[Math.round((getTextureBmp().getWidth() - 1) * tu)];
         ColorType cType = CheckColorType(vColor);
 
         float deltaY = getLandScale() * (MAX_HEIGHT_VALUES[cType.ordinal()] - MIN_HEIGHT_VALUES[cType.ordinal()]);

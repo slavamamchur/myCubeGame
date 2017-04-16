@@ -51,7 +51,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
     private void initMesh(float landSize, int dimension) {
         this.dimension = dimension;
         LAND_WIDTH = landSize;
-        LAND_HEIGHT = landSize;
+        LAND_HEIGHT = landSize;//TODO: calculate scale and size
         this.landScale = landSize / LAND_SIZE_IN_KM;
     }
 
@@ -59,7 +59,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         return landScale;
     }
 
-    protected abstract float getValueY(float valX, float valZ, int[] rowPixels, float tv);
+    protected abstract float getYValue(float valX, float valZ, int[] rowPixels, float tu);
 
     @Override
     public int getFacesCount() {
@@ -71,7 +71,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
         float tdu = 1.0f / dimension;
-        float tdv = 0.5f / dimension;
+        float tdv = 0.666f / dimension;
         float dx = LAND_WIDTH / dimension;
         float dz = LAND_HEIGHT / dimension;
         float x0 = -LAND_WIDTH / 2f;
@@ -82,16 +82,16 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         int[] rowPixels = new int[bmp.getWidth()];
 
         for (int j = 0; j <= dimension; j++){
-            getRowPixels(bmp, rowPixels, j * tdv);
+            getRowPixels(bmp, rowPixels, j * 0.333f/dimension/*tdv*/);
 
             for (int i = 0; i <= dimension; i++){
                 vertexes[k] = x0 + i * dx; /** x*/
                 vertexes[k + 2] = z0 + j * dz; /** z*/
 
                 vertexes[k + 3] = i * tdu; /** u*/
-                vertexes[k + 4] = 0.5f + j * tdv; /** v*/
+                vertexes[k + 4] = 0.333f + j * tdv; /** v*/
 
-                vertexes[k + 1] = getValueY(vertexes[k], vertexes[k + 2], rowPixels, vertexes[k + 3]); /** y*/
+                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], rowPixels, i*0.5f/dimension/*vertexes[k + 3]*/); /** y*/
 
                 k += 5;
             }

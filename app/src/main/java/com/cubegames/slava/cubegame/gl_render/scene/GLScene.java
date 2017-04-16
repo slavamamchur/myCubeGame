@@ -71,7 +71,7 @@ public class GLScene {
 
     public void clearData() {
         clearObjectsCache();
-        clearShadersCache();
+        clearShaderCache();
     }
 
     public void clearObjectsCache() {
@@ -81,7 +81,7 @@ public class GLScene {
         objects.clear();
     }
 
-    public void clearShadersCache() {
+    public void clearShaderCache() {
         for (GLShaderProgram program : shaders.values())
             for (GLShaderParam param : program.getParams().values())
                 if (param instanceof GLShaderParamVBO)
