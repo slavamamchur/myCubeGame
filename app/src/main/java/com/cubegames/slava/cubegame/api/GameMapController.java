@@ -51,9 +51,8 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
 
     public void saveMapImage(GameMap map) throws WebServiceException {
 
-        if (isBitmapCached(ctx, map.getId(), map.getUpdatedDate()))
+        if (isBitmapCached(ctx, map.getId(), map.getLastUsedDate()))
             return;
-
 
         byte[] mapArray = getBinaryData(map, RestConst.URL_GAME_MAP_IMAGE);
 
@@ -62,7 +61,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
         else
             try {
                 // create bitmap and save into map
-                saveBitmap2DB(ctx, mapArray, map.getId(), map.getUpdatedDate());
+                saveBitmap2DB(ctx, mapArray, map.getId(), map.getLastUsedDate());
             } catch (IOException e) {
                 throw new WebServiceException(HttpStatus.NOT_FOUND, "Game map is empty.");
             }

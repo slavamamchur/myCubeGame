@@ -39,7 +39,8 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
         }
         else if (mapID != null) {
             GameMapController gmc = new GameMapController(context);
-            gmc.saveMapImage(new GameMap(mapID));
+            GameMap map = gmc.find(mapID);
+            gmc.saveMapImage(map);
             return loadBitmapFromDB(context, mapID);
         }
         else

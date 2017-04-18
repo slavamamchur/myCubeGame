@@ -13,7 +13,7 @@ import static com.cubegames.slava.cubegame.api.RestConst.URL_GAME_MAP;
 public class GameMap extends BasicNamedDbEntity implements Parcelable{
     @JsonProperty(required = false)
     public long createdDate;
-    public long updatedDate;
+    public long lastUsedDate;
     @JsonProperty(required = false)
     private byte[] binaryData;
 
@@ -52,13 +52,12 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
     public void setBinaryData(byte[] binaryData) {
         this.binaryData = binaryData;
     }
-    public long getUpdatedDate() {
-        return updatedDate;
+    public long getLastUsedDate() {
+        return lastUsedDate;
     }
-    public void setUpdatedDate(long updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setLastUsedDate(long lastUsedDate) {
+        this.lastUsedDate = lastUsedDate;
     }
-
 
     @Override
     public int describeContents() {
@@ -75,7 +74,7 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
         super.save2Parcel(dest);
 
         dest.writeLong(createdDate);
-        dest.writeLong(updatedDate);
+        dest.writeLong(lastUsedDate);
         dest.writeByteArray(binaryData);
         //sourceBitmap.writeToParcel(dest, 0);
     }
@@ -85,7 +84,7 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
         super.loadFromParcel(in);
 
         createdDate = in.readLong();
-        updatedDate = in.readLong();
+        lastUsedDate = in.readLong();
 
         try {
             binaryData = in.createByteArray();

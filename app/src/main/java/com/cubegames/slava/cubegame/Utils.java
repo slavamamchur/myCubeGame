@@ -254,13 +254,14 @@ public class Utils {
             dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
             db = dbHelper.getReadableDatabase();
 
-            imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_ID_FIELD +
+            imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_ID_FIELD + ", " + SQLiteDBHelper.MAP_UPDATED_DATE +
                             " from " + SQLiteDBHelper.TABLE_NAME +
-                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?" +
-                            " and " + SQLiteDBHelper.MAP_UPDATED_DATE + " >= ?",
+                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?"
+                            + " and " + SQLiteDBHelper.MAP_UPDATED_DATE + " = ?",
                     new String[] { map_id, String.valueOf(updatedDate) });
 
             result = imageData != null && imageData.moveToFirst();
+            //Long data = imageData.getLong(imageData.getColumnIndex(SQLiteDBHelper.MAP_UPDATED_DATE));
 
             imageData.close();
             db.close();

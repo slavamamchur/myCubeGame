@@ -31,6 +31,10 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
     protected HttpEntity<?> getHttpEntity(Object entity) {
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+        //params.put(PAGE_OFFSET_HEADER, "1");
+        //params.put(PAGE_LIMIT_HEADER, "2");
+        //params.put(PAGE_SORT_BY_HEADER, "lastUsedDate");
+        //params.put(PAGE_SORT_HEADER, "asc");
 
         return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
