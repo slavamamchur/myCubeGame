@@ -93,6 +93,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
+        //TODO: use LOD -> 125x125 (half sized textures), 250x250 (full sized)
         GLSceneObject terrain = new LandObject(context, LAND_INTERPOLATOR_DIM, mScene.getCachedShader(TERRAIN_OBJECT), mapID);
         terrain.loadObject();
 

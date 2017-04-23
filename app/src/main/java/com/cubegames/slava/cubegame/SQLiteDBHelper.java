@@ -6,10 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SQLiteDBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 200;
+    public static final int DB_VERSION = 300;
     public static final String DB_NAME = "CACHED_IMAGES_DB";
     public static final String TABLE_NAME = "CACHED_IMAGES";
     public static final String MAP_ID_FIELD = "MAP_ID";
+    public static final String CHUNK_NUMBER_FIELD = "CHUNK_NUMBER";
     public static final String MAP_IMAGE_FIELD = "MAP_IMAGE";
     public static final String MAP_UPDATED_DATE = "MAP_UPDATED_DATE";
 
@@ -19,7 +20,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE CACHED_IMAGES (MAP_ID TEXT PRIMARY KEY, MAP_IMAGE BLOB, MAP_UPDATED_DATE NUMERIC);");
+        db.execSQL("CREATE TABLE CACHED_IMAGES ( MAP_ID TEXT NOT NULL, CHUNK_NUMBER INTEGER NOT NULL, MAP_IMAGE BLOB, MAP_UPDATED_DATE NUMERIC, " +
+                "UNIQUE (MAP_ID, CHUNK_NUMBER) );");
     }
 
     @Override

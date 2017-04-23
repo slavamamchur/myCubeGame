@@ -9,6 +9,8 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import static com.cubegames.slava.cubegame.Utils.CheckColorType;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
 import static com.cubegames.slava.cubegame.Utils.ColorType.CYAN;
+import static com.cubegames.slava.cubegame.Utils.ColorType.UNKNOWN;
+import static com.cubegames.slava.cubegame.Utils.ColorType.YELLOW;
 import static com.cubegames.slava.cubegame.Utils.DELTA_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.INVERT_LIGHT_FACTOR;
 import static com.cubegames.slava.cubegame.Utils.MAX_HEIGHT_VALUES;
@@ -29,6 +31,7 @@ public class LandObject extends ProceduralMeshObject {
 
         int vColor = rowPixels[Math.round((getTextureBmp().getWidth() - 1) * tu)];
         ColorType cType = CheckColorType(vColor);
+        cType = cType.equals(UNKNOWN) ? YELLOW: cType; //TODO: approximate by neighbour points color
 
         float deltaY = getLandScale() * (MAX_HEIGHT_VALUES[cType.ordinal()] - MIN_HEIGHT_VALUES[cType.ordinal()]);
         float minY = getLandScale() * MIN_HEIGHT_VALUES[cType.ordinal()];

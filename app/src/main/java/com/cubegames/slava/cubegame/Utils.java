@@ -13,6 +13,7 @@ import android.opengl.GLUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -22,13 +23,22 @@ import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
+import static com.cubegames.slava.cubegame.SQLiteDBHelper.CHUNK_NUMBER_FIELD;
+import static com.cubegames.slava.cubegame.SQLiteDBHelper.MAP_ID_FIELD;
+import static com.cubegames.slava.cubegame.SQLiteDBHelper.MAP_IMAGE_FIELD;
+import static com.cubegames.slava.cubegame.SQLiteDBHelper.MAP_UPDATED_DATE;
+import static com.cubegames.slava.cubegame.SQLiteDBHelper.TABLE_NAME;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BROWN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.CYAN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.GREEN;
+import static com.cubegames.slava.cubegame.Utils.ColorType.UNKNOWN;
+import static com.cubegames.slava.cubegame.Utils.ColorType.WHITE;
 import static com.cubegames.slava.cubegame.Utils.ColorType.YELLOW;
 
 public class Utils {
+
+    public static  final int BYTES_IN_2MB = 2 * 1024 * 1024;
 
     public static String formatDateTime(long dateTime){
         return DateFormat.getDateTimeInstance().format(new Date(dateTime));
@@ -144,10 +154,10 @@ public class Utils {
             return GREEN;
         else if ((G < R) && (B < G))
             return G <= 0.7 * R ? BROWN : YELLOW;
-        /*else if ((G == R) && (B == G) && (R >= 180))
-            return WHITE;*/ //TODO: find texture deffect
+        else if ((G == R) && (B == G) && (R >= 180))
+            return WHITE;
         else
-            return CYAN; //TODO: UNKNOWN;
+            return UNKNOWN; //TODO: UNKNOWN;
     }
 
     public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, float dTy) {
@@ -182,24 +192,40 @@ public class Utils {
         return inSampleSize;
     }
 
+    private static void saveChunk2DB(SQLiteDatabase db, String map_id, int chunkNumber, Long updatedDate, byte[] chunkData) {
+        ContentValues cv = new ContentValues();
+        cv.put(MAP_ID_FIELD, map_id);
+        cv.put(CHUNK_NUMBER_FIELD, chunkNumber);
+        cv.put(MAP_UPDATED_DATE, updatedDate);
+        cv.put(MAP_IMAGE_FIELD, chunkData);
+
+        db.replaceOrThrow(TABLE_NAME, null, cv);
+    }
+
     public static void saveBitmap2DB(Context context, byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
         SQLiteDBHelper dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
 
-        cv.put(SQLiteDBHelper.MAP_ID_FIELD, map_id);
-        cv.put(SQLiteDBHelper.MAP_UPDATED_DATE, updatedDate);
-        //TODO: divide blob by 2Mb blocks
-        cv.put(SQLiteDBHelper.MAP_IMAGE_FIELD, bitmapArray);
+        db.execSQL("delete from " + TABLE_NAME + " where " + MAP_ID_FIELD + " = \"" + map_id + "\"");
 
-        db.replaceOrThrow(SQLiteDBHelper.TABLE_NAME, null, cv);
+        int chunkCount = bitmapArray.length / BYTES_IN_2MB;
+        final int lastChunkSize = bitmapArray.length % BYTES_IN_2MB;
+        chunkCount = lastChunkSize > 0 ? chunkCount + 1 : chunkCount;
+
+        for (int i = 0; i < chunkCount; i++) {
+            int chunkSize = (i == (chunkCount - 1)) && (lastChunkSize > 0) ? lastChunkSize : BYTES_IN_2MB;
+            byte[] chunkData = Arrays.copyOfRange(bitmapArray, i * chunkSize, (i + 1) * chunkSize);
+
+            saveChunk2DB(db, map_id, i, updatedDate, chunkData);
+        }
+
         db.close();
-
         dbHelper.close();
     }
 
     public static Bitmap loadBitmapFromDB(Context context, String map_id) {
         Bitmap bitmap = null;
+        byte[] bitmapArray = null;
         Cursor imageData = null;
         SQLiteDBHelper dbHelper = null;
         SQLiteDatabase db = null;
@@ -207,30 +233,45 @@ public class Utils {
         try {
             dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
             db = dbHelper.getReadableDatabase();
-            byte[] bitmapArray = null;
 
-            imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_IMAGE_FIELD +
-                            " from " + SQLiteDBHelper.TABLE_NAME +
-                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?",
+            imageData = db.rawQuery("select " + MAP_IMAGE_FIELD +
+                            " from " + TABLE_NAME +
+                            " where " + MAP_ID_FIELD + " = ?" +
+                            " order by " + CHUNK_NUMBER_FIELD,
                     new String[] { map_id });
 
-            if (imageData != null && imageData.moveToFirst())
-                //TODO: join 2Mb blocks to array
-                bitmapArray = imageData.getBlob(imageData.getColumnIndex(SQLiteDBHelper.MAP_IMAGE_FIELD));
+            if (imageData != null && imageData.moveToFirst()) {
+                int dataPtr = 0;
+                int chunkCount = imageData.getCount();
+                int imageSize = chunkCount * BYTES_IN_2MB;
+
+                imageData.moveToLast();
+                byte[] lastChunk = imageData.getBlob(imageData.getColumnIndex(MAP_IMAGE_FIELD));
+                imageSize = lastChunk.length < BYTES_IN_2MB ? imageSize - BYTES_IN_2MB + lastChunk.length : imageSize;
+                bitmapArray = new byte[imageSize];
+                lastChunk = null;
+                imageData.moveToFirst();
+
+                do {
+                    byte[] chunkData = imageData.getBlob(imageData.getColumnIndex(MAP_IMAGE_FIELD));
+                    System.arraycopy(chunkData, 0, bitmapArray, dataPtr, chunkData.length);
+
+                    dataPtr += chunkData.length;
+                } while (imageData.moveToNext());
+            }
 
             imageData.close();
             db.close();
             dbHelper.close();
 
             if (bitmapArray != null) {
-                //TODO: Original size
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inMutable = true;
                 options.inScaled = false;
-                options.inJustDecodeBounds = true;
+                /*options.inJustDecodeBounds = true;
                 BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
                 options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);
-                options.inJustDecodeBounds = false;
+                options.inJustDecodeBounds = false;*/
                 bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
             }
 
@@ -254,14 +295,13 @@ public class Utils {
             dbHelper = new SQLiteDBHelper(context, SQLiteDBHelper.DB_NAME, null, SQLiteDBHelper.DB_VERSION);
             db = dbHelper.getReadableDatabase();
 
-            imageData = db.rawQuery("select " + SQLiteDBHelper.MAP_ID_FIELD + ", " + SQLiteDBHelper.MAP_UPDATED_DATE +
-                            " from " + SQLiteDBHelper.TABLE_NAME +
-                            " where " + SQLiteDBHelper.MAP_ID_FIELD + " = ?"
-                            + " and " + SQLiteDBHelper.MAP_UPDATED_DATE + " = ?",
+            imageData = db.rawQuery("select count(" + MAP_ID_FIELD + ") as CNT" +
+                            " from " + TABLE_NAME +
+                            " where " + MAP_ID_FIELD + " = ?"
+                            + " and " + MAP_UPDATED_DATE + " = ?",
                     new String[] { map_id, String.valueOf(updatedDate) });
 
-            result = imageData != null && imageData.moveToFirst();
-            //Long data = imageData.getLong(imageData.getColumnIndex(SQLiteDBHelper.MAP_UPDATED_DATE));
+            result = (imageData != null) && imageData.moveToFirst() && (imageData.getInt(0) > 0);
 
             imageData.close();
             db.close();
