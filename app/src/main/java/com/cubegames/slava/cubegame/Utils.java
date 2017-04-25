@@ -152,12 +152,16 @@ public class Utils {
             return G <= 0.5 * B ? BLUE : CYAN; //B <= 231 ? BLUE : CYAN;//
         else if ((R < G) && (B < G))
             return GREEN;
-        else if ((G < R) && (B < G))
+        else if ((G <= R) && (B < G))
             return G <= 0.7 * R ? BROWN : YELLOW;
+        else if ((R > G) && (R > B))
+            return BROWN;
         else if ((G == R) && (B == G) && (R >= 180))
             return WHITE;
-        else
-            return UNKNOWN; //TODO: UNKNOWN;
+        else {
+            int RR = R;
+            return UNKNOWN;
+        }
     }
 
     public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, float dTy) {

@@ -2,6 +2,7 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 
 import com.cubegames.slava.cubegame.Utils.ColorType;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
@@ -10,13 +11,13 @@ import static com.cubegames.slava.cubegame.Utils.CheckColorType;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
 import static com.cubegames.slava.cubegame.Utils.ColorType.CYAN;
 import static com.cubegames.slava.cubegame.Utils.ColorType.UNKNOWN;
-import static com.cubegames.slava.cubegame.Utils.ColorType.YELLOW;
 import static com.cubegames.slava.cubegame.Utils.DELTA_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.INVERT_LIGHT_FACTOR;
 import static com.cubegames.slava.cubegame.Utils.MAX_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_INTERPOLATOR_DIM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 
 public class LandObject extends ProceduralMeshObject {
@@ -27,11 +28,17 @@ public class LandObject extends ProceduralMeshObject {
 
     @Override
     protected float getYValue(float valX, float valZ, int[] rowPixels, float tu) {
-        //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula
+        //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula (sphere and dome)
 
-        int vColor = rowPixels[Math.round((getTextureBmp().getWidth() - 1) * tu)];
+        int xCoord = Math.round((getTextureBmp().getWidth() - 1) * tu);
+        int vColor = rowPixels[xCoord];
         ColorType cType = CheckColorType(vColor);
-        cType = cType.equals(UNKNOWN) ? YELLOW: cType; //TODO: approximate by neighbour points color
+
+        if (cType.equals(UNKNOWN)) {
+            //TODO: by more points
+            vColor = approximateUnknownColor(xCoord, rowPixels);
+            cType = CheckColorType(vColor);
+        }
 
         float deltaY = getLandScale() * (MAX_HEIGHT_VALUES[cType.ordinal()] - MIN_HEIGHT_VALUES[cType.ordinal()]);
         float minY = getLandScale() * MIN_HEIGHT_VALUES[cType.ordinal()];
@@ -46,6 +53,30 @@ public class LandObject extends ProceduralMeshObject {
         y = cType.equals(BLUE) || cType.equals(CYAN) ? -y : y;
 
         return y;
+    }
+
+    @NonNull
+    private int approximateUnknownColor(int xCoord, int[] rowPixels) {
+        Integer[] colors = new Integer[3];
+        colors[0] = (xCoord - 1) >= 0 ? rowPixels[xCoord - 1] : null;
+        colors[1] = rowPixels[xCoord];
+        colors[2] = (xCoord + 1) <= LAND_INTERPOLATOR_DIM ? rowPixels[xCoord + 1] : null;
+
+        int count = 0, R = 0, G = 0, B = 0;
+        for (int i = 0; i < 3; i++)
+            if (colors[i] != null) {
+                R += Color.red(colors[i]);
+                G += Color.green(colors[i]);
+                B += Color.blue(colors[i]);
+
+                count++;
+            }
+
+        R /= count;
+        G /= count;
+        B /= count;
+
+        return Color.argb(255, R, G, B);
     }
 
 }

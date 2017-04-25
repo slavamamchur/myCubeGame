@@ -128,11 +128,7 @@ public class GLScene {
             glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
             program.setTextureSlotData(0);
 
-            try {
-                linkVBOData(program, object);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            linkVBOData(program, object);
 
             /** USING VBO BUFFER */
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getFacesIBOPtr());
@@ -144,10 +140,14 @@ public class GLScene {
         }
     }
 
-    public void linkVBOData(GLShaderProgram program, GLSceneObject object) throws IllegalAccessException {
-        program.linkVertexData(object.getVertexVBO());
-        program.linkTexelData(object.getTexelVBO());
-        program.linkNormalData(object.getNormalVBO());
+    public void linkVBOData(GLShaderProgram program, GLSceneObject object) {
+        try {
+            program.linkVertexData(object.getVertexVBO());
+            program.linkTexelData(object.getTexelVBO());
+            program.linkNormalData(object.getNormalVBO());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void bindMVPMatrix(GLShaderProgram program, GLSceneObject object, GLCamera camera) {
