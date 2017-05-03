@@ -59,7 +59,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         return landScale;
     }
 
-    protected abstract float getYValue(float valX, float valZ, int[] rowPixels, float tu);
+    protected abstract float getYValue(float valX, float valZ, int[] rowPixels, float tu, float tv);
 
     @Override
     public int getFacesCount() {
@@ -91,7 +91,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
                 vertexes[k + 3] = i * tdu; /** u*/
                 vertexes[k + 4] = 0.333f + j * tdv; /** v*/
 
-                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], rowPixels, i*0.5f/dimension); /** y*/
+                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], rowPixels, i*0.5f/dimension, j * 0.333f/dimension); /** y*/
 
                 k += 5;
             }

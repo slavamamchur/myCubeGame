@@ -15,7 +15,7 @@ public class WaterObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, int[] rowPixels, float tv) {
+    protected float getYValue(float valX, float valZ, int[] rowPixels, float tu, float tv) {
         return 0;
     }
 

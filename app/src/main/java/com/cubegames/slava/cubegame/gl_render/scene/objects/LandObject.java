@@ -27,16 +27,16 @@ public class LandObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, int[] rowPixels, float tu) {
+    protected float getYValue(float valX, float valZ, int[] rowPixels, float tu, float tv) {
         //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula (sphere and dome)
 
         int xCoord = Math.round((getTextureBmp().getWidth() - 1) * tu);
+        int yCoord = Math.round((getTextureBmp().getHeight() - 1) * tv);
         int vColor = rowPixels[xCoord];
         ColorType cType = CheckColorType(vColor);
 
         if (cType.equals(UNKNOWN)) {
-            //TODO: by more points
-            vColor = approximateUnknownColor(xCoord, rowPixels);
+            vColor = interpolateUnknownColorValue(xCoord, yCoord);
             cType = CheckColorType(vColor);
         }
 
@@ -56,21 +56,24 @@ public class LandObject extends ProceduralMeshObject {
     }
 
     @NonNull
-    private int approximateUnknownColor(int xCoord, int[] rowPixels) {
-        Integer[] colors = new Integer[3];
-        colors[0] = (xCoord - 1) >= 0 ? rowPixels[xCoord - 1] : null;
-        colors[1] = rowPixels[xCoord];
-        colors[2] = (xCoord + 1) <= LAND_INTERPOLATOR_DIM ? rowPixels[xCoord + 1] : null;
-
+    private int interpolateUnknownColorValue(int xCoord, int yCoord) {
         int count = 0, R = 0, G = 0, B = 0;
-        for (int i = 0; i < 3; i++)
-            if (colors[i] != null) {
-                R += Color.red(colors[i]);
-                G += Color.green(colors[i]);
-                B += Color.blue(colors[i]);
 
-                count++;
-            }
+        for (int j = yCoord - 1; j <= yCoord + 1; j++)
+            for (int i = xCoord - 1; i <= xCoord + 1; i++)
+                try {
+                    if ( !((i == xCoord) && (j == yCoord)) && (i <= LAND_INTERPOLATOR_DIM)
+                         && (j <= LAND_INTERPOLATOR_DIM)
+                        ) {
+                        int color = getTextureBmp().getPixel(i, j);
+                        R += Color.red(color);
+                        G += Color.green(color);
+                        B += Color.blue(color);
+
+                        count++;
+                    }
+                } catch (IllegalArgumentException e) {
+                }
 
         R /= count;
         G /= count;
