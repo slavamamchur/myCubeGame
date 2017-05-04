@@ -34,8 +34,6 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
 
     private float[] vertexes;
 
-
-
     public ProceduralMeshObject(Context context, GLObjectType type, int textureResId, float landSize, int dimension, GLShaderProgram program) {
         super(context, type, textureResId, program);
 
@@ -51,7 +49,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
     private void initMesh(float landSize, int dimension) {
         this.dimension = dimension;
         LAND_WIDTH = landSize;
-        LAND_HEIGHT = landSize;//TODO: calculate scale and size
+        LAND_HEIGHT = landSize;
         this.landScale = landSize / LAND_SIZE_IN_KM;
     }
 

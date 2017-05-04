@@ -12,6 +12,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -322,4 +323,15 @@ public class Utils {
     }
     /** ------------------------------------------------------------------------------------------*/
 
+    public static void forceGC_and_Sync() {
+        Object obj = new Object();
+        WeakReference ref = new WeakReference<>(obj);
+        obj = null;
+
+        System.gc();
+        System.runFinalization();
+        /** wait for garbage collector finished*/
+        while(ref.get() != null)
+            try {Thread.sleep(100);} catch (InterruptedException e) {} //System.gc();
+    }
 }

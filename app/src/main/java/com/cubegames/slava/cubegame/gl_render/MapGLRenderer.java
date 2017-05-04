@@ -17,6 +17,7 @@ import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
+import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_INTERPOLATOR_DIM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
@@ -99,10 +100,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 
-        System.gc();
-        /** wait for garbage collector finished*/
-        //TODO: GC thread sync
-        try {Thread.sleep(3000);} catch (InterruptedException e) {}
+        forceGC_and_Sync();
     }
 
     private void drawScene() {

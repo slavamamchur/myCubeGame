@@ -19,6 +19,4 @@ public class WaterObject extends ProceduralMeshObject {
         return 0;
     }
 
-
-
 }
