@@ -4,10 +4,10 @@ import android.content.Context;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.WaterShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
@@ -102,6 +102,9 @@ public class GLScene {
                 case TERRAIN_OBJECT:
                     program = new TerrainShader(context);
                     break;
+                case WATER_OBJECT:
+                    program = new WaterShader(context);
+                    break;
                 default:
                     program = new TerrainShader(context);
             }
@@ -119,7 +122,7 @@ public class GLScene {
             GLShaderProgram program = object.getProgram();
             program.useProgram();
 
-            if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
+            //if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
                 setModelMatrix(object);
 
             bindMVPMatrix(program, object, getCamera());

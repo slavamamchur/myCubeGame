@@ -165,8 +165,8 @@ public class Utils {
         }
     }
 
-    public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, float dTy) {
-        bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, Math.round((bmp.getHeight() - 1) * dTy), bmp.getWidth(), 1);
+    public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
+        bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, y, bmp.getWidth(), 1);
 
         return rowPixels;
     }

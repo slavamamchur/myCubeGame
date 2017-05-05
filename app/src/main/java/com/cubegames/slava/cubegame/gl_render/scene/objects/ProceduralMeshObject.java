@@ -80,7 +80,8 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         int[] rowPixels = new int[bmp.getWidth()];
 
         for (int j = 0; j <= dimension; j++){
-            getRowPixels(bmp, rowPixels, j * 0.333f/dimension);
+            int yCoord = Math.round((bmp.getHeight() - 1) * j * 0.333f/dimension);
+            getRowPixels(bmp, rowPixels, yCoord);
 
             for (int i = 0; i <= dimension; i++){
                 vertexes[k] = x0 + i * dx; /** x*/

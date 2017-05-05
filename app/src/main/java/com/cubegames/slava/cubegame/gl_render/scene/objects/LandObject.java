@@ -32,6 +32,9 @@ public class LandObject extends ProceduralMeshObject {
 
         int xCoord = Math.round((getTextureBmp().getWidth() - 1) * tu);
         int yCoord = Math.round((getTextureBmp().getHeight() - 1) * tv);
+        xCoord = xCoord > 249 ? 249 : xCoord;
+        yCoord = yCoord > 249 ? 249 : yCoord;
+
         int vColor = rowPixels[xCoord];
         ColorType cType = CheckColorType(vColor);
 
