@@ -30,24 +30,24 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
     private float LAND_WIDTH;
     private float LAND_HEIGHT;
     private float landScale;
-    private int dimension;
+    protected int dimension;
 
     private float[] vertexes;
 
-    public ProceduralMeshObject(Context context, GLObjectType type, int textureResId, float landSize, int dimension, GLShaderProgram program) {
+    public ProceduralMeshObject(Context context, GLObjectType type, int textureResId, float landSize, GLShaderProgram program) {
         super(context, type, textureResId, program);
 
-        initMesh(landSize, dimension);
+        initMesh(landSize);
     }
 
-    public ProceduralMeshObject(Context context, GLObjectType type, String mapID, float landSize, int dimension, GLShaderProgram program) {
+    public ProceduralMeshObject(Context context, GLObjectType type, String mapID, float landSize, GLShaderProgram program) {
         super(context, type, mapID, program);
 
-        initMesh(landSize, dimension);
+        initMesh(landSize);
     }
 
-    private void initMesh(float landSize, int dimension) {
-        this.dimension = dimension;
+    private void initMesh(float landSize) {
+        //this.dimension = dimension;
         LAND_WIDTH = landSize;
         LAND_HEIGHT = landSize;
         this.landScale = landSize / LAND_SIZE_IN_KM;
@@ -66,6 +66,8 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
 
     @Override
     protected void createVertexesVBO() {
+        Bitmap bmp = (getTextureBmp() == null) || getTextureBmp().isRecycled() ? getTextureBitmap() : getTextureBmp();
+        dimension = bmp.getWidth() / 2 - 1;
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
         float tdu = 1.0f / dimension;
@@ -76,7 +78,6 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
 
-        Bitmap bmp = (getTextureBmp() == null) || getTextureBmp().isRecycled() ? getTextureBitmap() : getTextureBmp();
         int[] rowPixels = new int[bmp.getWidth()];
 
         for (int j = 0; j <= dimension; j++){

@@ -51,7 +51,7 @@ void main()
 
       if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <= 0.0)) {
          textureColor = lightColor * textureColor;
-         textureColor[3] = 0.95;
+         textureColor[3] = 0.9;
       }
       else {
          textureColor = vec4(0, 0, 0, 0);

@@ -273,10 +273,11 @@ public class Utils {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inMutable = true;
                 options.inScaled = false;
+                //TODO: LOD settings
                 /*options.inJustDecodeBounds = true;
                 BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-                options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);
-                options.inJustDecodeBounds = false;*/
+                options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);*/
+                options.inJustDecodeBounds = false;
                 bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
             }
 

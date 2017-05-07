@@ -17,13 +17,12 @@ import static com.cubegames.slava.cubegame.Utils.MAX_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_INTERPOLATOR_DIM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 
 public class LandObject extends ProceduralMeshObject {
 
-    public LandObject(Context context, int dimension, GLShaderProgram program, String mapID) {
-        super(context, TERRAIN_OBJECT, mapID, LAND_SIZE_IN_WORLD_SPACE, dimension, program);
+    public LandObject(Context context, GLShaderProgram program, String mapID) {
+        super(context, TERRAIN_OBJECT, mapID, LAND_SIZE_IN_WORLD_SPACE, program);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class LandObject extends ProceduralMeshObject {
 
         int xCoord = Math.round((getTextureBmp().getWidth() - 1) * tu);
         int yCoord = Math.round((getTextureBmp().getHeight() - 1) * tv);
-        xCoord = xCoord > 249 ? 249 : xCoord;
-        yCoord = yCoord > 249 ? 249 : yCoord;
+        xCoord = xCoord > dimension ? dimension : xCoord;
+        yCoord = yCoord > dimension ? dimension : yCoord;
 
         int vColor = rowPixels[xCoord];
         ColorType cType = CheckColorType(vColor);
@@ -65,8 +64,8 @@ public class LandObject extends ProceduralMeshObject {
         for (int j = yCoord - 1; j <= yCoord + 1; j++)
             for (int i = xCoord - 1; i <= xCoord + 1; i++)
                 try {
-                    if ( !((i == xCoord) && (j == yCoord)) && (i <= LAND_INTERPOLATOR_DIM)
-                         && (j <= LAND_INTERPOLATOR_DIM)
+                    if ( !((i == xCoord) && (j == yCoord)) && (i <= dimension)
+                         && (j <= dimension)
                         ) {
                         int color = getTextureBmp().getPixel(i, j);
                         R += Color.red(color);
@@ -75,8 +74,7 @@ public class LandObject extends ProceduralMeshObject {
 
                         count++;
                     }
-                } catch (IllegalArgumentException e) {
-                }
+                } catch (IllegalArgumentException e) {}
 
         R /= count;
         G /= count;

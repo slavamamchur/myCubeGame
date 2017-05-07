@@ -21,7 +21,6 @@ import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.WATER_OBJECT;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_INTERPOLATOR_DIM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.WATER_MESH_OBJECT;
 
@@ -82,7 +81,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private void initGLRender() {
         glClearColor(0f, 0.7f, 1f, 1f);
-        glEnable(GL_CULL_FACE);///TODO:???
+        glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
 
@@ -98,12 +97,11 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private void loadScene() {
         //TODO: implement separate textures and maps
-        GLSceneObject water = new WaterObject(context, LAND_INTERPOLATOR_DIM, mScene.getCachedShader(WATER_OBJECT), mapID);
+        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
         water.loadObject();
         mScene.addObject(water, WATER_MESH_OBJECT);
 
-        //TODO: use LOD -> 125x125 (half sized textures), 250x250 (full sized)
-        GLSceneObject terrain = new LandObject(context, LAND_INTERPOLATOR_DIM, mScene.getCachedShader(TERRAIN_OBJECT), mapID);
+        GLSceneObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), mapID);
         terrain.loadObject();
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 

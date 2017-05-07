@@ -8,7 +8,7 @@ public  class GLRenderConsts {
     public static final int VBO_STRIDE = VBO_ITEM_SIZE * 4;
     public static final int LAND_INTERPOLATOR_DIM = 249;
     public static final float LAND_SIZE_IN_WORLD_SPACE = 4.0f;
-    public static final float LAND_SIZE_IN_KM = 121.0f; //242Km
+    public static final float LAND_SIZE_IN_KM = 242.0f; //242Km
     public static final float SEA_SIZE_IN_WORLD_SPACE = 10.0f;
 
     public static final String VERTEXES_PARAM_NAME = "a_Position";
