@@ -1,9 +1,9 @@
 package com.cubegames.slava.cubegame.model;
 
-public class NamePostPram {
+public class namePostPram {
     private String name;
 
-    public NamePostPram() {}
+    public namePostPram() {}
 
     public String getName() {
         return name;
