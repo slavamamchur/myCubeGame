@@ -24,6 +24,7 @@ public class RestConst {
     // map controller
     public static final String URL_GAME_MAP = "/map";
     public static final String URL_GAME_MAP_IMAGE = "/image/{mapId}";
+    public static final String URL_GAME_MAP_RELIEF = "/relief/{mapId}";
     public static final String URL_GAME_MAP_IMAGE2 = "/map/image/%s?user-token=%s";
     public static final String URL_GAME_MAP_IMAGE_SIMPLE = "/upload";
 

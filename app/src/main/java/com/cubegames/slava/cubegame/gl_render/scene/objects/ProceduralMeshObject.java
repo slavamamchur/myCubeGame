@@ -57,7 +57,9 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         return landScale;
     }
 
-    protected abstract float getYValue(float valX, float valZ, int[] rowPixels, float tu, float tv);
+    protected abstract float getYValue(float valX, float valZ, Bitmap map, int[] rowPixels, float tu, float tv);
+    protected abstract Bitmap getReliefMap();
+    protected abstract int getDimension(Bitmap bmp);
 
     @Override
     public int getFacesCount() {
@@ -66,35 +68,41 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
 
     @Override
     protected void createVertexesVBO() {
-        Bitmap bmp = (getTextureBmp() == null) || getTextureBmp().isRecycled() ? getTextureBitmap() : getTextureBmp();
-        dimension = bmp.getWidth() / 2 - 1;
+        Bitmap bmp = getReliefMap();
+        dimension = getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
         float tdu = 1.0f / dimension;
-        float tdv = 0.666f / dimension;
+        float tdv = tdu;
         float dx = LAND_WIDTH / dimension;
         float dz = LAND_HEIGHT / dimension;
         float x0 = -LAND_WIDTH / 2f;
         float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
 
-        int[] rowPixels = new int[bmp.getWidth()];
+        int[] rowPixels = bmp == null ? null : new int[bmp.getWidth()];
 
         for (int j = 0; j <= dimension; j++){
-            int yCoord = Math.round((bmp.getHeight() - 1) * j * 0.333f/dimension);
-            getRowPixels(bmp, rowPixels, yCoord);
+            if (bmp != null) {
+                int yCoord = Math.round((bmp.getHeight() - 1) * j * 1.0f / dimension);
+                getRowPixels(bmp, rowPixels, yCoord);
+            }
 
             for (int i = 0; i <= dimension; i++){
                 vertexes[k] = x0 + i * dx; /** x*/
                 vertexes[k + 2] = z0 + j * dz; /** z*/
 
                 vertexes[k + 3] = i * tdu; /** u*/
-                vertexes[k + 4] = 0.333f + j * tdv; /** v*/
+                vertexes[k + 4] = j * tdv; /** v*/
 
-                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], rowPixels, i*0.5f/dimension, j * 0.333f/dimension); /** y*/
+                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], bmp, rowPixels, i*1.0f/dimension, j*1.0f/dimension); /** y*/
 
                 k += 5;
             }
+        }
+
+        if (bmp != null) {
+            bmp.recycle();
         }
 
         FloatBuffer vertexData = ByteBuffer

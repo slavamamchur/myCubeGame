@@ -1,11 +1,14 @@
 package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.cubegames.slava.cubegame.Utils.ColorType;
+import com.cubegames.slava.cubegame.api.GameMapController;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
+import com.cubegames.slava.cubegame.model.GameMap;
 
 import static com.cubegames.slava.cubegame.Utils.CheckColorType;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
@@ -16,6 +19,7 @@ import static com.cubegames.slava.cubegame.Utils.INVERT_LIGHT_FACTOR;
 import static com.cubegames.slava.cubegame.Utils.MAX_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_HEIGHT_VALUES;
+import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 
@@ -26,11 +30,11 @@ public class LandObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, int[] rowPixels, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, Bitmap map, int[] rowPixels, float tu, float tv) {
         //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula (sphere and dome)
 
-        int xCoord = Math.round((getTextureBmp().getWidth() - 1) * tu);
-        int yCoord = Math.round((getTextureBmp().getHeight() - 1) * tv);
+        int xCoord = Math.round((map.getWidth() - 1) * tu);
+        int yCoord = Math.round((map.getHeight() - 1) * tv);
         xCoord = xCoord > dimension ? dimension : xCoord;
         yCoord = yCoord > dimension ? dimension : yCoord;
 
@@ -55,6 +59,22 @@ public class LandObject extends ProceduralMeshObject {
         y = cType.equals(BLUE) || cType.equals(CYAN) ? -y : y;
 
         return y;
+    }
+
+    @Override
+    protected Bitmap getReliefMap() {
+        if (mapID != null) {
+            GameMapController gmc = new GameMapController(context);
+            GameMap map = gmc.find(mapID);
+            return gmc.getMapRelief(map);
+        }
+        else
+            return null;
+    }
+
+    @Override
+    protected int getDimension(Bitmap bmp) {
+        return  bmp.getWidth() - 1;
     }
 
     @NonNull
@@ -82,5 +102,6 @@ public class LandObject extends ProceduralMeshObject {
 
         return Color.argb(255, R, G, B);
     }
+
 
 }

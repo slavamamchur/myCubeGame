@@ -16,6 +16,8 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
     public long lastUsedDate;
     @JsonProperty(required = false)
     private byte[] binaryData;
+    @JsonProperty(required = false)
+    private byte[] binaryDataRelief;
 
     public GameMap() {}
 
@@ -51,6 +53,12 @@ public class GameMap extends BasicNamedDbEntity implements Parcelable{
     }
     public void setBinaryData(byte[] binaryData) {
         this.binaryData = binaryData;
+    }
+    public byte[] getBinaryDataRelief() {
+        return binaryDataRelief;
+    }
+    public void setBinaryDataRelief(byte[] binaryDataRelief) {
+        this.binaryDataRelief = binaryDataRelief;
     }
     public long getLastUsedDate() {
         return lastUsedDate;

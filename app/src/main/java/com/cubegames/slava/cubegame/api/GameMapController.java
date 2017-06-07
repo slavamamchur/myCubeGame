@@ -1,6 +1,8 @@
 package com.cubegames.slava.cubegame.api;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.cubegames.slava.cubegame.model.CollectionResponseGameMap;
 import com.cubegames.slava.cubegame.model.GameMap;
@@ -65,6 +67,20 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
             } catch (IOException e) {
                 throw new WebServiceException(HttpStatus.NOT_FOUND, "Game map is empty.");
             }
+    }
+
+    public Bitmap getMapRelief(GameMap map) throws WebServiceException {
+        byte[] mapArray = getBinaryData(map, RestConst.URL_GAME_MAP_RELIEF);
+
+        if (mapArray == null)
+            throw new WebServiceException(HttpStatus.NOT_FOUND, "Game relief map is empty.");
+        else {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inMutable = true;
+            options.inScaled = false;
+            return BitmapFactory.decodeByteArray(mapArray, 0, mapArray.length, options);
+        }
+
     }
 
     public String uploadMapImage(GameMap map, String fileName) throws WebServiceException {

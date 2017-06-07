@@ -96,7 +96,6 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        //TODO: implement separate textures and maps
         GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
         water.loadObject();
         mScene.addObject(water, WATER_MESH_OBJECT);

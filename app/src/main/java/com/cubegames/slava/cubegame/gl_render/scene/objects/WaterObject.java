@@ -1,6 +1,7 @@
 package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 
@@ -15,8 +16,18 @@ public class WaterObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, int[] rowPixels, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, Bitmap map, int[] rowPixels, float tu, float tv) {
         return 0;
+    }
+
+    @Override
+    protected Bitmap getReliefMap() {
+        return null;
+    }
+
+    @Override
+    protected int getDimension(Bitmap bmp) {
+        return 100;
     }
 
 }

@@ -14,7 +14,7 @@ import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
 public abstract class BitmapTexturedObject extends GLSceneObject {
 
     private int textureResId = -1;
-    private String mapID = null;
+    protected String mapID = null;
 
     public BitmapTexturedObject(Context context, GLObjectType type, String mapID, GLShaderProgram program) {
         super(context, type, program);
