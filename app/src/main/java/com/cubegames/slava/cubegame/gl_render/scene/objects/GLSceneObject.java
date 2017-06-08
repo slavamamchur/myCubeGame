@@ -28,7 +28,6 @@ public abstract class GLSceneObject {
     protected int facesIBOPtr = 0;
     private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
-    private Bitmap textureBmp;
 
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
@@ -41,9 +40,6 @@ public abstract class GLSceneObject {
 
     public GLObjectType getObjectType() {
         return objectType;
-    }
-    public Bitmap getTextureBmp() {
-        return textureBmp;
     }
     public int getGlTextureId() {
         return glTextureId;
@@ -80,22 +76,18 @@ public abstract class GLSceneObject {
     }
 
     public void loadObject() {
-        textureBmp = getTextureBitmap();
         createVertexesVBO();
-        glTextureId = loadTexture();
         createTexelsVBO();
         createNormalsVBO();
         facesIBOPtr = createFacesIBO();
+
+        glTextureId = loadTexture();
     }
 
     private int loadTexture() {
-        int result;
+        Bitmap textureBmp = getTextureBitmap();
 
-        textureBmp = (textureBmp != null) && !textureBmp.isRecycled() ? textureBmp : getTextureBitmap();
-        result = loadGLTexture(textureBmp);
-        textureBmp = null;
-
-        return result;
+        return loadGLTexture(textureBmp);
     }
 
     private void clearVBOPtr(int vboPtr) {

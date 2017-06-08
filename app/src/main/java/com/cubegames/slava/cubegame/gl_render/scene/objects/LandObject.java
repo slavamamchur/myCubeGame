@@ -42,7 +42,7 @@ public class LandObject extends ProceduralMeshObject {
         ColorType cType = CheckColorType(vColor);
 
         if (cType.equals(UNKNOWN)) {
-            vColor = interpolateUnknownColorValue(xCoord, yCoord);
+            vColor = interpolateUnknownColorValue(map, xCoord, yCoord);
             cType = CheckColorType(vColor);
         }
 
@@ -78,7 +78,7 @@ public class LandObject extends ProceduralMeshObject {
     }
 
     @NonNull
-    private int interpolateUnknownColorValue(int xCoord, int yCoord) {
+    private int interpolateUnknownColorValue(Bitmap map, int xCoord, int yCoord) {
         int count = 0, R = 0, G = 0, B = 0;
 
         for (int j = yCoord - 1; j <= yCoord + 1; j++)
@@ -87,7 +87,7 @@ public class LandObject extends ProceduralMeshObject {
                     if ( !((i == xCoord) && (j == yCoord)) && (i <= dimension)
                          && (j <= dimension)
                         ) {
-                        int color = getTextureBmp().getPixel(i, j);
+                        int color = map.getPixel(i, j);
                         R += Color.red(color);
                         G += Color.green(color);
                         B += Color.blue(color);
