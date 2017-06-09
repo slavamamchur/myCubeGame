@@ -63,8 +63,9 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        requestWindowFeature(Window.FEATURE_PROGRESS);
+        ///requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        ///requestWindowFeature(Window.FEATURE_PROGRESS);
+
         //getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         setContentView(R.layout.activity_game_instance);
@@ -72,6 +73,12 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         playersFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.players_fragment);
         playersFragment.getView().setBackgroundColor(0x40000000);
+
+        //OGL
+        if(getItem() != null && getItem().getId() != null){
+            //showProgress();
+            mMapFragment.InitMap(getItem(), this);
+        }
     }
 
     @Override
@@ -81,8 +88,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
 
         if(getItem() != null && getItem().getId() != null){
+
+            /*//OGL
             showProgress();
-            mMapFragment.InitMap(getItem(), this);
+            mMapFragment.InitMap(getItem(), this);*/
+
             playersFragment.setCaptionColor(Color.WHITE);
             playersFragment.selecItem(getItem().getCurrentPlayer());
             playersFragment.initTable(PLAYERS_LIST_COLUMN_INFO, null);
