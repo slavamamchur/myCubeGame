@@ -84,7 +84,7 @@ public abstract class GLSceneObject {
         glTextureId = loadTexture();
     }
 
-    private int loadTexture() {
+    protected int loadTexture() {
         Bitmap textureBmp = getTextureBitmap();
 
         return loadGLTexture(textureBmp);

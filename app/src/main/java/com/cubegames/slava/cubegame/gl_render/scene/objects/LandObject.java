@@ -2,13 +2,19 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.annotation.NonNull;
 
 import com.cubegames.slava.cubegame.Utils.ColorType;
 import com.cubegames.slava.cubegame.api.GameMapController;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
+import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameMap;
+import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
 import static com.cubegames.slava.cubegame.Utils.CheckColorType;
 import static com.cubegames.slava.cubegame.Utils.ColorType.BLUE;
@@ -20,13 +26,17 @@ import static com.cubegames.slava.cubegame.Utils.MAX_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_COLOR_VALUES;
 import static com.cubegames.slava.cubegame.Utils.MIN_HEIGHT_VALUES;
 import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
+import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 
 public class LandObject extends ProceduralMeshObject {
+    private Game gameEntity;
 
-    public LandObject(Context context, GLShaderProgram program, String mapID) {
-        super(context, TERRAIN_OBJECT, mapID, LAND_SIZE_IN_WORLD_SPACE, program);
+    public LandObject(Context context, GLShaderProgram program, Game gameEntity) {
+        super(context, TERRAIN_OBJECT, gameEntity == null ? null : gameEntity.getMapId(), LAND_SIZE_IN_WORLD_SPACE, program);
+
+        this.gameEntity = gameEntity;
     }
 
     @Override
@@ -103,5 +113,44 @@ public class LandObject extends ProceduralMeshObject {
         return Color.argb(255, R, G, B);
     }
 
+    @Override
+    protected int loadTexture() {
+        Bitmap textureBmp = getTextureBitmap();
 
+        final Paint paint = new Paint();
+        paint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
+        paint.setFilterBitmap(true);
+
+        Canvas canvas = new Canvas(textureBmp);
+
+        drawPath(paint, canvas);
+
+        return loadGLTexture(textureBmp);
+    }
+
+    private void drawPath(Paint paint, Canvas canvas) {
+        if (gameEntity != null) {
+            Path path = new Path();
+            if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
+                AbstractGamePoint point = gameEntity.getGamePoints().get(0);
+                path.moveTo(point.getxPos(), point.getyPos());
+
+                for (int i = 1; i < gameEntity.getGamePoints().size(); i++) {
+                    AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
+                    path.lineTo(endPoint.getxPos(), endPoint.getyPos());
+                }
+                paint.setColor(Color.GREEN);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(5);
+                canvas.drawPath(path, paint);
+
+                paint.setColor(Color.RED);
+                paint.setStyle(Paint.Style.FILL);
+                for (int i = 0; i < gameEntity.getGamePoints().size(); i++) {
+                    AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
+                    canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
+                }
+            }
+        }
+    }
 }

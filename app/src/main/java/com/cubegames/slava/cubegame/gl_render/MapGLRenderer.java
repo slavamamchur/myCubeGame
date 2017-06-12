@@ -9,6 +9,7 @@ import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
+import com.cubegames.slava.cubegame.model.Game;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -45,6 +46,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private Context context;
 
     private String mapID;
+    private Game gameEntity = null;
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
@@ -58,6 +60,9 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     public void setMapID(String mapID) {
         this.mapID = mapID;
+    }
+    public void setGameEntity(Game gameEntity) {
+        this.gameEntity = gameEntity;
     }
 
     @Override
@@ -96,11 +101,11 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
+        /*GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
         water.loadObject();
-        mScene.addObject(water, WATER_MESH_OBJECT);
+        mScene.addObject(water, WATER_MESH_OBJECT);*/
 
-        GLSceneObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), mapID);
+        GLSceneObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
         terrain.loadObject();
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 
