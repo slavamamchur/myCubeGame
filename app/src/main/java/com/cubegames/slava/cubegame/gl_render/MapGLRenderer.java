@@ -1,11 +1,13 @@
 package com.cubegames.slava.cubegame.gl_render;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
 import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.ColorShapeObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
@@ -20,6 +22,8 @@ import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.CHIP_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.WATER_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
@@ -101,15 +105,24 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        /*GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
+        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
         water.loadObject();
-        mScene.addObject(water, WATER_MESH_OBJECT);*/
+        mScene.addObject(water, WATER_MESH_OBJECT);
 
         GLSceneObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
         terrain.loadObject();
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 
+        placeChips();
+
         forceGC_and_Sync();
+    }
+
+    //TODO: Place chips
+    private void placeChips() {
+        GLSceneObject test_chip = new ColorShapeObject(context, mScene.getCachedShader(CHIP_OBJECT), Color.RED);
+        test_chip.loadObject();
+        mScene.addObject(test_chip, CHIP_MESH_OBJECT);
     }
 
     private void drawScene() {

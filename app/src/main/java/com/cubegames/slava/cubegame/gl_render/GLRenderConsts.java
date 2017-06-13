@@ -21,6 +21,7 @@ public  class GLRenderConsts {
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
+    public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
 
     public enum GLParamType {
         FLOAT_ATTRIB_ARRAY_PARAM,
@@ -33,7 +34,8 @@ public  class GLRenderConsts {
         WATER_OBJECT,
         TERRAIN_OBJECT,
         SKY_OBJECT,
-        LIGHT_OBJECT
+        LIGHT_OBJECT,
+        CHIP_OBJECT
     }
 
 }

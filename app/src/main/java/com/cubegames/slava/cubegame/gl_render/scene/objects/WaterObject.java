@@ -16,7 +16,7 @@ public class WaterObject extends ProceduralMeshObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, Bitmap map, int[] rowPixels, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, Bitmap map, float tu, float tv) {
         return 0;
     }
 
@@ -27,7 +27,7 @@ public class WaterObject extends ProceduralMeshObject {
 
     @Override
     protected int getDimension(Bitmap bmp) {
-        return 100;
+        return 50;
     }
 
 }

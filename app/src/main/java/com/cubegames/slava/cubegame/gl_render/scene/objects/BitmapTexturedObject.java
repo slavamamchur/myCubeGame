@@ -3,6 +3,8 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.cubegames.slava.cubegame.api.GameMapController;
 import com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
@@ -15,6 +17,7 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
 
     private int textureResId = -1;
     protected String mapID = null;
+    private int textureColor = 0;
 
     public BitmapTexturedObject(Context context, GLObjectType type, String mapID, GLShaderProgram program) {
         super(context, type, program);
@@ -27,6 +30,14 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
 
         this.textureResId = textureResId;
     }
+
+    public BitmapTexturedObject(Context context, GLObjectType type, GLShaderProgram program, int textureColor) {
+        super(context, type, program);
+
+        this.textureColor = textureColor;
+    }
+
+    protected abstract int getDimension(Bitmap bmp);
 
     @Override
     protected Bitmap getTextureBitmap() {
@@ -42,6 +53,13 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
             GameMap map = gmc.find(mapID);
             gmc.saveMapImage(map);
             return loadBitmapFromDB(context, mapID);
+        }
+        else if (textureColor != 0) {
+            Bitmap bmp = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bmp);
+            canvas.drawColor(textureColor);
+
+            return bmp;
         }
         else
             return null;

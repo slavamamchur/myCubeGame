@@ -6,6 +6,7 @@ import android.os.SystemClock;
 
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.WaterShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
@@ -106,7 +107,7 @@ public class GLScene {
                     program = new WaterShader(context);
                     break;
                 default:
-                    program = new TerrainShader(context);
+                    program = new ShapeShader(context);
             }
 
             shaders.put(type, program);

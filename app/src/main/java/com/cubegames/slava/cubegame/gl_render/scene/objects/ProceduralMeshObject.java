@@ -27,8 +27,8 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class ProceduralMeshObject extends BitmapTexturedObject {
 
-    private float LAND_WIDTH;
-    private float LAND_HEIGHT;
+    protected float LAND_WIDTH;
+    protected float LAND_HEIGHT;
     private float landScale;
     protected int dimension;
 
@@ -46,6 +46,12 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         initMesh(landSize);
     }
 
+    public ProceduralMeshObject(Context context, GLObjectType type, float landSize, GLShaderProgram program, int color) {
+        super(context, type, program, color);
+
+        initMesh(landSize);
+    }
+
     private void initMesh(float landSize) {
         //this.dimension = dimension;
         LAND_WIDTH = landSize;
@@ -57,9 +63,8 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         return landScale;
     }
 
-    protected abstract float getYValue(float valX, float valZ, Bitmap map, int[] rowPixels, float tu, float tv);
+    protected abstract float getYValue(float valX, float valZ, Bitmap map, float tu, float tv);
     protected abstract Bitmap getReliefMap();
-    protected abstract int getDimension(Bitmap bmp);
 
     @Override
     public int getFacesCount() {
@@ -80,14 +85,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
 
-        int[] rowPixels = bmp == null ? null : new int[bmp.getWidth()];
-
         for (int j = 0; j <= dimension; j++){
-            if (bmp != null) {
-                int yCoord = Math.round((bmp.getHeight() - 1) * j * 1.0f / dimension);
-                getRowPixels(bmp, rowPixels, yCoord);
-            }
-
             for (int i = 0; i <= dimension; i++){
                 vertexes[k] = x0 + i * dx; /** x*/
                 vertexes[k + 2] = z0 + j * dz; /** z*/
@@ -95,7 +93,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
                 vertexes[k + 3] = i * tdu; /** u*/
                 vertexes[k + 4] = j * tdv; /** v*/
 
-                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], bmp, rowPixels, i*1.0f/dimension, j*1.0f/dimension); /** y*/
+                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension); /** y*/
 
                 k += 5;
             }
