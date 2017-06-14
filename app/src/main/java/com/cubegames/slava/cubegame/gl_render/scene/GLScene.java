@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
@@ -123,8 +124,8 @@ public class GLScene {
             GLShaderProgram program = object.getProgram();
             program.useProgram();
 
-            //if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
-                setModelMatrix(object);
+            /*if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
+                setModelMatrix(object);*/
 
             bindMVPMatrix(program, object, getCamera());
             program.setCameraData(getCamera().getCameraPosition());

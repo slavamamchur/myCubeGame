@@ -41,6 +41,16 @@ public class LandObject extends ProceduralMeshObject {
         this.gameEntity = gameEntity;
     }
 
+    public Game getGameEntity() {
+        return gameEntity;
+    }
+    public float getScaleX() {
+        return scaleX;
+    }
+    public float getScaleZ() {
+        return scaleZ;
+    }
+
     @Override
     protected float getYValue(float valX, float valZ, Bitmap map, float tu, float tv) {
         int xCoord = Math.round((map.getWidth() - 1) * tu);
@@ -122,8 +132,8 @@ public class LandObject extends ProceduralMeshObject {
     protected int loadTexture() {
         Bitmap textureBmp = getTextureBitmap();
 
-        scaleX = (textureBmp.getWidth() - 1) * 1f / dimension;
-        scaleZ = (textureBmp.getHeight() - 1) * 1f / dimension;
+        scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
+        scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
 
         final Paint paint = new Paint();
         paint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
@@ -135,7 +145,7 @@ public class LandObject extends ProceduralMeshObject {
         return loadGLTexture(textureBmp);
     }
 
-    private PointF tex2WorldCoord(PointF texPoint) {
+    public PointF tex2WorldCoord(PointF texPoint) {
         PointF result = new PointF();
         result.x = texPoint.x * scaleX  - (LAND_WIDTH / 2);
         result.y = texPoint.y * scaleZ  - (LAND_HEIGHT / 2);

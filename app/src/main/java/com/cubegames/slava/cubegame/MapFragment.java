@@ -227,6 +227,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
             ///OGL:
             glRenderer.setMapID(map.getId());
             glRenderer.setGameEntity(gameEntity);
+            glRenderer.setGameInstanceEntity(gameInst);
             //loadMapImage(map);
         }
     }

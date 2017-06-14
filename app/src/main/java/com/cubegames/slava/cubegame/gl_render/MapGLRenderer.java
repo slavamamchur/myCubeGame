@@ -1,8 +1,15 @@
 package com.cubegames.slava.cubegame.gl_render;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
@@ -12,6 +19,9 @@ import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
 import com.cubegames.slava.cubegame.model.Game;
+import com.cubegames.slava.cubegame.model.GameInstance;
+import com.cubegames.slava.cubegame.model.players.InstancePlayer;
+import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -51,6 +61,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private String mapID;
     private Game gameEntity = null;
+    private GameInstance gameInstanceEntity = null;
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
@@ -67,6 +78,9 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
     public void setGameEntity(Game gameEntity) {
         this.gameEntity = gameEntity;
+    }
+    public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
+        this.gameInstanceEntity = gameInstanceEntity;
     }
 
     @Override
@@ -113,16 +127,58 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         terrain.loadObject();
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
 
-        placeChips();
+        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
+            placeChips();
 
         forceGC_and_Sync();
     }
 
-    //TODO: Place chips
     private void placeChips() {
-        GLSceneObject test_chip = new ColorShapeObject(context, mScene.getCachedShader(CHIP_OBJECT), Color.RED);
-        test_chip.loadObject();
-        mScene.addObject(test_chip, CHIP_MESH_OBJECT);
+        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+
+        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
+            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
+            int currentPointIdx = player.getCurrentPoint();
+            playersOnWayPoints[currentPointIdx]++;
+            int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+            AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
+
+            GLSceneObject chip = new ColorShapeObject(context, mScene.getCachedShader(CHIP_OBJECT), 0xFF000000 | player.getColor());
+            chip.loadObject();
+
+            PointF chipPlace = getChipPlace(point, playersCnt);
+            Matrix.setIdentityM(chip.getModelMatrix(), 0);
+            Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
+
+            mScene.addObject(chip, CHIP_MESH_OBJECT + "_" + String.format("%d", i));
+        }
+    }
+
+    private PointF getChipPlace(AbstractGamePoint endGamePoint, int playersCnt) {
+        double angle = getChipRotationAngle(playersCnt);
+
+        double toX2 = endGamePoint.getxPos() - 10* Math.sin(angle);
+        double toZ2 = endGamePoint.getyPos() - 10* Math.cos(angle);
+
+        LandObject land = (LandObject) mScene.getObject(TERRAIN_MESH_OBJECT);
+        return land.tex2WorldCoord(new PointF((float)toX2, (float)toZ2));
+    }
+
+    private double getChipRotationAngle(int playersCnt) {
+        if (playersCnt == 0)
+            return  0;
+
+        int part = 8, b;
+        double angle;
+
+        do {
+            angle = 360 / part;
+            b = part - 1;
+
+            part /= 2;
+        } while ( ((playersCnt & part) == 0) && (part != 1) );
+
+        return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
     private void drawScene() {
