@@ -13,11 +13,13 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -33,6 +35,7 @@ import android.widget.ScrollView;
 import com.cubegames.slava.cubegame.BaseItemDetailsActivity.WebErrorHandler;
 import com.cubegames.slava.cubegame.api.RestApiService;
 import com.cubegames.slava.cubegame.gl_render.MapGLRenderer;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
@@ -47,6 +50,7 @@ import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_R
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ERROR_OBJECT;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 
 public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate {
 
@@ -69,6 +73,10 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
     public GLSurfaceView glMapSurfaceView = null;
     public MapGLRenderer glRenderer;
+
+    public interface ChipAnimadedDelegate {
+        void onAnimationEnd();
+    }
 
     public MapFragment() {}
 
@@ -315,7 +323,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         }
     }
 
-    public void movingChipAnimation(AnimatorListenerAdapter delegate) {
+    public void movingChipAnimation(ChipAnimadedDelegate delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;
 
@@ -338,7 +346,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         if (movedPlayerIndex >= 0)
             try {
-                animateChip(delegate, endGamePoint, playersCnt, mMapContainer.getChildAt(movedPlayerIndex + 1));
+                animateChip(delegate, endGamePoint, playersCnt, glRenderer.getmScene().getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", movedPlayerIndex)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -350,29 +358,18 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
     }
 
-    private void animateChip(AnimatorListenerAdapter delegate, AbstractGamePoint endGamePoint, int playersCnt, View chip) throws Exception {
+    private void animateChip(ChipAnimadedDelegate delegate, AbstractGamePoint endGamePoint, int playersCnt, GLSceneObject chip) throws Exception {
         playersCnt = playersCnt < 0 ? 0 : playersCnt;
 
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        AnimatorSet animatorSet = new AnimatorSet();
+        PointF chipPlace = glRenderer.getChipPlace(endGamePoint, playersCnt, gameInstanceEntity.getStepsToGo() == 0);
+        Matrix.setIdentityM(chip.getModelMatrix(), 0);
+        Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
 
-        if (gameInstanceEntity.getStepsToGo() == 0) {
-            Point chipPlace = getChipPlace(endGamePoint, playersCnt);
-            ObjectAnimator moveX2 = ObjectAnimator.ofFloat(chip, "translationX", chipPlace.x - 50);
-            ObjectAnimator moveY2 = ObjectAnimator.ofFloat(chip, "translationY", chipPlace.y - 50);
-            animatorSet.play(moveX2).with(moveY2);
-        }
-        else {
-            ObjectAnimator moveX = ObjectAnimator.ofFloat(chip, "translationX", endGamePoint.getxPos() - 50);
-            ObjectAnimator moveY = ObjectAnimator.ofFloat(chip, "translationY", endGamePoint.getyPos() - 50);
-            animatorSet.play(moveX).with(moveY);
-        }
-
-        animatorSet.setDuration(1500);
-        animatorSet.addListener(delegate);
-        animatorSet.start();
+        if (delegate != null)
+            delegate.onAnimationEnd();
     }
 
     private Point getChipPlace(AbstractGamePoint endGamePoint, int playersCnt) {
@@ -496,7 +493,9 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         savedPlayers.clear();
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
 
-        mMapImage.postInvalidate();
+        ///OGL:
+        //mMapImage.postInvalidate();
+        glRenderer.placeChips(); //TODO: error
     }
 
     private Point getCurrentPointOffsetInViewPort() {

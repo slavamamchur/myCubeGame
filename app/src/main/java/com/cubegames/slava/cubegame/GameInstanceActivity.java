@@ -181,9 +181,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             return super.handleWebServiceResponseAction(context, intent);
     }
 
-    AnimatorListenerAdapter animationListener = new AnimatorListenerAdapter() {
+    MapFragment.ChipAnimadedDelegate animationListener = new MapFragment.ChipAnimadedDelegate() {
         @Override
-        public void onAnimationEnd(Animator animation) {
+        public void onAnimationEnd() {
+            try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
+
             startActionMooveGameInstance(GameInstanceActivity.this, getItem());
         }
     };
@@ -209,10 +211,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
 
-        mMapFragment.savedPlayers.clear();
-        mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());
+        /*mMapFragment.savedPlayers.clear();
+        mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());*/
+
         mMapFragment.updateMap();
-        mMapFragment.scrollMap();
+        //mMapFragment.scrollMap();
     }
 
     private void updateGame(GameInstance instance) {
@@ -225,9 +228,6 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.setItems(getItem().getPlayers());
 
         mMapFragment.setGameInstanceEntity(getItem());
-
-        //mMapFragment.updateMap();
-        //mMapFragment.scrollMap();
     }
 
     @Override

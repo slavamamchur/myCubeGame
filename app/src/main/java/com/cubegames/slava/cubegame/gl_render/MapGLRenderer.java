@@ -73,6 +73,10 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         this.context = context;
     }
 
+    public GLScene getmScene() {
+        return mScene;
+    }
+
     public void setMapID(String mapID) {
         this.mapID = mapID;
     }
@@ -133,7 +137,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         forceGC_and_Sync();
     }
 
-    private void placeChips() {
+    public void placeChips() {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
@@ -146,7 +150,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
             GLSceneObject chip = new ColorShapeObject(context, mScene.getCachedShader(CHIP_OBJECT), 0xFF000000 | player.getColor());
             chip.loadObject();
 
-            PointF chipPlace = getChipPlace(point, playersCnt);
+            PointF chipPlace = getChipPlace(point, playersCnt, true);
             Matrix.setIdentityM(chip.getModelMatrix(), 0);
             Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
 
@@ -154,11 +158,15 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    private PointF getChipPlace(AbstractGamePoint endGamePoint, int playersCnt) {
-        double angle = getChipRotationAngle(playersCnt);
+    public PointF getChipPlace(AbstractGamePoint endGamePoint, int playersCnt, boolean rotate) {
+        double toX2 = endGamePoint.getxPos();
+        double toZ2 = endGamePoint.getyPos();
 
-        double toX2 = endGamePoint.getxPos() - 10* Math.sin(angle);
-        double toZ2 = endGamePoint.getyPos() - 10* Math.cos(angle);
+        if(rotate) {
+            double angle = getChipRotationAngle(playersCnt);
+            toX2 = endGamePoint.getxPos() - 10 * Math.sin(angle);
+            toZ2 = endGamePoint.getyPos() - 10 * Math.cos(angle);
+        }
 
         LandObject land = (LandObject) mScene.getObject(TERRAIN_MESH_OBJECT);
         return land.tex2WorldCoord(new PointF((float)toX2, (float)toZ2));
