@@ -158,6 +158,24 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
+    public void moveChips() {
+        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+
+        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
+            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
+            int currentPointIdx = player.getCurrentPoint();
+            playersOnWayPoints[currentPointIdx]++;
+            int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+            AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
+
+            GLSceneObject chip = getmScene().getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", i));
+
+            PointF chipPlace = getChipPlace(point, playersCnt, true);
+            Matrix.setIdentityM(chip.getModelMatrix(), 0);
+            Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
+        }
+    }
+
     public PointF getChipPlace(AbstractGamePoint endGamePoint, int playersCnt, boolean rotate) {
         double toX2 = endGamePoint.getxPos();
         double toZ2 = endGamePoint.getyPos();

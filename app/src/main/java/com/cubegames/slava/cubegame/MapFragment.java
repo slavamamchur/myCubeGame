@@ -42,6 +42,7 @@ import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.GameMap;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
+import com.cubegames.slava.cubegame.model.points.PointType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -364,7 +365,8 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        PointF chipPlace = glRenderer.getChipPlace(endGamePoint, playersCnt, gameInstanceEntity.getStepsToGo() == 0);
+        PointF chipPlace = glRenderer.getChipPlace(endGamePoint, playersCnt,
+                (gameInstanceEntity.getStepsToGo() == 0) || endGamePoint.getType().equals(PointType.FINISH));
         Matrix.setIdentityM(chip.getModelMatrix(), 0);
         Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
 
@@ -495,7 +497,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         ///OGL:
         //mMapImage.postInvalidate();
-        glRenderer.placeChips(); //TODO: error
+        glRenderer.moveChips(); //TODO: error
     }
 
     private Point getCurrentPointOffsetInViewPort() {

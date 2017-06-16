@@ -215,6 +215,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());*/
 
         mMapFragment.updateMap();
+
         //mMapFragment.scrollMap();
     }
 
@@ -228,6 +229,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         playersFragment.setItems(getItem().getPlayers());
 
         mMapFragment.setGameInstanceEntity(getItem());
+        mMapFragment.glRenderer.setGameInstanceEntity(getItem());
     }
 
     @Override
