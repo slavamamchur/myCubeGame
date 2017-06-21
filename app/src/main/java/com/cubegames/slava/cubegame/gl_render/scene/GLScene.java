@@ -124,7 +124,8 @@ public class GLScene {
             GLShaderProgram program = object.getProgram();
             program.useProgram();
 
-            /*if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT))
+            /*if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT) ||
+                object.getObjectType().equals(GLObjectType.WATER_OBJECT))
                 setModelMatrix(object);*/
 
             bindMVPMatrix(program, object, getCamera());
@@ -134,6 +135,9 @@ public class GLScene {
             program.setTextureSlotData(0);
 
             linkVBOData(program, object);
+
+            if(program instanceof WaterShader)
+                ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis());
 
             /** USING VBO BUFFER */
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getFacesIBOPtr());

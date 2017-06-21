@@ -19,6 +19,7 @@ public  class GLRenderConsts {
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
+    public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";

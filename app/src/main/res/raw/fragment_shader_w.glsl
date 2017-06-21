@@ -49,13 +49,13 @@ void main()
 
       vec4 textureColor = texture2D(u_TextureUnit, v_Texture);
 
-      if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <= 0.0)) {
+      //if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <= 0.0)) {
          textureColor = lightColor * textureColor;
          textureColor[3] = 0.9;
-      }
-      else {
-         textureColor = vec4(0, 0, 0, 0);
-      }
+      //}
+      //else {
+        // textureColor = vec4(0, 0, 0, 0);
+      //}
 
       gl_FragColor = textureColor;// * fog_factor + fogColor * (1.0 - fog_factor);
 }

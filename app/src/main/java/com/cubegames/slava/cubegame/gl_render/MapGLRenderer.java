@@ -11,6 +11,7 @@ import android.opengl.Matrix;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
 import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
@@ -123,7 +124,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), mapID);
+        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), R.drawable.ocean);
         water.loadObject();
         mScene.addObject(water, WATER_MESH_OBJECT);
 
