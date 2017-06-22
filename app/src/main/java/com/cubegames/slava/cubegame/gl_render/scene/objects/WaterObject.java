@@ -27,7 +27,7 @@ public class WaterObject extends ProceduralMeshObject {
 
     @Override
     protected int getDimension(Bitmap bmp) {
-        return 100;
+        return 250;
     }
 
 }

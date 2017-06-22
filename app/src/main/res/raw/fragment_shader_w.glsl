@@ -16,9 +16,9 @@ void main()
       vec3 lookvector = normalize(u_camera - v_Position);
       float distance = length(u_lightPosition - v_Position);
 
-      float ambient = 0.2;//0.1
+      float ambient = 0.2;
       float k_diffuse = 1.0;
-      float k_specular = 1.0;
+      float k_specular = 0.6;
 
       float diffuse = k_diffuse;
       if (gl_FrontFacing) {

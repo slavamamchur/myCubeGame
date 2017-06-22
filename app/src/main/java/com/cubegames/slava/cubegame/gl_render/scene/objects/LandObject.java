@@ -81,7 +81,7 @@ public class LandObject extends ProceduralMeshObject {
         kXZ = INVERT_LIGHT_FACTOR[cType.ordinal()] ? 1.0f - kXZ : kXZ;
 
         float y = minY + deltaY * kXZ;
-        y = cType.equals(BLUE) || cType.equals(CYAN) ? -y : y;
+        y = cType.equals(BLUE) || cType.equals(CYAN) ? -y - 0.25f : y;
 
         return y;
     }

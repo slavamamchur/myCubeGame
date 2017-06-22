@@ -25,7 +25,7 @@ float rand(vec2 co)
 
 void main()
 {
-    float rnd = (rand(a_Position.xz * u_RndSeed) - 0.5f) * 0.025f;
+    float rnd = -(rand(a_Position.xz * u_RndSeed)) * 0.045f;
 
     v_PositionWorld = vec3(a_Position.x, rnd, a_Position.z);
     v_Position = vec3(u_MV_Matrix * vec4(v_PositionWorld, 1.0));
