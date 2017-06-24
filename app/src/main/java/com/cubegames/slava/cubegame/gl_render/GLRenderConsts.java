@@ -23,6 +23,8 @@ public  class GLRenderConsts {
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
+    public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
+    public static final String DICE_MESH_OBJECT_2 = "DICE_MESH_OBJECT_2";
 
     public enum GLParamType {
         FLOAT_ATTRIB_ARRAY_PARAM,
@@ -36,7 +38,8 @@ public  class GLRenderConsts {
         TERRAIN_OBJECT,
         SKY_OBJECT,
         LIGHT_OBJECT,
-        CHIP_OBJECT
+        CHIP_OBJECT,
+        DICE_OBJECT
     }
 
 }

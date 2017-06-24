@@ -17,7 +17,6 @@ import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glGenBuffers;
 import static com.cubegames.slava.cubegame.Utils.chain;
 import static com.cubegames.slava.cubegame.Utils.coord2idx;
-import static com.cubegames.slava.cubegame.Utils.getRowPixels;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LAND_SIZE_IN_KM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
@@ -117,8 +116,7 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
     }
 
     @Override
-    protected void createTexelsVBO() {
-    }
+    protected void createTexelsVBO() {}
 
     @Override
     protected void createNormalsVBO() {

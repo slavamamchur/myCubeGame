@@ -1,10 +1,10 @@
 package com.cubegames.slava.cubegame.gl_render.scene;
 
 import android.content.Context;
+import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
@@ -140,8 +140,12 @@ public class GLScene {
                 ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis());
 
             /** USING VBO BUFFER */
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getFacesIBOPtr());
-            glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, 0);
+            if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))
+                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
+            else {
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.getFacesIBOPtr());
+                glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, 0);
+            }
 
             /** USING RAM BUFFER */
             /*object.getIndexData().position(0);

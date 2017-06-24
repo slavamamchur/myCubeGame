@@ -1,21 +1,15 @@
 package com.cubegames.slava.cubegame.gl_render;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.view.View;
-import android.widget.FrameLayout;
 
-import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
 import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.ColorShapeObject;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
@@ -34,6 +28,7 @@ import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.CHIP_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.WATER_OBJECT;
@@ -124,7 +119,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT), R.drawable.ocean);
+        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT));
         water.loadObject();
         mScene.addObject(water, WATER_MESH_OBJECT);
 
@@ -134,6 +129,14 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips();
+
+        GLSceneObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
+        dice_1.loadObject();
+        Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
+        Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
+        Matrix.rotateM(dice_1.getModelMatrix(), 0, -45, 0, 1, 0);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 1f, 0);
+        mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
 
         forceGC_and_Sync();
     }
