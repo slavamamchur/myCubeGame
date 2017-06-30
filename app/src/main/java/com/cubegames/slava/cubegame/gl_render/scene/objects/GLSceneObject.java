@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.Matrix;
 
+import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
@@ -28,6 +29,7 @@ public abstract class GLSceneObject {
     protected int facesIBOPtr = 0;
     private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
+    private GLAnimation animation;
 
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
@@ -67,6 +69,13 @@ public abstract class GLSceneObject {
     }
     public GLShaderProgram getProgram() {
         return program;
+    }
+
+    public GLAnimation getAnimation() {
+        return animation;
+    }
+    public void setAnimation(GLAnimation animation) {
+        this.animation = animation;
     }
 
     private void createVBOParams() {

@@ -18,6 +18,8 @@ import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
+import java.util.Arrays;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -135,10 +137,20 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
         Matrix.rotateM(dice_1.getModelMatrix(), 0, -45, 0, 1, 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 1f, 0);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 5f, 0);
+        GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
+                0, 0,
+                5f, 1f,
+                0, 0,
+                500
+        );
+        animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+        dice_1.setAnimation(animation);
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
 
         forceGC_and_Sync();
+
+        animation.startAnimation();
     }
 
     public void placeChips() {

@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
@@ -127,6 +128,11 @@ public class GLScene {
             /*if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT) ||
                 object.getObjectType().equals(GLObjectType.WATER_OBJECT))
                 setModelMatrix(object);*/
+
+            GLAnimation animation = object.getAnimation();
+            if (animation != null && animation.isInProgress()) {
+                animation.animate(object.getModelMatrix());
+            }
 
             bindMVPMatrix(program, object, getCamera());
             program.setCameraData(getCamera().getCameraPosition());

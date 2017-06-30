@@ -6,7 +6,6 @@ public  class GLRenderConsts {
     public static final int TEXEL_UV_SIZE = 2;
     public static final int VBO_ITEM_SIZE = (VERTEX_SIZE + TEXEL_UV_SIZE);
     public static final int VBO_STRIDE = VBO_ITEM_SIZE * 4;
-    public static final int LAND_INTERPOLATOR_DIM = 249;
     public static final float LAND_SIZE_IN_WORLD_SPACE = 4.0f;
     public static final float LAND_SIZE_IN_KM = 242.0f; //242Km
     public static final float SEA_SIZE_IN_WORLD_SPACE = 10.0f;
@@ -26,6 +25,8 @@ public  class GLRenderConsts {
     public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
     public static final String DICE_MESH_OBJECT_2 = "DICE_MESH_OBJECT_2";
 
+    public static final long ANIMATION_FRAME_DURATION = 40;
+
     public enum GLParamType {
         FLOAT_ATTRIB_ARRAY_PARAM,
         FLOAT_UNIFORM_VECTOR_PARAM,
@@ -40,6 +41,12 @@ public  class GLRenderConsts {
         LIGHT_OBJECT,
         CHIP_OBJECT,
         DICE_OBJECT
+    }
+
+    public enum GLAnimationType {
+        TRANSLATE_ANIMATION,
+        ROTATE_ANIMATION,
+        SCALE_ANIMATION
     }
 
 }
