@@ -2,9 +2,14 @@ package com.cubegames.slava.cubegame.gl_render;
 
 import android.opengl.Matrix;
 
+import java.util.Arrays;
+
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ANIMATION_FRAME_DURATION;
 
 public class GLAnimation {
+    public final static short ROTATE_BY_X = 0x1;
+    public final static short ROTATE_BY_Y = 0x2;
+    public final static short ROTATE_BY_Z = 0x4;
 
     private GLRenderConsts.GLAnimationType animationType;
 
@@ -15,25 +20,40 @@ public class GLAnimation {
     private float fromZ;
     private float toZ;
 
+    private float rotationAngle = 0;
+    private short rotationAxesMask = 0;
+
     private long animationDuration;
     private long startTime;
 
-    private boolean inProgress;
+    private boolean inProgress = false;
 
     private float[] baseMatrix = new float[16];
+    private float[] internalMatrix;
+
+    private AnimationCallBack delegate = null;
 
     public GLAnimation(GLRenderConsts.GLAnimationType animationType, float fromX, float toX, float fromY, float toY, float fromZ, float toZ, long animationDuration) {
-        this.animationType = animationType;
+        internalInit(animationType, animationDuration);
+
         this.fromX = fromX;
         this.toX = toX;
         this.fromY = fromY;
         this.toY = toY;
         this.fromZ = fromZ;
         this.toZ = toZ;
+    }
+
+    public GLAnimation(GLRenderConsts.GLAnimationType animationType, float rotationAngle, short rotationAxesMask, long animationDuration) {
+        internalInit(animationType, animationDuration);
+
+        this.rotationAngle = rotationAngle;
+        this.rotationAxesMask = rotationAxesMask;
+    }
+
+    private void internalInit(GLRenderConsts.GLAnimationType animationType, long animationDuration) {
+        this.animationType = animationType;
         this.animationDuration = animationDuration;
-
-        inProgress = false;
-
         Matrix.setIdentityM(baseMatrix, 0);
     }
 
@@ -57,44 +77,69 @@ public class GLAnimation {
     private float getDeltaZ() {
         return  (toZ - fromZ) / getFrameCount();
     }
+    private float getDeltaAngle() {
+        return  (rotationAngle) / getFrameCount();
+    }
 
     private long getCurrentFrame() {
         return (System.currentTimeMillis() - startTime) / ANIMATION_FRAME_DURATION;
     }
 
     private float getCurrentX(long frame) {
-        return /*fromX + */getDeltaX() * frame;
+        return getDeltaX() * frame;
     }
     private float getCurrentY(long frame) {
-        return /*fromY + */getDeltaY() * frame;
+        return getDeltaY() * frame;
     }
     private float getCurrentZ(long frame) {
-        return /*fromZ + */getDeltaZ() * frame;
+        return getDeltaZ() * frame;
+    }
+    private float getCurrentAngle(long frame) {
+        return getDeltaAngle() * frame;
     }
 
-    public void startAnimation() {
+    public void startAnimation(AnimationCallBack delegate) {
+        this.delegate = delegate;
+        internalMatrix = null;
+        internalMatrix = Arrays.copyOf(baseMatrix, 16);
+
+        switch (animationType) {
+            case TRANSLATE_ANIMATION:
+                Matrix.translateM(internalMatrix, 0, fromX, fromY, fromZ);
+                break;
+        }
+
         startTime = System.currentTimeMillis();
         inProgress = true;
     }
 
     public void animate(float[] modelMatrix) {
         long currentFrame = getCurrentFrame();
-        float y = getCurrentY(currentFrame);
-        System.out.print(currentFrame);
-        System.out.print(":");
-        System.out.print(y);
-        System.out.println();
 
         for (int i = 0; i < 16; i++)
-            modelMatrix[i] = baseMatrix[i];
+            modelMatrix[i] = internalMatrix[i];
 
         switch (animationType) {
             case TRANSLATE_ANIMATION:
                 Matrix.translateM(modelMatrix, 0, getCurrentX(currentFrame), getCurrentY(currentFrame), getCurrentZ(currentFrame));
                 break;
+
+            case ROTATE_ANIMATION:
+                Matrix.rotateM(modelMatrix, 0, getCurrentAngle(currentFrame),
+                        ((rotationAxesMask & ROTATE_BY_X) != 0) ? 1 : 0,
+                        ((rotationAxesMask & ROTATE_BY_Y) != 0) ? 1 : 0,
+                        ((rotationAxesMask & ROTATE_BY_Z) != 0) ? 1 : 0);
+                break;
         }
 
         inProgress = currentFrame < (getFrameCount() - 1);
+
+        if (!inProgress && delegate != null)
+            delegate.onAnimationEnd();
+    }
+
+    public interface AnimationCallBack {
+        void onAnimationEnd();
     }
 
 }

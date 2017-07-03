@@ -29,6 +29,7 @@ import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
+import static com.cubegames.slava.cubegame.gl_render.GLAnimation.ROTATE_BY_X;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.CHIP_OBJECT;
@@ -136,8 +137,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
-        Matrix.rotateM(dice_1.getModelMatrix(), 0, -45, 0, 1, 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 5f, 0);
+        Matrix.rotateM(dice_1.getModelMatrix(), 0, 45, 0, 1, 0);
+
         GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
                 0, 0,
                 5f, 1f,
@@ -150,7 +151,17 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
         forceGC_and_Sync();
 
-        animation.startAnimation();
+        animation.startAnimation(new GLAnimation.AnimationCallBack() {
+            @Override
+            public void onAnimationEnd() {
+                GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROTATE_ANIMATION, -95f, ROTATE_BY_X, 500);
+                GLSceneObject dice_1 = getmScene().getObject(DICE_MESH_OBJECT_1);
+                animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+                dice_1.setAnimation(animation);
+
+                animation.startAnimation(null);
+            }
+        });
     }
 
     public void placeChips() {
