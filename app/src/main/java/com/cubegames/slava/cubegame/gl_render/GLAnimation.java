@@ -22,6 +22,7 @@ public class GLAnimation {
 
     private float rotationAngle = 0;
     private short rotationAxesMask = 0;
+    private float scaleFactor = 1f;
 
     private long animationDuration;
     private long startTime;
@@ -32,6 +33,8 @@ public class GLAnimation {
     private float[] internalMatrix;
 
     private AnimationCallBack delegate = null;
+
+    private short repeatCount = 1;
 
     public GLAnimation(GLRenderConsts.GLAnimationType animationType, float fromX, float toX, float fromY, float toY, float fromZ, float toZ, long animationDuration) {
         internalInit(animationType, animationDuration);
@@ -44,11 +47,12 @@ public class GLAnimation {
         this.toZ = toZ;
     }
 
-    public GLAnimation(GLRenderConsts.GLAnimationType animationType, float rotationAngle, short rotationAxesMask, long animationDuration) {
+    public GLAnimation(GLRenderConsts.GLAnimationType animationType, float rotationAngle, short rotationAxesMask, float scaleFactor, long animationDuration) {
         internalInit(animationType, animationDuration);
 
         this.rotationAngle = rotationAngle;
         this.rotationAxesMask = rotationAxesMask;
+        this.scaleFactor = scaleFactor;
     }
 
     private void internalInit(GLRenderConsts.GLAnimationType animationType, long animationDuration) {
@@ -59,6 +63,9 @@ public class GLAnimation {
 
     public void setBaseMatrix(float[] baseMatrix) {
         this.baseMatrix = baseMatrix;
+    }
+    public void setRepeatCount(short repeatCount) {
+        this.repeatCount = repeatCount;
     }
 
     public boolean isInProgress() {
@@ -125,17 +132,41 @@ public class GLAnimation {
                 break;
 
             case ROTATE_ANIMATION:
-                Matrix.rotateM(modelMatrix, 0, getCurrentAngle(currentFrame),
+                //TODO: by pivot point
+                float angle = getCurrentAngle(currentFrame);
+                float radius = (float) Math.sqrt(Math.pow(scaleFactor, 2) + Math.pow(scaleFactor, 2));
+                float angleCos = (float)(Math.cos(angle*Math.PI/180) * radius);
+                float angleSin = (float)(Math.sin(angle*Math.PI/180) * radius);
+                float offsetX = angleCos + angleSin;
+                float offsetY = angleSin - angleCos;
+
+                Matrix.translateM(modelMatrix, 0, -offsetX, -offsetY, 0);
+                System.out.println(offsetX + ", " + offsetY);
+
+                Matrix.rotateM(modelMatrix, 0, angle,
                         ((rotationAxesMask & ROTATE_BY_X) != 0) ? 1 : 0,
                         ((rotationAxesMask & ROTATE_BY_Y) != 0) ? 1 : 0,
                         ((rotationAxesMask & ROTATE_BY_Z) != 0) ? 1 : 0);
+
                 break;
         }
 
         inProgress = currentFrame < (getFrameCount() - 1);
 
-        if (!inProgress && delegate != null)
-            delegate.onAnimationEnd();
+        if (!inProgress) {
+            repeatCount--;
+
+            if (repeatCount > 0) {
+                for (int i = 0; i < 16; i++)
+                    internalMatrix[i] = modelMatrix[i];
+
+                startTime = System.currentTimeMillis();
+                inProgress = true;
+            }
+            else
+                 if (delegate != null)
+                    delegate.onAnimationEnd();
+        }
     }
 
     public interface AnimationCallBack {

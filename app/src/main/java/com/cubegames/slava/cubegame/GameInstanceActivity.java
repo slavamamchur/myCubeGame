@@ -1,27 +1,29 @@
 package com.cubegames.slava.cubegame;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.gl_render.GLAnimation;
+import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import static com.cubegames.slava.cubegame.BaseListActivity.NAME_FIELD_NAME;
@@ -33,6 +35,8 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJEC
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionFinishGameInstance;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionRestartGameInstance;
+import static com.cubegames.slava.cubegame.gl_render.GLAnimation.ROTATE_BY_X;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> implements BaseItemDetailsActivity.WebErrorHandler {
 
@@ -264,10 +268,38 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
     //TODO: disable buttons while animation in progress
     private void playTurn() {
-        prev_player_index = getItem().getCurrentPlayer();
-
         Random rnd = new Random(System.currentTimeMillis());
         int steps2Go = rnd.nextInt(5) + 1;
+
+        final GLSceneObject dice_1 = mMapFragment.glRenderer.getmScene().getObject(DICE_MESH_OBJECT_1);
+        Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
+        Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
+        Matrix.rotateM(dice_1.getModelMatrix(), 0, 45, 0, 1, 0);
+        GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
+                0, 0,
+                5f, 1f,
+                0, 0,
+                500
+        );
+        animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+        dice_1.setAnimation(animation);
+        animation.startAnimation(new GLAnimation.AnimationCallBack() {
+            @Override
+            public void onAnimationEnd() {
+                GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROTATE_ANIMATION, -95f, ROTATE_BY_X, 0.2f, 1500);
+                animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+                short rCnt = 3;
+                animation.setRepeatCount(rCnt);
+                dice_1.setAnimation(animation);
+
+                animation.startAnimation(null);
+            }
+        });
+
+
+
+        prev_player_index = getItem().getCurrentPlayer();
+
         showAnimatedText(String.format("%d\nSteps\nto GO", steps2Go));
 
         toggleActionBarProgress(true);
