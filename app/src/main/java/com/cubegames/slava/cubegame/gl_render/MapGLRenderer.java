@@ -134,6 +134,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 1, 0);
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
 
         forceGC_and_Sync();

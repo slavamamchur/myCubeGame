@@ -269,15 +269,21 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     //TODO: disable buttons while animation in progress
     private void playTurn() {
         Random rnd = new Random(System.currentTimeMillis());
-        int steps2Go = rnd.nextInt(5) + 1;
+
+        final int rotationAngle = 45 - rnd.nextInt(90);
+        short flyRotationCount = (short) rnd.nextInt(10);
+
+        final int steps2Go = rnd.nextInt(5) + 1;
+        final short[] dices_horisontal = {3, 2, 4, 5};
 
         final GLSceneObject dice_1 = mMapFragment.glRenderer.getmScene().getObject(DICE_MESH_OBJECT_1);
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
-        Matrix.rotateM(dice_1.getModelMatrix(), 0, 45, 0, 1, 0);
+        //Matrix.rotateM(dice_1.getModelMatrix(), 0, flyRotationCount * 90, 0, 0, 1);
+        Matrix.rotateM(dice_1.getModelMatrix(), 0, rotationAngle, 0, 1, 0);
         GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
                 0, 0,
-                5f, 1f,
+                5f, 1f, // TODO: change axes
                 0, 0,
                 500
         );
@@ -288,7 +294,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             public void onAnimationEnd() {
                 GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROTATE_ANIMATION, -95f, ROTATE_BY_X, 0.2f, 1500);
                 animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
-                short rCnt = 3;
+                short rCnt = (short) steps2Go;
                 animation.setRepeatCount(rCnt);
                 dice_1.setAnimation(animation);
 
@@ -296,11 +302,10 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             }
         });
 
-
-
         prev_player_index = getItem().getCurrentPlayer();
 
-        showAnimatedText(String.format("%d\nSteps\nto GO", steps2Go));
+        int dice_1_Value = dices_horisontal[steps2Go % 4];
+        showAnimatedText(String.format("%d\nSteps\nto GO", dice_1_Value));
 
         toggleActionBarProgress(true);
         getItem().setStepsToGo(steps2Go);

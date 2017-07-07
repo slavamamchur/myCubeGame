@@ -141,7 +141,7 @@ public class GLAnimation {
                 float offsetY = angleSin - angleCos;
 
                 Matrix.translateM(modelMatrix, 0, -offsetX, -offsetY, 0);
-                System.out.println(offsetX + ", " + offsetY);
+                ///System.out.println(offsetX + ", " + offsetY);
 
                 Matrix.rotateM(modelMatrix, 0, angle,
                         ((rotationAxesMask & ROTATE_BY_X) != 0) ? 1 : 0,
