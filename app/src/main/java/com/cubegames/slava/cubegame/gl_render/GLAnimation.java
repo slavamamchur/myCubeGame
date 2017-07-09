@@ -132,7 +132,7 @@ public class GLAnimation {
                 break;
 
             case ROTATE_ANIMATION:
-                //TODO: by pivot point
+                //TODO: by pivot point ???
                 float angle = getCurrentAngle(currentFrame);
                 float radius = (float) Math.sqrt(Math.pow(scaleFactor, 2) + Math.pow(scaleFactor, 2));
                 float angleCos = (float)(Math.cos(angle*Math.PI/180) * radius);
