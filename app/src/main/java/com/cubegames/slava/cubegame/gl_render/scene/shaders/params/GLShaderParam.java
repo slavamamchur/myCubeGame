@@ -6,6 +6,7 @@ import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUniform1f;
 import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniform3fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
@@ -13,6 +14,7 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
 
@@ -108,6 +110,13 @@ public class GLShaderParam {
     public void setParamValue(int data) {
         if (paramType.equals(INTEGER_UNIFORM_PARAM))
             glUniform1i(paramReference, data);
+        else
+            throw new IllegalArgumentException();
+    }
+
+    public void setParamValue(float data) {
+        if (paramType.equals(FLOAT_UNIFORM_PARAM))
+            glUniform1f(paramReference, data);
         else
             throw new IllegalArgumentException();
     }

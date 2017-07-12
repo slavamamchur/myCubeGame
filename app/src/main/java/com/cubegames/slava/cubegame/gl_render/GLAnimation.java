@@ -22,7 +22,10 @@ public class GLAnimation {
 
     private float rotationAngle = 0;
     private short rotationAxesMask = 0;
-    private float scaleFactor = 1f;
+    private float ppX = 0f;
+    private float ppY = 0f;
+    private float objectRadius = 1f;
+    private float rollingAngle = 0f;
 
     private long animationDuration;
     private long startTime;
@@ -35,6 +38,7 @@ public class GLAnimation {
     private AnimationCallBack delegate = null;
 
     private short repeatCount = 1;
+    private short repeatStep = 0;
 
     public GLAnimation(GLRenderConsts.GLAnimationType animationType, float fromX, float toX, float fromY, float toY, float fromZ, float toZ, long animationDuration) {
         internalInit(animationType, animationDuration);
@@ -47,12 +51,21 @@ public class GLAnimation {
         this.toZ = toZ;
     }
 
-    public GLAnimation(GLRenderConsts.GLAnimationType animationType, float rotationAngle, short rotationAxesMask, float scaleFactor, long animationDuration) {
+    public GLAnimation(GLRenderConsts.GLAnimationType animationType, float rotationAngle, short rotationAxesMask, long animationDuration) {
         internalInit(animationType, animationDuration);
 
         this.rotationAngle = rotationAngle;
         this.rotationAxesMask = rotationAxesMask;
-        this.scaleFactor = scaleFactor;
+    }
+
+    public GLAnimation(GLRenderConsts.GLAnimationType animationType, short rotationAxesMask, float ppX, float ppY, float objectRadius, long animationDuration) {
+        internalInit(animationType, animationDuration);
+
+        this.rotationAngle = 90f;
+        this.rotationAxesMask = rotationAxesMask;
+        this.ppX = ppX;
+        this.ppY = ppY;
+        this.objectRadius = objectRadius;
     }
 
     private void internalInit(GLRenderConsts.GLAnimationType animationType, long animationDuration) {
@@ -68,12 +81,31 @@ public class GLAnimation {
         this.repeatCount = repeatCount;
     }
 
+    public float getRotationAngle() {
+        return rotationAngle;
+    }
+    public float getPpX() {
+        return ppX;
+    }
+    public float getPpY() {
+        return ppY;
+    }
+    public float getObjectRadius() {
+        return objectRadius;
+    }
+    public float getRollingAngle() {
+        return rollingAngle;
+    }
+    public short getRepeatStep() {
+        return repeatStep;
+    }
+
     public boolean isInProgress() {
         return inProgress;
     }
 
     private long getFrameCount() {
-        return animationDuration / ANIMATION_FRAME_DURATION;
+        return Math.round(animationDuration * 1.0f / ANIMATION_FRAME_DURATION) -1;
     }
     private float getDeltaX() {
         return  (toX - fromX) / getFrameCount();
@@ -132,21 +164,24 @@ public class GLAnimation {
                 break;
 
             case ROTATE_ANIMATION:
-                //TODO: by pivot point ???
                 float angle = getCurrentAngle(currentFrame);
-                float radius = (float) Math.sqrt(Math.pow(scaleFactor, 2) + Math.pow(scaleFactor, 2));
-                float angleCos = (float)(Math.cos(angle*Math.PI/180) * radius);
-                float angleSin = (float)(Math.sin(angle*Math.PI/180) * radius);
-                float offsetX = angleCos + angleSin;
-                float offsetY = angleSin - angleCos;
-
-                Matrix.translateM(modelMatrix, 0, -offsetX, -offsetY, 0);
-                ///System.out.println(offsetX + ", " + offsetY);
 
                 Matrix.rotateM(modelMatrix, 0, angle,
                         ((rotationAxesMask & ROTATE_BY_X) != 0) ? 1 : 0,
                         ((rotationAxesMask & ROTATE_BY_Y) != 0) ? 1 : 0,
                         ((rotationAxesMask & ROTATE_BY_Z) != 0) ? 1 : 0);
+
+                break;
+
+            case ROLL_ANIMATION:
+                rollingAngle = getCurrentAngle(currentFrame);
+
+                /*float radius = 0.1f;
+                float angleCos = (float)(Math.cos(roll_angle*Math.PI/180) * radius);
+                float angleSin = (float)(Math.sin(roll_angle*Math.PI/180) * radius);
+                float offsetX = angleCos + angleSin - 0.1f;
+                float offsetY = angleSin - angleCos - 0.1f; //angleSin - angleCos;*/
+
 
                 break;
         }
@@ -160,6 +195,7 @@ public class GLAnimation {
                 for (int i = 0; i < 16; i++)
                     internalMatrix[i] = modelMatrix[i];
 
+                repeatStep++;
                 startTime = System.currentTimeMillis();
                 inProgress = true;
             }

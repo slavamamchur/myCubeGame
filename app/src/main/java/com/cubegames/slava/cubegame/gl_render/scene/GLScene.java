@@ -28,6 +28,11 @@ import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.OBJECT_RADIUS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.PRIVOT_X_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.PRIVOT_Y_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ROLL_ANGLE_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ROLL_STEP_PARAM_NAME;
 
 public class GLScene {
 
@@ -144,6 +149,16 @@ public class GLScene {
 
             if(program instanceof WaterShader)
                 ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis());
+            else if(program instanceof ShapeShader)
+                    if (animation != null) {
+                        program.paramByName(ROLL_ANGLE_PARAM_NAME).setParamValue(animation.getRollingAngle());
+                        program.paramByName(PRIVOT_X_PARAM_NAME).setParamValue(animation.getPpX());
+                        program.paramByName(PRIVOT_Y_PARAM_NAME).setParamValue(animation.getPpY());
+                        program.paramByName(OBJECT_RADIUS_PARAM_NAME).setParamValue(animation.getObjectRadius());
+                        program.paramByName(ROLL_STEP_PARAM_NAME).setParamValue(animation.getRepeatStep());
+                    }
+                    else
+                        program.paramByName(ROLL_ANGLE_PARAM_NAME).setParamValue(0f);
 
             /** USING VBO BUFFER */
             if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))

@@ -19,6 +19,11 @@ public  class GLRenderConsts {
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
     public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
+    public static final String PRIVOT_X_PARAM_NAME = "u_pX";
+    public static final String PRIVOT_Y_PARAM_NAME = "u_pY";
+    public static final String ROLL_ANGLE_PARAM_NAME = "u_rollAngle";
+    public static final String OBJECT_RADIUS_PARAM_NAME = "u_objectRadius";
+    public static final String ROLL_STEP_PARAM_NAME = "u_rollStep";
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
@@ -31,6 +36,7 @@ public  class GLRenderConsts {
         FLOAT_ATTRIB_ARRAY_PARAM,
         FLOAT_UNIFORM_VECTOR_PARAM,
         FLOAT_UNIFORM_MATRIX_PARAM,
+        FLOAT_UNIFORM_PARAM,
         INTEGER_UNIFORM_PARAM
     }
 
@@ -46,6 +52,7 @@ public  class GLRenderConsts {
     public enum GLAnimationType {
         TRANSLATE_ANIMATION,
         ROTATE_ANIMATION,
+        ROLL_ANIMATION,
         SCALE_ANIMATION
     }
 
