@@ -272,7 +272,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         Random rnd = new Random(System.currentTimeMillis());
 
         final int rotationAngle = 45 - rnd.nextInt(90);
-        final short flyRotationCount = (short) rnd.nextInt(10);
+        final short flyRotationCount = 0;//(short) rnd.nextInt(10);
         //System.out.println(flyRotationCount);
         final int direction = 1; //Math.round(rnd.nextFloat());
         final short directionAxe = direction == 0 ? ROTATE_BY_X : ROTATE_BY_Z;
@@ -284,12 +284,13 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         final GLSceneObject dice_1 = mMapFragment.glRenderer.getmScene().getObject(DICE_MESH_OBJECT_1);
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.scaleM(dice_1.getModelMatrix(), 0, 0.1f, 0.1f, 0.1f);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 1f, 0);
         //Matrix.rotateM(dice_1.getModelMatrix(), 0, rotationAngle, 0, 1, 0);
 
-        GLAnimation animation;
+        /*GLAnimation animation;
         animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
                 0, 0,
-                5f, 0.5f,
+                5f, 0.1f,
                 0, 0,
                 500
         );
@@ -303,7 +304,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                 else
                     Matrix.rotateM(dice_1.getModelMatrix(), 0, flyRotationCount * 90, 0, 0, 1);
 
-                GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROTATE_ANIMATION, 90f, directionAxe, 2000);
+                GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROLL_ANIMATION, directionAxe, 0.1f, 0f, 0.1f, 2000);
                 animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
                 short rCnt = (short) steps2Go;
                 animation.setRepeatCount(rCnt);
@@ -311,7 +312,15 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
                 animation.startAnimation(null);
             }
-        });
+        });*/
+
+        GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROLL_ANIMATION, directionAxe, 0.1f, 0f, 0.1f, 2000);
+        animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+        short rCnt = (short) steps2Go;
+        animation.setRepeatCount(rCnt);
+        dice_1.setAnimation(animation);
+        animation.startAnimation(null);
+
 
         prev_player_index = getItem().getCurrentPlayer();
 

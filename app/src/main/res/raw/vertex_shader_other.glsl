@@ -1,10 +1,11 @@
 uniform mat4 u_MVP_Matrix;
 uniform mat4 u_MV_Matrix;
-uniform float u_pX;
+
+/*uniform float u_pX;
 uniform float u_pY;
 uniform float u_rollAngle;
 uniform float u_objectRadius;
-uniform int u_rollStep;
+uniform int u_rollStep;*/
 
 attribute vec3 a_Position;
 attribute vec3 a_Normal;

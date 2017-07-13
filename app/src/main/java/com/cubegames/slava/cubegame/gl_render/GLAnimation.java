@@ -176,12 +176,18 @@ public class GLAnimation {
             case ROLL_ANIMATION:
                 rollingAngle = getCurrentAngle(currentFrame);
 
-                /*float radius = 0.1f;
-                float angleCos = (float)(Math.cos(roll_angle*Math.PI/180) * radius);
-                float angleSin = (float)(Math.sin(roll_angle*Math.PI/180) * radius);
-                float offsetX = angleCos + angleSin - 0.1f;
-                float offsetY = angleSin - angleCos - 0.1f; //angleSin - angleCos;*/
+                //float radius = 0.1f;
+                float angleCos = (float)(Math.cos(rollingAngle*Math.PI/180) /* * radius*/);
+                float angleSin = (float)(Math.sin(rollingAngle*Math.PI/180) /* * radius*/);
+                float offsetX = angleCos * 1.0f - 1.0f;
+                float offsetY = -angleSin * 1.0f; //angleSin - angleCos;
 
+                Matrix.rotateM(modelMatrix, 0, rollingAngle,
+                        ((rotationAxesMask & ROTATE_BY_X) != 0) ? 1 : 0,
+                        ((rotationAxesMask & ROTATE_BY_Y) != 0) ? 1 : 0,
+                        ((rotationAxesMask & ROTATE_BY_Z) != 0) ? 1 : 0);
+
+                Matrix.translateM(modelMatrix, 0, -offsetX, -offsetY, offsetY);
 
                 break;
         }
