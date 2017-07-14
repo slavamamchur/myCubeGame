@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import java.util.Arrays;
 
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ANIMATION_FRAME_DURATION;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLAnimationType.ROLL_ANIMATION;
 
 public class GLAnimation {
     public final static short ROTATE_BY_X = 0x1;
@@ -177,17 +178,23 @@ public class GLAnimation {
                 rollingAngle = getCurrentAngle(currentFrame);
 
                 //float radius = 0.1f;
-                float angleCos = (float)(Math.cos(rollingAngle*Math.PI/180) /* * radius*/);
-                float angleSin = (float)(Math.sin(rollingAngle*Math.PI/180) /* * radius*/);
-                float offsetX = angleCos * 1.0f - 1.0f;
-                float offsetY = -angleSin * 1.0f; //angleSin - angleCos;
+                //Matrix.rotateM(modelMatrix, 0, -80, 0, 1, 0);
 
-                Matrix.rotateM(modelMatrix, 0, rollingAngle,
-                        ((rotationAxesMask & ROTATE_BY_X) != 0) ? 1 : 0,
-                        ((rotationAxesMask & ROTATE_BY_Y) != 0) ? 1 : 0,
-                        ((rotationAxesMask & ROTATE_BY_Z) != 0) ? 1 : 0);
-
-                Matrix.translateM(modelMatrix, 0, -offsetX, -offsetY, offsetY);
+                if (repeatStep < 2) {
+                    Matrix.translateM(modelMatrix, 0, -0.1f * (repeatStep + 1), 0f, 0f);
+                    Matrix.rotateM(modelMatrix, 0, (90 * repeatStep) + rollingAngle, 0, 0, 1); //vector
+                    Matrix.translateM(modelMatrix, 0, 0.1f * (repeatStep + 1), 0f, 0f);
+                }
+                else  if (repeatStep < 3){
+                    Matrix.translateM(modelMatrix, 0, -0.1f * (repeatStep + 1), 0.2f, 0f);
+                    Matrix.rotateM(modelMatrix, 0, (90 * repeatStep) + rollingAngle, 0, 0, 1);
+                    Matrix.translateM(modelMatrix, 0, 0.1f * (repeatStep + 1), -0.2f, 0f);
+                }
+                else {
+                    Matrix.translateM(modelMatrix, 0, -0.2f * (repeatStep + 1), 0f, 0f);
+                    Matrix.rotateM(modelMatrix, 0, (90 * repeatStep) + rollingAngle, 0, 0, 1);
+                    Matrix.translateM(modelMatrix, 0, -0.1f * (repeatStep + 1), 0f, 0f);
+                }
 
                 break;
         }
@@ -198,8 +205,11 @@ public class GLAnimation {
             repeatCount--;
 
             if (repeatCount > 0) {
-                for (int i = 0; i < 16; i++)
-                    internalMatrix[i] = modelMatrix[i];
+                if (!animationType.equals(ROLL_ANIMATION))
+                    for (int i = 0; i < 16; i++)
+                        internalMatrix[i] = modelMatrix[i];
+                //else
+                    //internalMatrix[12] = 0.2f;
 
                 repeatStep++;
                 startTime = System.currentTimeMillis();
