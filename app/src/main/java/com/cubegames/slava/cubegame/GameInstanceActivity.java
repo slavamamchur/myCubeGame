@@ -269,14 +269,14 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
     //TODO: disable buttons while animation in progress
     private void playTurn() {
-        Random rnd = new Random(System.currentTimeMillis());
+        prev_player_index = getItem().getCurrentPlayer();
+
+
+        final Random rnd = new Random(System.currentTimeMillis());
 
         final int rotationAngle = 45 - rnd.nextInt(90);
-        final short flyRotationCount = 0;//(short) rnd.nextInt(10);
-        final int direction = 1; //Math.round(rnd.nextFloat());
-        final short directionAxe = direction == 0 ? ROTATE_BY_X : ROTATE_BY_Z;
-
-        final int steps2Go = 4; //rnd.nextInt(4) + 1;
+        int steps2Go = rnd.nextInt(4) + 1;
+        final short rCnt = (short) steps2Go;
         final short[][] dices_values = {{3, 2, 4, 5},
                                         {3, 1, 4, 6}};
 
@@ -284,8 +284,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 0.1f, 0);
 
-        GLAnimation animation;
-        animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
+        GLAnimation drop_animation;
+        drop_animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
                 0, 0,
                 1f, 0f,
                 0, 0,
@@ -294,29 +294,45 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
         Matrix.rotateM(dice_1.getModelMatrix(), 0, rotationAngle, 0, 1, 0);
 
-        animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
-        dice_1.setAnimation(animation);
-        animation.startAnimation(new GLAnimation.AnimationCallBack() {
+        drop_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+        dice_1.setAnimation(drop_animation);
+        drop_animation.startAnimation(new GLAnimation.AnimationCallBack() {
             @Override
             public void onAnimationEnd() {
-                GLAnimation animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROLL_ANIMATION, directionAxe, 0.1f, 0f, 0.1f, 750);
-                animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
-                short rCnt = (short) steps2Go;
-                animation.setRepeatCount(rCnt);
-                dice_1.setAnimation(animation);
+                GLAnimation rollZ_animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROLL_ANIMATION, ROTATE_BY_Z, 0.1f, 0f, 0.1f, 750);
+                rollZ_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+                rollZ_animation.setRepeatCount(rCnt);
+                dice_1.setAnimation(rollZ_animation);
 
-                animation.startAnimation(null); //TODO: rotate Y - 90 or not -> change direction index -> at THE END
+                rollZ_animation.startAnimation(new GLAnimation.AnimationCallBack() {
+
+                    @Override
+                    public void onAnimationEnd() {
+                        int steps = (Math.round(rnd.nextFloat()) == 1) && (rCnt % 2 == 0) ? rnd.nextInt(4) + 1 : 0;
+                        final int dice_1_Value = steps == 0 ? dices_values[1][rCnt % 4] : dices_values[0][(rCnt % 4 + steps) % 4];
+
+                        if (steps > 0) {
+                            GLAnimation rollX_animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROTATE_ANIMATION, -95f, ROTATE_BY_X, 500);
+                            rollX_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
+                            rollX_animation.setRepeatCount((short) steps);
+                            dice_1.setAnimation(rollX_animation);
+                            rollX_animation.startAnimation(null);
+                        }
+
+                        runOnUiThread(new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showAnimatedText(String.format("%d\nSteps\nto GO", dice_1_Value));
+                                }
+                        }));
+
+                        toggleActionBarProgress(true);
+                        getItem().setStepsToGo(dice_1_Value);
+                        startActionMooveGameInstance(GameInstanceActivity.this, getItem());
+                    }
+                });
             }
         });
-
-        prev_player_index = getItem().getCurrentPlayer();
-
-        int dice_1_Value = dices_values[direction][(flyRotationCount + steps2Go) % 4];
-        showAnimatedText(String.format("%d\nSteps\nto GO", dice_1_Value));
-
-        toggleActionBarProgress(true);
-        getItem().setStepsToGo(steps2Go);
-        startActionMooveGameInstance(this, getItem());
     }
 
     private void showAnimatedText(String text) {
