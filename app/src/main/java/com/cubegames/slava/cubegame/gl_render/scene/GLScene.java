@@ -143,17 +143,7 @@ public class GLScene {
             linkVBOData(program, object);
 
             if(program instanceof WaterShader)
-                ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis());
-            /*else if(program instanceof ShapeShader)
-                    if (animation != null) {
-                        program.paramByName(ROLL_ANGLE_PARAM_NAME).setParamValue(animation.getRollingAngle());
-                        program.paramByName(PRIVOT_X_PARAM_NAME).setParamValue(animation.getPpX());
-                        program.paramByName(PRIVOT_Y_PARAM_NAME).setParamValue(animation.getPpY());
-                        program.paramByName(OBJECT_RADIUS_PARAM_NAME).setParamValue(animation.getObjectRadius());
-                        program.paramByName(ROLL_STEP_PARAM_NAME).setParamValue(animation.getRepeatStep());
-                    }
-                    else
-                        program.paramByName(ROLL_ANGLE_PARAM_NAME).setParamValue(0f);*/
+                ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis() * 1.0f);
 
             /** USING VBO BUFFER */
             if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))

@@ -5,9 +5,7 @@ import android.content.Context;
 import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 
-import java.util.Random;
-
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 
 public class WaterShader extends VBOShaderProgram {
@@ -32,11 +30,11 @@ public class WaterShader extends VBOShaderProgram {
 
         GLShaderParam param;
         /** Random generator seed */
-        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, RND_SEED__PARAM_NAME, getProgramId());
+        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, RND_SEED__PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
     }
 
-    public void setRndSeedData(int data) {
+    public void setRndSeedData(float data) { //1.93984269E9 //1.34289536E9
         paramByName(RND_SEED__PARAM_NAME).setParamValue(data);
     }
 }
