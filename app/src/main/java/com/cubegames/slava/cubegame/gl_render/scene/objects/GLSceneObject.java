@@ -2,6 +2,7 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.opengl.Matrix;
 
 import com.cubegames.slava.cubegame.gl_render.GLAnimation;
@@ -30,6 +31,7 @@ public abstract class GLSceneObject {
     private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
     private GLAnimation animation;
+    private PointF position = new PointF(0, 0);
 
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
@@ -69,6 +71,12 @@ public abstract class GLSceneObject {
     }
     public GLShaderProgram getProgram() {
         return program;
+    }
+    public PointF getPosition() {
+        return position;
+    }
+    public void setPosition(PointF position) {
+        this.position = position;
     }
 
     public GLAnimation getAnimation() {

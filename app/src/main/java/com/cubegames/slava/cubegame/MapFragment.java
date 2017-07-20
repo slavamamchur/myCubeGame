@@ -1,6 +1,5 @@
 package com.cubegames.slava.cubegame;
 
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -34,6 +33,8 @@ import android.widget.ScrollView;
 
 import com.cubegames.slava.cubegame.BaseItemDetailsActivity.WebErrorHandler;
 import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.gl_render.GLAnimation;
+import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
 import com.cubegames.slava.cubegame.gl_render.MapGLRenderer;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
@@ -45,6 +46,7 @@ import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 import com.cubegames.slava.cubegame.model.points.PointType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
@@ -359,7 +361,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
     }
 
-    private void animateChip(ChipAnimadedDelegate delegate, AbstractGamePoint endGamePoint, int playersCnt, GLSceneObject chip) throws Exception {
+    private void animateChip(final ChipAnimadedDelegate delegate, AbstractGamePoint endGamePoint, int playersCnt, GLSceneObject chip) throws Exception {
         playersCnt = playersCnt < 0 ? 0 : playersCnt;
 
         if (endGamePoint == null)
@@ -368,10 +370,29 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
         PointF chipPlace = glRenderer.getChipPlace(endGamePoint, playersCnt,
                 (gameInstanceEntity.getStepsToGo() == 0) || endGamePoint.getType().equals(PointType.FINISH));
         Matrix.setIdentityM(chip.getModelMatrix(), 0);
-        Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
+        //Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
 
-        if (delegate != null)
-            delegate.onAnimationEnd();
+        GLAnimation move;
+        move = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
+                chip.getPosition().x, chipPlace.x,
+                -0.1f, -0.1f,
+                chip.getPosition().y, chipPlace.y,
+                500
+        );
+
+        chip.setPosition(chipPlace);
+
+        move.setBaseMatrix(Arrays.copyOf(chip.getModelMatrix(), 16));
+        chip.setAnimation(move);
+        move.startAnimation(new GLAnimation.AnimationCallBack() {
+
+            @Override
+            public void onAnimationEnd() {
+                if (delegate != null)
+                    delegate.onAnimationEnd();
+            }
+        });
+
     }
 
     private Point getChipPlace(AbstractGamePoint endGamePoint, int playersCnt) {
