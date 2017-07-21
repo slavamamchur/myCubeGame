@@ -316,23 +316,38 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
                             rollX_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
                             rollX_animation.setRepeatCount((short) steps);
                             dice_1.setAnimation(rollX_animation);
-                            rollX_animation.startAnimation(null);
+                            rollX_animation.startAnimation(new GLAnimation.AnimationCallBack() {
+                                @Override
+                                public void onAnimationEnd() {
+                                    removeDice(dice_1, dice_1_Value);
+                                }
+                            });
+                        }
+                        else {
+                            removeDice(dice_1, dice_1_Value);
                         }
 
-                        runOnUiThread(new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showAnimatedText(String.format("%d\nSteps\nto GO", dice_1_Value));
-                                }
-                        }));
-
-                        toggleActionBarProgress(true);
-                        getItem().setStepsToGo(dice_1_Value);
-                        startActionMooveGameInstance(GameInstanceActivity.this, getItem());
                     }
                 });
             }
         });
+    }
+
+    private void removeDice(GLSceneObject dice, final int dice_1_Value) {
+        toggleActionBarProgress(true);
+        getItem().setStepsToGo(dice_1_Value);
+        startActionMooveGameInstance(GameInstanceActivity.this, getItem());
+
+        runOnUiThread(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                showAnimatedText(String.format("%d\nSteps\nto GO", dice_1_Value));
+            }
+        }));
+
+        //TODO: wait lock ogl draw scene ???
+        try {Thread.sleep(1000);} catch (InterruptedException e) {}
+        Matrix.translateM(dice.getModelMatrix(), 0, 0, 100.1f, 0);
     }
 
     private void showAnimatedText(String text) {
