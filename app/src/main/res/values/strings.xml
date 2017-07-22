@@ -104,4 +104,8 @@
     <string name="new_game_point_caption">New point</string>
     <string name="new_gamepoint_dialog_title">New Game point</string>
 
+    <string name="title_activity_main">MainActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

@@ -177,19 +177,6 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
             PointF chipPlace = getChipPlace(point, playersCnt, true);
             Matrix.setIdentityM(chip.getModelMatrix(), 0);
             Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
-
-            /*GLAnimation move;
-            move = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
-                    chip.getPosition().x, chipPlace.x,
-                    -0.1f, -0.1f,
-                    chip.getPosition().y, chipPlace.y,
-                    1000
-            );
-
-            chip.setPosition(chipPlace);
-
-            move.setBaseMatrix(Arrays.copyOf(chip.getModelMatrix(), 16));
-            move.startAnimation(null);*/
         }
     }
 

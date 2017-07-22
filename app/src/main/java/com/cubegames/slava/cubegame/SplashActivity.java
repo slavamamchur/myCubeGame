@@ -52,7 +52,7 @@ public class SplashActivity extends AppCompatActivity {
         mPingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : GameListActivity.class;
+                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
                     SettingsManager.getInstance(getApplicationContext()).setAuthToken("");
                 }
