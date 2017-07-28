@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -141,6 +142,15 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            //actionBar.setBackgroundDrawable(new ColorDrawable(0));
+            //actionBar.setStackedBackgroundDrawable(VectorDrawableCompat.create(this.getResources(), R.drawable.list_ico_cl, this.getTheme()));
+            //actionBar.setSplitBackgroundDrawable(null);
+
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
 
         isFirstResume = true;
     }

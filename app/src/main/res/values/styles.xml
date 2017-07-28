@@ -27,4 +27,27 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="MyActionBar"
+        parent="@style/Theme.AppCompat.Light">
+        <item name="android:background">#00000000</item>
+        <!--<item name="android:backgroundSplit">#00000000</item>
+        <item name="backgroundSplit">#00000000</item>
+        <item name="android:actionBarDivider">@drawable/btn_selector_cl</item>
+        <item name="actionBarDivider">@drawable/btn_selector_cl</item>-->
+    </style>
+
+    <style name="MyButtonClassicLight"
+        parent="@style/Widget.AppCompat.Button">
+        <item name="android:background">@drawable/btn_selector_cl</item>
+    </style>
+
+    <style name="AppThemeClassicLight" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <!--<item name="android:actionBarSplitStyle">@style/MyActionBar</item>
+        <item name="actionBarSplitStyle">@style/MyActionBar</item>-->
+        <item name="android:buttonStyle">@style/MyButtonClassicLight</item>
+    </style>
+
+
 </resources>

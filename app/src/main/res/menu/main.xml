@@ -69,11 +69,15 @@
         android:visible="false" />
     <item android:id="@+id/menu_settings"
           android:title="Settings"
-          android:orderInCategory="1" />
+          android:orderInCategory="1"
+          android:visible="false"/>
     <item android:id="@+id/menu_logout"
         android:title="Logout"
-        android:orderInCategory="2" />
+        android:orderInCategory="2"
+        android:visible="false" />
     <item android:id="@+id/menu_exit"
         android:title="Exit"
-        android:orderInCategory="3" />
+        android:orderInCategory="3"
+        android:icon="@android:drawable/ic_notification_clear_all"
+        app:showAsAction="always" />
 </menu>

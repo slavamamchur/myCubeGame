@@ -84,8 +84,6 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         //menu.findItem(R.id.action_maps_list).setVisible(true);
-        menu.findItem(R.id.action_games_list).setVisible(true);
-        menu.findItem(R.id.action_dbplayers_list).setVisible(true);
 
         return super.onPrepareOptionsMenu(menu);
     }
