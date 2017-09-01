@@ -5,6 +5,12 @@ import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import com.bulletphysics.collision.broadphase.BroadphaseInterface;
+import com.bulletphysics.collision.broadphase.DbvtBroadphase;
+import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
 import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
@@ -20,6 +26,7 @@ import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.vecmath.Vector3f;
 
 import static android.opengl.GLES20.GL_CULL_FACE;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
@@ -58,6 +65,12 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private String mapID;
     private Game gameEntity = null;
     private GameInstance gameInstanceEntity = null;
+
+    private BroadphaseInterface _broadphase;
+    private DefaultCollisionConfiguration _collisionConfiguration;
+    private CollisionDispatcher _dispatcher;
+    private SequentialImpulseConstraintSolver _solver;
+    private DiscreteDynamicsWorld _world;
 
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
@@ -116,6 +129,23 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
                                       CAMERA_UP_X, CAMERA_UP_Y, CAMERA_UP_Z));
 
         mScene.setLightSource(new GLLightSource(LIGHT_POS_IN_MODEL_SPACE, mScene.getCamera()));
+
+        initPhysics();
+    }
+
+    private void initPhysics() {
+        _broadphase = new DbvtBroadphase();
+
+        //2
+        _collisionConfiguration = new DefaultCollisionConfiguration();
+        _dispatcher = new CollisionDispatcher(_collisionConfiguration);
+
+        //3
+        _solver = new SequentialImpulseConstraintSolver();
+
+        //4
+        _world = new DiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
+        _world.setGravity(new Vector3f(0f, -9.8f, 0f));
     }
 
     private void loadScene() {
@@ -130,11 +160,14 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips();
 
-        GLSceneObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
+        DiceObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT), 1);
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 100.1f, 0);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, -100f, 0.5f, 0);
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
+
+        dice_1.createRigidBody();
+        _world.addRigidBody(dice_1.get_body());
 
         forceGC_and_Sync();
 

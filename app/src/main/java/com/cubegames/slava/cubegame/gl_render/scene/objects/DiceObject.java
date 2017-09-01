@@ -16,10 +16,10 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VBO_STRIDE;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 
-public class DiceObject extends BitmapTexturedObject {
+public class DiceObject extends PNode {
 
-    public DiceObject(Context context, GLShaderProgram program) {
-        super(context, DICE_OBJECT, R.drawable.dice_texture, program);
+    public DiceObject(Context context, GLShaderProgram program, int tag) {
+        super(context, DICE_OBJECT, R.drawable.dice_texture, program, 1f, tag);
     }
 
     @Override
@@ -94,6 +94,8 @@ public class DiceObject extends BitmapTexturedObject {
         /** координаты текстур*/
         getTexelVBO().setParamValue(TEXEL_UV_SIZE, VBO_STRIDE, VERTEX_SIZE * 4, vertexData);
         vertexData.limit(0);
+
+        createCollisionShape(vertexes);
 }
 
     @Override
