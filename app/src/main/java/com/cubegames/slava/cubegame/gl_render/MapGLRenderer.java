@@ -136,14 +136,11 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private void initPhysics() {
         _broadphase = new DbvtBroadphase();
 
-        //2
         _collisionConfiguration = new DefaultCollisionConfiguration();
         _dispatcher = new CollisionDispatcher(_collisionConfiguration);
 
-        //3
         _solver = new SequentialImpulseConstraintSolver();
 
-        //4
         _world = new DiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
         _world.setGravity(new Vector3f(0f, -9.8f, 0f));
     }
@@ -153,24 +150,28 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         water.loadObject();
         mScene.addObject(water, WATER_MESH_OBJECT);
 
-        GLSceneObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
+        LandObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
         terrain.loadObject();
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
+        terrain.createRigidBody();
+        _world.addRigidBody(terrain.get_body());
 
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips();
 
-        DiceObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT), 1);
+        DiceObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, -100f, 0.5f, 0);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 5f, 0);///
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
-
         dice_1.createRigidBody();
         _world.addRigidBody(dice_1.get_body());
 
+        mScene.set_world(_world);
+
         forceGC_and_Sync();
 
+        mScene.startSimulation();
     }
 
     public void placeChips() {

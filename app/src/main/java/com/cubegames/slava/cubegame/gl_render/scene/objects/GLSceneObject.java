@@ -69,6 +69,10 @@ public abstract class GLSceneObject {
     public float[] getModelMatrix() {
         return modelMatrix;
     }
+    public void setModelMatrix(float[] modelMatrix) {
+        this.modelMatrix = modelMatrix;
+    }
+
     public GLShaderProgram getProgram() {
         return program;
     }

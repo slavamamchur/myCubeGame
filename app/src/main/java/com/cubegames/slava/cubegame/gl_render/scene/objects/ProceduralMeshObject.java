@@ -24,7 +24,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VBO_ITEM_SIZ
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VBO_STRIDE;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
-public abstract class ProceduralMeshObject extends BitmapTexturedObject {
+public abstract class ProceduralMeshObject extends PNode {
 
     protected float LAND_WIDTH;
     protected float LAND_HEIGHT;
@@ -34,19 +34,19 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
     private float[] vertexes;
 
     public ProceduralMeshObject(Context context, GLObjectType type, int textureResId, float landSize, GLShaderProgram program) {
-        super(context, type, textureResId, program);
+        super(context, type, textureResId, program, 0, 0);
 
         initMesh(landSize);
     }
 
     public ProceduralMeshObject(Context context, GLObjectType type, String mapID, float landSize, GLShaderProgram program) {
-        super(context, type, mapID, program);
+        super(context, type, mapID, program, 0, 1);
 
         initMesh(landSize);
     }
 
     public ProceduralMeshObject(Context context, GLObjectType type, float landSize, GLShaderProgram program, int color) {
-        super(context, type, program, color);
+        super(context, type, program, color, 0, 0);
 
         initMesh(landSize);
     }
@@ -113,6 +113,14 @@ public abstract class ProceduralMeshObject extends BitmapTexturedObject {
         /** координаты текстур*/
         getTexelVBO().setParamValue(TEXEL_UV_SIZE, VBO_STRIDE, VERTEX_SIZE * 4, vertexData);
         vertexData.limit(0);
+
+        if (tag == 1) {
+            float[] collision_model = { x0, 0, z0, 0, 0,
+                                       -x0, 0, z0, 0, 0,
+                                        x0, 0, -z0, 0, 0,
+                                        -x0, 0, -z0, 0, 0};
+            createCollisionShape(collision_model);
+        }
     }
 
     @Override

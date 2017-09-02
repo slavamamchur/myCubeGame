@@ -18,8 +18,8 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 public class DiceObject extends PNode {
 
-    public DiceObject(Context context, GLShaderProgram program, int tag) {
-        super(context, DICE_OBJECT, R.drawable.dice_texture, program, 1f, tag);
+    public DiceObject(Context context, GLShaderProgram program) {
+        super(context, DICE_OBJECT, R.drawable.dice_texture, program, 1f, 1);
     }
 
     @Override

@@ -29,6 +29,22 @@ public abstract class PNode extends BitmapTexturedObject {
         this.tag = tag;
     }
 
+    public PNode(Context context, GLRenderConsts.GLObjectType type, String mapID, GLShaderProgram program,
+                 float mass, int tag) {
+        super(context, type, mapID, program);
+
+        this.mass = mass;
+        this.tag = tag;
+    }
+
+    public PNode(Context context, GLRenderConsts.GLObjectType type, GLShaderProgram program, int color,
+                 float mass, int tag) {
+        super(context, type, program, color);
+
+        this.mass = mass;
+        this.tag = tag;
+    }
+
     public float getMass() {
         return mass;
     }
@@ -37,6 +53,7 @@ public abstract class PNode extends BitmapTexturedObject {
     }
 
     protected void createCollisionShape(float[] vertexes) {
+        //new BoxShape(new Vector3f(0.1f, 0.1f, 0.1f));
         ObjectArrayList<Vector3f> points = new ObjectArrayList<Vector3f>();
         _shape = new ConvexHullShape(points);
         for (int i = 0; i < vertexes.length; i+=5)
@@ -59,6 +76,6 @@ public abstract class PNode extends BitmapTexturedObject {
 
         _body = new RigidBody(bodyCI);
         _body.setUserPointer(this);
-        _body.setLinearVelocity(new Vector3f(1f,1f,0f));
+        _body.setLinearVelocity(new Vector3f(1f,1f,1f));
     }
 }

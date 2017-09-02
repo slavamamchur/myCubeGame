@@ -5,8 +5,11 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.linearmath.Transform;
 import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.PNode;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
@@ -16,6 +19,8 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.vecmath.Matrix4f;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
@@ -36,6 +41,9 @@ public class GLScene {
     private Context context;
     private GLCamera camera;
     private GLLightSource lightSource;
+    private long simulation_time = 0;
+    private boolean isSimulating = false;
+    private DiscreteDynamicsWorld _world;
 
     /** Objects cache*/
     private Map<String, GLSceneObject> objects = new HashMap<>();
@@ -57,6 +65,9 @@ public class GLScene {
     }
     public void setLightSource(GLLightSource lightSource) {
         this.lightSource = lightSource;
+    }
+    public void set_world(DiscreteDynamicsWorld _world) {
+        this._world = _world;
     }
 
     public void addObject(GLSceneObject object, String name) {
@@ -118,8 +129,21 @@ public class GLScene {
         return program;
     }
 
+    public void startSimulation() {
+        simulation_time = System.currentTimeMillis();
+        isSimulating = true;
+    }
+
+    public void stopSimulation() {
+        isSimulating = false;
+    }
+
     public void drawScene() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        if (isSimulating) {
+            _world.stepSimulation(System.currentTimeMillis() - simulation_time);
+        }
 
         for (GLSceneObject object : objects.values()) {
             GLShaderProgram program = object.getProgram();
@@ -132,6 +156,14 @@ public class GLScene {
             GLAnimation animation = object.getAnimation();
             if (animation != null && animation.isInProgress()) {
                 animation.animate(object.getModelMatrix());
+            }
+
+            ///TODO: sync with physics
+            if (isSimulating && object instanceof PNode) {
+                Transform tr = new Transform(new Matrix4f(new float[4]));
+                float [] mat = new float[4];
+                ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);
+                object.setModelMatrix(mat);
             }
 
             bindMVPMatrix(program, object, getCamera());
@@ -189,6 +221,7 @@ public class GLScene {
 
     @Override
     protected void finalize() throws Throwable {
+        stopSimulation();
         clearData();
 
         super.finalize();
