@@ -114,11 +114,13 @@ public abstract class ProceduralMeshObject extends PNode {
         getTexelVBO().setParamValue(TEXEL_UV_SIZE, VBO_STRIDE, VERTEX_SIZE * 4, vertexData);
         vertexData.limit(0);
 
+        x0 *= 3;
+        z0 *= 3;
         if (tag == 1) {
             float[] collision_model = { x0, 0, z0, 0, 0,
                                        -x0, 0, z0, 0, 0,
                                         x0, 0, -z0, 0, 0,
-                                        -x0, 0, -z0, 0, 0};
+                                        -x0, 0, -z0, 0, 0};///!!!
             createCollisionShape(collision_model);
         }
     }

@@ -142,7 +142,9 @@ public class GLScene {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (isSimulating) {
+            long ctime = System.currentTimeMillis();
             _world.stepSimulation(System.currentTimeMillis() - simulation_time);
+            simulation_time = ctime;
         }
 
         for (GLSceneObject object : objects.values()) {
@@ -159,7 +161,7 @@ public class GLScene {
             }
 
             ///TODO: sync with physics
-            if (isSimulating && object instanceof PNode) {
+            if (isSimulating && object instanceof PNode && (((PNode)object).getTag() == 1)) {
                 Transform tr = new Transform(new Matrix4f(new float[16]));
                 float [] mat = new float[16];
                 ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);

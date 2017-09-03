@@ -51,6 +51,9 @@ public abstract class PNode extends BitmapTexturedObject {
     public RigidBody get_body() {
         return _body;
     }
+    public int getTag() {
+        return tag;
+    }
 
     protected void createCollisionShape(float[] vertexes) {
         //new BoxShape(new Vector3f(0.1f, 0.1f, 0.1f));
@@ -71,8 +74,8 @@ public abstract class PNode extends BitmapTexturedObject {
         _shape.calculateLocalInertia(mass, bodyInertia);
 
         RigidBodyConstructionInfo bodyCI = new RigidBodyConstructionInfo(mass, motionState, _shape, bodyInertia);
-        bodyCI.restitution = 1.0f;
-        bodyCI.friction = 0.5f;
+        bodyCI.restitution = 0.0025f;
+        bodyCI.friction = 0.5f;//rnd
 
         _body = new RigidBody(bodyCI);
         _body.setUserPointer(this);

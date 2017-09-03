@@ -162,7 +162,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         DiceObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 5f, 0);///
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 5f, 0);
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
         _world.addRigidBody(dice_1.get_body());
