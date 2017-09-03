@@ -160,8 +160,8 @@ public class GLScene {
 
             ///TODO: sync with physics
             if (isSimulating && object instanceof PNode) {
-                Transform tr = new Transform(new Matrix4f(new float[4]));
-                float [] mat = new float[4];
+                Transform tr = new Transform(new Matrix4f(new float[16]));
+                float [] mat = new float[16];
                 ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);
                 object.setModelMatrix(mat);
             }
