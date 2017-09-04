@@ -19,7 +19,7 @@ public abstract class PNode extends BitmapTexturedObject {
     protected float mass;
     protected int tag;
     private RigidBody _body;
-    private CollisionShape _shape;
+    protected CollisionShape _shape;
 
     public PNode(Context context, GLRenderConsts.GLObjectType type, int textureResId, GLShaderProgram program,
                  float mass, int tag) {
@@ -55,7 +55,7 @@ public abstract class PNode extends BitmapTexturedObject {
         return tag;
     }
 
-    protected void createCollisionShape(float[] vertexes) {
+    protected void createCollisionShape(float[] vertexes) {//???terrain shape?
         //new BoxShape(new Vector3f(0.1f, 0.1f, 0.1f));
         ObjectArrayList<Vector3f> points = new ObjectArrayList<Vector3f>();
         _shape = new ConvexHullShape(points);
@@ -66,7 +66,7 @@ public abstract class PNode extends BitmapTexturedObject {
         }
     }
 
-    public void createRigidBody() {
+    public void createRigidBody() {//??? body type?
         DefaultMotionState motionState = new DefaultMotionState(new Transform(new Matrix4f(getModelMatrix())));
 
         float mass = this.mass;
@@ -74,11 +74,10 @@ public abstract class PNode extends BitmapTexturedObject {
         _shape.calculateLocalInertia(mass, bodyInertia);
 
         RigidBodyConstructionInfo bodyCI = new RigidBodyConstructionInfo(mass, motionState, _shape, bodyInertia);
-        bodyCI.restitution = 0.0025f;
-        bodyCI.friction = 0.5f;//rnd
+        bodyCI.restitution = 0.0125f;//TODO: rnd ???
+        bodyCI.friction = 0.7f;//TODO: rnd (0.5 - 1)
 
         _body = new RigidBody(bodyCI);
         _body.setUserPointer(this);
-        _body.setLinearVelocity(new Vector3f(1f,1f,1f));
     }
 }

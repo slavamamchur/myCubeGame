@@ -143,7 +143,7 @@ public class GLScene {
 
         if (isSimulating) {
             long ctime = System.currentTimeMillis();
-            _world.stepSimulation(System.currentTimeMillis() - simulation_time);
+            _world.stepSimulation(ctime - simulation_time);
             simulation_time = ctime;
         }
 

@@ -3,12 +3,15 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import javax.vecmath.Vector3f;
 
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.DICE_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
@@ -97,6 +100,11 @@ public class DiceObject extends PNode {
 
         createCollisionShape(vertexes);
 }
+
+    @Override
+    protected void createCollisionShape(float[] vertexes) {
+        _shape = new BoxShape(new Vector3f(0.1f, 0.1f, 0.1f));
+    }
 
     @Override
     protected void createTexelsVBO() {
