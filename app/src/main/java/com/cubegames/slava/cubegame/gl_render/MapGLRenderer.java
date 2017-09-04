@@ -165,9 +165,9 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         //Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 10f, 0);
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
-        //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));//TODO: rnd rotation ???
+        //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
         //dice_1.get_body().setWorldTransform(tr);
-        dice_1.get_body().setLinearVelocity(new Vector3f(0f,3f,2f)); //TODO: rnd(x,y,z)
+        dice_1.get_body().setLinearVelocity(new Vector3f(0f,3f,2f)); //TODO: rnd(x,y,z) + rnd vert-hor
         _world.addRigidBody(dice_1.get_body());
 
         mScene.set_world(_world);

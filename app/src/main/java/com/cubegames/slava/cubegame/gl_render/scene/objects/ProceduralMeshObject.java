@@ -121,7 +121,7 @@ public abstract class ProceduralMeshObject extends PNode {
                                        -x0, 0, z0, 0, 0,
                                         x0, 0, -z0, 0, 0,
                                         -x0, 0, -z0, 0, 0};///!!!
-            createCollisionShape(collision_model);
+            createCollisionShape(collision_model);//TODO: no convex ???
         }
     }
 
