@@ -24,6 +24,8 @@ import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
+import java.util.Random;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Vector3f;
@@ -167,7 +169,12 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         dice_1.createRigidBody();
         //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
         //dice_1.get_body().setWorldTransform(tr);
-        dice_1.get_body().setLinearVelocity(new Vector3f(0f,3f,2f)); //TODO: rnd(x,y,z) + rnd vert-hor
+        Random rnd = new Random(System.currentTimeMillis());
+        int direction = rnd.nextInt(2);
+        float fy = 2f + rnd.nextInt(3) * 1f;
+        float fxz = fy * 2f / 3f;
+        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
+        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
         _world.addRigidBody(dice_1.get_body());
 
         mScene.set_world(_world);

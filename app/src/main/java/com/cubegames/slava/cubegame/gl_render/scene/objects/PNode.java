@@ -12,6 +12,8 @@ import com.bulletphysics.util.ObjectArrayList;
 import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 
+import java.util.Random;
+
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -67,6 +69,7 @@ public abstract class PNode extends BitmapTexturedObject {
     }
 
     public void createRigidBody() {
+        Random rnd = new Random(System.currentTimeMillis());
         DefaultMotionState motionState = new DefaultMotionState(new Transform(new Matrix4f(getModelMatrix())));
 
         float mass = this.mass;
@@ -74,8 +77,8 @@ public abstract class PNode extends BitmapTexturedObject {
         _shape.calculateLocalInertia(mass, bodyInertia);
 
         RigidBodyConstructionInfo bodyCI = new RigidBodyConstructionInfo(mass, motionState, _shape, bodyInertia);
-        bodyCI.restitution = 0.0125f;//TODO: rnd ??? small range
-        bodyCI.friction = 0.5f;//TODO: rnd (0.5 - 1)
+        bodyCI.restitution = 0.0125f + rnd.nextInt(125) * 1f / 10000f;
+        bodyCI.friction = 0.5f + rnd.nextInt(4) * 1f / 10f;
 
         _body = new RigidBody(bodyCI);
         _body.setUserPointer(this);

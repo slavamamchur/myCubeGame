@@ -160,8 +160,7 @@ public class GLScene {
                 animation.animate(object.getModelMatrix());
             }
 
-            ///TODO: sync with physics
-            if (isSimulating && object instanceof PNode && (((PNode)object).getTag() == 1)) {
+            if (isSimulating && object instanceof PNode && (((PNode)object).getTag() == 1)) {//TODO:check normals
                 Transform tr = new Transform(new Matrix4f(new float[16]));
                 float [] mat = new float[16];
                 ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);

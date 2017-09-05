@@ -112,7 +112,7 @@ public class DiceObject extends PNode {
     }
 
     @Override
-    protected void createNormalsVBO() {
+    protected void createNormalsVBO() {//TODO: save normals
         final float[] normal =
                 {
                         // Front face
