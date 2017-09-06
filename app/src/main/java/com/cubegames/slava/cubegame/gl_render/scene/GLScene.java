@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.linearmath.Transform;
 import com.cubegames.slava.cubegame.gl_render.GLAnimation;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.PNode;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
@@ -16,6 +17,7 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.WaterShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
+import com.cubegames.slava.cubegame.model.GameInstance;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
+import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 
 public class GLScene {
@@ -44,6 +47,7 @@ public class GLScene {
     private long simulation_time = 0;
     private boolean isSimulating = false;
     private DiscreteDynamicsWorld _world;
+    private GameInstance gameInstanceEntity = null;
 
     /** Objects cache*/
     private Map<String, GLSceneObject> objects = new HashMap<>();
@@ -69,18 +73,21 @@ public class GLScene {
     public void set_world(DiscreteDynamicsWorld _world) {
         this._world = _world;
     }
+    public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
+        this.gameInstanceEntity = gameInstanceEntity;
+    }
 
     public void addObject(GLSceneObject object, String name) {
         objects.put(name, object);
     }
 
     public void deleteObject(String name) {
-        GLSceneObject object = getObject(name);
+        //GLSceneObject object = getObject(name);
 
-        if (object != null) {
-            object.clearVBOData();
+        //if (object != null) {
+            //object.clearVBOData();
             objects.remove(name);
-        }
+        //}
     }
 
     public void clearData() {
@@ -137,6 +144,24 @@ public class GLScene {
     public void stopSimulation() {
         isSimulating = false;
     }
+    Transform old_transform = new Transform(new Matrix4f(new float[16]));
+
+    private void removeDice(GLSceneObject dice, final int dice_1_Value) {
+        //toggleActionBarProgress(true);
+        gameInstanceEntity.setStepsToGo(dice_1_Value);
+        startActionMooveGameInstance(context, gameInstanceEntity);//TODO: ??? broadcast
+
+        /*runOnUiThread(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                showAnimatedText(String.format("%d\nSteps\nto GO", dice_1_Value));
+            }
+        }));*/
+
+        //TODO: wait lock ogl draw scene ???
+        //try {Thread.sleep(1000);} catch (InterruptedException e) {}
+        Matrix.translateM(dice.getModelMatrix(), 0, 0, 100.1f, 0);
+    }
 
     public void drawScene() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -160,10 +185,21 @@ public class GLScene {
                 animation.animate(object.getModelMatrix());
             }
 
-            if (isSimulating && object instanceof PNode && (((PNode)object).getTag() == 1)) {//TODO:check normals
+            if (isSimulating && object instanceof DiceObject && (((PNode)object).getTag() == 1)
+                    && ((PNode)object).get_body() != null) {//TODO:check normals
                 Transform tr = new Transform(new Matrix4f(new float[16]));
                 float [] mat = new float[16];
                 ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);
+
+                if (!old_transform.equals(tr)) {
+                    old_transform = tr;
+                }
+                else {
+                    _world.removeRigidBody(((PNode)object).get_body());
+                    Matrix.setIdentityM(mat, 0);
+                    Matrix.translateM(mat, 0, 100f, 0f, 0);
+                }
+
                 object.setModelMatrix(mat);
             }
 

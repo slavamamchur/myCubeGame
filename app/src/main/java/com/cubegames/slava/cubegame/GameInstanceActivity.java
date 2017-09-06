@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -15,16 +14,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.cubegames.slava.cubegame.api.RestApiService;
-import com.cubegames.slava.cubegame.gl_render.GLAnimation;
-import com.cubegames.slava.cubegame.gl_render.GLRenderConsts;
-import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.model.ErrorEntity;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+
+import javax.vecmath.Vector3f;
 
 import static com.cubegames.slava.cubegame.BaseListActivity.NAME_FIELD_NAME;
 import static com.cubegames.slava.cubegame.DBPlayersListActivity.COLOR_FIELD_NAME;
@@ -35,8 +33,6 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJEC
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionFinishGameInstance;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionRestartGameInstance;
-import static com.cubegames.slava.cubegame.gl_render.GLAnimation.ROTATE_BY_X;
-import static com.cubegames.slava.cubegame.gl_render.GLAnimation.ROTATE_BY_Z;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> implements BaseItemDetailsActivity.WebErrorHandler {
@@ -235,6 +231,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
         mMapFragment.setGameInstanceEntity(getItem());
         mMapFragment.glRenderer.setGameInstanceEntity(getItem());
+        mMapFragment.glRenderer.getmScene().setGameInstanceEntity(getItem());
     }
 
     @Override
@@ -271,69 +268,24 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     private void playTurn() {
         prev_player_index = getItem().getCurrentPlayer();
 
+        //mMapFragment.glRenderer.getmScene().deleteObject(DICE_MESH_OBJECT_1);
+        DiceObject dice_1 = (DiceObject)mMapFragment.glRenderer.getmScene().getObject(DICE_MESH_OBJECT_1);
+        //mMapFragment.glRenderer.getmScene().addObject(dice_1, DICE_MESH_OBJECT_1);
+        dice_1.createRigidBody();
+        //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
+        //dice_1.get_body().setWorldTransform(tr);
+        Random rnd = new Random(System.currentTimeMillis());
+        int direction = rnd.nextInt(2);
+        float fy = 2f + rnd.nextInt(3) * 1f;
+        float fxz = fy * 2f / 3f;
+        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
+        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
+        mMapFragment.glRenderer.get_world().addRigidBody(dice_1.get_body());
 
-        final Random rnd = new Random(System.currentTimeMillis());
-
-        final int rotationAngle = 45 - rnd.nextInt(90);
-        int steps2Go = rnd.nextInt(4) + 1;
-        final short rCnt = (short) steps2Go;
-        final short[][] dices_values = {{3, 2, 4, 5},
-                                        {3, 1, 4, 6}};
-
-        final GLSceneObject dice_1 = mMapFragment.glRenderer.getmScene().getObject(DICE_MESH_OBJECT_1);
-        Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 0.1f, 0);
-
-        GLAnimation drop_animation;
-        drop_animation = new GLAnimation(GLRenderConsts.GLAnimationType.TRANSLATE_ANIMATION,
-                0, 0,
-                1f, 0f,
-                0, 0,
-                500
-        );
-
-        Matrix.rotateM(dice_1.getModelMatrix(), 0, rotationAngle, 0, 1, 0);
-
-        drop_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
-        dice_1.setAnimation(drop_animation);
-        drop_animation.startAnimation(new GLAnimation.AnimationCallBack() {
-            @Override
-            public void onAnimationEnd() {
-                GLAnimation rollZ_animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROLL_ANIMATION, ROTATE_BY_Z, 0.1f, 0f, 0.1f, 750);
-                rollZ_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
-                rollZ_animation.setRepeatCount(rCnt);
-                dice_1.setAnimation(rollZ_animation);
-
-                rollZ_animation.startAnimation(new GLAnimation.AnimationCallBack() {
-
-                    @Override
-                    public void onAnimationEnd() {
-                        int steps = (Math.round(rnd.nextFloat()) == 1) && (rCnt % 2 == 0) ? rnd.nextInt(4) + 1 : 0;
-                        final int dice_1_Value = steps == 0 ? dices_values[1][rCnt % 4] : dices_values[0][(rCnt % 4 + steps) % 4];
-
-                        if (steps > 0) {
-                            GLAnimation rollX_animation = new GLAnimation(GLRenderConsts.GLAnimationType.ROTATE_ANIMATION, -95f, ROTATE_BY_X, 500);
-                            rollX_animation.setBaseMatrix(Arrays.copyOf(dice_1.getModelMatrix(), 16));
-                            rollX_animation.setRepeatCount((short) steps);
-                            dice_1.setAnimation(rollX_animation);
-                            rollX_animation.startAnimation(new GLAnimation.AnimationCallBack() {
-                                @Override
-                                public void onAnimationEnd() {
-                                    removeDice(dice_1, dice_1_Value);
-                                }
-                            });
-                        }
-                        else {
-                            removeDice(dice_1, dice_1_Value);
-                        }
-
-                    }
-                });
-            }
-        });
+        //removeDice(dice_1, dice_1_Value);
     }
 
-    private void removeDice(GLSceneObject dice, final int dice_1_Value) {
+    /*private void removeDice(GLSceneObject dice, final int dice_1_Value) {
         toggleActionBarProgress(true);
         getItem().setStepsToGo(dice_1_Value);
         startActionMooveGameInstance(GameInstanceActivity.this, getItem());
@@ -348,7 +300,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         //TODO: wait lock ogl draw scene ???
         try {Thread.sleep(1000);} catch (InterruptedException e) {}
         Matrix.translateM(dice.getModelMatrix(), 0, 0, 100.1f, 0);
-    }
+    }*/
 
     private void showAnimatedText(String text) {
         TextView steps = (TextView) findViewById(R.id.tv_steps_to_go);

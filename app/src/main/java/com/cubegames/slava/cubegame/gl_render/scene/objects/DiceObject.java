@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.linearmath.Transform;
 import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 
@@ -21,6 +22,10 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 public class DiceObject extends PNode {
 
+    private short[] DICE_FACE_VALUES = {2, 1, 5, 6, 3, 4};
+
+    private float[] normal;
+
     public DiceObject(Context context, GLShaderProgram program) {
         super(context, DICE_OBJECT, R.drawable.dice_texture, program, 10f, 1);
     }
@@ -32,6 +37,10 @@ public class DiceObject extends PNode {
     @Override
     public int getFacesCount() {
         return 0;
+    }
+
+    public float[] getNormal() {
+        return normal;
     }
 
     @Override
@@ -112,8 +121,8 @@ public class DiceObject extends PNode {
     }
 
     @Override
-    protected void createNormalsVBO() {//TODO: save normals
-        final float[] normal =
+    protected void createNormalsVBO() {
+        normal = new float[]
                 {
                         // Front face
                         0.0f, 0.0f, 1.0f,
@@ -177,5 +186,19 @@ public class DiceObject extends PNode {
     @Override
     protected int createFacesIBO() {
         return 0;
+    }
+
+    public int getTopFaceDiceValue(Transform transform) {
+        int result;
+        for (result = 0; result < 6; result++) {
+            int idx = result * 6;
+            Vector3f normal_vector = new Vector3f(normal[idx], normal[idx + 1], normal[idx + 2]);
+
+            transform.transform(normal_vector);
+            if (normal_vector.y > 0)
+                break;
+        }
+
+        return DICE_FACE_VALUES[result];
     }
 }

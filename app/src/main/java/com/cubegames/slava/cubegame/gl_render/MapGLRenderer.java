@@ -24,8 +24,6 @@ import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 import com.cubegames.slava.cubegame.model.points.AbstractGamePoint;
 
-import java.util.Random;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Vector3f;
@@ -97,6 +95,9 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
     }
+    public DiscreteDynamicsWorld get_world() {
+        return _world;
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -147,6 +148,11 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         _world.setGravity(new Vector3f(0f, -9.8f, 0f));
     }
 
+    private DiceObject dice_1;
+    public DiceObject getDice_1() {
+        return dice_1;
+    }
+
     private void loadScene() {
         GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT));
         water.loadObject();
@@ -161,12 +167,13 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips();
 
-        DiceObject dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
+        dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
-        //Matrix.translateM(dice_1.getModelMatrix(), 0, 0, 10f, 0);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, 100f, 0f, 0);
+
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
-        dice_1.createRigidBody();
+        /*dice_1.createRigidBody();
         //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
         //dice_1.get_body().setWorldTransform(tr);
         Random rnd = new Random(System.currentTimeMillis());
@@ -175,7 +182,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         float fxz = fy * 2f / 3f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
-        _world.addRigidBody(dice_1.get_body());
+        _world.addRigidBody(dice_1.get_body());*/
 
         mScene.set_world(_world);
 
