@@ -231,7 +231,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
         mMapFragment.setGameInstanceEntity(getItem());
         mMapFragment.glRenderer.setGameInstanceEntity(getItem());
-        mMapFragment.glRenderer.getmScene().setGameInstanceEntity(getItem());
+        //mMapFragment.glRenderer.getmScene().setGameInstanceEntity(getItem());
     }
 
     @Override
@@ -274,6 +274,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         dice_1.createRigidBody();
         //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
         //dice_1.get_body().setWorldTransform(tr);
+        //TODO: only 2 ways ???
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
         float fy = 2f + rnd.nextInt(3) * 1f;

@@ -146,10 +146,10 @@ public class GLScene {
     }
     Transform old_transform = new Transform(new Matrix4f(new float[16]));
 
-    private void removeDice(GLSceneObject dice, final int dice_1_Value) {
+    private void removeDice(DiceObject dice, Transform transform) {
         //toggleActionBarProgress(true);
-        gameInstanceEntity.setStepsToGo(dice_1_Value);
-        startActionMooveGameInstance(context, gameInstanceEntity);//TODO: ??? broadcast
+        gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue(transform, camera.getmViewMatrix()));
+        startActionMooveGameInstance(context, gameInstanceEntity);
 
         /*runOnUiThread(new Thread(new Runnable() {
             @Override
@@ -158,9 +158,6 @@ public class GLScene {
             }
         }));*/
 
-        //TODO: wait lock ogl draw scene ???
-        //try {Thread.sleep(1000);} catch (InterruptedException e) {}
-        Matrix.translateM(dice.getModelMatrix(), 0, 0, 100.1f, 0);
     }
 
     public void drawScene() {
@@ -186,7 +183,7 @@ public class GLScene {
             }
 
             if (isSimulating && object instanceof DiceObject && (((PNode)object).getTag() == 1)
-                    && ((PNode)object).get_body() != null) {//TODO:check normals
+                    && ((PNode)object).get_body() != null) {
                 Transform tr = new Transform(new Matrix4f(new float[16]));
                 float [] mat = new float[16];
                 ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);
@@ -195,7 +192,11 @@ public class GLScene {
                     old_transform = tr;
                 }
                 else {
-                    _world.removeRigidBody(((PNode)object).get_body());
+                    if (((PNode)object).get_body() != null) {
+                        _world.removeRigidBody(((PNode) object).get_body());
+                        ((PNode)object).set_body(null);
+                        removeDice((DiceObject)object, tr);
+                    }
                     Matrix.setIdentityM(mat, 0);
                     Matrix.translateM(mat, 0, 100f, 0f, 0);
                 }

@@ -2,6 +2,7 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.opengl.Matrix;
 
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.linearmath.Transform;
@@ -188,17 +189,33 @@ public class DiceObject extends PNode {
         return 0;
     }
 
-    public int getTopFaceDiceValue(Transform transform) {
-        int result;
-        for (result = 0; result < 6; result++) {
-            int idx = result * 6;
+    public int getTopFaceDiceValue(Transform transform, float[] view_matrix) {
+        int result = 0;
+        float max_y = 0f;
+        for (int i = 0; i < 6; i++) {
+            int idx = i * 18;
             Vector3f normal_vector = new Vector3f(normal[idx], normal[idx + 1], normal[idx + 2]);
 
-            transform.transform(normal_vector);
-            if (normal_vector.y > 0)
-                break;
+            //Matrix4f m = new Matrix4f(new float[16]);
+            //transform.getMatrix(m);
+            //m.transform(normal_vector);
+            //transform.transform(normal_vector);//TODO: ???
+            float[] glMat = new float[16];
+            transform.getOpenGLMatrix(glMat);
+            float[] mMatrix = new float[16];
+            Matrix.multiplyMM(mMatrix, 0, view_matrix, 0, glMat, 0);
+            float ty = transformVector4fy(mMatrix, normal_vector);
+            if (ty > max_y) {
+                max_y = ty;
+                result = i;
+            }
         }
 
         return DICE_FACE_VALUES[result];
+    }
+
+    //TODO: m * v4(v3, 0/1 ???);
+    private float transformVector4fy(float[] mat, Vector3f vec) {
+        return vec.x * mat[4] + vec.y * mat[5] + vec.z * mat[6]/* + mat[7]*/;
     }
 }

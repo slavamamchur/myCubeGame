@@ -94,6 +94,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
     public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
+        if (mScene != null)
+            mScene.setGameInstanceEntity(gameInstanceEntity);
     }
     public DiscreteDynamicsWorld get_world() {
         return _world;
@@ -126,6 +128,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private void initScene() {
         mScene = new GLScene(context);
+        mScene.setGameInstanceEntity(gameInstanceEntity);
 
         mScene.setCamera(new GLCamera(CAMERA_X, CAMERA_Y, CAMERA_Z,
                                       CAMERA_LOOK_X, CAMERA_LOOK_Y, CAMERA_LOOK_Z,
