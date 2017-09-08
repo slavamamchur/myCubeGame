@@ -1,8 +1,10 @@
 package com.cubegames.slava.cubegame.gl_render.scene;
 
 import android.content.Context;
+import android.content.Intent;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
@@ -34,6 +36,8 @@ import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
+import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_DICE_VALUE;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 
@@ -146,9 +150,22 @@ public class GLScene {
     }
     Transform old_transform = new Transform(new Matrix4f(new float[16]));
 
+    private void sendResponseIntent(String action, Bundle params){
+        Intent responseIntent = new Intent();
+        responseIntent.setAction(action);
+        responseIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        responseIntent.putExtras(params);
+        context.sendBroadcast(responseIntent);
+    }
+
     private void removeDice(DiceObject dice, Transform transform) {
         //toggleActionBarProgress(true);
         gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue(transform, camera.getmViewMatrix()));
+
+        Bundle params = new Bundle();
+        params.putInt(EXTRA_DICE_VALUE, gameInstanceEntity.getStepsToGo());
+        sendResponseIntent(ACTION_ACTION_SHOW_TURN_INFO, params);
+
         startActionMooveGameInstance(context, gameInstanceEntity);
 
         /*runOnUiThread(new Thread(new Runnable() {
@@ -164,6 +181,7 @@ public class GLScene {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (isSimulating) {
+            //TODO: reset simulation time ???
             long ctime = System.currentTimeMillis();
             _world.stepSimulation(ctime - simulation_time);
             simulation_time = ctime;

@@ -26,9 +26,11 @@ import javax.vecmath.Vector3f;
 
 import static com.cubegames.slava.cubegame.BaseListActivity.NAME_FIELD_NAME;
 import static com.cubegames.slava.cubegame.DBPlayersListActivity.COLOR_FIELD_NAME;
+import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
+import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_DICE_VALUE;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionFinishGameInstance;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
@@ -118,6 +120,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         intentFilter.addAction(ACTION_FINISH_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_RESTART_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_MOOVE_GAME_INSTANCE_RESPONSE);
+        intentFilter.addAction(ACTION_ACTION_SHOW_TURN_INFO);
 
         mMapFragment.setIntentFilters(intentFilter);
 
@@ -175,6 +178,12 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             else {
                 showError(error);
             }
+
+            return true;
+        }
+        else if (intent.getAction().equals(ACTION_ACTION_SHOW_TURN_INFO)) {
+            final int diceValue = intent.getIntExtra(EXTRA_DICE_VALUE, 0);
+            showAnimatedText(String.format("%d\nSteps\nto GO", diceValue));
 
             return true;
         }
@@ -274,7 +283,6 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         dice_1.createRigidBody();
         //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
         //dice_1.get_body().setWorldTransform(tr);
-        //TODO: only 2 ways ???
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
         float fy = 2f + rnd.nextInt(3) * 1f;

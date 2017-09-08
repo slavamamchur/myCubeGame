@@ -58,6 +58,7 @@ public class RestApiService extends IntentService {
     public static final String ACTION_ACTION_REMOVE_CHILD_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_REMOVE_CHILD_RESPONSE";
     public static final String ACTION_ADD_CHILD = "com.cubegames.slava.cubegame.api.action.ACTION_ADD_CHILD";
     public static final String ACTION_ACTION_ADD_CHILD_RESPONSE = "com.cubegames.slava.cubegame.api.action.ACTION_ADD_CHILD_RESPONSE";
+    public static final String ACTION_ACTION_SHOW_TURN_INFO = "com.cubegames.slava.cubegame.api.action.ACTION_SHOW_TURN_INFO";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -78,6 +79,7 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_PARENT_ID = "PARENT_ID";
     public static final String EXTRA_CHILD_NAME = "CHILD_NAME";
     public static final String EXTRA_CHILD_INDEX = "CHILD_INDEX";
+    public static final String EXTRA_DICE_VALUE = "DICE_VALUE";
 
     public RestApiService() {
         super("RestApiService");
