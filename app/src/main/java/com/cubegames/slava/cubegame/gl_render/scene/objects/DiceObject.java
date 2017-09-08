@@ -199,7 +199,7 @@ public class DiceObject extends PNode {
             //Matrix4f m = new Matrix4f(new float[16]);
             //transform.getMatrix(m);
             //m.transform(normal_vector);
-            //transform.transform(normal_vector);//TODO: ???
+            //transform.transform(normal_vector);//TODO: ??? multithread protection
             float[] glMat = new float[16];
             transform.getOpenGLMatrix(glMat);
             float[] mMatrix = new float[16];
@@ -214,8 +214,7 @@ public class DiceObject extends PNode {
         return DICE_FACE_VALUES[result];
     }
 
-    //TODO: m * v4(v3, 0/1 ???);
     private float transformVector4fy(float[] mat, Vector3f vec) {
-        return vec.x * mat[4] + vec.y * mat[5] + vec.z * mat[6]/* + mat[7]*/;
+        return vec.x * mat[4] + vec.y * mat[5] + vec.z * mat[6];
     }
 }
