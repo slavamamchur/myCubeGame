@@ -166,7 +166,7 @@ public class GLScene {
         params.putInt(EXTRA_DICE_VALUE, gameInstanceEntity.getStepsToGo());
         sendResponseIntent(ACTION_ACTION_SHOW_TURN_INFO, params);
 
-        startActionMooveGameInstance(context, gameInstanceEntity);
+        startActionMooveGameInstance(context, gameInstanceEntity);//TODO: ???
 
         /*runOnUiThread(new Thread(new Runnable() {
             @Override

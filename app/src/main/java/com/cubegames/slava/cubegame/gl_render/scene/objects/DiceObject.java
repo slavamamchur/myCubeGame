@@ -2,7 +2,6 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.opengl.Matrix;
 
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.linearmath.Transform;
@@ -199,12 +198,12 @@ public class DiceObject extends PNode {
             //Matrix4f m = new Matrix4f(new float[16]);
             //transform.getMatrix(m);
             //m.transform(normal_vector);
-            //transform.transform(normal_vector);//TODO: ??? multithread protection
-            float[] glMat = new float[16];
-            transform.getOpenGLMatrix(glMat);
-            float[] mMatrix = new float[16];
-            Matrix.multiplyMM(mMatrix, 0, view_matrix, 0, glMat, 0);
-            float ty = transformVector4fy(mMatrix, normal_vector);
+            transform.transform(normal_vector);//TODO: ??? multithread protection
+//            float[] glMat = new float[16];
+//            transform.getOpenGLMatrix(glMat);
+//            float[] mMatrix = new float[16];
+//            Matrix.multiplyMM(mMatrix, 0, view_matrix, 0, glMat, 0);
+            float ty = normal_vector.y;// transformVector4fy(mMatrix, normal_vector);
             if (ty > max_y) {
                 max_y = ty;
                 result = i;
