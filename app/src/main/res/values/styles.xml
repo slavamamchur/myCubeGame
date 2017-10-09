@@ -37,7 +37,7 @@
     </style>
 
     <style name="MyButtonClassicLight"
-        parent="@style/Widget.AppCompat.Button">
+        parent="@style/Base.Widget.AppCompat.Button">
         <item name="android:background">@drawable/btn_selector_cl</item>
     </style>
 

@@ -166,7 +166,7 @@ public class GLScene {
         params.putInt(EXTRA_DICE_VALUE, gameInstanceEntity.getStepsToGo());
         sendResponseIntent(ACTION_ACTION_SHOW_TURN_INFO, params);
 
-        startActionMooveGameInstance(context, gameInstanceEntity);//TODO: ???
+        startActionMooveGameInstance(context, gameInstanceEntity);
 
         /*runOnUiThread(new Thread(new Runnable() {
             @Override
@@ -181,7 +181,6 @@ public class GLScene {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (isSimulating) {
-            //TODO: reset simulation time ???
             long ctime = System.currentTimeMillis();
             _world.stepSimulation(ctime - simulation_time);
             simulation_time = ctime;
@@ -210,6 +209,7 @@ public class GLScene {
                     old_transform = tr;
                 }
                 else {
+                    //TODO: check full roll -> play sound
                     if (((PNode)object).get_body() != null) {
                         _world.removeRigidBody(((PNode) object).get_body());
                         ((PNode)object).set_body(null);

@@ -205,7 +205,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         supportInvalidateOptionsMenu();
     }
 
-    private void resetGame() {
+    private void resetGame() {//TODO: fix chip place error
         getItem().setState(GameInstance.State.WAIT);
         getItem().setCurrentPlayer(0);
         getItem().setStepsToGo(0);

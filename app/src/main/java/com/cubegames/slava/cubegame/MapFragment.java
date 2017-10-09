@@ -518,7 +518,7 @@ public class MapFragment extends Fragment implements MapView.DrawMapViewDelegate
 
         ///OGL:
         //mMapImage.postInvalidate();
-        glRenderer.moveChips(); //TODO: error
+        glRenderer.moveChips();
     }
 
     private Point getCurrentPointOffsetInViewPort() {

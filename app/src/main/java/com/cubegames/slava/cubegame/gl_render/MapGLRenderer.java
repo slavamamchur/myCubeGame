@@ -229,6 +229,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
             GLSceneObject chip = getmScene().getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", i));
 
             PointF chipPlace = getChipPlace(point, playersCnt, true);
+            chip.setPosition(chipPlace);
             Matrix.setIdentityM(chip.getModelMatrix(), 0);
             Matrix.translateM(chip.getModelMatrix(), 0, chipPlace.x, -0.1f, chipPlace.y);
         }
