@@ -88,6 +88,9 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        //TODO: play sound test - > check parallel play from tow sources
+        //mySoundPalyer.play(getApplication().getApplicationContext(), R.raw.test);
+
         setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
 
         if(getItem() != null && getItem().getId() != null){
@@ -101,6 +104,13 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             playersFragment.initTable(PLAYERS_LIST_COLUMN_INFO, null);
             playersFragment.setItems(getItem().getPlayers());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mySoundPalyer.stop();
+
+        super.onDestroy();
     }
 
     @Override
@@ -205,7 +215,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         supportInvalidateOptionsMenu();
     }
 
-    private void resetGame() {//TODO: fix chip place error
+    private void resetGame() {
         getItem().setState(GameInstance.State.WAIT);
         getItem().setCurrentPlayer(0);
         getItem().setStepsToGo(0);
@@ -290,6 +300,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
         mMapFragment.glRenderer.get_world().addRigidBody(dice_1.get_body());
+
+        ///mySoundPalyer.play(getApplication().getApplicationContext(), R.raw.roll_dice);
 
         //removeDice(dice_1, dice_1_Value);
     }

@@ -9,6 +9,7 @@ import android.os.SystemClock;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.linearmath.Transform;
+import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
@@ -20,6 +21,7 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.WaterShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 import com.cubegames.slava.cubegame.model.GameInstance;
+import com.cubegames.slava.cubegame.mySoundPalyer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -177,6 +179,17 @@ public class GLScene {
 
     }
 
+
+    /*const btCollisionObject* obA = contactManifold->getBody0();
+            const btCollisionObject* obB = contactManifold->getBody1();
+
+    //6
+    PNode* pnA = (__bridge PNode*)obA->getUserPointer();
+    PNode* pnB = (__bridge PNode*)obB->getUserPointer();*/
+
+    private int oldNumContacts = 0;
+    private long old_time = System.currentTimeMillis();
+
     public void drawScene() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -184,6 +197,19 @@ public class GLScene {
             long ctime = System.currentTimeMillis();
             _world.stepSimulation(ctime - simulation_time);
             simulation_time = ctime;
+
+            for (int i = 0; i < _world.getDispatcher().getNumManifolds(); i++)
+                if (_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0 && _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts) {
+                    mySoundPalyer.play(context, R.raw.dice_2);
+
+                    oldNumContacts = _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
+                    old_time = System.currentTimeMillis();
+                }
+                else if ((_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
+                        mySoundPalyer.stop();
+                else if (System.currentTimeMillis() - old_time > 150)
+                        mySoundPalyer.stop();
+
         }
 
         for (GLSceneObject object : objects.values()) {
@@ -209,7 +235,6 @@ public class GLScene {
                     old_transform = tr;
                 }
                 else {
-                    //TODO: check full roll -> play sound
                     if (((PNode)object).get_body() != null) {
                         _world.removeRigidBody(((PNode) object).get_body());
                         ((PNode)object).set_body(null);
