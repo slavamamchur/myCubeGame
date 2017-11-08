@@ -12,11 +12,11 @@ public class ShapeShader extends VBOShaderProgram {
 
     @Override
     protected int getVertexShaderResId() {
-        return  R.raw.vertex_shader_other;
+        return  R.raw.vertex_shader;
     }
     @Override
     protected int getFragmentShaderResId() {
-        return R.raw.fragment_shader_other;
+        return R.raw.fragment_shader;
     }
 
 /*    @Override

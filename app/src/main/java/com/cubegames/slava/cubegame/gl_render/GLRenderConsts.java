@@ -18,7 +18,10 @@ public  class GLRenderConsts {
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
-    public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
+    //public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
+    public static final String AMBIENT_RATE_PARAM_NAME = "u_AmbientRate";
+    public static final String DIFFUSE_RATE_PARAM_NAME = "u_DiffuseRate";
+    public static final String SPECULAR_RATE_PARAM_NAME = "u_SpecularRate";
     public static final String PRIVOT_X_PARAM_NAME = "u_pX";
     public static final String PRIVOT_Y_PARAM_NAME = "u_pY";
     public static final String ROLL_ANGLE_PARAM_NAME = "u_rollAngle";

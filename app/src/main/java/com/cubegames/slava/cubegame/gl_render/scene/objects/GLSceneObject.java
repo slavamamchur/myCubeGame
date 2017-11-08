@@ -33,6 +33,10 @@ public abstract class GLSceneObject {
     private GLAnimation animation;
     private PointF position = new PointF(0, 0);
 
+    private float ambientRate;
+    private float diffuseRate;
+    private float specularRate;
+
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
         objectType = type;
@@ -40,6 +44,10 @@ public abstract class GLSceneObject {
         Matrix.setIdentityM(modelMatrix, 0);
 
         createVBOParams();
+
+        ambientRate  = 0.2f;
+        diffuseRate  = 1.0f;
+        specularRate = 1.0f;
     }
 
     public GLObjectType getObjectType() {
@@ -88,6 +96,27 @@ public abstract class GLSceneObject {
     }
     public void setAnimation(GLAnimation animation) {
         this.animation = animation;
+    }
+
+    public float getAmbientRate() {
+        return ambientRate;
+    }
+    public void setAmbientRate(float ambientRate) {
+        this.ambientRate = ambientRate;
+    }
+
+    public float getDiffuseRate() {
+        return diffuseRate;
+    }
+    public void setDiffuseRate(float diffuseRate) {
+        this.diffuseRate = diffuseRate;
+    }
+
+    public float getSpecularRate() {
+        return specularRate;
+    }
+    public void setSpecularRate(float specularRate) {
+        this.specularRate = specularRate;
     }
 
     private void createVBOParams() {

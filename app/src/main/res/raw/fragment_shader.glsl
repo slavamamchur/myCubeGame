@@ -3,6 +3,9 @@ precision mediump float;
 uniform vec3 u_camera;
 uniform vec3 u_lightPosition;
 uniform sampler2D u_TextureUnit;
+uniform float u_AmbientRate;
+uniform float u_DiffuseRate;
+uniform float u_SpecularRate;
 
 varying vec3 v_PositionWorld;
 varying vec3 v_Position;
@@ -16,9 +19,9 @@ void main()
       vec3 lookvector = normalize(u_camera - v_Position);
       float distance = length(u_lightPosition - v_Position);
 
-      float ambient = 0.2;//0.1
-      float k_diffuse = 1.0;
-      float k_specular = 1.0;
+      float ambient = u_AmbientRate; //0.1
+      float k_diffuse = u_DiffuseRate;
+      float k_specular = u_SpecularRate;
 
       float diffuse = k_diffuse;
       if (gl_FrontFacing) {
@@ -49,12 +52,13 @@ void main()
 
       vec4 textureColor = texture2D(u_TextureUnit, v_Texture);
 
-      if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <= 0.0)) {
+     /* if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <= 0.0)) {
          float deepLightFactor = 1.0 + v_PositionWorld[1] / 0.333;
          vec4 deepLightColor = vec4(deepLightFactor * vec3(1.0, 1.0, 1.0), 1.0);
 
          textureColor = deepLightColor * vec4(1.0, 1.0, 0.8, 1.0);
-      }
+      }*/
 
+      textureColor[3] = 1.0;
       gl_FragColor = lightColor * textureColor;// * fog_factor + fogColor * (1.0 - fog_factor);
 }

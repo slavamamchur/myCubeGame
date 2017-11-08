@@ -36,9 +36,7 @@ import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.CHIP_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.WATER_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.WATER_MESH_OBJECT;
 
@@ -157,7 +155,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
-        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(WATER_OBJECT));
+        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
         water.loadObject();
         mScene.addObject(water, WATER_MESH_OBJECT);
 
@@ -170,7 +168,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips();
 
-        dice_1 = new DiceObject(context, mScene.getCachedShader(CHIP_OBJECT));
+        dice_1 = new DiceObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.translateM(dice_1.getModelMatrix(), 0, 100f, 0f, 0);
@@ -204,7 +202,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
             int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
             AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
 
-            GLSceneObject chip = new ColorShapeObject(context, mScene.getCachedShader(CHIP_OBJECT), 0xFF000000 | player.getColor());
+            GLSceneObject chip = new ColorShapeObject(context, mScene.getCachedShader(TERRAIN_OBJECT), 0xFF000000 | player.getColor());
             chip.loadObject();
 
             PointF chipPlace = getChipPlace(point, playersCnt, true);

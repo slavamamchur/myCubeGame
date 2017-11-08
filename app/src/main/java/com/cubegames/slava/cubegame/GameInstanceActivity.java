@@ -283,7 +283,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         }
     }
 
-    //TODO: disable buttons while animation in progress
+    //TODO: disable buttons while animation in progress + camera animation
     private void playTurn() {
         prev_player_index = getItem().getCurrentPlayer();
 

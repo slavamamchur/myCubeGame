@@ -17,6 +17,7 @@ import com.cubegames.slava.cubegame.gl_render.scene.objects.PNode;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.VBOShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.WaterShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
@@ -31,17 +32,16 @@ import javax.vecmath.Matrix4f;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
 import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_DICE_VALUE;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
 public class GLScene {
 
@@ -212,9 +212,15 @@ public class GLScene {
 
         }
 
+        GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
+        program.useProgram();
+
+        program.setCameraData(getCamera().getCameraPosition());
+        program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
+
         for (GLSceneObject object : objects.values()) {
-            GLShaderProgram program = object.getProgram();
-            program.useProgram();
+//            GLShaderProgram program = object.getProgram();
+//            program.useProgram();
 
             /*if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT) ||
                 object.getObjectType().equals(GLObjectType.WATER_OBJECT))
@@ -248,15 +254,13 @@ public class GLScene {
             }
 
             bindMVPMatrix(program, object, getCamera());
-            program.setCameraData(getCamera().getCameraPosition());
-            program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
-            glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
-            program.setTextureSlotData(0);
+
+            ((VBOShaderProgram)program).setMaterialParams(object);
 
             linkVBOData(program, object);
 
-            if(program instanceof WaterShader)
-                ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis() * 1.0f);
+            /*if(program instanceof WaterShader)
+                ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis() * 1.0f);*/
 
             /** USING VBO BUFFER */
             if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))
