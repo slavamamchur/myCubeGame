@@ -52,6 +52,14 @@ public class GLAnimation {
         this.toZ = toZ;
     }
 
+    public GLAnimation(GLRenderConsts.GLAnimationType animationType, float fromY, float fromZ, float toZ, long animationDuration) {
+        internalInit(animationType, animationDuration);
+
+        this.fromY = fromY;
+        this.fromZ = fromZ;
+        this.toZ = toZ;
+    }
+
     public GLAnimation(GLRenderConsts.GLAnimationType animationType, float rotationAngle, short rotationAxesMask, long animationDuration) {
         internalInit(animationType, animationDuration);
 
@@ -147,6 +155,9 @@ public class GLAnimation {
             case TRANSLATE_ANIMATION:
                 Matrix.translateM(internalMatrix, 0, fromX, fromY, fromZ);
                 break;
+            /*case ZOOM_ANIMATION:
+                Matrix.translateM(internalMatrix, 0, 0, fromY, fromZ);
+                break;*/
         }
 
         startTime = System.currentTimeMillis();
@@ -162,6 +173,12 @@ public class GLAnimation {
         switch (animationType) {
             case TRANSLATE_ANIMATION:
                 Matrix.translateM(modelMatrix, 0, getCurrentX(currentFrame), getCurrentY(currentFrame), getCurrentZ(currentFrame));
+                break;
+
+            case ZOOM_ANIMATION:
+                float currentZ = fromZ + getCurrentZ(currentFrame);
+                float currentY = currentZ * fromY / fromZ;
+                Matrix.translateM(modelMatrix, 0, 0, currentY - fromY, currentZ - fromZ);
                 break;
 
             case ROTATE_ANIMATION:

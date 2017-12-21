@@ -70,7 +70,7 @@
     <item android:id="@+id/menu_settings"
           android:title="Settings"
           android:orderInCategory="1"
-          android:visible="false"/>
+          android:visible="true"/>
     <item android:id="@+id/menu_logout"
         android:title="Logout"
         android:orderInCategory="2"

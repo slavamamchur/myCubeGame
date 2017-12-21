@@ -56,7 +56,8 @@ public  class GLRenderConsts {
         TRANSLATE_ANIMATION,
         ROTATE_ANIMATION,
         ROLL_ANIMATION,
-        SCALE_ANIMATION
+        SCALE_ANIMATION,
+        ZOOM_ANIMATION
     }
 
 }

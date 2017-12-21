@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_logout).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(true);
 
         return true;
     }

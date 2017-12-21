@@ -283,8 +283,23 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         }
     }
 
-    //TODO: disable buttons while animation in progress + camera animation
+    //TODO: disable buttons while animation in progress
     private void playTurn() {
+
+       /* float[] camera = mMapFragment.glRenderer.getmScene().getCamera().getCameraPosition();
+        mMapFragment.glRenderer.getmScene().zoomCameraAnimation = new GLAnimation(GLRenderConsts.GLAnimationType.ZOOM_ANIMATION, camera[1], camera[2], camera[2] + 0.5f, 1500);
+
+        mMapFragment.glRenderer.getmScene().zoomCameraAnimation.startAnimation(new GLAnimation.AnimationCallBack() {
+            @Override
+            public void onAnimationEnd() {
+                rollDice();
+            }
+        });*/
+
+        rollDice();
+    }
+
+    private void rollDice() {
         prev_player_index = getItem().getCurrentPlayer();
 
         //mMapFragment.glRenderer.getmScene().deleteObject(DICE_MESH_OBJECT_1);

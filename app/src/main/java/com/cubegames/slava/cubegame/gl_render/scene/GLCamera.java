@@ -77,4 +77,7 @@ public class GLCamera {
     public float[] getCameraPosition() {
         return cameraPosition;
     }
+    public void setCameraPosition(float x, float y, float z) {
+        cameraPosition = new float[] {x, y, z, 1.0f};
+    }
 }

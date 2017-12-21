@@ -62,6 +62,8 @@ public class GLScene {
 
     public GLScene(Context context) {
         this.context = context;
+
+        Matrix.setIdentityM(mViewMatrix, 0); //??? save old
     }
 
     public GLCamera getCamera() {
@@ -82,6 +84,9 @@ public class GLScene {
     public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
     }
+
+    public GLAnimation zoomCameraAnimation;
+    private float[] mViewMatrix = new float[16];
 
     public void addObject(GLSceneObject object, String name) {
         objects.put(name, object);
@@ -170,6 +175,16 @@ public class GLScene {
 
         startActionMooveGameInstance(context, gameInstanceEntity);
 
+        //TODO: zoom out camera
+        /*float[] camera = getCamera().getCameraPosition();
+        zoomCameraAnimation = new GLAnimation(GLRenderConsts.GLAnimationType.ZOOM_ANIMATION, camera[1], camera[2], camera[2] - 2f, 1500);
+        zoomCameraAnimation.startAnimation(new GLAnimation.AnimationCallBack() {
+            @Override
+            public void onAnimationEnd() {
+                startActionMooveGameInstance(context, gameInstanceEntity);
+            }
+        });*/
+
         /*runOnUiThread(new Thread(new Runnable() {
             @Override
             public void run() {
@@ -180,6 +195,7 @@ public class GLScene {
     }
 
 
+    /** Collision example --------------------------------------------
     /*const btCollisionObject* obA = contactManifold->getBody0();
             const btCollisionObject* obB = contactManifold->getBody1();
 
@@ -215,7 +231,23 @@ public class GLScene {
         GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
         program.useProgram();
 
+        if (zoomCameraAnimation != null && zoomCameraAnimation.isInProgress()) {
+            float[] mMatrix = new float[16];
+
+            zoomCameraAnimation.animate(mViewMatrix);
+            Matrix.multiplyMM(mMatrix, 0, camera.getmViewMatrix(), 0, mViewMatrix, 0);
+            camera.setViewMatrix(mMatrix);
+
+            //TODO: calc and set position
+            /*Vector3f camera_pos = new Vector3f(camera.getCameraPosition());
+            Matrix4f m = new Matrix4f(mMatrix);
+
+            m.transform(camera_pos);
+            camera.setCameraPosition(camera_pos.x, camera_pos.y, camera_pos.z);*/
+        }
+
         program.setCameraData(getCamera().getCameraPosition());
+
         program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
 
         for (GLSceneObject object : objects.values()) {
