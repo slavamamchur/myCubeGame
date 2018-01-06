@@ -18,12 +18,18 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
-import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
+import static android.opengl.GLES20.GL_LINEAR;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
+import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
+import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glTexParameteri;
 import static com.cubegames.slava.cubegame.SQLiteDBHelper.CHUNK_NUMBER_FIELD;
 import static com.cubegames.slava.cubegame.SQLiteDBHelper.MAP_ID_FIELD;
 import static com.cubegames.slava.cubegame.SQLiteDBHelper.MAP_IMAGE_FIELD;
@@ -125,21 +131,64 @@ public class Utils {
         }
 
         /** glActiveTexture — select active texture unit*/
-        glActiveTexture(GL_TEXTURE0);
+        //glActiveTexture(GL_TEXTURE0);
         /** делаем текстуру с именем textureIds[0] текущей*/
         glBindTexture(GL_TEXTURE_2D, textureIds[0]);
         /** учитываем прозрачность текстуры*/
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glEnable(GLES20.GL_BLEND);
         /** включаем фильтры*/
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        glTexParameteri(GLES20.GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GLES20.GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         /** переписываем Bitmap в память видеокарты*/
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
         /** удаляем Bitmap из памяти, т.к. картинка уже переписана в видеопамять*/
         bitmap.recycle();
         /** сброс приязки объекта текстуры к блоку текстуры*/
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        return textureIds[0];
+    }
+
+    public static int loadGLCubeMapTexture(Context context, int[] faces) {
+        final int[] textureIds = new int[1];
+        glGenTextures(1, textureIds, 0);
+        if (textureIds[0] == 0) {
+            return 0;
+        }
+
+        //glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1);
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureIds[0]);
+
+        Bitmap bitmap;
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        options.inScaled = false;
+
+        for (int i =0; i < faces.length; i++) {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), faces[i], options);
+
+            if (bitmap == null) {
+                glDeleteTextures(1, textureIds, 0);
+                return 0;
+            }
+
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, bitmap, 0);
+            bitmap.recycle();
+        }
+
+        //glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
         return textureIds[0];
     }

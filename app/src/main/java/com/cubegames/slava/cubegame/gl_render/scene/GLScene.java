@@ -14,6 +14,7 @@ import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.PNode;
+import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
@@ -42,6 +43,7 @@ import static com.cubegames.slava.cubegame.api.RestApiService.EXTRA_DICE_VALUE;
 import static com.cubegames.slava.cubegame.api.RestApiService.startActionMooveGameInstance;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 
 public class GLScene {
 
@@ -230,6 +232,7 @@ public class GLScene {
 
         GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
         program.useProgram();
+        //TODO: set cubesampler parameter here if texture != null use it if texture and sky  - use both
 
         if (zoomCameraAnimation != null && zoomCameraAnimation.isInProgress()) {
             float[] mMatrix = new float[16];
@@ -254,8 +257,7 @@ public class GLScene {
 //            GLShaderProgram program = object.getProgram();
 //            program.useProgram();
 
-            /*if (object.getObjectType().equals(GLRenderConsts.GLObjectType.TERRAIN_OBJECT) ||
-                object.getObjectType().equals(GLObjectType.WATER_OBJECT))
+           /* if (!object.getObjectType().equals(GLRenderConsts.GLObjectType.DICE_OBJECT))
                 setModelMatrix(object);*/
 
             GLAnimation animation = object.getAnimation();
@@ -291,8 +293,11 @@ public class GLScene {
 
             linkVBOData(program, object);
 
-            /*if(program instanceof WaterShader)
-                ((WaterShader)program).setRndSeedData((int)System.currentTimeMillis() * 1.0f);*/
+            long delta = ((System.currentTimeMillis() - old_time) / 150) % 100;
+            //old_time = System.currentTimeMillis();
+            //System.out.println(delta);
+            program.paramByName(RND_SEED__PARAM_NAME).setParamValue(
+                    object instanceof WaterObject ? (int)delta * 1.0f : -1f);
 
             /** USING VBO BUFFER */
             if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))

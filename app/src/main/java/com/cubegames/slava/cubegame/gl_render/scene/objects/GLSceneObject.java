@@ -36,6 +36,7 @@ public abstract class GLSceneObject {
     private float ambientRate;
     private float diffuseRate;
     private float specularRate;
+    private boolean isCubeMap;
 
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
@@ -47,7 +48,8 @@ public abstract class GLSceneObject {
 
         ambientRate  = 0.2f;
         diffuseRate  = 1.0f;
-        specularRate = 1.0f;
+        specularRate = 0.9f;
+        isCubeMap = false;
     }
 
     public GLObjectType getObjectType() {
@@ -117,6 +119,13 @@ public abstract class GLSceneObject {
     }
     public void setSpecularRate(float specularRate) {
         this.specularRate = specularRate;
+    }
+
+    public boolean isCubeMap() {
+        return isCubeMap;
+    }
+    public void setCubeMap(boolean cubeMap) {
+        isCubeMap = cubeMap;
     }
 
     private void createVBOParams() {

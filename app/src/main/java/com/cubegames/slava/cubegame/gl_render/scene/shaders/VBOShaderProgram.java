@@ -6,8 +6,13 @@ import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE1;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
+import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
@@ -16,10 +21,12 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.SPECULAR_RATE_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEXES_PARAM_NAME;
@@ -51,6 +58,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_TEXTURE_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
+        /** Active cubemap slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_CUBEMAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
         /** Model-View-Projection matrix*/
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MVP_MATRIX_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
@@ -78,12 +89,30 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         /** Specular material rate*/
         param = new GLShaderParam(FLOAT_UNIFORM_PARAM, SPECULAR_RATE_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
+
+        /** is cube map flag*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_CUBEMAP_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** Random generator seed */
+        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, RND_SEED__PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
     }
 
-    //TODO: override protected set material params -> from object
     public void setMaterialParams(GLSceneObject object) {
-        glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
-        setTextureSlotData(0);
+        paramByName(IS_CUBEMAP_PARAM_NAME).setParamValue(object.isCubeMap() ? 1 : 0);
+        //glActiveTexture(GL_TEXTURE0);
+
+        if (object.isCubeMap()) {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, object.getGlTextureId());
+            paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME).setParamValue(1);
+        }
+        else {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
+            setTextureSlotData(0);
+        }
 
         paramByName(AMBIENT_RATE_PARAM_NAME).setParamValue(object.getAmbientRate());
         paramByName(DIFFUSE_RATE_PARAM_NAME).setParamValue(object.getDiffuseRate());

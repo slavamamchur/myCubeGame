@@ -3,41 +3,47 @@ precision mediump float;
 uniform vec3 u_camera;
 uniform vec3 u_lightPosition;
 uniform sampler2D u_TextureUnit;
+uniform samplerCube u_CubeMapUnit;
+uniform int u_isCubeMap;
 uniform float u_AmbientRate;
 uniform float u_DiffuseRate;
 uniform float u_SpecularRate;
+uniform float u_RndSeed;
 
-varying vec3 v_PositionWorld;
-varying vec3 v_Position;
+varying vec3 v_wPosition;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
+varying vec3 lightvector;
+varying vec3 lookvector;
 
 void main()
 {
       vec3 n_normal = normalize(v_Normal);
-      vec3 lightvector = normalize(u_lightPosition - v_Position);
-      vec3 lookvector = normalize(u_camera - v_Position);
-      float distance = length(u_lightPosition - v_Position);
+      vec3 n_lightvector = normalize(lightvector);
+      vec3 n_lookvector = normalize(lookvector);
 
-      float ambient = u_AmbientRate; //0.1
+      //float distance = length(u_lightPosition - v_Position);
+
+      float ambient = u_AmbientRate;
       float k_diffuse = u_DiffuseRate;
       float k_specular = u_SpecularRate;
 
       float diffuse = k_diffuse;
       if (gl_FrontFacing) {
-              diffuse *= max(dot(n_normal, lightvector), 0.0);
+              diffuse *= max(dot(n_normal, n_lightvector), 0.0);
           }
       else {
-          	diffuse *= max(dot(-n_normal, lightvector), 0.0);
+          	diffuse *= max(dot(-n_normal, n_lightvector), 0.0);
           }
       // Add attenuation.
-      diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));
+      //diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));
 
-      vec3 reflectvector = reflect(-lightvector, n_normal);
-      float specular = k_specular * pow(max(dot(lookvector, reflectvector), 0.0), 40.0);
+      float lightFactor = ambient + diffuse;
+      vec3 diffuseColor = lightFactor * vec3(1.0, 1.0, 0.667);
 
-      float lightFactor = ambient + diffuse + specular;
-      vec4 lightColor = vec4(lightFactor * vec3(1.0, 1.0, 1.0), 1.0);
+      vec3 reflectvector = reflect(-n_lightvector, n_normal);
+      float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), 40.0);
+      vec3 specularColor = specular * vec3(1.0, 1.0, 0.667);
 
       /*//Add linear fog
       float u_fogMaxDist = 3.5;
@@ -50,15 +56,25 @@ void main()
       fog_factor = clamp(fog_factor, 0.0, 1.0);
       vec4 fogColor = vec4(fog_factor * vec3(1.0, 1.0, 1.0), 1.0);*/
 
-      vec4 textureColor = texture2D(u_TextureUnit, v_Texture);
+      vec2 uv = v_Texture.xy;
+      if (u_RndSeed > -1) {
+        vec2 tc = v_Texture.xy;
+        vec2 p = -1.0 + 2.0 * tc;
+        float len = length (p);
 
-     /* if ((textureColor[1] <= textureColor[2]) && (textureColor[0] < textureColor[1]) && (v_PositionWorld[1] <= 0.0)) {
-         float deepLightFactor = 1.0 + v_PositionWorld[1] / 0.333;
-         vec4 deepLightColor = vec4(deepLightFactor * vec3(1.0, 1.0, 1.0), 1.0);
+        uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.03;
+      }
 
-         textureColor = deepLightColor * vec4(1.0, 1.0, 0.8, 1.0);
-      }*/
+      vec4 textureColor;
+      if (u_isCubeMap == 1) {
+        //float ratio = 1.00 / 1.52;
+        vec3 texcoordCube = reflect(-n_lookvector, n_normal);
+        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.4, 1.0, 1.0), 0.4);
+      }
+      else {
+        textureColor = texture2D(u_TextureUnit, uv);
+      }
 
-      textureColor[3] = 1.0;
-      gl_FragColor = lightColor * textureColor;// * fog_factor + fogColor * (1.0 - fog_factor);
+      //textureColor[3] = 1.0;
+      gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);// * fog_factor + fogColor * (1.0 - fog_factor);
 }

@@ -8,17 +8,19 @@ public  class GLRenderConsts {
     public static final int VBO_STRIDE = VBO_ITEM_SIZE * 4;
     public static final float LAND_SIZE_IN_WORLD_SPACE = 4.0f;
     public static final float LAND_SIZE_IN_KM = 242.0f; //242Km
-    public static final float SEA_SIZE_IN_WORLD_SPACE = 10.0f;
+    public static final float SEA_SIZE_IN_WORLD_SPACE = 7.0f;
 
     public static final String VERTEXES_PARAM_NAME = "a_Position";
     public static final String TEXELS_PARAM_NAME = "a_Texture";
     public static final String NORMALS_PARAM_NAME = "a_Normal";
     public static final String ACTIVE_TEXTURE_SLOT_PARAM_NAME = "u_TextureUnit";
+    public static final String ACTIVE_CUBEMAP_SLOT_PARAM_NAME = "u_CubeMapUnit";
+    public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
-    //public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
+    public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
     public static final String AMBIENT_RATE_PARAM_NAME = "u_AmbientRate";
     public static final String DIFFUSE_RATE_PARAM_NAME = "u_DiffuseRate";
     public static final String SPECULAR_RATE_PARAM_NAME = "u_SpecularRate";

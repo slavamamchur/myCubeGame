@@ -213,7 +213,7 @@ public class DiceObject extends PNode {
         return DICE_FACE_VALUES[result];
     }
 
-    private float transformVector4fy(float[] mat, Vector3f vec) {
+    /*private float transformVector4fy(float[] mat, Vector3f vec) {
         return vec.x * mat[4] + vec.y * mat[5] + vec.z * mat[6];
-    }
+    }*/
 }
