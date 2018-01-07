@@ -10,8 +10,11 @@ attribute vec2 a_Texture;
 varying vec3 v_wPosition;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
+varying vec2 v_TiledTexture;
 varying vec3 lightvector;
 varying vec3 lookvector;
+
+const float tiling = 3.0;
 
 void main()
 {
@@ -24,6 +27,7 @@ void main()
     v_Normal = (u_MV_Matrix * vec4(a_Normal, 0.0)).xyz;
 
     v_Texture = a_Texture;
+    v_TiledTexture = v_Texture * tiling;
 
     gl_Position = u_MVP_Matrix * vec4(a_Position, 1.0);
 }

@@ -20,6 +20,7 @@ import java.util.Scanner;
 
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_LINEAR;
+import static android.opengl.GLES20.GL_REPEAT;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
 import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
@@ -114,6 +115,21 @@ public class Utils {
 
     public static final boolean[] INVERT_LIGHT_FACTOR = {true, true, false, true, true, false};
 
+    public static int loadGLTexture(Context context, int resId) {
+        Bitmap bitmap;
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        options.inScaled = false;
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
+
+        if (bitmap == null) {
+            return 0;
+        }
+
+        return loadGLTexture(bitmap);
+    }
+
     public static int loadGLTexture(Bitmap bitmap) {
         /** создание объекта текстуры*/
         final int[] textureIds = new int[1];
@@ -138,8 +154,10 @@ public class Utils {
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glEnable(GLES20.GL_BLEND);
         /** включаем фильтры*/
-        glTexParameteri(GLES20.GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GLES20.GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         /** переписываем Bitmap в память видеокарты*/
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
         /** удаляем Bitmap из памяти, т.к. картинка уже переписана в видеопамять*/

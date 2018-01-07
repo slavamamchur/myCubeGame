@@ -293,7 +293,7 @@ public class GLScene {
 
             linkVBOData(program, object);
 
-            long delta = ((System.currentTimeMillis() - old_time) / 150) % 100;
+            long delta = ((System.currentTimeMillis() - old_time) / 50) /*% 100*/;
             //old_time = System.currentTimeMillis();
             //System.out.println(delta);
             program.paramByName(RND_SEED__PARAM_NAME).setParamValue(

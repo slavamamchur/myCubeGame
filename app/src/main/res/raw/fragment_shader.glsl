@@ -13,6 +13,7 @@ uniform float u_RndSeed;
 varying vec3 v_wPosition;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
+varying vec2 v_TiledTexture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 
@@ -59,10 +60,12 @@ void main()
       vec2 uv = v_Texture.xy;
       if (u_RndSeed > -1) {
         vec2 tc = v_Texture.xy;
-        vec2 p = -1.0 + 2.0 * tc;
+        uv.x = tc.x+cos ( tc.y *10.0+ u_RndSeed *0.05)*0.1;
+        uv.y = tc.y+sin ( tc.x *5.0+ u_RndSeed *0.05)*0.1;
+        /*vec2 p = -1.0 + 2.0 * tc;
         float len = length (p);
 
-        uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.03;
+        uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.03;*/
       }
 
       vec4 textureColor;

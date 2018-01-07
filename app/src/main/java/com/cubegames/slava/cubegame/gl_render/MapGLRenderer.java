@@ -11,6 +11,8 @@ import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.cubegames.slava.cubegame.R;
+import com.cubegames.slava.cubegame.Utils;
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
 import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
@@ -47,8 +49,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LIGHT_Z = -3.2F;
 
     private final static float CAMERA_X = 0;//0
-    private final static float CAMERA_Y = 2.0F;//2
-    private final static float CAMERA_Z = 4;//-4
+    private final static float CAMERA_Y = 2F;//2
+    private final static float CAMERA_Z = 3f;//-4
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;
@@ -155,8 +157,16 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void loadScene() {
+        int skyboxMap = Utils.loadGLCubeMapTexture(context, new int[]{R.drawable.skybox_right,
+                R.drawable.skybox_left,
+                R.drawable.skybox_top,
+                R.drawable.skybox_bottom,
+                R.drawable.skybox_back,
+                R.drawable.skybox_front});
+
         GLSceneObject water = new WaterObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
         water.loadObject();
+        water.setGlTextureId(skyboxMap);
         mScene.addObject(water, WATER_MESH_OBJECT);
 
         LandObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);

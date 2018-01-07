@@ -58,6 +58,10 @@ public abstract class GLSceneObject {
     public int getGlTextureId() {
         return glTextureId;
     }
+    public void setGlTextureId(int glTextureId) {
+        this.glTextureId = glTextureId;
+    }
+
     public GLShaderParamVBO getVertexVBO() {
         return vertexVBO;
     }
