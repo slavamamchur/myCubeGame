@@ -30,9 +30,11 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Vector3f;
 
+import static android.opengl.GLES20.GL_BACK;
 import static android.opengl.GLES20.GL_CULL_FACE;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glCullFace;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
@@ -48,9 +50,9 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LIGHT_Y = 1.7F;
     private final static float LIGHT_Z = -3.2F;
 
-    private final static float CAMERA_X = 0;//0
-    private final static float CAMERA_Y = 2F;//2
-    private final static float CAMERA_Z = 3f;//-4
+    private final static float CAMERA_X = 0;
+    private final static float CAMERA_Y = 1.5F;//2
+    private final static float CAMERA_Z = 4f;//-4
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;
@@ -123,6 +125,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private void initGLRender() {
         glClearColor(0f, 0.7f, 1f, 1f);
         glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         glEnable(GL_DEPTH_TEST);
     }
 

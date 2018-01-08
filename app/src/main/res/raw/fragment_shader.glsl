@@ -1,10 +1,12 @@
 precision mediump float;
 
-uniform vec3 u_camera;
-uniform vec3 u_lightPosition;
+//uniform vec3 u_camera;
+//uniform vec3 u_lightPosition;
+uniform mat4 u_MV_Matrix;
 uniform sampler2D u_TextureUnit;
 uniform samplerCube u_CubeMapUnit;
 uniform int u_isCubeMap;
+uniform int u_isNormalMap;
 uniform float u_AmbientRate;
 uniform float u_DiffuseRate;
 uniform float u_SpecularRate;
@@ -19,7 +21,25 @@ varying vec3 lookvector;
 
 void main()
 {
-      vec3 n_normal = normalize(v_Normal);
+      vec2 uv = v_Texture.xy;
+      if (u_RndSeed > -1) {
+              vec2 tc = v_TiledTexture.xy;
+              vec2 p = -1.0 + 2.0 * tc;
+              float len = length (p);
+
+              uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.03;
+      }
+
+      vec3 n_normal;
+      if (u_isNormalMap == 0) {
+        n_normal = normalize(v_Normal);
+      }
+      else {
+        vec4 normalMapColour = texture2D(u_TextureUnit, uv);
+        n_normal = (u_MV_Matrix * vec4(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0, 0.0)).xyz;
+        n_normal = normalize(n_normal);
+      }
+
       vec3 n_lightvector = normalize(lightvector);
       vec3 n_lookvector = normalize(lookvector);
 
@@ -57,27 +77,20 @@ void main()
       fog_factor = clamp(fog_factor, 0.0, 1.0);
       vec4 fogColor = vec4(fog_factor * vec3(1.0, 1.0, 1.0), 1.0);*/
 
-      vec2 uv = v_Texture.xy;
-      if (u_RndSeed > -1) {
-        vec2 tc = v_Texture.xy;
-        uv.x = tc.x+cos ( tc.y *10.0+ u_RndSeed *0.05)*0.1;
-        uv.y = tc.y+sin ( tc.x *5.0+ u_RndSeed *0.05)*0.1;
-        /*vec2 p = -1.0 + 2.0 * tc;
-        float len = length (p);
-
-        uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.03;*/
-      }
-
       vec4 textureColor;
       if (u_isCubeMap == 1) {
         //float ratio = 1.00 / 1.52;
         vec3 texcoordCube = reflect(-n_lookvector, n_normal);
-        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.4, 1.0, 1.0), 0.4);
+        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.4, 1.0, 1.0), 0.5);
       }
       else {
         textureColor = texture2D(u_TextureUnit, uv);
       }
 
-      //textureColor[3] = 1.0;
-      gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);// * fog_factor + fogColor * (1.0 - fog_factor);
+      if (u_isNormalMap == 0) {
+        gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);// * fog_factor + fogColor * (1.0 - fog_factor);
+      }
+      else {
+        gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0) * textureColor + vec4(specularColor, 1.0);// * fog_factor + fogColor * (1.0 - fog_factor);
+      }
 }

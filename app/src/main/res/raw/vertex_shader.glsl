@@ -14,7 +14,7 @@ varying vec2 v_TiledTexture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 
-const float tiling = 3.0;
+const float tiling = 10.0;
 
 void main()
 {

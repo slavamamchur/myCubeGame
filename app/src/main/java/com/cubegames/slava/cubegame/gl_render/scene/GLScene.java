@@ -232,7 +232,6 @@ public class GLScene {
 
         GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
         program.useProgram();
-        //TODO: set cubesampler parameter here if texture != null use it if texture and sky  - use both
 
         if (zoomCameraAnimation != null && zoomCameraAnimation.isInProgress()) {
             float[] mMatrix = new float[16];
@@ -253,6 +252,7 @@ public class GLScene {
 
         program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
 
+        GLObjectType prevObject = GLObjectType.UNKNOWN_OBJECT;
         for (GLSceneObject object : objects.values()) {
 //            GLShaderProgram program = object.getProgram();
 //            program.useProgram();
@@ -291,9 +291,10 @@ public class GLScene {
 
             ((VBOShaderProgram)program).setMaterialParams(object);
 
-            linkVBOData(program, object);
+            linkVBOData(program, object, prevObject);
+            prevObject = object.getObjectType();
 
-            long delta = ((System.currentTimeMillis() - old_time) / 50) /*% 100*/;
+            long delta = ((System.currentTimeMillis() - old_time) / 250) /*% 100*/;
             //old_time = System.currentTimeMillis();
             //System.out.println(delta);
             program.paramByName(RND_SEED__PARAM_NAME).setParamValue(
@@ -313,11 +314,13 @@ public class GLScene {
         }
     }
 
-    public void linkVBOData(GLShaderProgram program, GLSceneObject object) {
+    public void linkVBOData(GLShaderProgram program, GLSceneObject object, GLObjectType prevObject) {
         try {
-            program.linkVertexData(object.getVertexVBO());
-            program.linkTexelData(object.getTexelVBO());
-            program.linkNormalData(object.getNormalVBO());
+            if (!object.getObjectType().equals(prevObject)) {
+                program.linkVertexData(object.getVertexVBO());
+                program.linkTexelData(object.getTexelVBO());
+                program.linkNormalData(object.getNormalVBO());
+            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -325,6 +328,12 @@ public class GLScene {
 
     public void bindMVPMatrix(GLShaderProgram program, GLSceneObject object, GLCamera camera) {
         float[] mMatrix = new float[16];
+
+        /** set for skybox */
+        /*Matrix4f mCamera = new Matrix4f(camera.getmViewMatrix());
+        mCamera.m30 = 0f;
+        mCamera.m31 = 0f;
+        mCamera.m32 = 0f;*/
 
         Matrix.multiplyMM(mMatrix, 0, camera.getmViewMatrix(), 0, object.getModelMatrix(), 0);
         program.setMVMatrixData(mMatrix);

@@ -22,6 +22,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_NORMALMAP_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
@@ -94,6 +95,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_CUBEMAP_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
+        /** is normal map flag*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_NORMALMAP_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
         /** Random generator seed */
         param = new GLShaderParam(FLOAT_UNIFORM_PARAM, RND_SEED__PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
@@ -101,12 +106,18 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
 
     public void setMaterialParams(GLSceneObject object) {
         paramByName(IS_CUBEMAP_PARAM_NAME).setParamValue(object.isCubeMap() ? 1 : 0);
-        //glActiveTexture(GL_TEXTURE0);
+        paramByName(IS_NORMALMAP_PARAM_NAME).setParamValue(object.isNormalMap() ? 1 : 0);
 
         if (object.isCubeMap()) {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_CUBE_MAP, object.getGlTextureId());
             paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME).setParamValue(1);
+
+            if (object.isNormalMap()) {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, object.getGlNormalMapId());
+                setTextureSlotData(0);
+            }
         }
         else {
             glActiveTexture(GL_TEXTURE0);

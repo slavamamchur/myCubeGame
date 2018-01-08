@@ -16,6 +16,7 @@ public  class GLRenderConsts {
     public static final String ACTIVE_TEXTURE_SLOT_PARAM_NAME = "u_TextureUnit";
     public static final String ACTIVE_CUBEMAP_SLOT_PARAM_NAME = "u_CubeMapUnit";
     public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
+    public static final String IS_NORMALMAP_PARAM_NAME = "u_isNormalMap";
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
@@ -51,7 +52,8 @@ public  class GLRenderConsts {
         SKY_OBJECT,
         LIGHT_OBJECT,
         CHIP_OBJECT,
-        DICE_OBJECT
+        DICE_OBJECT,
+        UNKNOWN_OBJECT
     }
 
     public enum GLAnimationType {
