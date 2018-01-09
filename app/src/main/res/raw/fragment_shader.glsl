@@ -12,12 +12,15 @@ uniform float u_DiffuseRate;
 uniform float u_SpecularRate;
 uniform float u_RndSeed;
 
-varying vec3 v_wPosition;
+//varying vec3 v_wPosition;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
 varying vec2 v_TiledTexture;
 varying vec3 lightvector;
 varying vec3 lookvector;
+varying float visibility;
+
+const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
 
 void main()
 {
@@ -43,7 +46,7 @@ void main()
       vec3 n_lightvector = normalize(lightvector);
       vec3 n_lookvector = normalize(lookvector);
 
-      //float distance = length(u_lightPosition - v_Position);
+      //float distance = length(lightvector);
 
       float ambient = u_AmbientRate;
       float k_diffuse = u_DiffuseRate;
@@ -66,31 +69,23 @@ void main()
       float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), 40.0);
       vec3 specularColor = specular * vec3(1.0, 1.0, 0.667);
 
-      /*//Add linear fog
-      float u_fogMaxDist = 3.5;
-      float u_fogMinDist = 1.0;
-      float fog_distance = length(u_camera - v_Position);
-      float fog_factor;
-      // Compute linear fog equation
-      fog_factor = (u_fogMaxDist - fog_distance) / (u_fogMaxDist - u_fogMinDist);
-      // Clamp in the [0,1] range
-      fog_factor = clamp(fog_factor, 0.0, 1.0);
-      vec4 fogColor = vec4(fog_factor * vec3(1.0, 1.0, 1.0), 1.0);*/
-
       vec4 textureColor;
       if (u_isCubeMap == 1) {
         //float ratio = 1.00 / 1.52;
         vec3 texcoordCube = reflect(-n_lookvector, n_normal);
-        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.4, 1.0, 1.0), 0.5);
+        float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0)) /* * 0.5 */;
+        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.4, 1.0, 1.0), reflectiveFactor);
       }
       else {
         textureColor = texture2D(u_TextureUnit, uv);
       }
 
       if (u_isNormalMap == 0) {
-        gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);// * fog_factor + fogColor * (1.0 - fog_factor);
+        gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);
       }
       else {
-        gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0) * textureColor + vec4(specularColor, 1.0);// * fog_factor + fogColor * (1.0 - fog_factor);
+        gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0) * textureColor + vec4(specularColor, 1.0);
       }
+
+      gl_FragColor = mix(skyColour, gl_FragColor, visibility);
 }
