@@ -47,7 +47,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PA
 public class GLScene {
 
     private final static long LAND_ANIMATION_DELAY_MS = 10000L;
-    private final static float WAVE_SPEED = 0.06f;
+    private final static float WAVE_SPEED = 0.03f;
 
     private Context context;
     private GLCamera camera;
@@ -307,7 +307,7 @@ public class GLScene {
 
             try {
                 moveFactor += WAVE_SPEED * frameTime / 1000;
-                //moveFactor %= 1;
+                moveFactor %= 1;
             }
             catch (Exception e) {
                 moveFactor = 0;

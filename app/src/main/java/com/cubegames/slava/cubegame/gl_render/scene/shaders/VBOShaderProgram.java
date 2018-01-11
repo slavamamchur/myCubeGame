@@ -9,11 +9,13 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.GL_TEXTURE1;
 import static android.opengl.GLES20.GL_TEXTURE2;
+import static android.opengl.GLES20.GL_TEXTURE3;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
@@ -67,6 +69,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
 
         /** Active normalmap slot*/
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_NORMALMAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** Active dudvmap slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_DUDVMAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** Model-View-Projection matrix*/
@@ -123,6 +129,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, object.getGlNormalMapId());
                 paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME).setParamValue(2);
+
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, object.getGlDUDVMapId());
+                paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME).setParamValue(3);
             }
         }
 

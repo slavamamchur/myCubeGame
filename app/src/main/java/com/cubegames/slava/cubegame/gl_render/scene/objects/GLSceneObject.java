@@ -40,6 +40,7 @@ public abstract class GLSceneObject {
     private boolean hasNormalMap;
     private int glNormalMapId = 0;
     private int glCubeMapId = 0;
+    private int glDUDVMapId = 0;
 
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
@@ -85,6 +86,13 @@ public abstract class GLSceneObject {
     }
     public void setGlCubeMapId(int glCubeMapId) {
         this.glCubeMapId = glCubeMapId;
+    }
+
+    public int getGlDUDVMapId() {
+        return glDUDVMapId;
+    }
+    public void setGlDUDVMapId(int glDUDVMapId) {
+        this.glDUDVMapId = glDUDVMapId;
     }
 
     public GLShaderParamVBO getVertexVBO() {

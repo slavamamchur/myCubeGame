@@ -51,7 +51,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private final static float CAMERA_X = 0;
     private final static float CAMERA_Y = 1.5F;//2
-    private final static float CAMERA_Z = 4f;//-4
+    private final static float CAMERA_Z = -4f;
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;
@@ -164,6 +164,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
                 R.drawable.skybox_front});
 
         int normalMap = loadGLTexture(context, R.drawable.normalmap);
+        int dudvMap  = loadGLTexture(context, R.drawable.dudvmap);
 
         /*GLSceneObject water = new WaterObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
         water.loadObject();
@@ -174,6 +175,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         terrain.loadObject();
         terrain.setGlCubeMapId(skyboxMap);
         terrain.setGlNormalMapId(normalMap);
+        terrain.setGlDUDVMapId(dudvMap);
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
         terrain.createRigidBody();
         _world.addRigidBody(terrain.get_body());

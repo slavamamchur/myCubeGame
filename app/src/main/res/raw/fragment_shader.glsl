@@ -6,6 +6,7 @@ uniform mat4 u_MV_Matrix;
 uniform sampler2D u_TextureUnit;
 uniform samplerCube u_CubeMapUnit;
 uniform sampler2D u_NormalMapUnit;
+uniform sampler2D u_DUDVMapUnit;
 uniform int u_isCubeMap;
 uniform int u_isNormalMap;
 uniform float u_AmbientRate;
@@ -22,17 +23,18 @@ varying float visibility;
 
 const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
 const vec3 lightColour = vec3(1.0, 1.0, 0.4);
-const float nmapTiling = 10.0;
+const float shineDumper = 40.0;
+const float nmapTiling = 6.0;
+const float waveStrength = 0.02;
 
 void main()
 {
-      vec2 uv = v_Texture.xy;
-      if (u_RndSeed > -1) {
+      vec2 uv = v_Texture;
+      if (u_RndSeed > -1 && v_wPosition.y == 0) {
               vec2 tc = uv * nmapTiling;
-              vec2 p = -1.0 + 2.0 * tc;
-              float len = length (p);
-
-              uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.02;
+              uv = texture2D(u_DUDVMapUnit, vec2(tc.x + u_RndSeed, tc.y)).rg * 0.1;
+              uv = tc + vec2(uv.x, uv.y + u_RndSeed);
+              //vec2 totalDistortion = (texture2D(u_DUDVMapUnit, uv).rg * 2.0 - 1.0) * waveStrength;
       }
 
       vec3 n_normal;
@@ -68,7 +70,7 @@ void main()
       vec3 diffuseColor = lightFactor * lightColour;
 
       vec3 reflectvector = reflect(-n_lightvector, n_normal);
-      float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), 40.0);
+      float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
       vec3 specularColor = specular * lightColour;
 
       vec4 textureColor;
