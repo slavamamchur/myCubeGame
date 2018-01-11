@@ -21,6 +21,8 @@ import com.cubegames.slava.cubegame.model.players.InstancePlayer;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.vecmath.Vector3f;
 
@@ -84,6 +86,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         }
     }
 
+    Timer timer;
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -92,6 +96,21 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         //mySoundPalyer.play(getApplication().getApplicationContext(), R.raw.test);
 
         setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mMapFragment.glRenderer.getmScene().getFrameTime() > 0)
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateTitle();
+                        }
+                    });
+            }
+        }, 500, 1000);
 
         if(getItem() != null && getItem().getId() != null){
 
@@ -109,6 +128,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     @Override
     protected void onDestroy() {
         mySoundPalyer.stop();
+
+        timer.cancel();
 
         super.onDestroy();
     }
@@ -204,14 +225,15 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     MapFragment.ChipAnimadedDelegate animationListener = new MapFragment.ChipAnimadedDelegate() {
         @Override
         public void onAnimationEnd() {
-            try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
+            try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}//TODO: do not needed if one api call
 
             startActionMooveGameInstance(GameInstanceActivity.this, getItem());
         }
     };
 
     private void updateTitle () {
-        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
+        long fps = 1000 / mMapFragment.glRenderer.getmScene().getFrameTime();
+        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ", FPS: " + fps +")");
         supportInvalidateOptionsMenu();
     }
 

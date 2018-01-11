@@ -8,11 +8,13 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam
 
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.GL_TEXTURE1;
+import static android.opengl.GLES20.GL_TEXTURE2;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
@@ -63,6 +65,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_CUBEMAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
+        /** Active normalmap slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_NORMALMAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
         /** Model-View-Projection matrix*/
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MVP_MATRIX_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
@@ -110,20 +116,19 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
 
         if (object.isCubeMap()) {
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, object.getGlTextureId());
+            glBindTexture(GL_TEXTURE_CUBE_MAP, object.getGlCubeMapId());
             paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME).setParamValue(1);
 
             if (object.isNormalMap()) {
-                glActiveTexture(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, object.getGlNormalMapId());
-                setTextureSlotData(0);
+                paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME).setParamValue(2);
             }
         }
-        else {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
-            setTextureSlotData(0);
-        }
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
+        setTextureSlotData(0);
 
         paramByName(AMBIENT_RATE_PARAM_NAME).setParamValue(object.getAmbientRate());
         paramByName(DIFFUSE_RATE_PARAM_NAME).setParamValue(object.getDiffuseRate());

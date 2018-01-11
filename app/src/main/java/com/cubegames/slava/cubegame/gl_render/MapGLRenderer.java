@@ -20,7 +20,6 @@ import com.cubegames.slava.cubegame.gl_render.scene.objects.ColorShapeObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
-import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
@@ -38,11 +37,11 @@ import static android.opengl.GLES20.glCullFace;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
+import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.WATER_MESH_OBJECT;
 
 public class MapGLRenderer implements GLSurfaceView.Renderer {
 
@@ -155,9 +154,6 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private DiceObject dice_1;
-    public DiceObject getDice_1() {
-        return dice_1;
-    }
 
     private void loadScene() {
         int skyboxMap = Utils.loadGLCubeMapTexture(context, new int[]{R.drawable.skybox_right,
@@ -167,13 +163,17 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
                 R.drawable.skybox_back,
                 R.drawable.skybox_front});
 
-        GLSceneObject water = new WaterObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
+        int normalMap = loadGLTexture(context, R.drawable.normalmap);
+
+        /*GLSceneObject water = new WaterObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
         water.loadObject();
         water.setGlTextureId(skyboxMap);
-        mScene.addObject(water, WATER_MESH_OBJECT);
+        mScene.addObject(water, WATER_MESH_OBJECT);*/
 
         LandObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
         terrain.loadObject();
+        terrain.setGlCubeMapId(skyboxMap);
+        terrain.setGlNormalMapId(normalMap);
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
         terrain.createRigidBody();
         _world.addRigidBody(terrain.get_body());
@@ -187,16 +187,6 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(dice_1.getModelMatrix(), 0, 100f, 0f, 0);
 
         mScene.addObject(dice_1, DICE_MESH_OBJECT_1);
-        /*dice_1.createRigidBody();
-        //Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
-        //dice_1.get_body().setWorldTransform(tr);
-        Random rnd = new Random(System.currentTimeMillis());
-        int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(3) * 1f;
-        float fxz = fy * 2f / 3f;
-        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
-        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
-        _world.addRigidBody(dice_1.get_body());*/
 
         mScene.set_world(_world);
 

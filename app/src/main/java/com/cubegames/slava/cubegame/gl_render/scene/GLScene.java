@@ -14,7 +14,6 @@ import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.PNode;
-import com.cubegames.slava.cubegame.gl_render.scene.objects.WaterObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.ShapeShader;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.TerrainShader;
@@ -48,6 +47,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PA
 public class GLScene {
 
     private final static long LAND_ANIMATION_DELAY_MS = 10000L;
+    private final static float WAVE_SPEED = 0.06f;
 
     private Context context;
     private GLCamera camera;
@@ -207,25 +207,35 @@ public class GLScene {
 
     private int oldNumContacts = 0;
     private long old_time = System.currentTimeMillis();
+    private long old_frame_time = 0;
+    private float moveFactor = 0;
+    private long frameTime = 0;
+
+    public long getFrameTime() {
+        return frameTime;
+    }
 
     public void drawScene() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        long currentTime = System.currentTimeMillis();
+        frameTime = old_frame_time == 0 ? 0 : currentTime - old_frame_time;
+        old_frame_time = currentTime;
+
         if (isSimulating) {
-            long ctime = System.currentTimeMillis();
-            _world.stepSimulation(ctime - simulation_time);
-            simulation_time = ctime;
+            _world.stepSimulation(currentTime - simulation_time);
+            simulation_time = currentTime;
 
             for (int i = 0; i < _world.getDispatcher().getNumManifolds(); i++)
                 if (_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0 && _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts) {
                     mySoundPalyer.play(context, R.raw.dice_2);
 
                     oldNumContacts = _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
-                    old_time = System.currentTimeMillis();
+                    old_time = currentTime; //System.currentTimeMillis();
                 }
                 else if ((_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
                         mySoundPalyer.stop();
-                else if (System.currentTimeMillis() - old_time > 150)
+                else if (/*System.currentTimeMillis()*/ currentTime - old_time > 150)
                         mySoundPalyer.stop();
 
         }
@@ -257,7 +267,7 @@ public class GLScene {
 //            GLShaderProgram program = object.getProgram();
 //            program.useProgram();
 
-           /* if (!object.getObjectType().equals(GLRenderConsts.GLObjectType.DICE_OBJECT))
+            /*if (object.getObjectType().equals(GLObjectType.TERRAIN_OBJECT))
                 setModelMatrix(object);*/
 
             GLAnimation animation = object.getAnimation();
@@ -294,11 +304,15 @@ public class GLScene {
             linkVBOData(program, object, prevObject);
             prevObject = object.getObjectType();
 
-            long delta = ((System.currentTimeMillis() - old_time) / 250) /*% 100*/;
-            //old_time = System.currentTimeMillis();
-            //System.out.println(delta);
-            program.paramByName(RND_SEED__PARAM_NAME).setParamValue(
-                    object instanceof WaterObject ? (int)delta * 1.0f : -1f);
+
+            try {
+                moveFactor += WAVE_SPEED * frameTime / 1000;
+                //moveFactor %= 1;
+            }
+            catch (Exception e) {
+                moveFactor = 0;
+            }
+            program.paramByName(RND_SEED__PARAM_NAME).setParamValue(moveFactor);
 
             /** USING VBO BUFFER */
             if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))

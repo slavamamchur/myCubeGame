@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.opengl.Matrix;
 
-import com.cubegames.slava.cubegame.R;
 import com.cubegames.slava.cubegame.gl_render.GLAnimation;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
@@ -40,6 +39,7 @@ public abstract class GLSceneObject {
     private boolean isCubeMap;
     private boolean hasNormalMap;
     private int glNormalMapId = 0;
+    private int glCubeMapId = 0;
 
     public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
         this.context = context;
@@ -69,7 +69,6 @@ public abstract class GLSceneObject {
     public boolean isNormalMap() {
         return hasNormalMap;
     }
-
     public void setHasNormalMap(boolean hasNormalMap) {
         this.hasNormalMap = hasNormalMap;
     }
@@ -77,9 +76,15 @@ public abstract class GLSceneObject {
     public int getGlNormalMapId() {
         return glNormalMapId;
     }
-
     public void setGlNormalMapId(int glNormalMapId) {
         this.glNormalMapId = glNormalMapId;
+    }
+
+    public int getGlCubeMapId() {
+        return glCubeMapId;
+    }
+    public void setGlCubeMapId(int glCubeMapId) {
+        this.glCubeMapId = glCubeMapId;
     }
 
     public GLShaderParamVBO getVertexVBO() {
@@ -164,9 +169,9 @@ public abstract class GLSceneObject {
         createNormalsVBO();
         facesIBOPtr = createFacesIBO();
 
-        if (isNormalMap())
+        /*if (isNormalMap())
             glNormalMapId = loadGLTexture(context, R.drawable.normalmap);
-        else
+        else*/
             glTextureId = loadTexture();
     }
 

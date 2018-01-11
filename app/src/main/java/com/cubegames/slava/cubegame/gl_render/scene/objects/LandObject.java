@@ -39,6 +39,8 @@ public class LandObject extends ProceduralMeshObject {
         super(context, TERRAIN_OBJECT, gameEntity == null ? null : gameEntity.getMapId(), LAND_SIZE_IN_WORLD_SPACE, program);
 
         this.gameEntity = gameEntity;
+        setCubeMap(true);
+        setHasNormalMap(true);
     }
 
     public Game getGameEntity() {

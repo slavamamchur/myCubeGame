@@ -5,6 +5,7 @@ precision mediump float;
 uniform mat4 u_MV_Matrix;
 uniform sampler2D u_TextureUnit;
 uniform samplerCube u_CubeMapUnit;
+uniform sampler2D u_NormalMapUnit;
 uniform int u_isCubeMap;
 uniform int u_isNormalMap;
 uniform float u_AmbientRate;
@@ -12,35 +13,36 @@ uniform float u_DiffuseRate;
 uniform float u_SpecularRate;
 uniform float u_RndSeed;
 
-//varying vec3 v_wPosition;
+varying vec3 v_wPosition;
 varying vec3 v_Normal;
 varying vec2 v_Texture;
-varying vec2 v_TiledTexture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 varying float visibility;
 
 const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
+const vec3 lightColour = vec3(1.0, 1.0, 0.4);
+const float nmapTiling = 10.0;
 
 void main()
 {
       vec2 uv = v_Texture.xy;
       if (u_RndSeed > -1) {
-              vec2 tc = v_TiledTexture.xy;
+              vec2 tc = uv * nmapTiling;
               vec2 p = -1.0 + 2.0 * tc;
               float len = length (p);
 
-              uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.03;
+              uv = tc + (p / len ) * cos(len * 12.0 - u_RndSeed * 4.0) * 0.02;
       }
 
       vec3 n_normal;
-      if (u_isNormalMap == 0) {
-        n_normal = normalize(v_Normal);
-      }
-      else {
-        vec4 normalMapColour = texture2D(u_TextureUnit, uv);
+      if ((u_isNormalMap == 1)  && v_wPosition.y == 0) {
+        vec4 normalMapColour = texture2D(u_NormalMapUnit, uv);
         n_normal = (u_MV_Matrix * vec4(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0, 0.0)).xyz;
         n_normal = normalize(n_normal);
+      }
+      else {
+        n_normal = normalize(v_Normal);
       }
 
       vec3 n_lightvector = normalize(lightvector);
@@ -63,24 +65,24 @@ void main()
       //diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));
 
       float lightFactor = ambient + diffuse;
-      vec3 diffuseColor = lightFactor * vec3(1.0, 1.0, 0.667);
+      vec3 diffuseColor = lightFactor * lightColour;
 
       vec3 reflectvector = reflect(-n_lightvector, n_normal);
       float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), 40.0);
-      vec3 specularColor = specular * vec3(1.0, 1.0, 0.667);
+      vec3 specularColor = specular * lightColour;
 
       vec4 textureColor;
-      if (u_isCubeMap == 1) {
+      if (u_isCubeMap == 1 && v_wPosition.y == 0) {
         //float ratio = 1.00 / 1.52;
         vec3 texcoordCube = reflect(-n_lookvector, n_normal);
-        float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0)) /* * 0.5 */;
-        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.4, 1.0, 1.0), reflectiveFactor);
+        float reflectiveFactor = 0.5;//dot(n_lookvector, vec3(0.0, 1.0, 0.0)) /* * 0.5 */;
+        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
       }
       else {
-        textureColor = texture2D(u_TextureUnit, uv);
+        textureColor = texture2D(u_TextureUnit, v_Texture);
       }
 
-      if (u_isNormalMap == 0) {
+      if (u_isNormalMap == 0 || v_wPosition.y > 0) {
         gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);
       }
       else {
