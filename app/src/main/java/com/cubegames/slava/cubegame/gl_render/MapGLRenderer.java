@@ -12,7 +12,6 @@ import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.cubegames.slava.cubegame.R;
-import com.cubegames.slava.cubegame.Utils;
 import com.cubegames.slava.cubegame.gl_render.scene.GLCamera;
 import com.cubegames.slava.cubegame.gl_render.scene.GLLightSource;
 import com.cubegames.slava.cubegame.gl_render.scene.GLScene;
@@ -51,7 +50,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private final static float CAMERA_X = 0;
     private final static float CAMERA_Y = 1.5F;//2
-    private final static float CAMERA_Z = -4f;
+    private final static float CAMERA_Z = 4f;
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;
@@ -76,6 +75,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
     private static final float[] LIGHT_POS_IN_MODEL_SPACE = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
+    private static final Vector3f LIGHT_COLOUR = new Vector3f(1.0f, 1.0f, 0.4f);
 
     private GLScene mScene;
 
@@ -136,7 +136,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
                                       CAMERA_LOOK_X, CAMERA_LOOK_Y, CAMERA_LOOK_Z,
                                       CAMERA_UP_X, CAMERA_UP_Y, CAMERA_UP_Z));
 
-        mScene.setLightSource(new GLLightSource(LIGHT_POS_IN_MODEL_SPACE, mScene.getCamera()));
+        mScene.setLightSource(new GLLightSource(LIGHT_POS_IN_MODEL_SPACE, LIGHT_COLOUR, mScene.getCamera()));
 
         initPhysics();
     }
@@ -156,12 +156,14 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private DiceObject dice_1;
 
     private void loadScene() {
-        int skyboxMap = Utils.loadGLCubeMapTexture(context, new int[]{R.drawable.skybox_right,
+        int skyboxMap = loadGLTexture(context, R.drawable.sea_bottom6);/*Utils.loadGLCubeMapTexture(context, new int[]{
+                R.drawable.skybox_right,
                 R.drawable.skybox_left,
                 R.drawable.skybox_top,
                 R.drawable.skybox_bottom,
                 R.drawable.skybox_back,
-                R.drawable.skybox_front});
+                R.drawable.skybox_front
+            });*/
 
         int normalMap = loadGLTexture(context, R.drawable.normalmap);
         int dudvMap  = loadGLTexture(context, R.drawable.dudvmap);

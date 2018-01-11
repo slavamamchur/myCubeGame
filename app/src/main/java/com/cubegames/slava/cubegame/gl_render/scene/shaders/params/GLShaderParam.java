@@ -99,7 +99,7 @@ public class GLShaderParam {
     }
 
     public void setParamValue(float[] data) {
-        if (paramType.equals(FLOAT_UNIFORM_VECTOR_PARAM) && (data.length == 4))
+        if (paramType.equals(FLOAT_UNIFORM_VECTOR_PARAM) && (data.length == 4 || data.length == 3))
             glUniform3fv(paramReference, 1, data, 0);
         else if (paramType.equals(FLOAT_UNIFORM_MATRIX_PARAM) && (data.length == 16))
             glUniformMatrix4fv(paramReference, 1, false, data, 0);

@@ -6,12 +6,13 @@ import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParamVBO;
 
+import javax.vecmath.Vector3f;
+
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.GL_TEXTURE1;
 import static android.opengl.GLES20.GL_TEXTURE2;
 import static android.opengl.GLES20.GL_TEXTURE3;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
@@ -27,6 +28,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_NORMALMAP_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
@@ -87,6 +89,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, LIGHT_POSITION_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
+        /** Light colour*/
+        param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, LIGHT_COLOUR_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
         /** Camera position*/
         param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, CAMERA_POSITION_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
@@ -122,7 +128,7 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
 
         if (object.isCubeMap()) {
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, object.getGlCubeMapId());
+            glBindTexture(/*GL_TEXTURE_CUBE_MAP*/GL_TEXTURE_2D, object.getGlCubeMapId());
             paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME).setParamValue(1);
 
             if (object.isNormalMap()) {
@@ -143,6 +149,10 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         paramByName(AMBIENT_RATE_PARAM_NAME).setParamValue(object.getAmbientRate());
         paramByName(DIFFUSE_RATE_PARAM_NAME).setParamValue(object.getDiffuseRate());
         paramByName(SPECULAR_RATE_PARAM_NAME).setParamValue(object.getSpecularRate());
+    }
+
+    public void setLightColourValue(Vector3f colour) {
+        paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
     }
 
 }

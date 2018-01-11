@@ -22,6 +22,7 @@ public  class GLRenderConsts {
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
+    public static final String LIGHT_COLOUR_PARAM_NAME = "u_lightColour";
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
     public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
     public static final String AMBIENT_RATE_PARAM_NAME = "u_AmbientRate";

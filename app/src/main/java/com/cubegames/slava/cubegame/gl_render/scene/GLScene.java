@@ -261,6 +261,7 @@ public class GLScene {
         program.setCameraData(getCamera().getCameraPosition());
 
         program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
+        ((VBOShaderProgram)program).setLightColourValue(getLightSource().getLightColour());
 
         GLObjectType prevObject = GLObjectType.UNKNOWN_OBJECT;
         for (GLSceneObject object : objects.values()) {
