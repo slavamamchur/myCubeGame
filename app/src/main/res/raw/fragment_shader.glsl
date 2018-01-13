@@ -20,7 +20,7 @@ varying vec3 v_Normal;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
-varying float visibility;
+//varying float visibility;
 
 const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
 const float shineDumper = 40.0;
@@ -56,6 +56,9 @@ void main()
       float ambient = u_AmbientRate;
       float k_diffuse = u_DiffuseRate;
       float k_specular = u_SpecularRate;
+       if (u_isNormalMap == 1 && v_wPosition.y > 0) {
+            k_specular *= 0.5;
+       }
 
       float diffuse = k_diffuse;
       if (gl_FrontFacing) {
@@ -95,5 +98,6 @@ void main()
         gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0) * textureColor + vec4(specularColor, 1.0);
       }
 
-      gl_FragColor = mix(skyColour, gl_FragColor, visibility);
+      //gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * 1.2 + 0.5;//contrast effect
+      //gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
 }

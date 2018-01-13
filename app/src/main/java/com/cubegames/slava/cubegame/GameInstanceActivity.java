@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -128,7 +129,6 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     @Override
     protected void onDestroy() {
         mySoundPalyer.stop();
-
         timer.cancel();
 
         super.onDestroy();
@@ -222,18 +222,20 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             return super.handleWebServiceResponseAction(context, intent);
     }
 
+    private final Handler mHandler = new Handler();
     MapFragment.ChipAnimadedDelegate animationListener = new MapFragment.ChipAnimadedDelegate() {
         @Override
         public void onAnimationEnd() {
-            try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}//TODO: do not needed if one api call
-
-            startActionMooveGameInstance(GameInstanceActivity.this, getItem());
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {startActionMooveGameInstance(GameInstanceActivity.this, getItem());}
+            }, 1000);
         }
     };
 
     private void updateTitle () {
         long fps = 1000 / mMapFragment.glRenderer.getmScene().getFrameTime();
-        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ", FPS: " + fps +")");
+        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ") FPS: " + fps);
         supportInvalidateOptionsMenu();
     }
 

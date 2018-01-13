@@ -188,21 +188,16 @@ public class DiceObject extends PNode {
         return 0;
     }
 
-    public int getTopFaceDiceValue(Transform transform, float[] view_matrix) {
+    public int getTopFaceDiceValue(Transform transform) {
         int result = 0;
         float max_y = 0f;
+
         for (int i = 0; i < 6; i++) {
             int idx = i * 18;
             Vector3f normal_vector = new Vector3f(normal[idx], normal[idx + 1], normal[idx + 2]);
 
-            //Matrix4f m = new Matrix4f(new float[16]);
-            //transform.getMatrix(m);
-            //m.transform(normal_vector);
-            transform.transform(normal_vector);//TODO: ??? multithread protection
-//            float[] glMat = new float[16];
-//            transform.getOpenGLMatrix(glMat);
-//            float[] mMatrix = new float[16];
-//            Matrix.multiplyMM(mMatrix, 0, view_matrix, 0, glMat, 0);
+            transform.transform(normal_vector);
+
             float ty = normal_vector.y;// transformVector4fy(mMatrix, normal_vector);
             if (ty > max_y) {
                 max_y = ty;

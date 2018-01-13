@@ -6,7 +6,7 @@ public  class GLRenderConsts {
     public static final int TEXEL_UV_SIZE = 2;
     public static final int VBO_ITEM_SIZE = (VERTEX_SIZE + TEXEL_UV_SIZE);
     public static final int VBO_STRIDE = VBO_ITEM_SIZE * 4;
-    public static final float LAND_SIZE_IN_WORLD_SPACE = 4.0f;
+    public static final float LAND_SIZE_IN_WORLD_SPACE = 7.0f;
     public static final float LAND_SIZE_IN_KM = 242.0f; //242Km
     public static final float SEA_SIZE_IN_WORLD_SPACE = 7.0f;
 
@@ -28,16 +28,11 @@ public  class GLRenderConsts {
     public static final String AMBIENT_RATE_PARAM_NAME = "u_AmbientRate";
     public static final String DIFFUSE_RATE_PARAM_NAME = "u_DiffuseRate";
     public static final String SPECULAR_RATE_PARAM_NAME = "u_SpecularRate";
-    public static final String PRIVOT_X_PARAM_NAME = "u_pX";
-    public static final String PRIVOT_Y_PARAM_NAME = "u_pY";
-    public static final String ROLL_ANGLE_PARAM_NAME = "u_rollAngle";
-    public static final String OBJECT_RADIUS_PARAM_NAME = "u_objectRadius";
-    public static final String ROLL_STEP_PARAM_NAME = "u_rollStep";
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
     public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
-    public static final String DICE_MESH_OBJECT_2 = "DICE_MESH_OBJECT_2";
+    //public static final String DICE_MESH_OBJECT_2 = "DICE_MESH_OBJECT_2";
 
     public static final long ANIMATION_FRAME_DURATION = 40;
 

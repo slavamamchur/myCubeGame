@@ -49,8 +49,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LIGHT_Z = -3.2F;
 
     private final static float CAMERA_X = 0;
-    private final static float CAMERA_Y = 1.5F;//2
-    private final static float CAMERA_Z = 4f;
+    private final static float CAMERA_Y = 5.2F;//2-1.5
+    private final static float CAMERA_Z = 4.0f;//-4
 
     private final static float CAMERA_LOOK_X = 0;
     private final static float CAMERA_LOOK_Y = 0;

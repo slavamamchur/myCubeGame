@@ -32,9 +32,11 @@ import javax.vecmath.Matrix4f;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
+import static android.opengl.GLES20.GL_FRAMEBUFFER;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
+import static android.opengl.GLES20.glBindFramebuffer;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glDrawElements;
 import static com.cubegames.slava.cubegame.api.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
@@ -47,7 +49,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PA
 public class GLScene {
 
     private final static long LAND_ANIMATION_DELAY_MS = 10000L;
-    private final static float WAVE_SPEED = 0.03f;
+    private final static float WAVE_SPEED = 0.07f;
 
     private Context context;
     private GLCamera camera;
@@ -169,7 +171,7 @@ public class GLScene {
 
     private void removeDice(DiceObject dice, Transform transform) {
         //toggleActionBarProgress(true);
-        gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue(transform, camera.getmViewMatrix()));
+        gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue(transform));
 
         Bundle params = new Bundle();
         params.putInt(EXTRA_DICE_VALUE, gameInstanceEntity.getStepsToGo());
@@ -196,15 +198,6 @@ public class GLScene {
 
     }
 
-
-    /** Collision example --------------------------------------------
-    /*const btCollisionObject* obA = contactManifold->getBody0();
-            const btCollisionObject* obB = contactManifold->getBody1();
-
-    //6
-    PNode* pnA = (__bridge PNode*)obA->getUserPointer();
-    PNode* pnB = (__bridge PNode*)obB->getUserPointer();*/
-
     private int oldNumContacts = 0;
     private long old_time = System.currentTimeMillis();
     private long old_frame_time = 0;
@@ -215,34 +208,7 @@ public class GLScene {
         return frameTime;
     }
 
-    public void drawScene() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        long currentTime = System.currentTimeMillis();
-        frameTime = old_frame_time == 0 ? 0 : currentTime - old_frame_time;
-        old_frame_time = currentTime;
-
-        if (isSimulating) {
-            _world.stepSimulation(currentTime - simulation_time);
-            simulation_time = currentTime;
-
-            for (int i = 0; i < _world.getDispatcher().getNumManifolds(); i++)
-                if (_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0 && _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts) {
-                    mySoundPalyer.play(context, R.raw.dice_2);
-
-                    oldNumContacts = _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
-                    old_time = currentTime; //System.currentTimeMillis();
-                }
-                else if ((_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
-                        mySoundPalyer.stop();
-                else if (/*System.currentTimeMillis()*/ currentTime - old_time > 150)
-                        mySoundPalyer.stop();
-
-        }
-
-        GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
-        program.useProgram();
-
+    private void calculateSceneTransformations() {
         if (zoomCameraAnimation != null && zoomCameraAnimation.isInProgress()) {
             float[] mMatrix = new float[16];
 
@@ -253,21 +219,11 @@ public class GLScene {
             //TODO: calc and set position
             /*Vector3f camera_pos = new Vector3f(camera.getCameraPosition());
             Matrix4f m = new Matrix4f(mMatrix);
-
             m.transform(camera_pos);
             camera.setCameraPosition(camera_pos.x, camera_pos.y, camera_pos.z);*/
         }
 
-        program.setCameraData(getCamera().getCameraPosition());
-
-        program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
-        ((VBOShaderProgram)program).setLightColourValue(getLightSource().getLightColour());
-
-        GLObjectType prevObject = GLObjectType.UNKNOWN_OBJECT;
         for (GLSceneObject object : objects.values()) {
-//            GLShaderProgram program = object.getProgram();
-//            program.useProgram();
-
             /*if (object.getObjectType().equals(GLObjectType.TERRAIN_OBJECT))
                 setModelMatrix(object);*/
 
@@ -276,20 +232,19 @@ public class GLScene {
                 animation.animate(object.getModelMatrix());
             }
 
-            if (isSimulating && object instanceof DiceObject && (((PNode)object).getTag() == 1)
-                    && ((PNode)object).get_body() != null) {
+            if (isSimulating && object instanceof DiceObject && (((PNode) object).getTag() == 1)
+                    && ((PNode) object).get_body() != null) {
                 Transform tr = new Transform(new Matrix4f(new float[16]));
-                float [] mat = new float[16];
-                ((PNode)object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);
+                float[] mat = new float[16];
+                ((PNode) object).get_body().getWorldTransform(tr).getOpenGLMatrix(mat);
 
                 if (!old_transform.equals(tr)) {
                     old_transform = tr;
-                }
-                else {
-                    if (((PNode)object).get_body() != null) {
+                } else {
+                    if (((PNode) object).get_body() != null) {
                         _world.removeRigidBody(((PNode) object).get_body());
-                        ((PNode)object).set_body(null);
-                        removeDice((DiceObject)object, tr);
+                        ((PNode) object).set_body(null);
+                        removeDice((DiceObject) object, tr);
                     }
                     Matrix.setIdentityM(mat, 0);
                     Matrix.translateM(mat, 0, 100f, 0f, 0);
@@ -297,23 +252,51 @@ public class GLScene {
 
                 object.setModelMatrix(mat);
             }
+        }
+    }
+
+    public void drawScene() {
+        clearRenderBuffers();
+
+        long currentTime = System.currentTimeMillis();
+        calculateFrameTime(currentTime);
+
+        simulatePhysics(currentTime);
+        calculateSceneTransformations();
+
+        renderColorBuffer();
+    }
+
+    private void renderColorBuffer() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
+        program.useProgram();
+
+        program.setCameraData(getCamera().getCameraPosition());
+
+        program.setLightSourceData(getLightSource().getLightPosInEyeSpace());
+        ((VBOShaderProgram)program).setLightColourValue(getLightSource().getLightColour());
+
+        try {
+            moveFactor += WAVE_SPEED * frameTime / 1000;
+            moveFactor %= 1;
+        }
+        catch (Exception e) {
+            moveFactor = 0;
+        }
+        program.paramByName(RND_SEED__PARAM_NAME).setParamValue(moveFactor);
+
+        GLObjectType prevObject = GLObjectType.UNKNOWN_OBJECT;
+        for (GLSceneObject object : objects.values()) {
+            /*GLShaderProgram program = object.getProgram();
+            program.useProgram();*/
 
             bindMVPMatrix(program, object, getCamera());
-
             ((VBOShaderProgram)program).setMaterialParams(object);
-
             linkVBOData(program, object, prevObject);
+
             prevObject = object.getObjectType();
-
-
-            try {
-                moveFactor += WAVE_SPEED * frameTime / 1000;
-                moveFactor %= 1;
-            }
-            catch (Exception e) {
-                moveFactor = 0;
-            }
-            program.paramByName(RND_SEED__PARAM_NAME).setParamValue(moveFactor);
 
             /** USING VBO BUFFER */
             if (object.getObjectType().equals(GLObjectType.DICE_OBJECT))
@@ -327,6 +310,44 @@ public class GLScene {
             /*object.getIndexData().position(0);
             glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
         }
+    }
+
+    private void simulatePhysics(long currentTime) {
+        if (isSimulating) {
+            _world.stepSimulation(currentTime - simulation_time);
+            simulation_time = currentTime;
+
+            for (int i = 0; i < _world.getDispatcher().getNumManifolds(); i++)
+                if (_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0 && _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts) {
+                    mySoundPalyer.play(context, R.raw.dice_2);
+
+                    oldNumContacts = _world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
+                    old_time = currentTime;
+                }
+                else if ((_world.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
+                        mySoundPalyer.stop();
+                else if (currentTime - old_time > 150)
+                        mySoundPalyer.stop();
+
+        }
+
+        /** Collision example --------------------------------------------
+         /*const btCollisionObject* obA = contactManifold->getBody0();
+         const btCollisionObject* obB = contactManifold->getBody1();
+
+         //6
+         PNode* pnA = (__bridge PNode*)obA->getUserPointer();
+         PNode* pnB = (__bridge PNode*)obB->getUserPointer();*/
+    }
+
+    private void calculateFrameTime(long currentTime) {
+        frameTime = old_frame_time == 0 ? 0 : currentTime - old_frame_time;
+        old_frame_time = currentTime;
+    }
+
+    private void clearRenderBuffers() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     public void linkVBOData(GLShaderProgram program, GLSceneObject object, GLObjectType prevObject) {
