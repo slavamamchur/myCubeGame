@@ -17,9 +17,11 @@ public  class GLRenderConsts {
     public static final String ACTIVE_CUBEMAP_SLOT_PARAM_NAME = "u_CubeMapUnit";
     public static final String ACTIVE_NORMALMAP_SLOT_PARAM_NAME = "u_NormalMapUnit";
     public static final String ACTIVE_DUDVMAP_SLOT_PARAM_NAME = "u_DUDVMapUnit";
+    public static final String ACTIVE_SHADOWMAP_SLOT_PARAM_NAME = "uShadowTexture";
     public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
     public static final String IS_NORMALMAP_PARAM_NAME = "u_isNormalMap";
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
+    public static final String LIGHT_MVP_MATRIX_PARAM_NAME = "uShadowProjMatrix";
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
     public static final String LIGHT_COLOUR_PARAM_NAME = "u_lightColour";
@@ -28,6 +30,9 @@ public  class GLRenderConsts {
     public static final String AMBIENT_RATE_PARAM_NAME = "u_AmbientRate";
     public static final String DIFFUSE_RATE_PARAM_NAME = "u_DiffuseRate";
     public static final String SPECULAR_RATE_PARAM_NAME = "u_SpecularRate";
+    public static final String UX_PIXEL_OFFSET_PARAM_NAME = "uxPixelOffset";
+    public static final String UY_PIXEL_OFFSET_PARAM_NAME = "uyPixelOffset";
+
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
@@ -51,6 +56,7 @@ public  class GLRenderConsts {
         LIGHT_OBJECT,
         CHIP_OBJECT,
         DICE_OBJECT,
+        SHADOWMAP_OBJECT,
         UNKNOWN_OBJECT
     }
 

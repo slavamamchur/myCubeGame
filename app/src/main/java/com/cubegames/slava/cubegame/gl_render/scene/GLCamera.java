@@ -49,8 +49,8 @@ public class GLCamera {
         float right = 0.5f;
         float bottom = -0.5f;
         float top = 0.5f;
-        float near = 2;
-        float far = 12;
+        float near = 2f;
+        float far = 12f;
 
         if (width > height) {
             ratio = (float) width / height;
@@ -65,7 +65,7 @@ public class GLCamera {
         Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
-    public float[] getmViewMatrix() {
+    public float[] getViewMatrix() {
         return viewMatrix;
     }
     public void setViewMatrix(float[] viewMatrix) {

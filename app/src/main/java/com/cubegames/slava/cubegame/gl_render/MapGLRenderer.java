@@ -31,14 +31,17 @@ import javax.vecmath.Vector3f;
 import static android.opengl.GLES20.GL_BACK;
 import static android.opengl.GLES20.GL_CULL_FACE;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
+import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glCullFace;
 import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glGetString;
 import static android.opengl.GLES20.glViewport;
 import static com.cubegames.slava.cubegame.Utils.forceGC_and_Sync;
 import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 
@@ -59,6 +62,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float CAMERA_UP_X = 0;
     private final static float CAMERA_UP_Y = 1;
     private final static float CAMERA_UP_Z = 0;
+
+    public static final String OAS_DEPTH_TEXTURE_EXTENSION = "OES_depth_texture";
 
     private Context context;
 
@@ -111,9 +116,14 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        mScene.setmDisplayWidth(width);
+        mScene.setmDisplayHeight(height);
+        mScene.getCamera().setProjectionMatrix(width, height);
+        mScene.getLightSource().setProjectionMatrix(width, height);//TODO: * shadow resolution
+
         glViewport(0, 0, width, height);
 
-        mScene.getCamera().setProjectionMatrix(width, height);
+       mScene.generateShadowFBO();
     }
 
     @Override
@@ -131,15 +141,20 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private void initScene() {
         mScene = new GLScene(context);
         mScene.setGameInstanceEntity(gameInstanceEntity);
-
         mScene.setCamera(new GLCamera(CAMERA_X, CAMERA_Y, CAMERA_Z,
                                       CAMERA_LOOK_X, CAMERA_LOOK_Y, CAMERA_LOOK_Z,
                                       CAMERA_UP_X, CAMERA_UP_Y, CAMERA_UP_Z));
-
         mScene.setLightSource(new GLLightSource(LIGHT_POS_IN_MODEL_SPACE, LIGHT_COLOUR, mScene.getCamera()));
+        mScene.setHasDepthTextureExtension(checkDepthTextureExtension());
 
         initPhysics();
     }
+
+    private boolean checkDepthTextureExtension() {
+        return glGetString(GL_EXTENSIONS).contains(OAS_DEPTH_TEXTURE_EXTENSION);
+    }
+
+
 
     private void initPhysics() {
         _broadphase = new DbvtBroadphase();
@@ -172,6 +187,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         water.loadObject();
         water.setGlTextureId(skyboxMap);
         mScene.addObject(water, WATER_MESH_OBJECT);*/
+
+        mScene.getCachedShader(SHADOWMAP_OBJECT);
 
         LandObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
         terrain.loadObject();

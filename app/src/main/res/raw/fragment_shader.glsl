@@ -1,12 +1,13 @@
 precision mediump float;
 
 //uniform vec3 u_camera;
-//uniform vec3 u_lightPosition;
+uniform vec3 u_lightPosition;
 uniform mat4 u_MV_Matrix;
 uniform sampler2D u_TextureUnit;
 uniform /*samplerCube*/ sampler2D u_CubeMapUnit;
 uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
+uniform sampler2D uShadowTexture;
 uniform int u_isCubeMap;
 uniform int u_isNormalMap;
 uniform float u_AmbientRate;
@@ -14,6 +15,8 @@ uniform float u_DiffuseRate;
 uniform float u_SpecularRate;
 uniform float u_RndSeed;
 uniform vec3 u_lightColour;
+uniform float uxPixelOffset;
+uniform float uyPixelOffset;
 
 varying vec3 v_wPosition;
 varying vec3 v_Normal;
@@ -21,6 +24,7 @@ varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 //varying float visibility;
+varying vec4 vShadowCoord;
 
 const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
 const float shineDumper = 40.0;
@@ -53,6 +57,25 @@ void main()
 
       //float distance = length(lightvector);
 
+      //Simple shadow mapping
+      float shadow = 1.0;
+      //if the fragment is not behind light view frustum
+      if (vShadowCoord.w > 0.0) {
+            //Calculate variable bias
+            float bias;
+            vec3 l = normalize(u_lightPosition);
+            float cosTheta = clamp(dot(n_normal,l), 0.0, 1.0);
+            bias = 0.0001 * tan(acos(cosTheta));
+            bias = clamp(bias, 0.0, 0.01);
+
+      		vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
+      		float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
+            //1.0 = not in shadow (fragmant is closer to light than the value stored in shadow map) 0.0 = in shadow
+            shadow = float(distanceFromLight > shadowMapPosition.z - bias);
+      		//scale 0.0-1.0 to 0.2-1.0 otherways everything in shadow would be black
+      		shadow = (shadow * 0.8) + 0.2;
+      }
+
       float ambient = u_AmbientRate;
       float k_diffuse = u_DiffuseRate;
       float k_specular = u_SpecularRate;
@@ -71,7 +94,7 @@ void main()
       //diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));
 
       float lightFactor = ambient + diffuse;
-      vec3 diffuseColor = lightFactor * u_lightColour;
+      vec3 diffuseColor = lightFactor * u_lightColour * shadow;
 
       vec3 reflectvector = reflect(-n_lightvector, n_normal);
       float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
@@ -88,8 +111,10 @@ void main()
         textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
       }
       else {
-        textureColor = texture2D(u_TextureUnit, v_Texture);
+        textureColor = texture2D(/*u_TextureUnit*/uShadowTexture, v_Texture);
       }
+
+      //gl_FragColor = textureColor;
 
       if (u_isNormalMap == 0 || v_wPosition.y > 0) {
         gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);

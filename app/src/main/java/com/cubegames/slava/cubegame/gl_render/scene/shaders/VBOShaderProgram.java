@@ -18,6 +18,7 @@ import static android.opengl.GLES20.glBindTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
@@ -29,6 +30,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_NORMALMAP_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_MVP_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
@@ -36,6 +38,8 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARA
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.SPECULAR_RATE_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.UX_PIXEL_OFFSET_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.UY_PIXEL_OFFSET_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEXES_PARAM_NAME;
 
 public abstract class VBOShaderProgram extends GLShaderProgram {
@@ -77,12 +81,20 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_DUDVMAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
+        /** Active dudvmap slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_SHADOWMAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
         /** Model-View-Projection matrix*/
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MVP_MATRIX_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
-        /** Model-View- matrix*/
+        /** Camer POV Model-View- matrix*/
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MV_MATRIX_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** Light POV Model-View-Projection matrix*/
+        param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, LIGHT_MVP_MATRIX_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** Light position*/
@@ -119,6 +131,14 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
 
         /** Random generator seed */
         param = new GLShaderParam(FLOAT_UNIFORM_PARAM, RND_SEED__PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** This define the x value to move one pixel left or right */
+        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, UX_PIXEL_OFFSET_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** This define the y value to move one pixel left or right */
+        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, UY_PIXEL_OFFSET_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
     }
 
