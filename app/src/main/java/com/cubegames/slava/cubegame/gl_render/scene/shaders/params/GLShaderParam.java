@@ -84,8 +84,6 @@ public class GLShaderParam {
 
         clearParamData();
         data = newValue.data;
-
-        //paramReference = newValue.getParamReference();
     }
 
     public void linkParamValue(GLShaderParam newValue) throws IllegalAccessException {

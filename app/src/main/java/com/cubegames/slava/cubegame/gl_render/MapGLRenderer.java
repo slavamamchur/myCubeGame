@@ -19,6 +19,7 @@ import com.cubegames.slava.cubegame.gl_render.scene.objects.ColorShapeObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.DiceObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.objects.LandObject;
+import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.model.Game;
 import com.cubegames.slava.cubegame.model.GameInstance;
 import com.cubegames.slava.cubegame.model.players.InstancePlayer;
@@ -43,6 +44,7 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.CHIP_MESH_OB
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 
 public class MapGLRenderer implements GLSurfaceView.Renderer {
@@ -52,18 +54,11 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private final static float LIGHT_Z = -3.2F;
 
     private final static float CAMERA_X = 0;
-    private final static float CAMERA_Y = 5.2F;//2-1.5
-    private final static float CAMERA_Z = 4.0f;//-4
-
-    private final static float CAMERA_LOOK_X = 0;
-    private final static float CAMERA_LOOK_Y = 0;
-    private final static float CAMERA_LOOK_Z = 0;
-
-    private final static float CAMERA_UP_X = 0;
-    private final static float CAMERA_UP_Y = 1;
-    private final static float CAMERA_UP_Z = 0;
-
-    public static final String OAS_DEPTH_TEXTURE_EXTENSION = "OES_depth_texture";
+    private final static float CAMERA_Y = 4f;//4.0f-1.5f
+    private final static float CAMERA_Z = 4f;//-4
+    private final static float CAMERA_PITCH = 45.0f;
+    private final static float CAMERA_YAW = 0.0f;
+    private final static float CAMERA_ROLL = 0.0f;
 
     private Context context;
 
@@ -80,7 +75,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      *  we multiply this by our transformation matrices. */
     private static final float[] LIGHT_POS_IN_MODEL_SPACE = new float[] {LIGHT_X, LIGHT_Y, LIGHT_Z, 1.0f};
-    private static final Vector3f LIGHT_COLOUR = new Vector3f(1.0f, 1.0f, 0.4f);
+    private static final Vector3f LIGHT_COLOUR = new Vector3f(1.0f, 1.0f, 0.6f);
 
     private GLScene mScene;
 
@@ -119,11 +114,11 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         mScene.setmDisplayWidth(width);
         mScene.setmDisplayHeight(height);
         mScene.getCamera().setProjectionMatrix(width, height);
-        mScene.getLightSource().setProjectionMatrix(width, height);//TODO: * shadow resolution
+        mScene.getLightSource().updateViewProjectionMatrix(width, height);
 
         glViewport(0, 0, width, height);
 
-       mScene.generateShadowFBO();
+        mScene.generateShadowmapFBO();
     }
 
     @Override
@@ -141,9 +136,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private void initScene() {
         mScene = new GLScene(context);
         mScene.setGameInstanceEntity(gameInstanceEntity);
-        mScene.setCamera(new GLCamera(CAMERA_X, CAMERA_Y, CAMERA_Z,
-                                      CAMERA_LOOK_X, CAMERA_LOOK_Y, CAMERA_LOOK_Z,
-                                      CAMERA_UP_X, CAMERA_UP_Y, CAMERA_UP_Z));
+        mScene.setCamera(new GLCamera(CAMERA_X, CAMERA_Y, CAMERA_Z, CAMERA_PITCH, CAMERA_YAW, CAMERA_ROLL));
         mScene.setLightSource(new GLLightSource(LIGHT_POS_IN_MODEL_SPACE, LIGHT_COLOUR, mScene.getCamera()));
         mScene.setHasDepthTextureExtension(checkDepthTextureExtension());
 
@@ -151,10 +144,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private boolean checkDepthTextureExtension() {
-        return glGetString(GL_EXTENSIONS).contains(OAS_DEPTH_TEXTURE_EXTENSION);
+        return glGetString(GL_EXTENSIONS).contains(OES_DEPTH_TEXTURE_EXTENSION);
     }
-
-
 
     private void initPhysics() {
         _broadphase = new DbvtBroadphase();
@@ -171,7 +162,8 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
     private DiceObject dice_1;
 
     private void loadScene() {
-        int skyboxMap = loadGLTexture(context, R.drawable.sea_bottom6);/*Utils.loadGLCubeMapTexture(context, new int[]{
+        int skyboxMap = loadGLTexture(context, R.drawable.sea_bottom6);
+                /*Utils.loadGLCubeMapTexture(context, new int[]{
                 R.drawable.skybox_right,
                 R.drawable.skybox_left,
                 R.drawable.skybox_top,
@@ -183,26 +175,25 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         int normalMap = loadGLTexture(context, R.drawable.normalmap);
         int dudvMap  = loadGLTexture(context, R.drawable.dudvmap);
 
-        /*GLSceneObject water = new WaterObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
-        water.loadObject();
-        water.setGlTextureId(skyboxMap);
-        mScene.addObject(water, WATER_MESH_OBJECT);*/
-
         mScene.getCachedShader(SHADOWMAP_OBJECT);
+        GLShaderProgram program = mScene.getCachedShader(TERRAIN_OBJECT);
+        LandObject terrain = new LandObject(context, program, gameEntity);
 
-        LandObject terrain = new LandObject(context, mScene.getCachedShader(TERRAIN_OBJECT), gameEntity);
-        terrain.loadObject();
         terrain.setGlCubeMapId(skyboxMap);
         terrain.setGlNormalMapId(normalMap);
         terrain.setGlDUDVMapId(dudvMap);
+
+        terrain.loadObject();
+
         mScene.addObject(terrain, TERRAIN_MESH_OBJECT);
+
         terrain.createRigidBody();
         _world.addRigidBody(terrain.get_body());
 
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
-            placeChips();
+            placeChips(program);
 
-        dice_1 = new DiceObject(context, mScene.getCachedShader(TERRAIN_OBJECT));
+        dice_1 = new DiceObject(context, program);
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
         Matrix.translateM(dice_1.getModelMatrix(), 0, 100f, 0f, 0);
@@ -216,9 +207,10 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
         mScene.startSimulation();
     }
 
-    public void placeChips() {
+    public void placeChips(GLShaderProgram program) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
+        GLSceneObject prevChip = null;
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
             int currentPointIdx = player.getCurrentPoint();
@@ -226,8 +218,13 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
             int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
             AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
 
-            GLSceneObject chip = new ColorShapeObject(context, mScene.getCachedShader(TERRAIN_OBJECT), 0xFF000000 | player.getColor());
-            chip.loadObject();
+            GLSceneObject chip = new ColorShapeObject(context, program, 0xFF000000 | player.getColor());
+            if (prevChip == null)
+                chip.loadObject();
+            else {
+                chip.loadFromObject(prevChip);
+                prevChip = chip;
+            }
 
             PointF chipPlace = getChipPlace(point, playersCnt, true);
             chip.setPosition(chipPlace);

@@ -14,7 +14,6 @@ public class WaterObject extends ProceduralMeshObject {
         super(context, WATER_OBJECT, -1, SEA_SIZE_IN_WORLD_SPACE, program);
 
         setCubeMap(true);
-        setHasNormalMap(true);
     }
 
     @Override

@@ -2,74 +2,85 @@ package com.cubegames.slava.cubegame.gl_render.scene;
 
 import android.opengl.Matrix;
 
+import javax.vecmath.Vector3f;
+
 public class GLCamera {
 
-    private float[] viewMatrix;
-    private float[] projectionMatrix;
-    private float[] cameraPosition;
+    public static final float VERT_FOV = 27.0f;
+    public static final float NEAR_PLANE = 0.1f;
+    public static final float FAR_PLANE = 100.0f;
 
-    public GLCamera(float eyeX,
-                    float eyeY,
-                    float eyeZ,
+    private float[] viewMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
+    private float[] cameraPosition = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
 
-                    float centerX,
-                    float centerY,
-                    float centerZ,
+    private float pitch;
+    private float yaw;
+    private float roll;
 
-                    float upX,
-                    float upY,
-                    float upZ) {
+    public GLCamera(float eyeX, float eyeY, float eyeZ, float pitch, float yaw, float roll) {
+        this.pitch = pitch;
+        this.yaw = yaw;
+        this.roll = roll;
 
-        viewMatrix = new float[16];
-        projectionMatrix = new float[16];
-
-        initCamera(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+        setCameraPosition(eyeX, eyeY, eyeZ);
     }
 
-    public void initCamera(
-            float eyeX,
-            float eyeY,
-            float eyeZ,
+    public void setCameraPosition(float eyeX, float eyeY, float eyeZ) {
+        cameraPosition[0] = eyeX;
+        cameraPosition[1] = eyeY;
+        cameraPosition[2] = eyeZ;
 
-            float centerX,
-            float centerY,
-            float centerZ,
+        updateViewMatrix();
+    }
 
-            float upX,
-            float upY,
-            float upZ)
-    {
-        cameraPosition = new float[] {eyeX, eyeY, eyeZ, 1.0f};
-        Matrix.setLookAtM(viewMatrix, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+    private void updateViewMatrix() {
+        Matrix.setIdentityM(viewMatrix, 0);
+        Matrix.rotateM(viewMatrix, 0, pitch, 1, 0, 0);
+        Matrix.rotateM(viewMatrix, 0, yaw, 0, 1, 0);
+        Matrix.rotateM(viewMatrix, 0, roll, 0, 0, 1);
+        Matrix.translateM(viewMatrix, 0, -cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
     }
 
     public void setProjectionMatrix(int width, int height) {
-        float ratio;
-        float left = -0.5f;
-        float right = 0.5f;
-        float bottom = -0.5f;
-        float top = 0.5f;
-        float near = 2f;
-        float far = 12f;
+        float aspectRatio = (float) width / (float) height;
 
-        if (width > height) {
-            ratio = (float) width / height;
-            left *= ratio;
-            right *= ratio;
-        } else {
-            ratio = (float) height / width;
-            bottom *= ratio;
-            top *= ratio;
-        }
-
-        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        Matrix.setIdentityM(projectionMatrix, 0);
+        Matrix.perspectiveM(projectionMatrix, 0 , VERT_FOV, aspectRatio, NEAR_PLANE, FAR_PLANE);
     }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+        updateViewMatrix();
+    }
+
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+        updateViewMatrix();
+    }
+
+    public void setRoll(float roll) {
+        this.roll = roll;
+        updateViewMatrix();
+    }
+
+    /*private void createProjectionMatrix(){
+        float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+        float x_scale = y_scale / aspectRatio;
+        float frustum_length = FAR_PLANE - NEAR_PLANE;
+
+        projectionMatrix = new Matrix4f();
+        projectionMatrix.m00 = x_scale;
+        projectionMatrix.m11 = y_scale;
+        projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
+        projectionMatrix.m23 = -1;
+        projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
+        projectionMatrix.m33 = 0;
+    }*/
 
     public float[] getViewMatrix() {
         return viewMatrix;
-    }
-    public void setViewMatrix(float[] viewMatrix) {
-        this.viewMatrix = viewMatrix;
     }
     public float[] getProjectionMatrix() {
         return projectionMatrix;
@@ -77,7 +88,16 @@ public class GLCamera {
     public float[] getCameraPosition() {
         return cameraPosition;
     }
-    public void setCameraPosition(float x, float y, float z) {
-        cameraPosition = new float[] {x, y, z, 1.0f};
+    public Vector3f getCameraPosition3f() {
+        return new Vector3f(cameraPosition);
+    }
+    public float getPitch() {
+        return pitch;
+    }
+    public float getYaw() {
+        return yaw;
+    }
+    public float getRoll() {
+        return roll;
     }
 }

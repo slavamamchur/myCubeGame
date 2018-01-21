@@ -1,6 +1,7 @@
 package com.cubegames.slava.cubegame.gl_render.scene.shaders;
 
 import android.content.Context;
+import android.opengl.Matrix;
 
 import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
@@ -27,15 +28,16 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_CUBEMAPF_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.IS_NORMALMAP_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_MVP_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITIONF_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIXF_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
-import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.SPECULAR_RATE_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.UX_PIXEL_OFFSET_PARAM_NAME;
@@ -93,12 +95,20 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MV_MATRIX_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
+        /** Camer POV Model-View- matrix for fragmrnt shader*/
+        param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, MV_MATRIXF_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
         /** Light POV Model-View-Projection matrix*/
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, LIGHT_MVP_MATRIX_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** Light position*/
         param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, LIGHT_POSITION_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** Light position for fragment shader*/
+        param = new GLShaderParam(FLOAT_UNIFORM_VECTOR_PARAM, LIGHT_POSITIONF_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** Light colour*/
@@ -125,12 +135,8 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_CUBEMAP_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
-        /** is normal map flag*/
-        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_NORMALMAP_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);
-
-        /** Random generator seed */
-        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, RND_SEED__PARAM_NAME, getProgramId());
+        /** is cube map flag for fragment shader*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_CUBEMAPF_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** This define the x value to move one pixel left or right */
@@ -143,15 +149,15 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
     }
 
     public void setMaterialParams(GLSceneObject object) {
-        paramByName(IS_CUBEMAP_PARAM_NAME).setParamValue(object.isCubeMap() ? 1 : 0);
-        paramByName(IS_NORMALMAP_PARAM_NAME).setParamValue(object.isNormalMap() ? 1 : 0);
+        paramByName(IS_CUBEMAP_PARAM_NAME).setParamValue(object.hasNormalMap() ? 1 : 0);
+        paramByName(IS_CUBEMAPF_PARAM_NAME).setParamValue(object.hasNormalMap() ? 1 : 0);
 
         if (object.isCubeMap()) {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(/*GL_TEXTURE_CUBE_MAP*/GL_TEXTURE_2D, object.getGlCubeMapId());
             paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME).setParamValue(1);
 
-            if (object.isNormalMap()) {
+            if (object.hasNormalMap()) {
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_2D, object.getGlNormalMapId());
                 paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME).setParamValue(2);
@@ -173,6 +179,28 @@ public abstract class VBOShaderProgram extends GLShaderProgram {
 
     public void setLightColourValue(Vector3f colour) {
         paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
+    }
+
+    public void bindLightSourceMVP (GLSceneObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
+        float [] lightMVP = new float[16];
+        float[] tempResultMatrix = new float[16];
+
+        Matrix.multiplyMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        Matrix.multiplyMM(tempResultMatrix, 0, projectionMatrix, 0, lightMVP, 0);
+        System.arraycopy(tempResultMatrix, 0, lightMVP, 0, 16);
+
+        float bias[] = new float [] {0.5f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.5f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f};
+        float[] depthBiasMVP = new float[16];
+
+        if (hasDepthTextureExtension){
+            Matrix.multiplyMM(depthBiasMVP, 0, bias, 0, lightMVP, 0);
+            System.arraycopy(depthBiasMVP, 0, lightMVP, 0, 16);
+        }
+
+        paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);
     }
 
 }

@@ -3,6 +3,7 @@ package com.cubegames.slava.cubegame.gl_render.scene.objects;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.cubegames.slava.cubegame.gl_render.GLAnimation;
@@ -11,7 +12,14 @@ import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam
 
 import java.nio.ShortBuffer;
 
+import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
+import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
+import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDeleteBuffers;
+import static android.opengl.GLES20.glDeleteTextures;
+import static android.opengl.GLES20.glDrawElements;
 import static com.cubegames.slava.cubegame.Utils.loadGLTexture;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
@@ -19,6 +27,8 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEXES_PARAM_NAME;
 
 public abstract class GLSceneObject {
+
+    //private final static long LAND_ANIMATION_DELAY_MS = 10000L;
 
     protected Context context;
     private GLObjectType objectType;
@@ -30,31 +40,29 @@ public abstract class GLSceneObject {
     protected int facesIBOPtr = 0;
     private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
-    private GLAnimation animation;
+    private GLAnimation animation = null;
     private PointF position = new PointF(0, 0);
 
-    private float ambientRate;
-    private float diffuseRate;
-    private float specularRate;
-    private boolean isCubeMap;
-    private boolean hasNormalMap;
+    private float ambientRate = 0.4f;
+    private float diffuseRate = 1.0f;
+    private float specularRate = 0.9f;
+    private boolean isCubeMap = false;
     private int glNormalMapId = 0;
     private int glCubeMapId = 0;
     private int glDUDVMapId = 0;
 
-    public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) {
+    protected int textureResId = -1;
+    protected String mapID = "";
+    protected int textureColor = 0;
+
+    public GLSceneObject(Context context, GLObjectType type, GLShaderProgram program) { //TODO: material object
         this.context = context;
         objectType = type;
         this.program = program;
+
         Matrix.setIdentityM(modelMatrix, 0);
 
         createVBOParams();
-
-        ambientRate  = 0.2f;
-        diffuseRate  = 1.0f;
-        specularRate = 0.9f;
-        isCubeMap = false;
-        hasNormalMap = false;
     }
 
     public GLObjectType getObjectType() {
@@ -67,11 +75,8 @@ public abstract class GLSceneObject {
         this.glTextureId = glTextureId;
     }
 
-    public boolean isNormalMap() {
-        return hasNormalMap;
-    }
-    public void setHasNormalMap(boolean hasNormalMap) {
-        this.hasNormalMap = hasNormalMap;
+    public boolean hasNormalMap() {
+        return glNormalMapId > 0;
     }
 
     public int getGlNormalMapId() {
@@ -176,11 +181,47 @@ public abstract class GLSceneObject {
         createTexelsVBO();
         createNormalsVBO();
         facesIBOPtr = createFacesIBO();
+        glTextureId = loadTexture();
+    }
 
-        /*if (isNormalMap())
-            glNormalMapId = loadGLTexture(context, R.drawable.normalmap);
-        else*/
-            glTextureId = loadTexture();
+    public void loadFromObject(GLSceneObject src) {
+        vertexVBO.clearParamDataVBO();
+        vertexVBO = src.getVertexVBO();
+
+        texelVBO.clearParamDataVBO();
+        texelVBO = src.getTexelVBO();
+
+        normalVBO.clearParamDataVBO();
+        normalVBO = src.getNormalVBO();
+
+        clearVBOPtr(facesIBOPtr);
+        facesIBOPtr =  src.getFacesIBOPtr();
+
+        glTextureId = checkTextureBitmap(src) ? src.getGlTextureId() : loadTexture();
+    }
+
+    private boolean checkTextureBitmap(GLSceneObject src) {
+        return textureResId == src.textureResId && mapID.equals(src.mapID) && textureColor == src.textureColor;
+    }
+
+    public void prepare(GLShaderProgram program) {
+        program.linkVBOData(this);
+
+        if (facesIBOPtr > 0)
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
+    }
+
+    public void render() {
+        /** USING VBO BUFFER */
+        if (facesIBOPtr == 0)
+            GLES20.glDrawArrays(GL_TRIANGLES, 0, getFacesCount());
+        else {
+            glDrawElements(GL_TRIANGLE_STRIP, getFacesCount(), GL_UNSIGNED_SHORT, 0);
+        }
+
+        /** USING RAM BUFFER */
+            /*object.getIndexData().position(0);
+            glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
     }
 
     protected int loadTexture() {
@@ -203,12 +244,22 @@ public abstract class GLSceneObject {
         }
     }
 
-    public void clearVBOData() {
+    public void clearData() {
         clearVBOPtr(vertexVBO);
         clearVBOPtr(texelVBO);
         clearVBOPtr(normalVBO);
         clearVBOPtr(facesIBOPtr);
         facesIBOPtr = 0;
+
+        glDeleteTextures(4, new int[]{glTextureId, glCubeMapId, glDUDVMapId, glNormalMapId}, 0);
+    }
+
+    public void setModelMatrix() {
+        /** В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.*/
+        /*float angle = -(float)(SystemClock.uptimeMillis() % LAND_ANIMATION_DELAY_MS) / LAND_ANIMATION_DELAY_MS * 360;
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.rotateM(modelMatrix, 0, angle, 0, 1, 0);*/
     }
 
     protected abstract Bitmap getTextureBitmap();

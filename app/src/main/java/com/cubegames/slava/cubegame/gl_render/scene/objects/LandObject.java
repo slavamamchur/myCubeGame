@@ -40,7 +40,6 @@ public class LandObject extends ProceduralMeshObject {
 
         this.gameEntity = gameEntity;
         setCubeMap(true);
-        setHasNormalMap(true);
     }
 
     public Game getGameEntity() {

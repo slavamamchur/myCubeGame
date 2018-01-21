@@ -26,12 +26,25 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/notice.txt'
     }
+
+
     dexOptions {
 //        incremental false
     }
     productFlavors {
     }
+
+
 }
+
+/*
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+
+}
+*/
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -42,4 +55,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:9.8.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'cz.advel.jbullet:jbullet:20101010-1'
+    //compile "org.lwjgl:lwjgl:3.0.0a"
+
 }

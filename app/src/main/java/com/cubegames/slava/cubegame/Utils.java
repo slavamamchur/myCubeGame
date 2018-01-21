@@ -19,17 +19,23 @@ import java.util.Date;
 import java.util.Scanner;
 
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
+import static android.opengl.GLES20.GL_DEPTH_COMPONENT;
 import static android.opengl.GLES20.GL_LINEAR;
+import static android.opengl.GLES20.GL_NEAREST;
 import static android.opengl.GLES20.GL_REPEAT;
+import static android.opengl.GLES20.GL_RGBA;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
 import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
 import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
 import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
 import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
+import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
+import static android.opengl.GLES20.GL_UNSIGNED_INT;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glTexImage2D;
 import static android.opengl.GLES20.glTexParameteri;
 import static com.cubegames.slava.cubegame.SQLiteDBHelper.CHUNK_NUMBER_FIELD;
 import static com.cubegames.slava.cubegame.SQLiteDBHelper.MAP_ID_FIELD;
@@ -114,6 +120,52 @@ public class Utils {
                                                     MIN_WHITE};
 
     public static final boolean[] INVERT_LIGHT_FACTOR = {true, true, false, true, true, false};
+
+    public static int createColorTexture(int width, int height) {
+        final int[] textureIds = new int[1];
+
+        glGenTextures(1, textureIds, 0);
+
+        if (textureIds[0] == 0) {
+            return 0;
+        }
+
+        glBindTexture(GL_TEXTURE_2D, textureIds[0]);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        return textureIds[0];
+    }
+
+    public static int createDepthTexture(int width, int height) {
+        final int[] textureIds = new int[1];
+
+        glGenTextures(1, textureIds, 0);
+
+        if (textureIds[0] == 0) {
+            return 0;
+        }
+
+        glBindTexture(GL_TEXTURE_2D, textureIds[0]);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, null);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        return textureIds[0];
+    }
 
     public static int loadGLTexture(Context context, int resId) {
         Bitmap bitmap;

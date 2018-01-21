@@ -1,7 +1,9 @@
 package com.cubegames.slava.cubegame.gl_render.scene.shaders;
 
 import android.content.Context;
+import android.opengl.Matrix;
 
+import com.cubegames.slava.cubegame.gl_render.scene.objects.GLSceneObject;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.params.GLShaderParam;
 
 import java.nio.FloatBuffer;
@@ -18,6 +20,7 @@ import static android.opengl.GLES20.glCreateProgram;
 import static android.opengl.GLES20.glCreateShader;
 import static android.opengl.GLES20.glDeleteProgram;
 import static android.opengl.GLES20.glDeleteShader;
+import static android.opengl.GLES20.glDetachShader;
 import static android.opengl.GLES20.glGetProgramiv;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
@@ -30,8 +33,10 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITIONF_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
+import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIXF_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.MV_MATRIX_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
 import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
@@ -44,11 +49,15 @@ import static com.cubegames.slava.cubegame.gl_render.GLRenderConsts.VERTEX_SIZE;
 public abstract class GLShaderProgram {
 
     private int programId;
+    private int vertexShaderID;
+    private int fragmentShaderID;
     protected Map<String, GLShaderParam> params = new HashMap<>();
 
     public GLShaderProgram(Context context) {
-        programId = createProgram(createShader(context, GL_VERTEX_SHADER, getVertexShaderResId()),
-                                  createShader(context, GL_FRAGMENT_SHADER, getFragmentShaderResId()));
+
+        vertexShaderID = createShader(context, GL_VERTEX_SHADER, getVertexShaderResId());
+        fragmentShaderID = createShader(context, GL_FRAGMENT_SHADER, getFragmentShaderResId());
+        programId = createProgram(vertexShaderID, fragmentShaderID);
 
         createParams();
     }
@@ -65,6 +74,14 @@ public abstract class GLShaderProgram {
 
     public void useProgram() {
         glUseProgram(programId);
+    }
+
+    public void deleteProgram() {
+        glDetachShader(programId, vertexShaderID);
+        glDetachShader(programId, fragmentShaderID);
+        glDeleteShader(vertexShaderID);
+        glDeleteShader(fragmentShaderID);
+        glDeleteProgram(programId);
     }
 
     public GLShaderParam paramByName (String name) {
@@ -141,6 +158,7 @@ public abstract class GLShaderProgram {
 
     public void setLightSourceData(float[] data) {
         paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(data);
+        paramByName(LIGHT_POSITIONF_PARAM_NAME).setParamValue(data);
     }
 
     public void setMVPMatrixData(float[] data) {
@@ -149,6 +167,27 @@ public abstract class GLShaderProgram {
 
     public void setMVMatrixData(float[] data) {
         paramByName(MV_MATRIX_PARAM_NAME).setParamValue(data);
+        paramByName(MV_MATRIXF_PARAM_NAME).setParamValue(data);
+    }
+
+    public void bindMVPMatrix(GLSceneObject object, float[] viewMatrix, float[] projectionMatrix) {
+        float[] mMatrix = new float[16];
+
+        Matrix.multiplyMM(mMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        setMVMatrixData(mMatrix);
+
+        Matrix.multiplyMM(mMatrix, 0, projectionMatrix, 0, mMatrix, 0);
+        setMVPMatrixData(mMatrix);
+    }
+
+    public void linkVBOData(GLSceneObject object) {
+        try {
+            linkVertexData(object.getVertexVBO());
+            linkTexelData(object.getTexelVBO());
+            linkNormalData(object.getNormalVBO());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Utils-------------------------------------------------------------------------------------*/

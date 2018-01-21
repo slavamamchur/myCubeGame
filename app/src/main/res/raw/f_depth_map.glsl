@@ -1,6 +1,4 @@
-// Pixel shader to generate the Depth Map
-// Used for shadow mapping - generates depth map from the light's viewpoint
-//precision highp float;
+precision highp float;
 
 varying vec4 vPosition;
 
@@ -15,7 +13,7 @@ void main() {
     							256.0 * 256.0,
     							256.0,
     							1.0);
-    	const vec4 bitMsk = vec4(0,
+    	const vec4 bitMsk = vec4(0.0,
     							 1.0 / 256.0,
     							 1.0 / 256.0,
     							 1.0 / 256.0);

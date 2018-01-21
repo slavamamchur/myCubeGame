@@ -19,11 +19,14 @@ public  class GLRenderConsts {
     public static final String ACTIVE_DUDVMAP_SLOT_PARAM_NAME = "u_DUDVMapUnit";
     public static final String ACTIVE_SHADOWMAP_SLOT_PARAM_NAME = "uShadowTexture";
     public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
+    public static final String IS_CUBEMAPF_PARAM_NAME = "u_isCubeMapF";
     public static final String IS_NORMALMAP_PARAM_NAME = "u_isNormalMap";
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
     public static final String LIGHT_MVP_MATRIX_PARAM_NAME = "uShadowProjMatrix";
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
+    public static final String MV_MATRIXF_PARAM_NAME = "u_MV_MatrixF";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
+    public static final String LIGHT_POSITIONF_PARAM_NAME = "u_lightPositionF";
     public static final String LIGHT_COLOUR_PARAM_NAME = "u_lightColour";
     public static final String CAMERA_POSITION_PARAM_NAME = "u_camera";
     public static final String RND_SEED__PARAM_NAME = "u_RndSeed";
@@ -40,6 +43,8 @@ public  class GLRenderConsts {
     //public static final String DICE_MESH_OBJECT_2 = "DICE_MESH_OBJECT_2";
 
     public static final long ANIMATION_FRAME_DURATION = 40;
+
+    public static final String OES_DEPTH_TEXTURE_EXTENSION = "OES_depth_texture";
 
     public enum GLParamType {
         FLOAT_ATTRIB_ARRAY_PARAM,

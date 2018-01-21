@@ -4,20 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 
 import com.cubegames.slava.cubegame.api.GameMapController;
 import com.cubegames.slava.cubegame.gl_render.GLRenderConsts.GLObjectType;
 import com.cubegames.slava.cubegame.gl_render.scene.shaders.GLShaderProgram;
 import com.cubegames.slava.cubegame.model.GameMap;
 
+import org.springframework.util.StringUtils;
+
 import static com.cubegames.slava.cubegame.Utils.loadBitmapFromDB;
 
 public abstract class BitmapTexturedObject extends GLSceneObject {
-
-    private int textureResId = -1;
-    protected String mapID = null;
-    private int textureColor = 0;
 
     public BitmapTexturedObject(Context context, GLObjectType type, String mapID, GLShaderProgram program) {
         super(context, type, program);
@@ -48,7 +45,7 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
 
             return BitmapFactory.decodeResource(context.getResources(), textureResId, options);
         }
-        else if (mapID != null) {
+        else if (StringUtils.hasText(mapID)) {
             GameMapController gmc = new GameMapController(context);
             GameMap map = gmc.find(mapID);
             gmc.saveMapImage(map);
@@ -64,4 +61,5 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
         else
             return null;
     }
+
 }

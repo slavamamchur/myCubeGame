@@ -36,7 +36,7 @@ public class DiceObject extends PNode {
     }
     @Override
     public int getFacesCount() {
-        return 0;
+        return 36;
     }
 
     public float[] getNormal() {
