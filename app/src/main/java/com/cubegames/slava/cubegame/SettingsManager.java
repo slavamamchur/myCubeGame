@@ -1,29 +1,30 @@
 package com.cubegames.slava.cubegame;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import com.cubegames.slava.cubegame.gl3d_engine.utils.ISysUtilsWrapper;
 
 public final class SettingsManager {
+
     public static final String PARAM_AUTH_TOKEN = "authToken";
     public static final String PARAM_USER_NAME = "userName";
     public static final String PARAM_USER_PASS = "userPass";
+    public static final String BASE_URL = "baseUrl";
+    public static final String DEFAULT_BASE_URL_VALUE = "http://10.0.2.2:8080/engine";
+    public static final String PARAM_STAY_LOGGED_IN = "stayLoggedIn";
 
     private static final Object lockObject = new Object();
     private static SettingsManager instance = null;
     private SharedPreferences settings = null;
-    private Context mCtx;
 
-    public SettingsManager(Context ctx) {
-        mCtx = ctx;
-        settings = getDefaultSharedPreferences(ctx);
+    public SettingsManager(ISysUtilsWrapper sysUtilsWrapper) {
+        settings = sysUtilsWrapper.getDefaultSharedPreferences();
     }
 
-    public static SettingsManager getInstance(Context ctx){
+    public static SettingsManager getInstance(ISysUtilsWrapper sysUtilsWrapper){
         synchronized (lockObject) {
-            return instance != null ? instance : new SettingsManager(ctx);
+            return instance != null ? instance : new SettingsManager(sysUtilsWrapper);
         }
     }
 
@@ -64,11 +65,11 @@ public final class SettingsManager {
         safeWriteProperty(PARAM_AUTH_TOKEN, authToken);
     }
     public String getWebServiceUrl(){
-        return safeReadProperty(mCtx.getString(R.string.pref_key_web_service_url), mCtx.getString(R.string.pref_default_web_service_url));
+        return safeReadProperty(BASE_URL, DEFAULT_BASE_URL_VALUE);
     }
 
     public boolean isStayLoggedIn(){
-        return safeReadProperty(mCtx.getString(R.string.pref_key_stay_logged), true);
+        return safeReadProperty(PARAM_STAY_LOGGED_IN, true);
     }
 
     public String getUserName(){

@@ -7,7 +7,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cubegames.slava.cubegame.BaseListActivity">
+    tools:context="com.cubegames.slava.cubegame.platforms.android.ui.framework.BaseListActivity">
 
     <ListView
         android:layout_width="match_parent"

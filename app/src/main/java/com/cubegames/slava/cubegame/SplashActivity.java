@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
-import com.cubegames.slava.cubegame.api.RestApiService;
+import com.cubegames.slava.cubegame.gl3d_engine.utils.ISysUtilsWrapper;
+import com.cubegames.slava.cubegame.platforms.android.sysutils.AndroidSysUtilsWrapper;
+import com.cubegames.slava.cubegame.platforms.android.ui.LoginActivity;
+import com.cubegames.slava.cubegame.platforms.android.ui.MainActivity;
+import com.cubegames.slava.cubegame.rest_api.RestApiService;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -22,6 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     };
     private BroadcastReceiver mPingBroadcastReceiver = null;
+    private ISysUtilsWrapper sysUtilsWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,8 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
         registerRestApiResponceReceivers();
+
+        sysUtilsWrapper = new AndroidSysUtilsWrapper(getApplicationContext());
     }
 
     @Override
@@ -39,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if(SettingsManager.getInstance(getApplicationContext()).isLoggedIn())
+        if(SettingsManager.getInstance(sysUtilsWrapper).isLoggedIn())
             RestApiService.startActionPing(this);
         else {
             cls = LoginActivity.class;
@@ -54,7 +61,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
-                    SettingsManager.getInstance(getApplicationContext()).setAuthToken("");
+                    SettingsManager.getInstance(sysUtilsWrapper).setAuthToken("");
                 }
                 delayedHide(HIDE_DELAY);
             }
