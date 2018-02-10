@@ -7,12 +7,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cubegames.slava.cubegame.platforms.android.ui.framework.BaseListActivity">
+    tools:context="com.sadgames.dicegame.platforms.android.ui.framework.BaseListActivity">
 
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.cubegames.slava.cubegame.platforms.android.ui.framework.DBTableFragment"
+        android:name="com.sadgames.dicegame.platforms.android.ui.framework.DBTableFragment"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/table_fragment"
