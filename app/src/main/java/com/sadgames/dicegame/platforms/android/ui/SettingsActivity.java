@@ -18,9 +18,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtilsWrapper;
 import com.sadgames.dicegame.platforms.android.ui.framework.AppCompatPreferenceActivity;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import java.util.List;
 

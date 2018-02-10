@@ -2,9 +2,9 @@ package com.sadgames.dicegame.game_logic.items;
 
 import android.graphics.Bitmap;
 
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.objects.GameItemObject;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
+import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -16,11 +16,11 @@ import static android.opengl.GLES20.GL_STATIC_DRAW;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glGenBuffers;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GAME_ITEM_OBJECT;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.VBO_STRIDE;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
-import static com.sadgames.dicegame.gl3d_engine.utils.MathUtils.crossProduct;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GAME_ITEM_OBJECT;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VBO_STRIDE;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
+import static com.sadgames.gl3d_engine.utils.MathUtils.crossProduct;
 
 public class ChipObject extends GameItemObject {
 

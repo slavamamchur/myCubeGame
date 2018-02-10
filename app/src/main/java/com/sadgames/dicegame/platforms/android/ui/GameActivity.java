@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.gl3d_engine.utils.DateTimeUtils;
 import com.sadgames.dicegame.platforms.android.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.platforms.android.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.platforms.android.ui.framework.DBTableFragment;
@@ -19,6 +18,7 @@ import com.sadgames.dicegame.rest_api.model.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.Game;
 import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
 import com.sadgames.dicegame.rest_api.model.points.NewPointRequest;
+import com.sadgames.gl3d_engine.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 

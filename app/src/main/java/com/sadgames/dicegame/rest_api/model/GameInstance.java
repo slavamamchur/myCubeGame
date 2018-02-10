@@ -3,10 +3,10 @@ package com.sadgames.dicegame.rest_api.model;
 import android.os.Parcel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.dicegame.rest_api.GameInstanceController;
 import com.sadgames.dicegame.rest_api.model.players.InstancePlayer;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import java.util.List;
 

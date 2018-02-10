@@ -15,13 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtilsWrapper;
 import com.sadgames.dicegame.platforms.android.ui.LoginActivity;
 import com.sadgames.dicegame.platforms.android.ui.SettingsActivity;
 import com.sadgames.dicegame.rest_api.RestApiService;
 import com.sadgames.dicegame.rest_api.model.AuthToken;
 import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 

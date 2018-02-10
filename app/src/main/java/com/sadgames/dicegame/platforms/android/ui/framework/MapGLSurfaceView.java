@@ -6,14 +6,14 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
-import com.sadgames.dicegame.gl3d_engine.gl_render.MapGLRenderer;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.GLCamera;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.GLScene;
+import com.sadgames.gl3d_engine.gl_render.MapGLRenderer;
+import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
+import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.dicegame.gl3d_engine.utils.MathUtils.cos;
-import static com.sadgames.dicegame.gl3d_engine.utils.MathUtils.sin;
+import static com.sadgames.gl3d_engine.utils.MathUtils.cos;
+import static com.sadgames.gl3d_engine.utils.MathUtils.sin;
 
 public class MapGLSurfaceView extends GLSurfaceView {
 

@@ -3,10 +3,10 @@ package com.sadgames.dicegame.game_logic.items;
 import android.graphics.Bitmap;
 
 import com.bulletphysics.collision.shapes.BoxShape;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.objects.GameItemObject;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
-import com.sadgames.dicegame.gl3d_engine.utils.MathUtils;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
+import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.gl3d_engine.utils.MathUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,11 +15,11 @@ import java.nio.FloatBuffer;
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.game_logic.GameConsts.DICE_TEXTURE;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GAME_ITEM_OBJECT;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.VBO_STRIDE;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GAME_ITEM_OBJECT;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VBO_STRIDE;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 
 public class DiceObject extends GameItemObject {

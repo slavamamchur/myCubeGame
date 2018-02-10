@@ -13,20 +13,20 @@ import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.GameMapController;
 import com.sadgames.dicegame.rest_api.model.GameMap;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.sadgames.dicegame.gl3d_engine.utils.JavaPlatformUtils.convertStreamToString;
 import static com.sadgames.dicegame.platforms.android.sysutils.AndroidSQLiteDBHelper.CHUNK_NUMBER_FIELD;
 import static com.sadgames.dicegame.platforms.android.sysutils.AndroidSQLiteDBHelper.MAP_ID_FIELD;
 import static com.sadgames.dicegame.platforms.android.sysutils.AndroidSQLiteDBHelper.MAP_IMAGE_FIELD;
 import static com.sadgames.dicegame.platforms.android.sysutils.AndroidSQLiteDBHelper.MAP_UPDATED_DATE;
 import static com.sadgames.dicegame.platforms.android.sysutils.AndroidSQLiteDBHelper.TABLE_NAME;
+import static com.sadgames.gl3d_engine.utils.JavaPlatformUtils.convertStreamToString;
 
 public class AndroidSysUtils {
 

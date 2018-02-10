@@ -3,9 +3,9 @@ package com.sadgames.dicegame.rest_api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.dicegame.rest_api.DBPlayerController;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import static com.sadgames.dicegame.rest_api.RestConst.URL_PLAYER;
 

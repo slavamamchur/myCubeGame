@@ -17,10 +17,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.gl3d_engine.utils.DateTimeUtils;
 import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
 import com.sadgames.dicegame.rest_api.model.GameInstance;
 import com.sadgames.dicegame.rest_api.model.points.PointType;
+import com.sadgames.gl3d_engine.utils.DateTimeUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

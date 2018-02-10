@@ -2,8 +2,8 @@ package com.sadgames.dicegame.rest_api;
 
 import android.text.TextUtils;
 
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.model.PingResponse;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

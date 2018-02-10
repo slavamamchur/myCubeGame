@@ -9,11 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.gl3d_engine.utils.DateTimeUtils;
 import com.sadgames.dicegame.platforms.android.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.platforms.android.ui.framework.MapFragment;
 import com.sadgames.dicegame.rest_api.model.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.GameMap;
+import com.sadgames.gl3d_engine.utils.DateTimeUtils;
 
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 

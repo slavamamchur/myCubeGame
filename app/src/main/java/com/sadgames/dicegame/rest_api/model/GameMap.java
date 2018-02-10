@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.dicegame.rest_api.GameMapController;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import static com.sadgames.dicegame.rest_api.RestConst.URL_GAME_MAP;
 

@@ -7,12 +7,12 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.model.Game;
 import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
+import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 public class GameMapObject extends TopographicMapObject {
 

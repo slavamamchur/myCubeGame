@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.game_logic.items.DiceObject;
-import com.sadgames.dicegame.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtils;
 import com.sadgames.dicegame.platforms.android.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.platforms.android.ui.framework.DBColumnInfo;
@@ -26,6 +25,7 @@ import com.sadgames.dicegame.rest_api.RestApiService;
 import com.sadgames.dicegame.rest_api.model.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.GameInstance;
 import com.sadgames.dicegame.rest_api.model.players.InstancePlayer;
+import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,8 +34,6 @@ import java.util.TimerTask;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.dicegame.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
-import static com.sadgames.dicegame.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 import static com.sadgames.dicegame.platforms.android.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 import static com.sadgames.dicegame.rest_api.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.rest_api.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
@@ -46,6 +44,8 @@ import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.rest_api.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.rest_api.RestApiService.startActionMooveGameInstance;
 import static com.sadgames.dicegame.rest_api.RestApiService.startActionRestartGameInstance;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
+import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> implements BaseItemDetailsActivity.WebErrorHandler {
 
