@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.sadgames.dicegame.ISettingsManager;
+import com.sadgames.dicegame.gl3d_engine.utils.ISettingsManager;
 
 public final class AndroidSettingsManager implements ISettingsManager {
 

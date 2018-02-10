@@ -3,7 +3,7 @@ package com.sadgames.dicegame.platforms.android.sysutils;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.sadgames.dicegame.ISettingsManager;
+import com.sadgames.dicegame.gl3d_engine.utils.ISettingsManager;
 import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 
 import java.io.IOException;

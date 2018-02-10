@@ -1,4 +1,4 @@
-package com.sadgames.dicegame;
+package com.sadgames.dicegame.gl3d_engine.utils;
 
 public interface ISettingsManager {
 

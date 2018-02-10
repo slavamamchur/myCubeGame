@@ -2,8 +2,6 @@ package com.sadgames.dicegame.gl3d_engine.utils;
 
 import android.graphics.Bitmap;
 
-import com.sadgames.dicegame.ISettingsManager;
-
 import java.io.IOException;
 
 public interface ISysUtilsWrapper {

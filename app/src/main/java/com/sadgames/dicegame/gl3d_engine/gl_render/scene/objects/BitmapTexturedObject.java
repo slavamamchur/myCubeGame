@@ -8,8 +8,6 @@ import com.sadgames.dicegame.gl3d_engine.utils.ISysUtilsWrapper;
 
 import org.springframework.util.StringUtils;
 
-import static com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtils.createColorBitmap;
-
 public abstract class BitmapTexturedObject extends GLSceneObject {
     private ISysUtilsWrapper sysUtilsWrapper;
 
@@ -52,7 +50,7 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
             return result;
         }
         else if (textureColor != 0) {
-            return createColorBitmap(textureColor);
+            return sysUtilsWrapper.createColorBitmap(textureColor);
         }
         else
             return null;
