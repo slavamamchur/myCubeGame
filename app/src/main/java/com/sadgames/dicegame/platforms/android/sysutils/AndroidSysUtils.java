@@ -106,13 +106,19 @@ public class AndroidSysUtils {
     /** ------------------------------------------------------------------------------------------*/
 
     /** Bitmap utils ----------------------------------------------------------------------------*/
+    @NonNull
+    private static BitmapFactory.Options getiBitmapOptions() {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+        options.inScaled = false;
+        return options;
+    }
+
     public static Bitmap getBitmapFromResource(Context context, int resId) {
         Bitmap result;
 
         try {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            options.inScaled = false;
+            final BitmapFactory.Options options = getiBitmapOptions();
             result = BitmapFactory.decodeResource(context.getResources(), resId, options);
         }
         catch (Exception exception) { result = null; }
@@ -124,9 +130,7 @@ public class AndroidSysUtils {
         Bitmap result;
 
         try {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            options.inScaled = false;
+            final BitmapFactory.Options options = getiBitmapOptions();
             result = BitmapFactory.decodeStream(context.getAssets().open("textures/" + file), null, options);
         }
         catch (Exception exception) { result = null; }
@@ -259,9 +263,7 @@ public class AndroidSysUtils {
             dbHelper.close();
 
             if (bitmapArray != null) {
-                final BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                options.inScaled = false;
+                final BitmapFactory.Options options = getiBitmapOptions();
                 //TODO: LOD settings
                 /*options.inJustDecodeBounds = true;
                 BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
@@ -272,12 +274,14 @@ public class AndroidSysUtils {
 
         }
         finally {
+            bitmapArray = null;
+
             if (imageData != null) imageData.close();
             if (db != null) db.close();
             if (dbHelper != null) dbHelper.close();
         }
 
-        return bitmap;
+        return bitmap; //TODO: return byte buffer
     }
 
     public static boolean isBitmapCached(Context context, String map_id, Long updatedDate) {

@@ -51,7 +51,7 @@ public class DiceObject extends GameItemObject {
     }
 
     @Override
-    protected void createVertexesVBO() { //TODO: wrong order
+    protected void createVertexesVBO() { //TODO: wrong order ???
         final float[] vertexes = {
                 // Front face
                 -0.1f, 0.1f, 0.1f, 0.25f, 0.333f,
