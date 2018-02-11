@@ -10,13 +10,6 @@ import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.BLUE;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.BROWN;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.CYAN;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.GREEN;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.UNKNOWN;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.WHITE;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject.ColorType.YELLOW;
 
 public abstract class TopographicMapObject extends ProceduralSurfaceObject {
 
@@ -95,7 +88,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
 
         ColorType cType = CheckColorType(vColor);
 
-        if (cType.equals(UNKNOWN)) {
+        if (cType.equals(ColorType.UNKNOWN)) {
             vColor = interpolateUnknownColorValue(map, xCoord, yCoord);
             cType = CheckColorType(vColor);
         }
@@ -110,7 +103,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         kXZ = INVERT_LIGHT_FACTOR[cType.ordinal()] ? 1.0f - kXZ : kXZ;
 
         float y = minY + deltaY * kXZ;
-        y = cType.equals(BLUE) || cType.equals(CYAN) ? -y - 0.25f : y;
+        y = cType.equals(ColorType.BLUE) || cType.equals(ColorType.CYAN) ? -y - 0.25f : y;
 
         return y;
     }
@@ -121,18 +114,18 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         int B = Color.blue(color);
 
         if ((G <= B) && (R < G))
-            return G <= 0.5 * B ? BLUE : CYAN; //B <= 231 ? BLUE : CYAN;//
+            return G <= 0.5 * B ? ColorType.BLUE : ColorType.CYAN; //B <= 231 ? BLUE : CYAN;//
         else if ((R < G) && (B < G))
-            return GREEN;
+            return ColorType.GREEN;
         else if ((G <= R) && (B < G))
-            return G <= 0.7 * R ? BROWN : YELLOW;
+            return G <= 0.7 * R ? ColorType.BROWN : ColorType.YELLOW;
         else if ((R > G) && (R > B))
-            return BROWN;
+            return ColorType.BROWN;
         else if ((G == R) && (B == G) && (R >= 180))
-            return WHITE;
+            return ColorType.WHITE;
         else {
             int RR = R;
-            return UNKNOWN;
+            return ColorType.UNKNOWN;
         }
     }
 

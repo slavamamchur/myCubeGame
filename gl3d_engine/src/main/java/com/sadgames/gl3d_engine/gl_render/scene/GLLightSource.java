@@ -31,6 +31,13 @@ public class GLLightSource {
         Matrix.setIdentityM(viewMatrix, 0);
     }
 
+    public int getWidth() {
+        return width;
+    }
+    public int getHeight() {
+        return height;
+    }
+
     public void updateViewProjectionMatrix(int width, int height) {
         this.width = width;
         this.height = height;

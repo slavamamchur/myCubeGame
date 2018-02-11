@@ -5,7 +5,7 @@ import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_FRAGMENT_SHADER;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_VERTEX_SHADER;
 
-//import static com.sadgames.dicegame.gameengine.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
+//import static com.sadgames.gameengine.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 
 public class WaterShader extends VBOShaderProgram {
 

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CubeGame.iml" filepath="$PROJECT_DIR$/CubeGame.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/DiceGameApp.iml" filepath="$PROJECT_DIR$/app/DiceGameApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gl3d_engine/gl3d_engine.iml" filepath="$PROJECT_DIR$/gl3d_engine/gl3d_engine.iml" />
     </modules>
   </component>
 </project>
