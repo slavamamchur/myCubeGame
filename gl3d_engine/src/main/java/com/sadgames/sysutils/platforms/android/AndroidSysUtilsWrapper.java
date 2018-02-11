@@ -104,7 +104,7 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
         }
         catch (Exception exception) { result = null; }
 
-        return result;
+        return result != null ? result : loadBitmapFromDB(file, false);
     }
 
     @NonNull

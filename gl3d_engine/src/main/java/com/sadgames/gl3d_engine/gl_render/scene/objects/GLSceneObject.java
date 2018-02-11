@@ -1,6 +1,5 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
@@ -9,6 +8,9 @@ import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParamVBO;
+import com.sadgames.sysutils.ISysUtilsWrapper;
+
+import org.springframework.util.StringUtils;
 
 import java.nio.ShortBuffer;
 
@@ -32,6 +34,7 @@ import static com.sadgames.gl3d_engine.gl_render.scene.GLAnimation.ROTATE_BY_Z;
 
 public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
 
+    protected ISysUtilsWrapper sysUtilsWrapper;
     private GLObjectType objectType;
     private int glTextureId = 0;
     private GLShaderParamVBO vertexVBO = null;
@@ -61,7 +64,8 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
 
     protected boolean isCastShadow = true;
 
-    public GLSceneObject(GLObjectType type, GLShaderProgram program) {
+    public GLSceneObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, GLShaderProgram program) {
+        this.sysUtilsWrapper = sysUtilsWrapper;
         objectType = type;
         this.program = program;
 
@@ -70,6 +74,9 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
         createVBOParams();
     }
 
+    public ISysUtilsWrapper getSysUtilsWrapper() {
+        return sysUtilsWrapper;
+    }
     public GLObjectType getObjectType() {
         return objectType;
     }
@@ -241,9 +248,16 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
     }
 
     protected int loadTexture() {
-        Bitmap textureBmp = getTextureBitmap();
+        int result = 0;
 
-        return textureBmp != null ? BitmapTexture.createInstance(textureBmp).getTextureId() : 0;
+        if (StringUtils.hasText(textureResName)) {
+            result = BitmapTexture.createInstance(sysUtilsWrapper, textureResName).getTextureId();
+        }
+        else if (textureColor != 0) {
+            result = BitmapTexture.createInstance(sysUtilsWrapper, textureColor).getTextureId();
+        }
+
+        return result;
     }
 
     private void clearVBOPtr(int vboPtr) {
@@ -328,7 +342,6 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
         Matrix.scaleM(modelMatrix, 0, scaleFactor, scaleFactor, scaleFactor);
     }
 
-    protected abstract Bitmap getTextureBitmap();
     public abstract int getFacesCount();
     protected abstract void createVertexesVBO();
     protected abstract void createTexelsVBO();

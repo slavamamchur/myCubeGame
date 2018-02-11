@@ -143,7 +143,7 @@ public class MapGLRenderer implements GLSurfaceView.Renderer {
 
     private void createPostEffects2DScreen() {
         GLShaderProgram guiShader = mScene.getCachedShader(GUI_OBJECT);
-        mScene.setPostEffects2DScreen(new onScreen2DBox(guiShader, new RectF(-1, 1, 0, 0)));
+        mScene.setPostEffects2DScreen(new onScreen2DBox(sysUtilsWrapper, guiShader, new RectF(-1, 1, 0, 0)));
         mScene.getPostEffects2DScreen().loadObject();
     }
 

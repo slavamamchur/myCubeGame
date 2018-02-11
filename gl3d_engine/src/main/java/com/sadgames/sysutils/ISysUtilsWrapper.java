@@ -19,5 +19,5 @@ public interface ISysUtilsWrapper {
     void    iStopSound();
 
     ISettingsManager iGetSettingsManager();
-    //TODO: Create Bitmap interface and wrapper or use java SE common lib
+    //TODO: use java SE common lib for pictures ???
 }

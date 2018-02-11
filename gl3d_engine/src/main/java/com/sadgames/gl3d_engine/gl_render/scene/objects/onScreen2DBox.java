@@ -1,9 +1,9 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -19,8 +19,8 @@ public class onScreen2DBox extends GLSceneObject {
 
     private RectF box;
 
-    public onScreen2DBox(GLShaderProgram program, RectF box) {
-        super(GUI_OBJECT, program);
+    public onScreen2DBox(ISysUtilsWrapper sysUtilsWrapper, GLShaderProgram program, RectF box) {
+        super(sysUtilsWrapper, GUI_OBJECT, program);
 
         this.box = box;
     }
@@ -54,11 +54,6 @@ public class onScreen2DBox extends GLSceneObject {
     @Override
     public void render() {
         glDrawArrays(GL_TRIANGLE_STRIP, 0, getFacesCount());
-    }
-
-    @Override
-    protected Bitmap getTextureBitmap() {
-        return null;
     }
 
     @Override

@@ -1,18 +1,20 @@
 package com.sadgames.dicegame.game_logic.items;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.Path;
 
 import com.sadgames.dicegame.rest_api.model.Game;
 import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.AndroidBitmapWrapper;
+
+import java.util.ArrayList;
+
+import javax.vecmath.Vector2f;
 
 public class GameMapObject extends TopographicMapObject {
 
@@ -35,45 +37,20 @@ public class GameMapObject extends TopographicMapObject {
 
     @Override
     protected int loadTexture() {
-        Bitmap textureBmp = getTextureBitmap();
+        Bitmap textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
 
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
 
-        final Paint paint = new Paint();
-        paint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
+        IBitmapWrapper pic = new AndroidBitmapWrapper(textureBmp); //TODO: remove temp
 
-        Canvas canvas = new Canvas(textureBmp);
+        ArrayList<Vector2f> way = new ArrayList<>();
+        for (AbstractGamePoint point : gameEntity.getGamePoints())
+            way.add(new Vector2f(point.xPos, point.yPos));
 
-        drawPath(paint, canvas);
+        pic.drawPath(way, Color.GREEN, Color.RED);
 
         return BitmapTexture.createInstance(textureBmp).getTextureId();
-    }
-
-    private void drawPath(Paint paint, Canvas canvas) {
-        if (gameEntity != null) {
-            Path path = new Path();
-            if (gameEntity.getGamePoints() != null && gameEntity.getGamePoints().size() > 0) {
-                AbstractGamePoint point = gameEntity.getGamePoints().get(0);
-                path.moveTo(point.getxPos(), point.getyPos());
-
-                for (int i = 1; i < gameEntity.getGamePoints().size(); i++) {
-                    AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
-                    path.lineTo(endPoint.getxPos(), endPoint.getyPos());
-                }
-                paint.setColor(Color.GREEN);
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(5);
-                canvas.drawPath(path, paint);
-
-                paint.setColor(Color.RED);
-                paint.setStyle(Paint.Style.FILL);
-                for (int i = 0; i < gameEntity.getGamePoints().size(); i++) {
-                    AbstractGamePoint endPoint = gameEntity.getGamePoints().get(i);
-                    canvas.drawCircle(endPoint.getxPos(), endPoint.getyPos(), 10f, paint);
-                }
-            }
-        }
     }
 
 }

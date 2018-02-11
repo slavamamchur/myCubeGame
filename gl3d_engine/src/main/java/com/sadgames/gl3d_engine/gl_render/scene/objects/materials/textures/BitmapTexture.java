@@ -29,6 +29,10 @@ public class BitmapTexture extends AbstractTexture {
         this(sysUtilsWrapper.iGetBitmapFromFile(file));
     }
 
+    public BitmapTexture(ISysUtilsWrapper sysUtilsWrapper, int color) {
+        this(sysUtilsWrapper.iCreateColorBitmap(color));
+    }
+
     @Override
     protected int getTextureType() {
         return GL_TEXTURE_2D;
@@ -57,5 +61,13 @@ public class BitmapTexture extends AbstractTexture {
 
     public static AbstractTexture createInstance(Bitmap bitmap) {
         return new BitmapTexture(bitmap);
+    }
+
+    public static AbstractTexture createInstance(ISysUtilsWrapper sysUtilsWrapper, String file) {
+        return new BitmapTexture(sysUtilsWrapper, file);
+    }
+
+    public static AbstractTexture createInstance(ISysUtilsWrapper sysUtilsWrapper, int color) {
+        return new BitmapTexture(sysUtilsWrapper, color);
     }
 }
