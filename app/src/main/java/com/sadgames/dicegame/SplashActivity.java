@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
-import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtilsWrapper;
-import com.sadgames.dicegame.platforms.android.ui.LoginActivity;
-import com.sadgames.dicegame.platforms.android.ui.MainActivity;
 import com.sadgames.dicegame.rest_api.RestApiService;
+import com.sadgames.dicegame.ui.LoginActivity;
+import com.sadgames.dicegame.ui.MainActivity;
 import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.AndroidSysUtilsWrapper;
 
 public class SplashActivity extends AppCompatActivity {
 

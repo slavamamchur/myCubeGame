@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sadgames.dicegame.rest_api.RestConst.DEFAULT_BASE_URL_VALUE;
 import static com.sadgames.dicegame.rest_api.RestConst.NET_CONNECT_TIMEOUT_MILLIS;
 import static com.sadgames.dicegame.rest_api.RestConst.NET_READ_TIMEOUT_MILLIS;
 import static com.sadgames.dicegame.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
@@ -55,7 +56,7 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     }
 
     public final String getBaseUrl() {
-        return sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl();
+        return sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE);
     }
 
     public String getmUrl() {

@@ -7,19 +7,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.sadgames.dicegame.platforms.android.ui.GameInstanceActivity"
+    tools:context=".ui.GameInstanceActivity"
     android:id="@+id/map_container">
 
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.sadgames.dicegame.platforms.android.ui.framework.MapFragment"
+        android:name="com.sadgames.dicegame.ui.framework.MapFragment"
         tools:layout="@layout/map_fragment"
         android:id="@+id/map_fragment" />
 
     <fragment
         android:layout_height="200dp"
-        android:name="com.sadgames.dicegame.platforms.android.ui.framework.DBTableFragment"
+        android:name="com.sadgames.dicegame.ui.framework.DBTableFragment"
         android:id="@+id/players_fragment"
         tools:layout="@layout/db_table_fragment"
         android:layout_gravity="right"

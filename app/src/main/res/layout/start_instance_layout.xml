@@ -17,7 +17,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:name="com.sadgames.dicegame.platforms.android.ui.framework.DBTableFragment"
+        android:name="com.sadgames.dicegame.ui.framework.DBTableFragment"
         android:id="@+id/players_list_fragment"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"

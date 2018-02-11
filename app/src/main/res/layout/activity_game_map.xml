@@ -7,12 +7,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.sadgames.dicegame.platforms.android.ui.GameMapActivity">
+    tools:context=".ui.GameMapActivity">
 
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.sadgames.dicegame.platforms.android.ui.framework.MapFragment"
+        android:name="com.sadgames.dicegame.ui.framework.MapFragment"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         tools:layout="@layout/map_fragment"

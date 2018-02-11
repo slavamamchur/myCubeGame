@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtilsWrapper;
 import com.sadgames.dicegame.rest_api.model.AuthToken;
 import com.sadgames.dicegame.rest_api.model.BasicEntity;
 import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
@@ -19,6 +18,7 @@ import com.sadgames.dicegame.rest_api.model.GameMap;
 import com.sadgames.dicegame.rest_api.model.StartNewGameRequest;
 import com.sadgames.dicegame.rest_api.model.UserEntity;
 import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.AndroidSysUtilsWrapper;
 
 import java.util.ArrayList;
 

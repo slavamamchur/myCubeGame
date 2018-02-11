@@ -2,6 +2,7 @@ package com.sadgames.dicegame.rest_api;
 
 @SuppressWarnings({"unused", "DefaultFileTemplate"})
 public class RestConst {
+    public static final String DEFAULT_BASE_URL_VALUE = "http://10.0.2.2:8080/engine";
     // main controller
     public static final String URL_PING = "/ping";
     public static final String URL_LOGIN = "/login";

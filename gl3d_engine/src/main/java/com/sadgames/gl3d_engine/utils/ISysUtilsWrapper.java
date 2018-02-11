@@ -19,4 +19,5 @@ public interface ISysUtilsWrapper {
     void    iStopSound();
 
     ISettingsManager iGetSettingsManager();
+    //TODO: Create Bitmap interface and wrapper or use java SE common lib
 }

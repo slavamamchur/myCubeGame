@@ -5,7 +5,7 @@ public interface ISettingsManager {
     String getAuthToken();
     boolean isLoggedIn();
     void setAuthToken(String authToken);
-    String getWebServiceUrl();
+    String getWebServiceUrl(String defaultValue);
     boolean isStayLoggedIn();
     String getUserName();
     void setUserName(String userName);

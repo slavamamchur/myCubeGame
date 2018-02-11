@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CubeGame</string>
+    <string name="app_name">DiceGame</string>
     <string name="game_map_list_title">Map List</string>
     <string name="players_list_title">Stored players</string>
     <string name="game_list_title">Games</string>
