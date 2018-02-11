@@ -4,7 +4,7 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GLSceneObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;

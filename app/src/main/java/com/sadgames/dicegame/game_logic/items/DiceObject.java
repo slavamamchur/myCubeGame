@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
-import com.sadgames.gl3d_engine.utils.MathUtils;
+import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.MathUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

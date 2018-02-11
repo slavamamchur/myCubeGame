@@ -1,6 +1,6 @@
 package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_FRAGMENT_SHADER;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_VERTEX_SHADER;

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
     @JsonProperty(required = true)

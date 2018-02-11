@@ -3,7 +3,7 @@ package com.sadgames.gl3d_engine.gl_render.scene.objects;
 import android.graphics.Bitmap;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,8 +21,8 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VBO_ITEM_SIZE;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VBO_STRIDE;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
-import static com.sadgames.gl3d_engine.utils.ArraysUtils.chain;
-import static com.sadgames.gl3d_engine.utils.ArraysUtils.coord2idx;
+import static com.sadgames.sysutils.ArraysUtils.chain;
+import static com.sadgames.sysutils.ArraysUtils.coord2idx;
 
 public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random maps generation
 

@@ -3,7 +3,7 @@ package com.sadgames.gl3d_engine.gl_render.scene.objects;
 import android.graphics.Bitmap;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.WATER_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SEA_SIZE_IN_WORLD_SPACE;

@@ -14,7 +14,7 @@ import com.sadgames.gl3d_engine.gl_render.scene.GLLightSource;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.onScreen2DBox;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -25,7 +25,7 @@ import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glEnable;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
-import static com.sadgames.gl3d_engine.utils.JavaPlatformUtils.forceGC_and_Sync;
+import static com.sadgames.sysutils.JavaPlatformUtils.forceGC_and_Sync;
 
 public class MapGLRenderer implements GLSurfaceView.Renderer {
 

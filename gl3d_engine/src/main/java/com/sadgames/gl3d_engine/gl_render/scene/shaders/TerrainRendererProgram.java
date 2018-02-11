@@ -1,7 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;

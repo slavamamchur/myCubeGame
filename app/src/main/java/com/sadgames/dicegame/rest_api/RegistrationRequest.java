@@ -2,7 +2,7 @@ package com.sadgames.dicegame.rest_api;
 
 import com.sadgames.dicegame.rest_api.model.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.UserEntity;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

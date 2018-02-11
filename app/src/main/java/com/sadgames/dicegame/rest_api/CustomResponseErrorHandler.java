@@ -9,7 +9,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 
 import java.io.IOException;
 
-import static com.sadgames.gl3d_engine.utils.JavaPlatformUtils.convertStreamToString;
+import static com.sadgames.sysutils.JavaPlatformUtils.convertStreamToString;
 
 public class CustomResponseErrorHandler implements ResponseErrorHandler {
 

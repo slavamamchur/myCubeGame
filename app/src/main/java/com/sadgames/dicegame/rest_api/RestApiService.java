@@ -17,8 +17,8 @@ import com.sadgames.dicegame.rest_api.model.GameInstanceStartedResponse;
 import com.sadgames.dicegame.rest_api.model.GameMap;
 import com.sadgames.dicegame.rest_api.model.StartNewGameRequest;
 import com.sadgames.dicegame.rest_api.model.UserEntity;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
-import com.sadgames.sysutils.AndroidSysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.ArrayList;
 
@@ -88,7 +88,7 @@ public class RestApiService extends IntentService {
     public RestApiService() {
         super("RestApiService");
 
-        sysUtilsWrapper = new AndroidSysUtilsWrapper(this);
+        sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(this);
     }
 
     public static void startActionLogin(Context context, String userName, String userPass) {

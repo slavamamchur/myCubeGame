@@ -3,7 +3,7 @@ package com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures;
 import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;

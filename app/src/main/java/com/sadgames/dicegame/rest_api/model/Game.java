@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.dicegame.rest_api.GameController;
 import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

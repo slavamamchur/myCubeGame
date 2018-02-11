@@ -23,7 +23,7 @@
         android:theme="@style/AppThemeClassicLight">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.platforms.android.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
@@ -35,38 +35,38 @@
         </activity>
 
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.platforms.android.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeClassicLight"/>
 
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".ui.platforms.android.SettingsActivity"
             android:label="@string/title_activity_settings" />
 
-        <activity android:name=".ui.RegistrationActivity" />
+        <activity android:name=".ui.platforms.android.RegistrationActivity" />
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.platforms.android.MainActivity"
             android:theme="@style/FullscreenTheme"
             android:screenOrientation="landscape" />
 
-        <activity android:name=".ui.GameMapActivity" />
+        <activity android:name=".ui.platforms.android.GameMapActivity" />
 
-        <activity android:name=".ui.GameActivity" />
+        <activity android:name=".ui.platforms.android.GameActivity" />
 
         <activity
-            android:name=".ui.GameInstanceActivity"
+            android:name=".ui.platforms.android.GameInstanceActivity"
             android:screenOrientation="landscape" />
 
-        <activity android:name=".ui.GameListActivity" />
+        <activity android:name=".ui.platforms.android.GameListActivity" />
 
-        <activity android:name=".ui.GameMapsListActivity" />
+        <activity android:name=".ui.platforms.android.GameMapsListActivity" />
 
-        <activity android:name=".ui.GameInstanceListActivity" />
+        <activity android:name=".ui.platforms.android.GameInstanceListActivity" />
 
-        <activity android:name=".ui.DBPlayersListActivity" />
+        <activity android:name=".ui.platforms.android.DBPlayersListActivity" />
 
-        <activity android:name=".ui.NewGameInstanceActivity" />
+        <activity android:name=".ui.platforms.android.NewGameInstanceActivity" />
 
         <service
             android:name=".rest_api.RestApiService"

@@ -2,7 +2,7 @@ package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
 import com.sadgames.gl3d_engine.gl_render.GLRenderConsts;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 public abstract class GameItemObject extends PNode {
     private static int itemNumber = 0;

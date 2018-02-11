@@ -14,7 +14,7 @@ import com.sadgames.gl3d_engine.gl_render.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShapeShader;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.TerrainRendererProgram;
-import com.sadgames.gl3d_engine.utils.ISysUtilsWrapper;
+import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
