@@ -376,7 +376,7 @@ public abstract class GLShaderProgram {
     }
 
     public static int createShader(ISysUtilsWrapper sysUtilsWrapper, int type, String shaderRawId) {
-        return createShader(type, sysUtilsWrapper.readTextFromFile(shaderRawId));
+        return createShader(type, sysUtilsWrapper.iReadTextFromFile(shaderRawId));
     }
 
     static int createShader(int type, String shaderText) {

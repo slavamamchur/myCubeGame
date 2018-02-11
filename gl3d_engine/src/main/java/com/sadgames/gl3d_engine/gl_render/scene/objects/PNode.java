@@ -27,13 +27,6 @@ public abstract class PNode extends BitmapTexturedObject {
     protected CollisionShape _shape = null;
     private Transform worldTransformOld = new Transform(new Matrix4f(new float[16]));
 
-    public PNode(ISysUtilsWrapper sysUtilsWrapper, GLRenderConsts.GLObjectType type, int textureResId, GLShaderProgram program,
-                 float mass, int tag) {
-
-        super(sysUtilsWrapper, type, textureResId, program);
-        init(mass, tag);
-    }
-
     public PNode(ISysUtilsWrapper sysUtilsWrapper, GLRenderConsts.GLObjectType type, String textureResName, GLShaderProgram program,
                  float mass, int tag) {
 

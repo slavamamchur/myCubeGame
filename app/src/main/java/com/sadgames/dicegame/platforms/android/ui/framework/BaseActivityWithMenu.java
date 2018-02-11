@@ -89,7 +89,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void doLogout(){
-        sysUtilsWrapper.getSettingsManager().setAuthToken("");
+        sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
@@ -122,7 +122,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(RestApiService.ACTION_PING_RESPONSE)) {
             if (!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false))
-                if (!sysUtilsWrapper.getSettingsManager().isStayLoggedIn()) {
+                if (!sysUtilsWrapper.iGetSettingsManager().isStayLoggedIn()) {
                     doLogout();
                 } else
                     doRelogin();
@@ -132,7 +132,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         else if (intent.getAction().equals(RestApiService.ACTION_RELOGIN_RESPONSE)) {
             AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null)
-                sysUtilsWrapper.getSettingsManager().setAuthToken(response.getId());
+                sysUtilsWrapper.iGetSettingsManager().setAuthToken(response.getId());
             else
                 doLogout();
 
@@ -145,8 +145,8 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     private void doRelogin(){
         showProgress();
 
-        RestApiService.startActionRelogin(getApplicationContext(), sysUtilsWrapper.getSettingsManager().getUserName(),
-                sysUtilsWrapper.getSettingsManager().getUserPass());
+        RestApiService.startActionRelogin(getApplicationContext(), sysUtilsWrapper.iGetSettingsManager().getUserName(),
+                sysUtilsWrapper.iGetSettingsManager().getUserPass());
     }
 
     @Override
@@ -225,7 +225,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if (sysUtilsWrapper.getSettingsManager().isLoggedIn()) {
+        if (sysUtilsWrapper.iGetSettingsManager().isLoggedIn()) {
             showProgress();
 
             RestApiService.startActionPing(this);

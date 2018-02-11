@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 final ISysUtilsWrapper sysUtilsWrapper = new AndroidSysUtilsWrapper(preference.getContext());
                 if (preference.getKey().equals(preference.getContext().getString(R.string.pref_key_web_service_url))
-                        && !sysUtilsWrapper.getSettingsManager().getWebServiceUrl().equals(stringValue)
+                        && !sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl().equals(stringValue)
                         ) {
                     forceRelogin(preference.getContext(), sysUtilsWrapper);
                 }
@@ -78,7 +78,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 .setTitle("Warning");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                sysUtilsWrapper.getSettingsManager().setAuthToken("");
+                sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
 
                 ctx.startActivity(new Intent(ctx, LoginActivity.class));
 

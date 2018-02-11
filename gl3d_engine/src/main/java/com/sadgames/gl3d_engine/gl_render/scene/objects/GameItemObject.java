@@ -9,11 +9,6 @@ public abstract class GameItemObject extends PNode {
 
     private String itemName;
 
-    public GameItemObject(ISysUtilsWrapper sysUtilsWrapper, GLRenderConsts.GLObjectType type, int textureResId, GLShaderProgram program, float mass, int tag) {
-        super(sysUtilsWrapper, type, textureResId, program, mass, tag);
-        initItem();
-    }
-
     public GameItemObject(ISysUtilsWrapper sysUtilsWrapper, GLRenderConsts.GLObjectType type, String textureResName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, type, textureResName, program, mass, tag);
         initItem();

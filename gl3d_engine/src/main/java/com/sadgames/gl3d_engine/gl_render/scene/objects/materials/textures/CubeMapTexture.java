@@ -22,10 +22,10 @@ import static android.opengl.GLES20.glTexParameteri;
 
 public class CubeMapTexture extends AbstractTexture {
 
-    private int[] faces;
+    private String[] faces;
     private ISysUtilsWrapper sysUtilsWrapper;
 
-    public CubeMapTexture(ISysUtilsWrapper sysUtilsWrapper, int[] faces) {
+    public CubeMapTexture(ISysUtilsWrapper sysUtilsWrapper, String[] faces) {
         init( -1, -1);
 
         this.faces = faces;
@@ -54,7 +54,7 @@ public class CubeMapTexture extends AbstractTexture {
     protected void loadTexture(Bitmap bitmap) throws UnsupportedOperationException {
         try {
             for (int i =0; i < faces.length; i++) {
-                bitmap = sysUtilsWrapper.getBitmapFromResource(faces[i]);
+                bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]);
                 GLUtils.texImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, bitmap, 0);
                 bitmap.recycle();
             }

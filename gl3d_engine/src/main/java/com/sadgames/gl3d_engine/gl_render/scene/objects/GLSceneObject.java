@@ -32,8 +32,6 @@ import static com.sadgames.gl3d_engine.gl_render.scene.GLAnimation.ROTATE_BY_Z;
 
 public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
 
-    ///private final static long LAND_ANIMATION_DELAY_MS = 10000L;
-
     private GLObjectType objectType;
     private int glTextureId = 0;
     private GLShaderParamVBO vertexVBO = null;
@@ -58,7 +56,6 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
     private int glCubeMapId = 0;
     private int glDUDVMapId = 0;
 
-    protected int textureResId = -1;
     protected String textureResName = "";
     protected int textureColor = 0;
 
@@ -216,7 +213,7 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
     }
 
     private boolean checkTextureBitmap(GLSceneObject src) {
-        return textureResId == src.textureResId && textureResName.equals(src.textureResName) && textureColor == src.textureColor;
+        return textureResName.equals(src.textureResName) && textureColor == src.textureColor;
     }
 
 

@@ -11,7 +11,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SEA_SIZE_IN_WORL
 public class WaterObject extends ProceduralSurfaceObject {
 
     public WaterObject(ISysUtilsWrapper sysUtilsWrapper, GLShaderProgram program) {
-        super(sysUtilsWrapper, WATER_OBJECT, -1, SEA_SIZE_IN_WORLD_SPACE, program);
+        super(sysUtilsWrapper, WATER_OBJECT, null, SEA_SIZE_IN_WORLD_SPACE, program);
 
         //setCubeMap(true);
     }

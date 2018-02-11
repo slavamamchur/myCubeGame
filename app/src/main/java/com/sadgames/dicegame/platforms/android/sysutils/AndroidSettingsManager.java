@@ -20,7 +20,7 @@ public final class AndroidSettingsManager implements ISettingsManager {
     private SharedPreferences settings = null;
 
     public AndroidSettingsManager(Context context) {
-        settings = AndroidSysUtils.getDefaultSharedPrefs(context);
+        settings = AndroidSysUtilsWrapper.getDefaultSharedPrefs(context);
     }
 
     public static AndroidSettingsManager getInstance(Context context){

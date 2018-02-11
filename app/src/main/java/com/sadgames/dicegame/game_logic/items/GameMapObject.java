@@ -30,7 +30,7 @@ public class GameMapObject extends TopographicMapObject {
 
     @Override
     protected Bitmap getReliefMap() {
-        return textureResName != null ? getSysUtilsWrapper().loadReliefFromDB(textureResName) : null;
+        return textureResName != null ? getSysUtilsWrapper().iLoadReliefFromDB(textureResName) : null;
     }
 
     @Override

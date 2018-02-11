@@ -6,19 +6,17 @@ import java.io.IOException;
 
 public interface ISysUtilsWrapper {
 
-    String  readTextFromResource(int id);
-    String  readTextFromFile(String fileName);
+    String  iReadTextFromFile(String fileName);
 
-    Bitmap  getBitmapFromResource(int id);
-    Bitmap  getBitmapFromFile(String file);
-    Bitmap  createColorBitmap(int color);
-    Bitmap  loadBitmapFromDB(String textureResName);
-    Bitmap  loadReliefFromDB(String textureResName);
-    boolean isBitmapCached(String map_id, Long updatedDate);
-    void    saveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
+    Bitmap  iGetBitmapFromFile(String file);
+    Bitmap  iCreateColorBitmap(int color);
+    Bitmap  iLoadBitmapFromDB(String textureResName);
+    Bitmap  iLoadReliefFromDB(String textureResName);
+    boolean iIsBitmapCached(String map_id, Long updatedDate);
+    void    iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
 
-    void    playSound(String file);
-    void    stopSound();
+    void    iPlaySound(String file);
+    void    iStopSound();
 
-    ISettingsManager getSettingsManager();
+    ISettingsManager iGetSettingsManager();
 }

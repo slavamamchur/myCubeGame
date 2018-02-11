@@ -33,12 +33,6 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
 
     private float[] vertexes;
 
-    public ProceduralSurfaceObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, int textureResId, float landSize, GLShaderProgram program) {
-        super(sysUtilsWrapper, type, textureResId, program, 0, 0);
-
-        initMesh(landSize);
-    }
-
     public ProceduralSurfaceObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, String textureResName, float landSize, GLShaderProgram program) {
         super(sysUtilsWrapper, type, textureResName, program, 0, COLLISION_OBJECT);
 

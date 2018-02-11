@@ -51,11 +51,11 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     }
 
     public final String getAuthToken() {
-        return sysUtilsWrapper.getSettingsManager().getAuthToken();
+        return sysUtilsWrapper.iGetSettingsManager().getAuthToken();
     }
 
     public final String getBaseUrl() {
-        return sysUtilsWrapper.getSettingsManager().getWebServiceUrl();
+        return sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl();
     }
 
     public String getmUrl() {

@@ -18,13 +18,6 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
         this.sysUtilsWrapper = sysUtilsWrapper;
     }
 
-    public BitmapTexturedObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, int textureResId, GLShaderProgram program) {
-        super(type, program);
-
-        this.textureResId = textureResId;
-        this.sysUtilsWrapper = sysUtilsWrapper;
-    }
-
     public BitmapTexturedObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, GLShaderProgram program, int textureColor) {
         super(type, program);
 
@@ -40,17 +33,14 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
 
     @Override
     protected Bitmap getTextureBitmap() {
-        if (textureResId >= 0) {
-            return sysUtilsWrapper.getBitmapFromResource(textureResId);
-        }
-        else if (StringUtils.hasText(textureResName)) {
-            Bitmap result = sysUtilsWrapper.getBitmapFromFile(textureResName);
-            result = result != null ? result : sysUtilsWrapper.loadBitmapFromDB(textureResName);
+        if (StringUtils.hasText(textureResName)) {
+            Bitmap result = sysUtilsWrapper.iGetBitmapFromFile(textureResName);
+            result = result != null ? result : sysUtilsWrapper.iLoadBitmapFromDB(textureResName);
 
             return result;
         }
         else if (textureColor != 0) {
-            return sysUtilsWrapper.createColorBitmap(textureColor);
+            return sysUtilsWrapper.iCreateColorBitmap(textureColor);
         }
         else
             return null;

@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.game_logic.items.DiceObject;
-import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtils;
+import com.sadgames.dicegame.platforms.android.sysutils.AndroidSysUtilsWrapper;
 import com.sadgames.dicegame.platforms.android.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.platforms.android.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.platforms.android.ui.framework.DBTableFragment;
@@ -127,7 +127,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
 
     @Override
     protected void onDestroy() {
-        AndroidSysUtils.stopSound();
+        AndroidSysUtilsWrapper.stopSound();
         fpsCounterTimer.cancel();
 
         super.onDestroy();

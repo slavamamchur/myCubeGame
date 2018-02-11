@@ -231,12 +231,12 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
 
     @Override
     public void onRollingObjectStart(PNode gameObject) {
-        sysUtilsWrapper.playSound(ROLLING_DICE_SOUND);
+        sysUtilsWrapper.iPlaySound(ROLLING_DICE_SOUND);
     }
 
     @Override
     public void onRollingObjectStop(PNode gameObject) {
-        sysUtilsWrapper.stopSound();
+        sysUtilsWrapper.iStopSound();
     }
 
     @Override

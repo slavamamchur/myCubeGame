@@ -55,7 +55,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
     }
 
     public void internalSavePicture(GameMap map, String url, String namePrefix, String errorMessage) {
-        if (getSysUtilsWrapper().isBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
+        if (getSysUtilsWrapper().iIsBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
             return;
 
         byte[] mapArray = getBinaryData(map, url);
@@ -64,7 +64,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
             throw new WebServiceException(HttpStatus.NOT_FOUND, errorMessage);
         else try {
             // create bitmap and save into map
-            getSysUtilsWrapper().saveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
+            getSysUtilsWrapper().iSaveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
         } catch (IOException e) {
             throw new WebServiceException(HttpStatus.NOT_FOUND, errorMessage);
         }

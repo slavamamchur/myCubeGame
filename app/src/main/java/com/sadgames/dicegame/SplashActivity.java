@@ -46,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if(sysUtilsWrapper.getSettingsManager().isLoggedIn())
+        if(sysUtilsWrapper.iGetSettingsManager().isLoggedIn())
             RestApiService.startActionPing(this);
         else {
             cls = LoginActivity.class;
@@ -61,7 +61,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
                 if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
-                    sysUtilsWrapper.getSettingsManager().setAuthToken("");
+                    sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
                 }
                 delayedHide(HIDE_DELAY);
             }

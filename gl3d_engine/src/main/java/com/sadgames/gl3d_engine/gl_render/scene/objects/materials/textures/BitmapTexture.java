@@ -25,12 +25,8 @@ public class BitmapTexture extends AbstractTexture {
         super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
-    public BitmapTexture(ISysUtilsWrapper sysUtilsWrapper, int resourceId) {
-        this(sysUtilsWrapper.getBitmapFromResource(resourceId));
-    }
-
     public BitmapTexture(ISysUtilsWrapper sysUtilsWrapper, String file) {
-        this(sysUtilsWrapper.getBitmapFromFile(file));
+        this(sysUtilsWrapper.iGetBitmapFromFile(file));
     }
 
     @Override
