@@ -5,12 +5,14 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        applicationId "com.sadgames.dicegame"
         minSdkVersion 16
         targetSdkVersion 27
+
+        applicationId "com.sadgames.dicegame"
         versionCode 4
         versionName '1.0'
         versionNameSuffix '3'
+
         vectorDrawables.useSupportLibrary = true
     }
 
