@@ -1,11 +1,12 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
@@ -74,16 +75,16 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, Bitmap map, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, IBitmapWrapper map, float tu, float tv) {
         int xCoord = Math.round((map.getWidth() - 1) * tu);
         int yCoord = Math.round((map.getHeight() - 1) * tv);
         xCoord = xCoord > dimension ? dimension : xCoord;
         yCoord = yCoord > dimension ? dimension : yCoord;
 
-        return getYValueInternal(map, xCoord, yCoord, map.getPixel(xCoord, yCoord));
+        return getYValueInternal(map, xCoord, yCoord, map.getPixelColor(new Point(xCoord, yCoord)));
     }
 
-    protected float getYValueInternal(Bitmap map, int xCoord, int yCoord, int vColor) {
+    protected float getYValueInternal(IBitmapWrapper map, int xCoord, int yCoord, int vColor) {
         //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula (sphere and dome)
 
         ColorType cType = CheckColorType(vColor);
@@ -130,12 +131,12 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected int getDimension(Bitmap bmp) {
+    protected int getDimension(IBitmapWrapper bmp) {
         return  bmp.getWidth() - 1;
     }
 
     @NonNull
-    protected int interpolateUnknownColorValue(Bitmap map, int xCoord, int yCoord) {
+    protected int interpolateUnknownColorValue(IBitmapWrapper map, int xCoord, int yCoord) {
         int count = 0, R = 0, G = 0, B = 0;
 
         for (int j = yCoord - 1; j <= yCoord + 1; j++)
@@ -144,7 +145,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
                     if ( !((i == xCoord) && (j == yCoord)) && (i <= dimension)
                          && (j <= dimension)
                         ) {
-                        int color = map.getPixel(i, j);
+                        int color = map.getPixelColor(new Point(i, j));
                         R += Color.red(color);
                         G += Color.green(color);
                         B += Color.blue(color);

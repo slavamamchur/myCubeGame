@@ -1,10 +1,9 @@
 package com.sadgames.dicegame.game_logic.items;
 
-import android.graphics.Bitmap;
-
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
 import com.sadgames.sysutils.MathUtils;
 
@@ -38,9 +37,10 @@ public class DiceObject extends GameItemObject {
     }
 
     @Override
-    protected int getDimension(Bitmap bmp) {
+    protected int getDimension(IBitmapWrapper bmp) {
         return 0;
     }
+
     @Override
     public int getFacesCount() {
         return 36;

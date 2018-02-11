@@ -1,8 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Bitmap;
-
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.WATER_OBJECT;
@@ -17,17 +16,17 @@ public class WaterObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, Bitmap map, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, IBitmapWrapper map, float tu, float tv) {
         return 0f;
     }
 
     @Override
-    protected Bitmap getReliefMap() {
+    protected IBitmapWrapper getReliefMap() {
         return null;
     }
 
     @Override
-    protected int getDimension(Bitmap bmp) {
+    protected int getDimension(IBitmapWrapper bmp) {
         return 3;
     }//250
 }

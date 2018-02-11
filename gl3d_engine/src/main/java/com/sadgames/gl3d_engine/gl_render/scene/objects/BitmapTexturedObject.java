@@ -1,9 +1,8 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Bitmap;
-
 import com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
 
 public abstract class BitmapTexturedObject extends GLSceneObject {
@@ -20,5 +19,5 @@ public abstract class BitmapTexturedObject extends GLSceneObject {
         this.textureColor = textureColor;
     }
 
-    protected abstract int getDimension(Bitmap bmp);
+    protected abstract int getDimension(IBitmapWrapper bmp);
 }

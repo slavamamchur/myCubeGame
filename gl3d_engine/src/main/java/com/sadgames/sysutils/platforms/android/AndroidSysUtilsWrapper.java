@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISettingsManager;
 import com.sadgames.sysutils.ISysUtilsWrapper;
 
@@ -300,8 +301,8 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
     }
 
     @Override
-    public Bitmap iLoadReliefFromDB(String textureResName) {
-        return loadBitmapFromDB(textureResName, true);
+    public IBitmapWrapper iLoadReliefFromDB(String textureResName) {
+        return new AndroidBitmapWrapper(loadBitmapFromDB(textureResName, true));
     }
 
     @Override

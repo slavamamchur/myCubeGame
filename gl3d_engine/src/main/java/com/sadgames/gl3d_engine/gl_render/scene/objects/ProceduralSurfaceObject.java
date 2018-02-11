@@ -1,8 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Bitmap;
-
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
 
 import java.nio.ByteBuffer;
@@ -39,6 +38,7 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
         initMesh(landSize);
     }
 
+    @SuppressWarnings("unused")
     public ProceduralSurfaceObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, float landSize, GLShaderProgram program, int color) {
         super(sysUtilsWrapper, type, program, color, 0, 0);
 
@@ -55,8 +55,8 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
         return landScale;
     }
 
-    protected abstract float getYValue(float valX, float valZ, Bitmap map, float tu, float tv);
-    protected abstract Bitmap getReliefMap();
+    protected abstract float getYValue(float valX, float valZ, IBitmapWrapper map, float tu, float tv);
+    protected abstract IBitmapWrapper getReliefMap();
 
     @Override
     public int getFacesCount() {
@@ -65,7 +65,7 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
 
     @Override
     protected void createVertexesVBO() {
-        Bitmap bmp = getReliefMap();
+        IBitmapWrapper bmp = getReliefMap();
         dimension = getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
@@ -92,7 +92,7 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
         }
 
         if (bmp != null) {
-            bmp.recycle();
+            bmp.release();
         }
 
         FloatBuffer vertexData = ByteBuffer
