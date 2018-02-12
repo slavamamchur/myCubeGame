@@ -6,9 +6,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
-import com.sadgames.gl3d_engine.gl_render.platforms.android.AndroidGLES20Renderer;
 import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
+import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import javax.vecmath.Vector3f;
 

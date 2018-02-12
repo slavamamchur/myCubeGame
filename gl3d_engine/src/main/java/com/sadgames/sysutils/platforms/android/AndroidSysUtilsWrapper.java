@@ -14,7 +14,7 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
 import com.sadgames.sysutils.BitmapWrapperInterface;
-import com.sadgames.sysutils.GLES20WrapperInterface;
+import com.sadgames.sysutils.GLES20APIWrapperInterface;
 import com.sadgames.sysutils.SettingsManagerInterface;
 import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
@@ -327,7 +327,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
 
     @Override
-    public GLES20WrapperInterface iGetGLES20WrapperInterface() {
-        return AndroidGLES20Wrapper.getInstance();
+    public GLES20APIWrapperInterface iGetGLES20WrapperInterface() {
+        return AndroidGLES20APIWrapper.getInstance();
     }
 }

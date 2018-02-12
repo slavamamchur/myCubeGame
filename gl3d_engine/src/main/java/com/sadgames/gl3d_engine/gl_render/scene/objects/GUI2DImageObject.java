@@ -1,13 +1,13 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.RectF;
-
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import javax.vecmath.Vector4f;
 
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.glDrawArrays;
@@ -17,12 +17,18 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
 
 public class GUI2DImageObject extends AbstractGL3DObject {
 
-    private RectF box;
+    private float left;
+    private float top;
+    private float right;
+    private float bottom;
 
-    public GUI2DImageObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, RectF box) {
+    public GUI2DImageObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, Vector4f box) {
         super(sysUtilsWrapper, GUI_OBJECT, program);
 
-        this.box = box;
+        this.left = box.x;
+        this.top = box.y;
+        this.right = box.z;
+        this.bottom = box.w;
     }
 
     @Override
@@ -34,10 +40,10 @@ public class GUI2DImageObject extends AbstractGL3DObject {
     protected void createVertexesVBO() {
 
         float[] vertexes = new float[] {
-                box.left, box.top, 0.0f,
-                box.left, box.bottom, 0.0f,
-                box.right, box.top, 0.0f,
-                box.right, box.bottom, 0.0f,
+                left, top, 0.0f,
+                left, bottom, 0.0f,
+                right, top, 0.0f,
+                right, bottom, 0.0f,
         };
 
         FloatBuffer vertexData = ByteBuffer

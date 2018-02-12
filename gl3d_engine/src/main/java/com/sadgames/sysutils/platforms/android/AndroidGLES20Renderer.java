@@ -1,4 +1,4 @@
-package com.sadgames.gl3d_engine.gl_render.platforms.android;
+package com.sadgames.sysutils.platforms.android;
 
 import android.opengl.GLSurfaceView;
 

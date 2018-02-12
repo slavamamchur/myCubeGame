@@ -1,7 +1,5 @@
 package com.sadgames.gl3d_engine.gl_render.scene;
 
-import android.graphics.RectF;
-
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -22,6 +20,7 @@ import com.sadgames.gl3d_engine.gl_render.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShapeShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.TerrainRendererProgram;
+import com.sadgames.sysutils.GLES20APIWrapperInterface;
 import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
@@ -31,24 +30,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
-import static android.opengl.GLES20.GL_BACK;
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.GL_EXTENSIONS;
-import static android.opengl.GLES20.GL_FRAMEBUFFER;
-import static android.opengl.GLES20.GL_FRONT;
-import static android.opengl.GLES20.GL_TEXTURE4;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.glActiveTexture;
-import static android.opengl.GLES20.glBindFramebuffer;
-import static android.opengl.GLES20.glBindTexture;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glCullFace;
-import static android.opengl.GLES20.glGetString;
-import static android.opengl.GLES20.glUseProgram;
-import static android.opengl.GLES20.glViewport;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GUI_OBJECT;
@@ -56,6 +39,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.SHA
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOLUTION;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_TEXTURE_SLOT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ShadowMapQuality;
 import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.JavaPlatformUtils.forceGC_and_Sync;
@@ -79,14 +63,15 @@ public class GLScene implements GLRendererInterface {
     public  final static Object   lockObject             = new Object();
     private final static float    WAVE_SPEED             = 0.04f;
     public  final static long     CAMERA_ZOOM_ANIMATION_DURATION = 1000;
-    public  final static float    SIMULATION_FRAMES_IN_SEC = 60f;/** FPS */
+    public  final static float    SIMULATION_FRAMES_IN_SEC = 60f;
+    /** FPS */
 
     private GLCamera camera = null;
     private GLLightSource lightSource = null;
     private long simulation_time = 0;
     private boolean isSimulating = false;
     private DiscreteDynamicsWorld physicalWorldObject = null;
-    private boolean hasDepthTextureExtension = checkDepthTextureExtension();
+    private boolean hasDepthTextureExtension;
     private int oldNumContacts = 0;
     private long old_time = System.currentTimeMillis();
     private long old_frame_time = 0;
@@ -105,17 +90,21 @@ public class GLScene implements GLRendererInterface {
     private GLAnimation zoomCameraAnimation = null;
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBack = null;
+    private GLES20APIWrapperInterface glES20Wrapper;
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper, GameEventsCallbackInterface gameEventsCallBack) {
+        glES20Wrapper = sysUtilsWrapper.iGetGLES20WrapperInterface();
+
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.gameEventsCallBack = gameEventsCallBack;
+        this.hasDepthTextureExtension = checkDepthTextureExtension();
 
-        sysUtilsWrapper.iGetGLES20WrapperInterface().glEnableFacesCulling();
-        sysUtilsWrapper.iGetGLES20WrapperInterface().glEnableDepthTest();
+        glES20Wrapper.glEnableFacesCulling();
+        glES20Wrapper.glEnableDepthTest();
     }
 
-    private static boolean checkDepthTextureExtension() {
-        return glGetString(GL_EXTENSIONS).contains(OES_DEPTH_TEXTURE_EXTENSION);
+    private boolean checkDepthTextureExtension() {
+        return glES20Wrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
     }
 
     public GLCamera getCamera() {
@@ -172,7 +161,6 @@ public class GLScene implements GLRendererInterface {
     public void setRenderStopped(boolean renderStopped) {
         isRenderStopped = renderStopped;
     }
-
     public void addObject(AbstractGL3DObject object, String name) {
         objects.put(name, object);
     }
@@ -205,15 +193,10 @@ public class GLScene implements GLRendererInterface {
     }
 
     public void clearShaderCache() {
-        glUseProgram(0);
+        glES20Wrapper.glUseProgram(0);
 
-        for (GLShaderProgram program : shaders.values()) {
-            /*for (GLShaderParam param : program.getParams().values())
-                if (param instanceof GLShaderParamVBO)
-                    ((GLShaderParamVBO) param).clearParamDataVBO();*/
-
+        for (GLShaderProgram program : shaders.values())
             program.deleteProgram();
-        }
 
         shaders.clear();
     }
@@ -332,8 +315,7 @@ public class GLScene implements GLRendererInterface {
 
     private void renderShadowMapBuffer() {
         shadowMapFBO.bind();
-
-        glCullFace(GL_FRONT);
+        glES20Wrapper.glCullFrontFace();
 
         GLShaderProgram program = getCachedShader(SHADOWMAP_OBJECT);
         program.useProgram();
@@ -359,8 +341,8 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void renderPostEffectsBuffer() {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+        glES20Wrapper.glBindFramebuffer(0);
+        glES20Wrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 
         GLShaderProgram program = postEffects2DScreen.getProgram();
         program.useProgram();
@@ -375,15 +357,14 @@ public class GLScene implements GLRendererInterface {
     private void renderColorBuffer() {
         /** for post effects image processing */
         ///mainRenderFBO.bind();
-
-        glCullFace(GL_BACK);
-        glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+        glES20Wrapper.glCullBackFace();
+        glES20Wrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 
         TerrainRendererProgram program = (TerrainRendererProgram) getCachedShader(TERRAIN_OBJECT);
         program.useProgram();
 
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, shadowMapFBO.getFboTexture().getTextureId());
+        glES20Wrapper.glActiveTexture(SHADOW_MAP_TEXTURE_SLOT);
+        glES20Wrapper.glBindTexture2D(shadowMapFBO.getFboTexture().getTextureId());
         program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(4);
 
         synchronized (lockObject) {
@@ -477,9 +458,9 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void clearRenderBuffers() {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClearColor(0f, 0.0f, 0f, 0f); //glClearColor(0f, 0.7f, 1f, 1f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glES20Wrapper.glBindFramebuffer(0);
+        glES20Wrapper.glSetClearColor(0f, 0.0f, 0f, 0f);
+        glES20Wrapper.glClear();
     }
 
     public void cleanUp() {
@@ -529,7 +510,7 @@ public class GLScene implements GLRendererInterface {
 
     private void createPostEffects2DScreen() {
         GLShaderProgram guiShader = getCachedShader(GUI_OBJECT);
-        setPostEffects2DScreen(new GUI2DImageObject(sysUtilsWrapper, guiShader, new RectF(-1, 1, 0, 0)));
+        setPostEffects2DScreen(new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 0, 0)));
         getPostEffects2DScreen().loadObject();
     }
 
