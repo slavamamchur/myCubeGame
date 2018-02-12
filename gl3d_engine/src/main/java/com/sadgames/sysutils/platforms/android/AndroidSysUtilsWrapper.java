@@ -96,7 +96,7 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
         return options;
     }
 
-    public Bitmap getBitmapFromFile(String file) {
+    public Bitmap getBitmapFromFile(String file, boolean isRelief) {
         Bitmap result;
 
         try {
@@ -105,7 +105,7 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
         }
         catch (Exception exception) { result = null; }
 
-        return result != null ? result : loadBitmapFromDB(file, false);
+        return result != null ? result : loadBitmapFromDB(file, isRelief);
     }
 
     @NonNull
@@ -287,22 +287,17 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
 
     @Override
     public Bitmap iGetBitmapFromFile(String file) {
-        return getBitmapFromFile(file);
+        return getBitmapFromFile(file, false);
+    }
+
+    @Override
+    public IBitmapWrapper iGetReliefFromFile(String file) {
+        return new AndroidBitmapWrapper(getBitmapFromFile(file, true));//TODO: remove wrapper
     }
 
     @Override
     public Bitmap iCreateColorBitmap(int color) {
         return createColorBitmap(color);
-    }
-
-    @Override
-    public Bitmap iLoadBitmapFromDB(String textureResName) {
-        return loadBitmapFromDB(textureResName, false);
-    }
-
-    @Override
-    public IBitmapWrapper iLoadReliefFromDB(String textureResName) {
-        return new AndroidBitmapWrapper(loadBitmapFromDB(textureResName, true));
     }
 
     @Override

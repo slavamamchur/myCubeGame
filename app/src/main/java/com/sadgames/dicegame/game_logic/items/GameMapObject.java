@@ -32,7 +32,7 @@ public class GameMapObject extends TopographicMapObject {
 
     @Override
     protected IBitmapWrapper getReliefMap() {
-        return textureResName != null ? getSysUtilsWrapper().iLoadReliefFromDB(textureResName) : null;
+        return textureResName != null ? getSysUtilsWrapper().iGetReliefFromFile(textureResName) : null;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class GameMapObject extends TopographicMapObject {
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
 
-        IBitmapWrapper pic = new AndroidBitmapWrapper(textureBmp); //TODO: remove temp
+        IBitmapWrapper pic = new AndroidBitmapWrapper(textureBmp); //TODO: remove wrapper
 
         ArrayList<Vector2f> way = new ArrayList<>();
         for (AbstractGamePoint point : gameEntity.getGamePoints())

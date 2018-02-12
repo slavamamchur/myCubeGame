@@ -9,9 +9,8 @@ public interface ISysUtilsWrapper {
     String          iReadTextFromFile(String fileName);
 
     Bitmap          iGetBitmapFromFile(String file);
+    IBitmapWrapper  iGetReliefFromFile(String file);
     Bitmap          iCreateColorBitmap(int color);
-    Bitmap          iLoadBitmapFromDB(String textureResName);
-    IBitmapWrapper  iLoadReliefFromDB(String textureResName);
     boolean         iIsBitmapCached(String map_id, Long updatedDate);
     void            iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
 
