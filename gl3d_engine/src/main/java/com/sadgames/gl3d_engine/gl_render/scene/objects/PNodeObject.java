@@ -69,7 +69,7 @@ public abstract class PNodeObject extends BitmapTexturedObject {
     public Transform getWorldTransformActual() {
         Transform transform = new Transform(new Matrix4f(new float[16]));
 
-        return get_body() == null ? null : get_body().getWorldTransform(transform);
+        return get_body() == null ? /*new Transform(new Matrix4f(getModelMatrix()))*/ null : get_body().getWorldTransform(transform);
     }
 
     public void setWorldTransformMatrix(Transform transform) {

@@ -1,11 +1,12 @@
 package com.sadgames.dicegame.game_logic.items;
 
+import android.opengl.Matrix;
+
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.MathUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -215,15 +216,25 @@ public class DiceObject extends GameItemObject {
         return buffers[0];*/
     }
 
+    public static Vector3f mulMV(float[] matrix, float[] vector) {
+        float[] result = new float[4];
+        Matrix.multiplyMV(result, 0, matrix, 0, vector, 0);
+
+        return new Vector3f(result[0], result[1], result[2]);
+    }
+
     public int getTopFaceDiceValue(/*Transform transform*/) {
         int result = 0;
         float max_y = 0f;
 
         for (int i = 0; i < 6; i++) {
             int idx = i * 18;//12
-            Vector3f normal_vector = MathUtils.mulMV(getModelMatrix(), new float[]{normal[idx], normal[idx + 1], normal[idx + 2], 1.0f});
-            //new Vector3f(normal[idx], normal[idx + 1], normal[idx + 2]);
-            //transform.transform(normal_vector);
+            Vector3f normal_vector = mulMV(getModelMatrix(), new float[]{normal[idx], normal[idx + 1], normal[idx + 2], 1.0f});
+
+            //TODO: use transform
+            /*Vector3f normal_vector = new Vector3f(normal[idx], normal[idx + 1], normal[idx + 2]);
+            Transform transform = new Transform(new Matrix4f(getModelMatrix()));
+            transform.transform(normal_vector);*/
 
             float ty = normal_vector.y;
             if (ty > max_y) {
