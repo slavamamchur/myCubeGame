@@ -1,2 +1,3 @@
-include ':DiceGameApp', ':gl3d_engine', ':AndroidSysUtils'
+include ':DiceGameApp', ':GLES3DGameEngine', ':AndroidSysUtils'
 project(':DiceGameApp').projectDir = new File(settingsDir, '/app')
+project(':GLES3DGameEngine').projectDir = new File(settingsDir, '/gl3d_engine')

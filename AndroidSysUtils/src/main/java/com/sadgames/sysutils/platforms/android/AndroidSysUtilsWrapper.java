@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
+import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
 import com.sadgames.gl3d_engine.SettingsManagerInterface;
@@ -20,6 +21,8 @@ import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
@@ -34,6 +37,16 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     public AndroidSysUtilsWrapper(Context context) {
         this.context = context;
     }
+
+    /** Math    sysutils ---------------------------------------------------------------------------*/
+    @Override
+    public Vector3f mulMV(float[] matrix, float[] vector) {
+        float[] result = new float[4];
+        Matrix.multiplyMV(result, 0, matrix, 0, vector, 0);
+
+        return new Vector3f(result[0], result[1], result[2]);
+    }
+    /** ------------------------------------------------------------------------------------------*/
 
     /** Prefs    sysutils ---------------------------------------------------------------------------*/
     public static SharedPreferences getDefaultSharedPrefs(Context ctx) {

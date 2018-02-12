@@ -5,18 +5,22 @@ import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 
+import javax.vecmath.Vector3f;
+
 public interface SysUtilsWrapperInterface {
 
-    String          iReadTextFromFile(String fileName);
+    String                 iReadTextFromFile(String fileName);
 
     BitmapWrapperInterface iGetBitmapFromFile(String file);
     BitmapWrapperInterface iGetReliefFromFile(String file);
     BitmapWrapperInterface iCreateColorBitmap(int color);
-    boolean         iIsBitmapCached(String map_id, Long updatedDate);
-    void            iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
+    boolean                iIsBitmapCached(String map_id, Long updatedDate);
+    void                   iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
 
-    void            iPlaySound(String file);
-    void            iStopSound();
+    void                   iPlaySound(String file);
+    void                   iStopSound();
+
+    Vector3f               mulMV(float[] matrix, float[] vector);
 
     SettingsManagerInterface iGetSettingsManager();
     GLES20APIWrapperInterface iGetGLES20WrapperInterface();

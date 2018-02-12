@@ -52,6 +52,6 @@ dependencies {
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     compile 'cz.advel.jbullet:jbullet:20101010-1'
-    implementation project(':gl3d_engine')
+    implementation project(':GLES3DGameEngine')
     implementation project(':AndroidSysUtils')
 }
