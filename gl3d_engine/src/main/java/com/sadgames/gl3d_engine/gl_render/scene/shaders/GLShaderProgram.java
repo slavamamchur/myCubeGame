@@ -2,9 +2,9 @@ package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
 import android.opengl.Matrix;
 
-import com.sadgames.gl3d_engine.gl_render.scene.objects.GLSceneObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -75,7 +75,7 @@ public abstract class GLShaderProgram {
     private int fragmentShaderID;
     protected Map<String, GLShaderParam> params = new HashMap<>();
 
-    public GLShaderProgram(ISysUtilsWrapper sysUtilsWrapper) {
+    public GLShaderProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
 
         vertexShaderID = createShader(sysUtilsWrapper, GL_VERTEX_SHADER, getVertexShaderResId());
         fragmentShaderID = createShader(sysUtilsWrapper, GL_FRAGMENT_SHADER, getFragmentShaderResId());
@@ -265,7 +265,7 @@ public abstract class GLShaderProgram {
         paramByName(MV_MATRIXF_PARAM_NAME).setParamValue(data);
     }
 
-    public void bindMVPMatrix(GLSceneObject object, float[] viewMatrix, float[] projectionMatrix) {
+    public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
         float[] mMatrix = new float[16];
 
         Matrix.multiplyMM(mMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
@@ -275,7 +275,7 @@ public abstract class GLShaderProgram {
         setMVPMatrixData(mMatrix);
     }
 
-    public void linkVBOData(GLSceneObject object) {
+    public void linkVBOData(AbstractGL3DObject object) {
         try {
             linkVertexData(object.getVertexVBO());
             linkTexelData(object.getTexelVBO());
@@ -285,7 +285,7 @@ public abstract class GLShaderProgram {
         }
     }
 
-    public void setMaterialParams(GLSceneObject object) {
+    public void setMaterialParams(AbstractGL3DObject object) {
         int textureSlotIndex = 0;
 
         if (object.getGlTextureId() > 0) {
@@ -343,7 +343,7 @@ public abstract class GLShaderProgram {
         paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
     }
 
-    public void bindLightSourceMVP (GLSceneObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
+    public void bindLightSourceMVP (AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
         float [] lightMVP = new float[16];
 
         Matrix.multiplyMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
@@ -375,7 +375,7 @@ public abstract class GLShaderProgram {
         return programId;
     }
 
-    public static int createShader(ISysUtilsWrapper sysUtilsWrapper, int type, String shaderRawId) {
+    public static int createShader(SysUtilsWrapperInterface sysUtilsWrapper, int type, String shaderRawId) {
         return createShader(type, sysUtilsWrapper.iReadTextFromFile(shaderRawId));
     }
 

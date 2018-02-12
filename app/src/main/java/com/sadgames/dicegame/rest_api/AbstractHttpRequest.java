@@ -2,11 +2,11 @@ package com.sadgames.dicegame.rest_api;
 
 import android.support.annotation.NonNull;
 
-import com.sadgames.dicegame.rest_api.model.BasicEntity;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.MyCollectionResponse;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.entities.BasicEntity;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.responses.GenericCollectionResponse;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -42,9 +42,9 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     private String mUrl;
     protected Class<T> mResponseType;
     protected final HttpMethod mHttpMethod;
-    private ISysUtilsWrapper sysUtilsWrapper;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
 
-    protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod, ISysUtilsWrapper sysUtilsWrapper) {
+    protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod, SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
         mUrl = getBaseUrl() + url;
         this.mResponseType = responseType;
@@ -71,7 +71,7 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     public void setmResponseType(Class<T> mResponseType) {
         this.mResponseType = mResponseType;
     }
-    public ISysUtilsWrapper getSysUtilsWrapper() {
+    public SysUtilsWrapperInterface getSysUtilsWrapper() {
         return sysUtilsWrapper;
     }
 
@@ -124,8 +124,8 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
     public Collection getResponseList()  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<MyCollectionResponse> responseEntity =
-                restTemplate.exchange(mUrl + URL_LIST, HttpMethod.GET, getHttpEntity(), MyCollectionResponse.class);
+        ResponseEntity<GenericCollectionResponse> responseEntity =
+                restTemplate.exchange(mUrl + URL_LIST, HttpMethod.GET, getHttpEntity(), GenericCollectionResponse.class);
 
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }

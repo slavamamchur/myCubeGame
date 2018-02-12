@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.sadgames.sysutils.ISettingsManager;
+import com.sadgames.sysutils.SettingsManagerInterface;
 
-public final class AndroidSettingsManager implements ISettingsManager {
+public final class AndroidSettingsManager implements SettingsManagerInterface {
 
     public static final String PARAM_AUTH_TOKEN = "authToken";
     public static final String PARAM_USER_NAME = "userName";

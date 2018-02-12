@@ -21,27 +21,27 @@ import com.sadgames.dicegame.game_logic.items.ChipObject;
 import com.sadgames.dicegame.game_logic.items.DiceObject;
 import com.sadgames.dicegame.game_logic.items.GameMapObject;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.GameMap;
-import com.sadgames.dicegame.rest_api.model.players.InstancePlayer;
-import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
-import com.sadgames.dicegame.rest_api.model.points.PointType;
-import com.sadgames.gl3d_engine.gl_render.IGameEventsCallBack;
-import com.sadgames.gl3d_engine.gl_render.MapGLRenderer;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.dicegame.rest_api.model.entities.points.PointType;
+import com.sadgames.gl3d_engine.gl_render.GL3DRenderer;
+import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
 import com.sadgames.gl3d_engine.gl_render.scene.GLLightSource;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
-import com.sadgames.gl3d_engine.gl_render.scene.objects.GLSceneObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
-import com.sadgames.gl3d_engine.gl_render.scene.objects.PNode;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.ArrayList;
@@ -65,20 +65,20 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TER
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
-public class MapFragment extends Fragment implements IGameEventsCallBack {
+public class MapFragment extends Fragment implements GameEventsCallbackInterface {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
 
     private BaseItemDetailsActivity.WebErrorHandler webErrorHandler = null;
-    private GameMap mapEntity = null;
-    private Game gameEntity = null;
-    private GameInstance gameInstanceEntity = null;
+    private GameMapEntity mapEntity = null;
+    private GameEntity gameEntity = null;
+    private GameInstanceEntity gameInstanceEntity = null;
     private Bitmap cachedBitmap;/** Disable editor */
-    private ISysUtilsWrapper sysUtilsWrapper;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
 
     public List<InstancePlayer> savedPlayers = null;
     public GLSurfaceView glMapSurfaceView;
-    public MapGLRenderer glRenderer;
+    public GL3DRenderer glRenderer;
 
     public interface ChipAnimadedDelegate {
         void onAnimationEnd();
@@ -92,7 +92,7 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
                              @Nullable Bundle savedInstanceState) {
         glMapSurfaceView = new MapGLSurfaceView(getContext());
         sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getContext());
-        glRenderer = new MapGLRenderer(sysUtilsWrapper);
+        glRenderer = new GL3DRenderer(sysUtilsWrapper);
 
         return  glMapSurfaceView;
     }
@@ -166,18 +166,18 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
             return false;
     }
 
-    public void InitMap(GameMap map, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
+    public void InitMap(GameMapEntity map, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
         setMapEntity(map);
         glRenderer.setMapID(map == null ? null : map.getId());
 
         setWebErrorHandler(errorHandler);
     }
 
-    public void InitMap(Game game, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
+    public void InitMap(GameEntity game, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
         setGameEntity(game);
 
         if (game != null) {
-            GameMap map = new GameMap();
+            GameMapEntity map = new GameMapEntity();
             map.setId(game.getMapId());
             InitMap(map, errorHandler);
         }
@@ -185,7 +185,7 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
             setWebErrorHandler(errorHandler);
     }
 
-    public void InitMap(GameInstance gameInst, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
+    public void InitMap(GameInstanceEntity gameInst, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
         setGameInstanceEntity(gameInst);
         savedPlayers = new ArrayList<>(gameInst != null ? gameInst.getPlayers() : null);
         InitMap(gameInst == null ? null : gameInst.getGame(), errorHandler);
@@ -224,18 +224,18 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
     }
 
     @Override
-    public void onStopMovingObject(PNode gameObject) {
+    public void onStopMovingObject(PNodeObject gameObject) {
         if (gameObject instanceof DiceObject)
             removeDice((DiceObject) gameObject);
     }
 
     @Override
-    public void onRollingObjectStart(PNode gameObject) {
+    public void onRollingObjectStart(PNodeObject gameObject) {
         sysUtilsWrapper.iPlaySound(ROLLING_DICE_SOUND);
     }
 
     @Override
-    public void onRollingObjectStop(PNode gameObject) {
+    public void onRollingObjectStop(PNodeObject gameObject) {
         sysUtilsWrapper.iStopSound();
     }
 
@@ -320,7 +320,7 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
             PointF chipPlace = getChipPlace(mScene, playersOnWayPoints, player, true);
 
-            GLSceneObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", i));
+            AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", i));
 
             chip.setInWorldPosition(chipPlace);
         }
@@ -403,7 +403,7 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
     }
 
-    private void animateChip(final ChipAnimadedDelegate delegate, AbstractGamePoint endGamePoint, int playersCnt, GLSceneObject chip) throws Exception {
+    private void animateChip(final ChipAnimadedDelegate delegate, AbstractGamePoint endGamePoint, int playersCnt, AbstractGL3DObject chip) throws Exception {
         playersCnt = playersCnt < 0 ? 0 : playersCnt;
 
         if (endGamePoint == null)
@@ -431,7 +431,7 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
         });
     }
 
-    public void saveMapImage(Intent data, GameMap map){
+    public void saveMapImage(Intent data, GameMapEntity map){
         Uri selectedImage = data.getData();
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
@@ -448,13 +448,13 @@ public class MapFragment extends Fragment implements IGameEventsCallBack {
         }
     }
 
-    public void setMapEntity(GameMap mapEntity) {
+    public void setMapEntity(GameMapEntity mapEntity) {
         this.mapEntity = mapEntity;
     }
-    public void setGameEntity(Game gameEntity) {
+    public void setGameEntity(GameEntity gameEntity) {
         this.gameEntity = gameEntity;
     }
-    public void setGameInstanceEntity(GameInstance gameInstanceEntity) {
+    public void setGameInstanceEntity(GameInstanceEntity gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
     }
     public Bitmap getBitmap() {

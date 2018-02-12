@@ -3,9 +3,9 @@ package com.sadgames.dicegame.game_logic.items;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
 import com.sadgames.sysutils.MathUtils;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -27,7 +27,7 @@ public class DiceObject extends GameItemObject {
 
     private float[] normal;
 
-    public DiceObject(ISysUtilsWrapper sysUtilsWrapper, GLShaderProgram program) {
+    public DiceObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program) {
         super(sysUtilsWrapper, GAME_ITEM_OBJECT, DICE_TEXTURE, program, 10f, MOVING_OBJECT);
     }
 
@@ -37,7 +37,7 @@ public class DiceObject extends GameItemObject {
     }
 
     @Override
-    protected int getDimension(IBitmapWrapper bmp) {
+    protected int getDimension(BitmapWrapperInterface bmp) {
         return 0;
     }
 

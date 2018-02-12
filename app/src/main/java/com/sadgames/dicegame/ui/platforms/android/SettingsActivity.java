@@ -19,7 +19,7 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.platforms.android.framework.AppCompatPreferenceActivity;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             else {
                 preference.setSummary(stringValue);
 
-                final ISysUtilsWrapper sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(preference.getContext());
+                final SysUtilsWrapperInterface sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(preference.getContext());
                 if (preference.getKey().equals(preference.getContext().getString(R.string.pref_key_web_service_url))
                         && !sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
                         ) {
@@ -74,7 +74,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private static SettingsActivity instance = null;
 
-    private static void forceRelogin(final Context ctx, final ISysUtilsWrapper sysUtilsWrapper){
+    private static void forceRelogin(final Context ctx, final SysUtilsWrapperInterface sysUtilsWrapper){
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setMessage("Web service url was changed. Relogin is needed.")
                 .setTitle("Warning");

@@ -1,6 +1,6 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures;
 
-import com.sadgames.sysutils.IBitmapWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
 
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDeleteTextures;
@@ -12,7 +12,7 @@ public abstract class AbstractTexture {
     private     int height;
     private     int textureId;
 
-    public AbstractTexture(int width, int height, IBitmapWrapper bitmap) {
+    public AbstractTexture(int width, int height, BitmapWrapperInterface bitmap) {
         init(width, height);
         createTexture(bitmap);
     }
@@ -34,7 +34,7 @@ public abstract class AbstractTexture {
         this.height = height;
     }
 
-    protected void createTexture(IBitmapWrapper bitmap) {
+    protected void createTexture(BitmapWrapperInterface bitmap) {
         final int[] textureIds = new int[1];
         glGenTextures(1, textureIds, 0);
 
@@ -62,5 +62,5 @@ public abstract class AbstractTexture {
 
     protected abstract int getTextureType();
     protected abstract void setTextureParams();
-    protected abstract void loadTexture(IBitmapWrapper bitmap) throws UnsupportedOperationException;
+    protected abstract void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException;
 }

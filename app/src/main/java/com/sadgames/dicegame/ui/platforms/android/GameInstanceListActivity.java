@@ -7,9 +7,9 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import static com.sadgames.dicegame.rest_api.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.rest_api.RestApiService.ACTION_LIST_RESPONSE;
 
-public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
+public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntity> {
 
     private static final String STATE_FIELD_NAME = "state";
     private static final String PLAYERS_FIELD_NAME = "players";
@@ -29,11 +29,11 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
 
     private static final ArrayList<DBColumnInfo> GAME_INSTANCE_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
-            add(new DBColumnInfo("Name", 48, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameInstance.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
-            add(new DBColumnInfo("State", 8, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(STATE_FIELD_NAME), null));
-            add(new DBColumnInfo("# of Players", 11, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(PLAYERS_FIELD_NAME), null));
-            add(new DBColumnInfo("Started", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(STARTED_FIELD_NAME), null));
-            add(new DBColumnInfo("Last used", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstance.class.getDeclaredField(LAST_USED_FIELD_NAME), null));
+            add(new DBColumnInfo("Name", 48, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameInstanceEntity.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("State", 8, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(STATE_FIELD_NAME), null));
+            add(new DBColumnInfo("# of Players", 11, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(PLAYERS_FIELD_NAME), null));
+            add(new DBColumnInfo("Started", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(STARTED_FIELD_NAME), null));
+            add(new DBColumnInfo("Last used", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(LAST_USED_FIELD_NAME), null));
             add(new DBColumnInfo("Finish", 7, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, FINISH_GAME_TAG));
         }
         catch (NoSuchFieldException e) {
@@ -71,8 +71,8 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     }
 
     @Override
-    protected GameInstance getNewItem() {
-        return new GameInstance();
+    protected GameInstanceEntity getNewItem() {
+        return new GameInstanceEntity();
     }
     @Override
     protected String getNewItemActionName() {
@@ -81,7 +81,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
 
     @Override
     protected boolean isUserButtonEnabled(String tag, BasicNamedDbEntity item) {
-        return !((GameInstance)item).getState().equals(GameInstance.State.FINISHED);
+        return !((GameInstanceEntity)item).getState().equals(GameInstanceEntity.State.FINISHED);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstance> {
     }
 
     @Override
-    protected void doUserAction(GameInstance item, String tag) {
+    protected void doUserAction(GameInstanceEntity item, String tag) {
         showProgress();
 
         RestApiService.startActionFinishGameInstance(getApplicationContext(), item);

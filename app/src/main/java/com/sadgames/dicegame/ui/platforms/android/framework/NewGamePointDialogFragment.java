@@ -15,8 +15,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.rest_api.model.points.NewPointRequest;
-import com.sadgames.dicegame.rest_api.model.points.PointType;
+import com.sadgames.dicegame.rest_api.model.entities.points.NewPointRequest;
+import com.sadgames.dicegame.rest_api.model.entities.points.PointType;
 
 
 public class NewGamePointDialogFragment extends DialogFragment {

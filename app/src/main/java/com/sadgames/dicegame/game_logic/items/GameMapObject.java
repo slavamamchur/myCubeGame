@@ -2,14 +2,14 @@ package com.sadgames.dicegame.game_logic.items;
 
 import android.graphics.Color;
 
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
 
@@ -17,26 +17,26 @@ import javax.vecmath.Vector2f;
 
 public class GameMapObject extends TopographicMapObject {
 
-    private Game gameEntity;
+    private GameEntity gameEntity;
 
-    public GameMapObject(ISysUtilsWrapper sysUtilsWrapper, GLShaderProgram program, Game gameEntity) {
+    public GameMapObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
         this.gameEntity = gameEntity;
     }
 
-    public Game getGameEntity() {
+    public GameEntity getGameEntity() {
         return gameEntity;
     }
 
     @Override
-    protected IBitmapWrapper getReliefMap() {
+    protected BitmapWrapperInterface getReliefMap() {
         return textureResName != null ? getSysUtilsWrapper().iGetReliefFromFile(textureResName) : null;
     }
 
     @Override
     protected AbstractTexture loadTexture() {
-        IBitmapWrapper textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
+        BitmapWrapperInterface textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
 
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;

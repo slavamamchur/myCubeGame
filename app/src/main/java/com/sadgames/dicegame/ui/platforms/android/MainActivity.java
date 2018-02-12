@@ -126,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ImageItem> getData() {
         final ArrayList<ImageItem> imageItems = new ArrayList<>();
 
-        imageItems.add(new ImageItem(VectorDrawableCompat.create(MainActivity.this.getResources(), R.drawable.new_game_ico_cl, MainActivity.this.getTheme()), "New Game"));
-        imageItems.add(new ImageItem(VectorDrawableCompat.create(MainActivity.this.getResources(), R.drawable.load_game_ico_cl, MainActivity.this.getTheme()), "Load Game"));
+        imageItems.add(new ImageItem(VectorDrawableCompat.create(MainActivity.this.getResources(), R.drawable.new_game_ico_cl, MainActivity.this.getTheme()), "New GameEntity"));
+        imageItems.add(new ImageItem(VectorDrawableCompat.create(MainActivity.this.getResources(), R.drawable.load_game_ico_cl, MainActivity.this.getTheme()), "Load GameEntity"));
         imageItems.add(new ImageItem(VectorDrawableCompat.create(MainActivity.this.getResources(), R.drawable.settings_ico_cl, MainActivity.this.getTheme()), "Settings"));
 
         return imageItems;

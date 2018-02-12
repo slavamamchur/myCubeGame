@@ -36,8 +36,8 @@ import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.AuthToken;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseActivityWithMenu;
 
 import java.util.ArrayList;
@@ -129,7 +129,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(RestApiService.ACTION_LOGIN_RESPONSE)){
             //TODO: process error object
-            AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+            AuthTokenEntity response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null) {
                 getSysUtilsWrapper().iGetSettingsManager().setAuthToken(response.getId());
                 getSysUtilsWrapper().iGetSettingsManager().setUserName(mEmailView.getText().toString());

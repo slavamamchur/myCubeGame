@@ -10,8 +10,8 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.platforms.android.DBPlayersListActivity;
 import com.sadgames.dicegame.ui.platforms.android.GameInstanceListActivity;
 import com.sadgames.dicegame.ui.platforms.android.GameListActivity;

@@ -1,12 +1,11 @@
 package com.sadgames.dicegame.rest_api;
 
-import com.sadgames.dicegame.rest_api.model.CollectionResponseGameInstance;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.GameInstanceResponse;
-import com.sadgames.dicegame.rest_api.model.GameInstanceStartedResponse;
-import com.sadgames.dicegame.rest_api.model.IdResponse;
-import com.sadgames.dicegame.rest_api.model.StartNewGameRequest;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.rest_api.model.responses.GameInstanceCollectionResponse;
+import com.sadgames.dicegame.rest_api.model.responses.GameInstanceResponse;
+import com.sadgames.dicegame.rest_api.model.responses.GameInstanceStartedResponse;
+import com.sadgames.dicegame.rest_api.model.responses.IdResponse;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -20,10 +19,10 @@ import java.util.Map;
 import static com.sadgames.dicegame.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.dicegame.rest_api.RestConst.URL_LIST;
 
-public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
+public class GameInstanceController extends AbstractHttpRequest<GameInstanceEntity>{
 
-    public GameInstanceController(ISysUtilsWrapper sysUtilsWrapper) {
-        super(GameInstance.ACTION_NAME, GameInstance.class, HttpMethod.GET, sysUtilsWrapper);
+    public GameInstanceController(SysUtilsWrapperInterface sysUtilsWrapper) {
+        super(GameInstanceEntity.ACTION_NAME, GameInstanceEntity.class, HttpMethod.GET, sysUtilsWrapper);
     }
 
     @Override
@@ -43,13 +42,13 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
 
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<CollectionResponseGameInstance> responseEntity =
-                    restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), CollectionResponseGameInstance.class);
+        ResponseEntity<GameInstanceCollectionResponse> responseEntity =
+                    restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), GameInstanceCollectionResponse.class);
 
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    public GameInstanceResponse finishInstance(GameInstance instance) throws WebServiceException {
+    public GameInstanceResponse finishInstance(GameInstanceEntity instance) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();
 
@@ -57,7 +56,7 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
                 HttpMethod.GET, getHttpEntity(null), GameInstanceResponse.class, instance.getId()).getBody();
     }
 
-    public IdResponse restartInstance(GameInstance instance) throws WebServiceException {
+    public IdResponse restartInstance(GameInstanceEntity instance) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();
 
@@ -65,7 +64,7 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
                 HttpMethod.GET, getHttpEntity(null), IdResponse.class, instance.getId()).getBody();
     }
 
-    public GameInstanceStartedResponse startNewInstance(StartNewGameRequest request) throws WebServiceException {
+    public GameInstanceStartedResponse startNewInstance(StartNewGameRequestParam request) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();
 
@@ -73,12 +72,12 @@ public class GameInstanceController extends AbstractHttpRequest<GameInstance>{
                 HttpMethod.POST, getHttpEntity(request), GameInstanceStartedResponse.class).getBody();
     }
 
-    public GameInstance makeTurn(GameInstance instance) throws WebServiceException {
+    public GameInstanceEntity makeTurn(GameInstanceEntity instance) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();
 
         return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_MOVE,
-                HttpMethod.GET, getHttpEntity(null), GameInstance.class, instance.getId(), instance.getStepsToGo()).getBody();
+                HttpMethod.GET, getHttpEntity(null), GameInstanceEntity.class, instance.getId(), instance.getStepsToGo()).getBody();
     }
 
 }

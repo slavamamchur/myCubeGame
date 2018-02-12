@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.UserEntity;
+import com.sadgames.dicegame.rest_api.model.entities.UserEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseActivityWithMenu;
 
 import static com.sadgames.dicegame.rest_api.RestApiService.ACTION_REGISTRATION_RESPONSE;

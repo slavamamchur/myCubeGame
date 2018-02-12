@@ -16,22 +16,22 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.AuthToken;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.platforms.android.LoginActivity;
 import com.sadgames.dicegame.ui.platforms.android.SettingsActivity;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
     private BroadcastReceiver mBaseBroadcastReceiver = null;
     private ProgressDialog progressDialog = null;
-    private ISysUtilsWrapper sysUtilsWrapper;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
     private final Handler mAlertHandler = new Handler();
     private boolean isFirstResume;
 
-    public ISysUtilsWrapper getSysUtilsWrapper() {
+    public SysUtilsWrapperInterface getSysUtilsWrapper() {
         return sysUtilsWrapper;
     }
 
@@ -130,7 +130,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
             return true;
         }
         else if (intent.getAction().equals(RestApiService.ACTION_RELOGIN_RESPONSE)) {
-            AuthToken response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+            AuthTokenEntity response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null)
                 sysUtilsWrapper.iGetSettingsManager().setAuthToken(response.getId());
             else

@@ -1,6 +1,6 @@
 package com.sadgames.dicegame.rest_api;
 
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 
 import org.json.JSONObject;
 import org.springframework.http.client.ClientHttpResponse;

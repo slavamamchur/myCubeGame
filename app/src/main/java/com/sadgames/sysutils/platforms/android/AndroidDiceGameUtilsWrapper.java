@@ -3,7 +3,7 @@ package com.sadgames.sysutils.platforms.android;
 import android.content.Context;
 
 import com.sadgames.dicegame.rest_api.GameMapController;
-import com.sadgames.dicegame.rest_api.model.GameMap;
+import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 
 public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
 
@@ -14,7 +14,7 @@ public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
     @Override
     protected void downloadBitmapIfNotCached(String textureResName, boolean isRelief) {
         GameMapController gmc = new GameMapController(this);
-        GameMap map = gmc.find(textureResName);
+        GameMapEntity map = gmc.find(textureResName);
         if (isRelief)
             gmc.saveMapRelief(map);
         else

@@ -10,10 +10,10 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.rest_api.model.DbPlayer;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.players.InstancePlayer;
+import com.sadgames.dicegame.rest_api.model.entities.DbPlayerEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseActivityWithMenu;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment;
@@ -21,7 +21,7 @@ import com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment;
 import java.util.ArrayList;
 
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.rest_api.model.GameInstance.State.WAIT;
+import static com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity.State.WAIT;
 import static com.sadgames.dicegame.ui.platforms.android.framework.BaseListActivity.NAME_FIELD_NAME;
 
 public class NewGameInstanceActivity extends BaseActivityWithMenu {
@@ -37,8 +37,8 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
         }
     }};
 
-    private Game gameEntity;
-    private GameInstance instance = new GameInstance();
+    private GameEntity gameEntity;
+    private GameInstanceEntity instance = new GameInstanceEntity();
     private EditText editName;
     private DBTableFragment tableFragment;
 
@@ -64,7 +64,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
 
         gameEntity = getIntent().getParcelableExtra(EXTRA_ENTITY_OBJECT);
 
-        setTitle(getString(R.string.start_new_instance_title) + " (Game ID: " + gameEntity.getId() + ")");
+        setTitle(getString(R.string.start_new_instance_title) + " (GameEntity ID: " + gameEntity.getId() + ")");
 
         instance.setGame(gameEntity);
         instance.setPlayers( new ArrayList<InstancePlayer>());
@@ -122,7 +122,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
         return super.onOptionsItemSelected(item);
     }
 
-    private void startInstance(GameInstance instance){
+    private void startInstance(GameInstanceEntity instance){
         Intent intent = new Intent();
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
         setResult(RESULT_OK, intent);
@@ -133,7 +133,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DBPlayersListActivity.ACTION_DICTIONARY && resultCode == RESULT_OK && data != null) {
-            DbPlayer newPlayer = data.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+            DbPlayerEntity newPlayer = data.getParcelableExtra(EXTRA_ENTITY_OBJECT);
 
             if (newPlayer != null) {
                 InstancePlayer iplayer = new InstancePlayer();

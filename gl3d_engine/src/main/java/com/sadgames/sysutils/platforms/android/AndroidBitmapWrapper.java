@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 
-import com.sadgames.sysutils.IBitmapWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import javax.vecmath.Vector2f;
 
-public class AndroidBitmapWrapper implements IBitmapWrapper {
+public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     private Bitmap picture;
 

@@ -8,10 +8,10 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.StartNewGameRequest;
+import com.sadgames.dicegame.rest_api.StartNewGameRequestParam;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 
@@ -24,7 +24,7 @@ import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_GAME_LIST;
 import static com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
-public class GameListActivity extends BaseListActivity<Game> {
+public class GameListActivity extends BaseListActivity<GameEntity> {
 
     public static final int START_GAME_INSTANCE_ACTION = 3;
     private static final String START_GAME_INSTANCE_TAG = "START_GAME_INSTANCE";
@@ -32,9 +32,9 @@ public class GameListActivity extends BaseListActivity<Game> {
 
     private static final ArrayList<DBColumnInfo> GAME_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
-            add(new DBColumnInfo("Name", 30, DBColumnInfo.ColumnType.COLUMN_REFERENCE, Game.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
-            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField(MAP_ID_FIELD_NAME), null));
-            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, Game.class.getDeclaredField(CREATED_DATE_FIELD_NAME), null));
+            add(new DBColumnInfo("Name", 30, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameEntity.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("Map ID", 25, DBColumnInfo.ColumnType.COLUMN_TEXT, GameEntity.class.getDeclaredField(MAP_ID_FIELD_NAME), null));
+            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, GameEntity.class.getDeclaredField(CREATED_DATE_FIELD_NAME), null));
             add(new DBColumnInfo("", 5, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG, android.R.drawable.ic_delete, null));
             add(new DBColumnInfo("Start", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, START_GAME_INSTANCE_TAG));
         }
@@ -64,8 +64,8 @@ public class GameListActivity extends BaseListActivity<Game> {
         return GameActivity.class;
     }
     @Override
-    protected Game getNewItem() {
-        return new Game();
+    protected GameEntity getNewItem() {
+        return new GameEntity();
     }
     @Override
     protected String getNewItemActionName() {
@@ -118,7 +118,7 @@ public class GameListActivity extends BaseListActivity<Game> {
     }
 
     @Override
-    protected void doUserAction(Game item, String tag) {
+    protected void doUserAction(GameEntity item, String tag) {
         Intent mIntent = new Intent(getApplicationContext(), NewGameInstanceActivity.class);
         mIntent.putExtra(getEntityExtra(), item);
         startActivityForResult(mIntent, START_GAME_INSTANCE_ACTION);
@@ -127,7 +127,7 @@ public class GameListActivity extends BaseListActivity<Game> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == START_GAME_INSTANCE_ACTION && resultCode == Activity.RESULT_OK && null != data) {
-            GameInstance instance = data.getParcelableExtra(getEntityExtra());
+            GameInstanceEntity instance = data.getParcelableExtra(getEntityExtra());
             if (instance != null)
                 startGameInstance(instance);
         }
@@ -136,10 +136,10 @@ public class GameListActivity extends BaseListActivity<Game> {
         }
     }
 
-    protected void startGameInstance(GameInstance instance){
+    protected void startGameInstance(GameInstanceEntity instance){
         showProgress();
 
-        StartNewGameRequest request = new StartNewGameRequest();
+        StartNewGameRequestParam request = new StartNewGameRequestParam();
         request.setName(instance.getName());
         request.setPlayers(instance.getPlayers());
         request.setGameId(instance.getGame().getId());

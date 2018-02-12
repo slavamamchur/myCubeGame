@@ -17,9 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.points.PointType;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.rest_api.model.entities.points.PointType;
 import com.sadgames.sysutils.DateTimeUtils;
 
 import java.lang.reflect.Field;
@@ -239,8 +239,8 @@ public class DBTableFragment extends Fragment {
             return DateTimeUtils.formatDateTime((Long) value);
         else if (value instanceof List)
             return String.valueOf(((List) value).size());
-        else if (value instanceof GameInstance.State)
-            return ((GameInstance.State) value).name();
+        else if (value instanceof GameInstanceEntity.State)
+            return ((GameInstanceEntity.State) value).name();
         else if (value instanceof PointType)
             return ((PointType) value).name();
         else if (value instanceof Integer)

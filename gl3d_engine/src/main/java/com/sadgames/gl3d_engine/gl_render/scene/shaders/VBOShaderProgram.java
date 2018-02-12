@@ -2,7 +2,7 @@ package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParamVBO;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXELS_PARAM_NAME;
@@ -10,7 +10,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEXES_PARAM_N
 
 public abstract class VBOShaderProgram extends GLShaderProgram {
 
-    public VBOShaderProgram(ISysUtilsWrapper sysUtilsWrapper) {
+    public VBOShaderProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
         super(sysUtilsWrapper);
     }
 

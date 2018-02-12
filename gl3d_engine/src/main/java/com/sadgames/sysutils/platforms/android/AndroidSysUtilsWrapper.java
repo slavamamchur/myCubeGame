@@ -13,9 +13,9 @@ import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISettingsManager;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.SettingsManagerInterface;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.sysutils.JavaPlatformUtils.convertStreamToString;
 
-public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
+public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     public static  final int BYTES_IN_2MB = 2 * 1024 * 1024;
     private static MediaPlayer mMediaPlayer;
@@ -286,17 +286,17 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
     }
 
     @Override
-    public IBitmapWrapper iGetBitmapFromFile(String file) {
+    public BitmapWrapperInterface iGetBitmapFromFile(String file) {
         return new AndroidBitmapWrapper(getBitmapFromFile(file, false));
     }
 
     @Override
-    public IBitmapWrapper iGetReliefFromFile(String file) {
+    public BitmapWrapperInterface iGetReliefFromFile(String file) {
         return new AndroidBitmapWrapper(getBitmapFromFile(file, true));
     }
 
     @Override
-    public IBitmapWrapper iCreateColorBitmap(int color) {
+    public BitmapWrapperInterface iCreateColorBitmap(int color) {
         return new AndroidBitmapWrapper(createColorBitmap(color));
     }
 
@@ -321,7 +321,7 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
     }
 
     @Override
-    public ISettingsManager iGetSettingsManager() {
+    public SettingsManagerInterface iGetSettingsManager() {
         return AndroidSettingsManager.getInstance(context);
     }
 }

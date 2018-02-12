@@ -2,8 +2,8 @@ package com.sadgames.dicegame.rest_api;
 
 import android.text.TextUtils;
 
-import com.sadgames.dicegame.rest_api.model.PingResponse;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.responses.PingResponse;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -16,7 +16,7 @@ import static com.sadgames.dicegame.rest_api.RestConst.URL_PING;
 
 public class PingRequest extends AbstractHttpRequest<PingResponse> {
 
-    protected PingRequest(ISysUtilsWrapper sysUtilsWrapper) {
+    protected PingRequest(SysUtilsWrapperInterface sysUtilsWrapper) {
         super(URL_PING, PingResponse.class, HttpMethod.GET, sysUtilsWrapper);
     }
 

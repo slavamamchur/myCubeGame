@@ -6,8 +6,8 @@ import android.graphics.PointF;
 import android.support.annotation.NonNull;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
@@ -60,7 +60,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     protected float scaleX;
     protected float scaleZ;
 
-    public TopographicMapObject(ISysUtilsWrapper sysUtilsWrapper, GLShaderProgram program, String mapName) {
+    public TopographicMapObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String mapName) {
         super(sysUtilsWrapper, TERRAIN_OBJECT, mapName, LAND_SIZE_IN_WORLD_SPACE, program);
 
         isCastShadow = false;
@@ -75,7 +75,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, IBitmapWrapper map, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv) {
         int xCoord = Math.round((map.getWidth() - 1) * tu);
         int yCoord = Math.round((map.getHeight() - 1) * tv);
         xCoord = xCoord > dimension ? dimension : xCoord;
@@ -84,7 +84,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         return getYValueInternal(map, xCoord, yCoord, map.getPixelColor(new Point(xCoord, yCoord)));
     }
 
-    protected float getYValueInternal(IBitmapWrapper map, int xCoord, int yCoord, int vColor) {
+    protected float getYValueInternal(BitmapWrapperInterface map, int xCoord, int yCoord, int vColor) {
         //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula (sphere and dome)
 
         ColorType cType = CheckColorType(vColor);
@@ -131,12 +131,12 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected int getDimension(IBitmapWrapper bmp) {
+    protected int getDimension(BitmapWrapperInterface bmp) {
         return  bmp.getWidth() - 1;
     }
 
     @NonNull
-    protected int interpolateUnknownColorValue(IBitmapWrapper map, int xCoord, int yCoord) {
+    protected int interpolateUnknownColorValue(BitmapWrapperInterface map, int xCoord, int yCoord) {
         int count = 0, R = 0, G = 0, B = 0;
 
         for (int j = yCoord - 1; j <= yCoord + 1; j++)

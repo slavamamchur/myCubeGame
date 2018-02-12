@@ -1,10 +1,10 @@
 package com.sadgames.dicegame.rest_api;
 
-import com.sadgames.dicegame.rest_api.model.CollectionResponseGame;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
-import com.sadgames.dicegame.rest_api.model.points.NewPointRequest;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.dicegame.rest_api.model.entities.points.NewPointRequest;
+import com.sadgames.dicegame.rest_api.model.responses.GameCollectionResponse;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,10 +18,10 @@ import java.util.Map;
 import static com.sadgames.dicegame.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.dicegame.rest_api.RestConst.URL_LIST;
 
-public class GameController extends AbstractHttpRequest<Game>{
+public class GameController extends AbstractHttpRequest<GameEntity>{
 
-    public GameController(ISysUtilsWrapper sysUtilsWrapper) {
-        super(Game.ACTION_NAME, Game.class, HttpMethod.GET, sysUtilsWrapper);
+    public GameController(SysUtilsWrapperInterface sysUtilsWrapper) {
+        super(GameEntity.ACTION_NAME, GameEntity.class, HttpMethod.GET, sysUtilsWrapper);
     }
 
     @Override
@@ -37,17 +37,17 @@ public class GameController extends AbstractHttpRequest<Game>{
 
         RestTemplate restTemplate = getRestTemplate();
 
-        ResponseEntity<CollectionResponseGame> responseEntity =
-                restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), CollectionResponseGame.class);
+        ResponseEntity<GameCollectionResponse> responseEntity =
+                restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), GameCollectionResponse.class);
 
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    public void removePoint(Game game, int index){
+    public void removePoint(GameEntity game, int index){
         removeChild(game.getId(), AbstractGamePoint.urlForActionName(), index);
     }
 
-    public void addPoint(Game game, NewPointRequest point){
+    public void addPoint(GameEntity game, NewPointRequest point){
         addChild(game.getId(), AbstractGamePoint.urlForActionName(), point);
     }
 }

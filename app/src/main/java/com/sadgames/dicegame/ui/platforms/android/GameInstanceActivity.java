@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.game_logic.items.DiceObject;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.players.InstancePlayer;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment;
@@ -46,7 +46,7 @@ import static com.sadgames.dicegame.ui.platforms.android.framework.BaseListActiv
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
-public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> implements BaseItemDetailsActivity.WebErrorHandler {
+public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> implements BaseItemDetailsActivity.WebErrorHandler {
 
     public static final String FINISHED_FIELD_NAME = "finished";
     public static final String SKIPPED_FIELD_NAME = "skipped";
@@ -164,7 +164,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
 
             if (error == null){
-                getItem().setState(GameInstance.State.FINISHED);
+                getItem().setState(GameInstanceEntity.State.FINISHED);
                 setItemChanged(true);
                 updateTitle ();
             }
@@ -190,11 +190,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
             ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
 
             if (error == null){
-                final GameInstance instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
+                final GameInstanceEntity instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
                 updateGame(instance);
 
-                if (!GameInstance.State.WAIT.equals(instance.getState())
-                    && !GameInstance.State.FINISHED.equals(instance.getState())
+                if (!GameInstanceEntity.State.WAIT.equals(instance.getState())
+                    && !GameInstanceEntity.State.FINISHED.equals(instance.getState())
                    )
                     mMapFragment.movingChipAnimation(animationListener);
 
@@ -238,7 +238,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     }
 
     private void resetGame() {
-        getItem().setState(GameInstance.State.WAIT);
+        getItem().setState(GameInstanceEntity.State.WAIT);
         getItem().setCurrentPlayer(0);
         getItem().setStepsToGo(0);
         for (InstancePlayer player : getItem().getPlayers()) {
@@ -261,7 +261,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
         //mMapFragment.scrollMap();
     }
 
-    private void updateGame(GameInstance instance) {
+    private void updateGame(GameInstanceEntity instance) {
         setItem(instance);
         setItemChanged(true);
 
@@ -276,10 +276,10 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstance> 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_move).setVisible(true);
-        menu.findItem(R.id.action_move).setEnabled(!GameInstance.State.FINISHED.equals(getItem().getState()));
+        menu.findItem(R.id.action_move).setEnabled(!GameInstanceEntity.State.FINISHED.equals(getItem().getState()));
 
         menu.findItem(R.id.action_finish).setVisible(true);
-        menu.findItem(R.id.action_finish).setEnabled(!GameInstance.State.FINISHED.equals(getItem().getState()));
+        menu.findItem(R.id.action_finish).setEnabled(!GameInstanceEntity.State.FINISHED.equals(getItem().getState()));
 
         menu.findItem(R.id.action_restart).setVisible(true);
 

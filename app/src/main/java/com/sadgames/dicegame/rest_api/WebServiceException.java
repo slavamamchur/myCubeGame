@@ -1,6 +1,6 @@
 package com.sadgames.dicegame.rest_api;
 
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpServerErrorException;

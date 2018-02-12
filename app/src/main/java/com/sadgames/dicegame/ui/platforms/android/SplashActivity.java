@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 public class SplashActivity extends AppCompatActivity {
@@ -25,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     };
     private BroadcastReceiver mPingBroadcastReceiver = null;
-    private ISysUtilsWrapper sysUtilsWrapper;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

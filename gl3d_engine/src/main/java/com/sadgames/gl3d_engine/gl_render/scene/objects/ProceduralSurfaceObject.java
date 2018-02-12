@@ -1,8 +1,8 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -23,7 +23,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
 import static com.sadgames.sysutils.ArraysUtils.chain;
 import static com.sadgames.sysutils.ArraysUtils.coord2idx;
 
-public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random maps generation
+public abstract class ProceduralSurfaceObject extends PNodeObject {  //TODO: random maps generation
 
     protected float LAND_WIDTH;
     protected float LAND_HEIGHT;
@@ -32,14 +32,14 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
 
     private float[] vertexes;
 
-    public ProceduralSurfaceObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, String textureResName, float landSize, GLShaderProgram program) {
+    public ProceduralSurfaceObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, String textureResName, float landSize, GLShaderProgram program) {
         super(sysUtilsWrapper, type, textureResName, program, 0, COLLISION_OBJECT);
 
         initMesh(landSize);
     }
 
     @SuppressWarnings("unused")
-    public ProceduralSurfaceObject(ISysUtilsWrapper sysUtilsWrapper, GLObjectType type, float landSize, GLShaderProgram program, int color) {
+    public ProceduralSurfaceObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, float landSize, GLShaderProgram program, int color) {
         super(sysUtilsWrapper, type, program, color, 0, 0);
 
         initMesh(landSize);
@@ -55,8 +55,8 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
         return landScale;
     }
 
-    protected abstract float getYValue(float valX, float valZ, IBitmapWrapper map, float tu, float tv);
-    protected abstract IBitmapWrapper getReliefMap();
+    protected abstract float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv);
+    protected abstract BitmapWrapperInterface getReliefMap();
 
     @Override
     public int getFacesCount() {
@@ -65,7 +65,7 @@ public abstract class ProceduralSurfaceObject extends PNode {  //TODO: random ma
 
     @Override
     protected void createVertexesVBO() {
-        IBitmapWrapper bmp = getReliefMap();
+        BitmapWrapperInterface bmp = getReliefMap();
         dimension = getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 

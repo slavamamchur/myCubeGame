@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 
 import static com.sadgames.dicegame.rest_api.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;

@@ -10,15 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.GameMap;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.MapFragment;
 import com.sadgames.sysutils.DateTimeUtils;
 
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 
-public class GameMapActivity extends BaseItemDetailsActivity<GameMap> implements BaseItemDetailsActivity.WebErrorHandler {
+public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> implements BaseItemDetailsActivity.WebErrorHandler {
 
     public static final int UPLOAD_MAP_IMAGE_ACTION = 2;
 

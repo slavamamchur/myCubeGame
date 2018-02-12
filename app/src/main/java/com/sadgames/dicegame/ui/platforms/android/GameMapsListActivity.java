@@ -7,9 +7,9 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.GameMap;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.platforms.android.framework.DialogOnClickDelegate;
@@ -23,16 +23,16 @@ import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_GAME_MAP_LIST;
 import static com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
-public class GameMapsListActivity extends BaseListActivity<GameMap> {
+public class GameMapsListActivity extends BaseListActivity<GameMapEntity> {
     private static final String ACTION_CREATE_NEW_GAME_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_CREATE_NEW_GAME_RESPONSE";
     private static final String NEW_GAME_TAG = "NEW_GAME";
 
     private static final ArrayList<DBColumnInfo> MAP_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
-            add(new DBColumnInfo("Name", 50, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameMap.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
-            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, GameMap.class.getDeclaredField(CREATED_DATE_FIELD_NAME), null));
+            add(new DBColumnInfo("Name", 50, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameMapEntity.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("Created", 28, DBColumnInfo.ColumnType.COLUMN_TEXT, GameMapEntity.class.getDeclaredField(CREATED_DATE_FIELD_NAME), null));
             add(new DBColumnInfo("Remove", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG));
-            add(new DBColumnInfo("New Game", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, NEW_GAME_TAG));
+            add(new DBColumnInfo("New GameEntity", 12, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, NEW_GAME_TAG));
         }
         catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -69,8 +69,8 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     }
 
     @Override
-    protected GameMap getNewItem() {
-        return new GameMap();
+    protected GameMapEntity getNewItem() {
+        return new GameMapEntity();
     }
     @Override
     protected String getNewItemActionName() {
@@ -115,12 +115,12 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
     }
 
     @Override
-    protected void doUserAction(final GameMap item, String tag) {
+    protected void doUserAction(final GameMapEntity item, String tag) {
         InputNameDialogFragment dialog = new InputNameDialogFragment();
         dialog.setDelegate(new DialogOnClickDelegate() {
             @Override
             public void doAction(Object result) {
-                Game game = new Game();
+                GameEntity game = new GameEntity();
                 game.setName((String)result);
                 game.setMapId(item.getId());
 
@@ -130,7 +130,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMap> {
         dialog.show(getSupportFragmentManager(), "new_game");
     }
 
-    protected void newGame(Game game){
+    protected void newGame(GameEntity game){
         showProgress();
 
         RestApiService.startActionSaveEntity(getApplicationContext(), game, ACTION_CREATE_NEW_GAME_RESPONSE);

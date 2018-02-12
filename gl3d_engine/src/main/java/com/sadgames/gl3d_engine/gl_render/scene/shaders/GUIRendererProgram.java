@@ -1,14 +1,14 @@
 package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
-import com.sadgames.gl3d_engine.gl_render.scene.objects.GLSceneObject;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GUI_FRAGMENT_SHADER;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GUI_VERTEX_SHADER;
 
 public class GUIRendererProgram extends ShadowMapProgram {
 
-    public GUIRendererProgram(ISysUtilsWrapper sysUtilsWrapper) {
+    public GUIRendererProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
         super(sysUtilsWrapper);
     }
 
@@ -22,7 +22,7 @@ public class GUIRendererProgram extends ShadowMapProgram {
     }
 
     @Override
-    public void linkVBOData(GLSceneObject object) {
+    public void linkVBOData(AbstractGL3DObject object) {
         try {
             linkVertexData(object.getVertexVBO());
             linkTexelData(object.getTexelVBO());

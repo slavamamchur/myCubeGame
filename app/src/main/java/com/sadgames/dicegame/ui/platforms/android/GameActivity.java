@@ -10,10 +10,10 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
-import com.sadgames.dicegame.rest_api.model.points.NewPointRequest;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.dicegame.rest_api.model.entities.points.NewPointRequest;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment;
@@ -29,7 +29,7 @@ import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.ui.platforms.android.framework.BaseListActivity.EDIT_ENTITY_TAG;
 import static com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
-public class GameActivity extends BaseItemDetailsActivity<Game> implements BaseItemDetailsActivity.WebErrorHandler {
+public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements BaseItemDetailsActivity.WebErrorHandler {
 
     private static final String X_POS_FIELD_NAME = "xPos";
     private static final String Y_POS_FIELD_NAME = "yPos";

@@ -1,7 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures;
 
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
@@ -24,9 +24,9 @@ import static android.opengl.GLES20.glTexParameteri;
 public class CubeMapTexture extends AbstractTexture {
 
     private String[] faces;
-    private ISysUtilsWrapper sysUtilsWrapper;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
 
-    public CubeMapTexture(ISysUtilsWrapper sysUtilsWrapper, String[] faces) {
+    public CubeMapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String[] faces) {
         init( -1, -1);
 
         this.faces = faces;
@@ -52,7 +52,7 @@ public class CubeMapTexture extends AbstractTexture {
     }
 
     @Override
-    protected void loadTexture(IBitmapWrapper bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
         try {
             for (int i =0; i < faces.length; i++) {
                 bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]);

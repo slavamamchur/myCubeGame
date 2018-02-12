@@ -1,8 +1,8 @@
 package com.sadgames.dicegame.rest_api;
 
-import com.sadgames.dicegame.rest_api.model.CollectionResponseGameMap;
-import com.sadgames.dicegame.rest_api.model.GameMap;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.rest_api.model.responses.GameMapCollectionResponse;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -19,10 +19,10 @@ import static com.sadgames.dicegame.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.dicegame.rest_api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
 import static com.sadgames.dicegame.rest_api.RestConst.URL_LIST;
 
-public class GameMapController extends AbstractHttpRequest<GameMap> {
+public class GameMapController extends AbstractHttpRequest<GameMapEntity> {
 
-    public GameMapController(ISysUtilsWrapper sysUtilsWrapper) {
-        super(GameMap.ACTION_NAME, GameMap.class, HttpMethod.GET, sysUtilsWrapper);
+    public GameMapController(SysUtilsWrapperInterface sysUtilsWrapper) {
+        super(GameMapEntity.ACTION_NAME, GameMapEntity.class, HttpMethod.GET, sysUtilsWrapper);
     }
 
     @Override
@@ -40,21 +40,21 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
 
             RestTemplate restTemplate = getRestTemplate();
 
-            ResponseEntity<CollectionResponseGameMap> responseEntity =
-                    restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), CollectionResponseGameMap.class);
+            ResponseEntity<GameMapCollectionResponse> responseEntity =
+                    restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), GameMapCollectionResponse.class);
 
             return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    public void saveMapImage(GameMap map) throws WebServiceException {
-        internalSavePicture(map, RestConst.URL_GAME_MAP_IMAGE, "", "Game map is empty.");
+    public void saveMapImage(GameMapEntity map) throws WebServiceException {
+        internalSavePicture(map, RestConst.URL_GAME_MAP_IMAGE, "", "GameEntity map is empty.");
     }
 
-    public void saveMapRelief(GameMap map) throws WebServiceException {
+    public void saveMapRelief(GameMapEntity map) throws WebServiceException {
         internalSavePicture(map, RestConst.URL_GAME_MAP_RELIEF, "rel_", "Relief map is empty.");
     }
 
-    public void internalSavePicture(GameMap map, String url, String namePrefix, String errorMessage) {
+    public void internalSavePicture(GameMapEntity map, String url, String namePrefix, String errorMessage) {
         if (getSysUtilsWrapper().iIsBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
             return;
 
@@ -70,7 +70,7 @@ public class GameMapController extends AbstractHttpRequest<GameMap> {
         }
     }
 
-    public String uploadMapImage(GameMap map, String fileName) throws WebServiceException {
+    public String uploadMapImage(GameMapEntity map, String fileName) throws WebServiceException {
         return uploadFile(map, "mapid", URL_GAME_MAP_IMAGE_SIMPLE, fileName);
     }
 }

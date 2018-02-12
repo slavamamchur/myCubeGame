@@ -2,19 +2,19 @@ package com.sadgames.gl3d_engine.gl_render.scene;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.linearmath.Transform;
-import com.sadgames.gl3d_engine.gl_render.IGameEventsCallBack;
+import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.AbstractFBO;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.ColorBufferFBO;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.DepthBufferFBO;
-import com.sadgames.gl3d_engine.gl_render.scene.objects.GLSceneObject;
-import com.sadgames.gl3d_engine.gl_render.scene.objects.PNode;
-import com.sadgames.gl3d_engine.gl_render.scene.objects.onScreen2DBox;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.GUI2DImageObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShadowMapProgram;
-import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShapeShader;
+import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShapeShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.TerrainRendererProgram;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +45,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TER
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOLUTION;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ShadowMapQuality;
-import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNode.MOVING_OBJECT;
+import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject.MOVING_OBJECT;
 
 public class GLScene {
 
@@ -69,17 +69,17 @@ public class GLScene {
     private int mDisplayHeight;
     private boolean isRenderStopped = false;
 
-    private Map<String, GLSceneObject> objects = new HashMap<>();
+    private Map<String, AbstractGL3DObject> objects = new HashMap<>();
     private Map<GLObjectType, GLShaderProgram> shaders = new HashMap<>();
 
     private AbstractFBO shadowMapFBO = null;
     private AbstractFBO mainRenderFBO = null;
-    private onScreen2DBox postEffects2DScreen = null;
+    private GUI2DImageObject postEffects2DScreen = null;
     private GLAnimation zoomCameraAnimation = null;
-    private ISysUtilsWrapper sysUtilsWrapper;
-    private IGameEventsCallBack gameEventsCallBack = null;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
+    private GameEventsCallbackInterface gameEventsCallBack = null;
 
-    public GLScene(ISysUtilsWrapper sysUtilsWrapper) {
+    public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
     }
 
@@ -120,10 +120,10 @@ public class GLScene {
     public AbstractFBO getShadowMapFBO() {
         return shadowMapFBO;
     }
-    public onScreen2DBox getPostEffects2DScreen() {
+    public GUI2DImageObject getPostEffects2DScreen() {
         return postEffects2DScreen;
     }
-    public void setPostEffects2DScreen(onScreen2DBox postEffects2DScreen) {
+    public void setPostEffects2DScreen(GUI2DImageObject postEffects2DScreen) {
         this.postEffects2DScreen = postEffects2DScreen;
     }
     public GLAnimation getZoomCameraAnimation() {
@@ -138,14 +138,14 @@ public class GLScene {
     public void setSimulation_time(long simulation_time) {
         this.simulation_time = simulation_time;
     }
-    public void setGameEventsCallBack(IGameEventsCallBack gameEventsCallBack) {
+    public void setGameEventsCallBack(GameEventsCallbackInterface gameEventsCallBack) {
         this.gameEventsCallBack = gameEventsCallBack;
     }
     public void setRenderStopped(boolean renderStopped) {
         isRenderStopped = renderStopped;
     }
 
-    public void addObject(GLSceneObject object, String name) {
+    public void addObject(AbstractGL3DObject object, String name) {
         objects.put(name, object);
     }
     public void deleteObject(String name) {
@@ -167,7 +167,7 @@ public class GLScene {
     }
 
     private void clearObjectsCache() {
-        for (GLSceneObject object : objects.values())
+        for (AbstractGL3DObject object : objects.values())
             object.clearData();
 
         objects.clear();
@@ -190,7 +190,7 @@ public class GLScene {
         shaders.clear();
     }
 
-    public GLSceneObject getObject(String name) {
+    public AbstractGL3DObject getObject(String name) {
         return objects.get(name);
     }
 
@@ -209,7 +209,7 @@ public class GLScene {
                     program = new GUIRendererProgram(sysUtilsWrapper);
                     break;
                 default:
-                    program = new ShapeShader(sysUtilsWrapper);
+                    program = new ShapeShaderProgram(sysUtilsWrapper);
             }
 
             shaders.put(type, program);
@@ -258,16 +258,16 @@ public class GLScene {
             moveFactor = 0;
         }
 
-        for (GLSceneObject object : objects.values()) {
+        for (AbstractGL3DObject object : objects.values()) {
 
             GLAnimation animation = object.getAnimation();
             if (animation != null && animation.isInProgress()) {
                 animation.animate(object);
             }
-            else if (isSimulating && object instanceof PNode && (((PNode) object).getTag() == MOVING_OBJECT)
-                    && ((PNode) object).get_body() != null) {
+            else if (isSimulating && object instanceof PNodeObject && (((PNodeObject) object).getTag() == MOVING_OBJECT)
+                    && ((PNodeObject) object).get_body() != null) {
 
-                PNode movingObject = (PNode) object;
+                PNodeObject movingObject = (PNodeObject) object;
                 Transform transform = movingObject.getWorldTransformActual();
 
                 if (!movingObject.getWorldTransformOld().equals(transform))
@@ -314,7 +314,7 @@ public class GLScene {
         lightSource.updateViewProjectionMatrix(); */
 
         int prevObject = -1;
-        for (GLSceneObject object : objects.values()) {
+        for (AbstractGL3DObject object : objects.values()) {
             if (!object.isCastShadow())
                 continue;
 
@@ -372,7 +372,7 @@ public class GLScene {
         ///program.paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapHeight));
 
         int prevObject = -1;
-        for (GLSceneObject object : objects.values()) {
+        for (AbstractGL3DObject object : objects.values()) {
             synchronized (lockObject) {
                 program.bindMVPMatrix(object, getCamera().getViewMatrix(), getCamera().getProjectionMatrix());
             }
@@ -439,8 +439,8 @@ public class GLScene {
          const btCollisionObject* obB = contactManifold->getBody1();
 
          //6
-         PNode* pnA = (__bridge PNode*)obA->getUserPointer();
-         PNode* pnB = (__bridge PNode*)obB->getUserPointer();*/
+         PNodeObject* pnA = (__bridge PNodeObject*)obA->getUserPointer();
+         PNodeObject* pnB = (__bridge PNodeObject*)obB->getUserPointer();*/
     }
 
     private void calculateFrameTime(long currentTime) {

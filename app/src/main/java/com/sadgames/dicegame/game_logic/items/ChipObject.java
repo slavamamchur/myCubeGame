@@ -2,8 +2,8 @@ package com.sadgames.dicegame.game_logic.items;
 
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.IBitmapWrapper;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -25,12 +25,12 @@ public class ChipObject extends GameItemObject {
 
     private float[] vertexes;
 
-    public ChipObject(ISysUtilsWrapper sysUtilsWrapper, GLShaderProgram program, int color) {
+    public ChipObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color) {
         super(sysUtilsWrapper, GAME_ITEM_OBJECT, program, color, 1f, COLLISION_OBJECT);
     }
 
     @Override
-    protected int getDimension(IBitmapWrapper bmp) {
+    protected int getDimension(BitmapWrapperInterface bmp) {
         return 0;
     }
 

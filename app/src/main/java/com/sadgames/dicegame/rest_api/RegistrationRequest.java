@@ -1,8 +1,8 @@
 package com.sadgames.dicegame.rest_api;
 
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.UserEntity;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.UserEntity;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -13,7 +13,7 @@ public class RegistrationRequest extends AbstractHttpRequest<ErrorEntity>{
 
     private UserEntity user;
 
-    public RegistrationRequest(UserEntity user, ISysUtilsWrapper sysUtilsWrapper) {
+    public RegistrationRequest(UserEntity user, SysUtilsWrapperInterface sysUtilsWrapper) {
         super(URL_REGISTER, ErrorEntity.class, HttpMethod.POST, sysUtilsWrapper);
 
         this.user = user;

@@ -10,9 +10,9 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.rest_api.RestApiService;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.DbPlayer;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.DbPlayerEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.platforms.android.colorpicker.AmbilWarnaDialogFragment;
 import com.sadgames.dicegame.ui.platforms.android.colorpicker.OnAmbilWarnaListener;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseListActivity;
@@ -27,7 +27,7 @@ import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_PLAYER_LIST;
 import static com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
-public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
+public class DBPlayersListActivity extends BaseListActivity<DbPlayerEntity> {
 
     public static int ACTION_DICTIONARY = 3;
     public static final String EXTRA_STARTED_AS_DICTIONARY = "EXTRA_STARTED_AS_DICTIONARY";
@@ -36,8 +36,8 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
 
     private static final ArrayList<DBColumnInfo> PLAYERS_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
-            add(new DBColumnInfo("Name", 80, DBColumnInfo.ColumnType.COLUMN_REFERENCE, DbPlayer.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
-            add(new DBColumnInfo("Color", 10, DBColumnInfo.ColumnType.COLUMN_COLOR_BOX, DbPlayer.class.getDeclaredField(COLOR_FIELD_NAME), null));
+            add(new DBColumnInfo("Name", 80, DBColumnInfo.ColumnType.COLUMN_REFERENCE, DbPlayerEntity.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
+            add(new DBColumnInfo("Color", 10, DBColumnInfo.ColumnType.COLUMN_COLOR_BOX, DbPlayerEntity.class.getDeclaredField(COLOR_FIELD_NAME), null));
             add(new DBColumnInfo("Remove", 10, DBColumnInfo.ColumnType.COLUMN_BUTTON, null, DELETE_ENTITY_TAG));
         }
         catch (NoSuchFieldException e) {
@@ -72,8 +72,8 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
         return null;
     }
     @Override
-    protected DbPlayer getNewItem() {
-        return new DbPlayer();
+    protected DbPlayerEntity getNewItem() {
+        return new DbPlayerEntity();
     }
     @Override
     protected String getNewItemActionName() {
@@ -139,7 +139,7 @@ public class DBPlayersListActivity extends BaseListActivity<DbPlayer> {
 
                                              @Override
                                              public void onOk(AmbilWarnaDialogFragment dialogFragment, int color, String name) {
-                                                 DbPlayer newItem = getNewItem();
+                                                 DbPlayerEntity newItem = getNewItem();
                                                  newItem.setName(name);
                                                  newItem.setColor(color);
 

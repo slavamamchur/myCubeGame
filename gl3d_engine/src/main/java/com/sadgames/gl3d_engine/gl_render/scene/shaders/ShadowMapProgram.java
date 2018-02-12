@@ -1,8 +1,8 @@
 package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
-import com.sadgames.gl3d_engine.gl_render.scene.objects.GLSceneObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.glGetString;
@@ -16,7 +16,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEXES_PARAM_N
 
 public class ShadowMapProgram extends VBOShaderProgram {
 
-    public ShadowMapProgram(ISysUtilsWrapper sysUtilsWrapper) {
+    public ShadowMapProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
         super(sysUtilsWrapper);
     }
 
@@ -40,7 +40,7 @@ public class ShadowMapProgram extends VBOShaderProgram {
     }
 
     @Override
-    public void linkVBOData(GLSceneObject object) {
+    public void linkVBOData(AbstractGL3DObject object) {
         try {
             linkVertexData(object.getVertexVBO());
         } catch (IllegalAccessException e) {

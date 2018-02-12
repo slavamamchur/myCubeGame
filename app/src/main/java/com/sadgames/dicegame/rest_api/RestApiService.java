@@ -6,18 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.sadgames.dicegame.rest_api.model.AuthToken;
-import com.sadgames.dicegame.rest_api.model.BasicEntity;
-import com.sadgames.dicegame.rest_api.model.BasicNamedDbEntity;
-import com.sadgames.dicegame.rest_api.model.DbPlayer;
-import com.sadgames.dicegame.rest_api.model.ErrorEntity;
-import com.sadgames.dicegame.rest_api.model.Game;
-import com.sadgames.dicegame.rest_api.model.GameInstance;
-import com.sadgames.dicegame.rest_api.model.GameInstanceStartedResponse;
-import com.sadgames.dicegame.rest_api.model.GameMap;
-import com.sadgames.dicegame.rest_api.model.StartNewGameRequest;
-import com.sadgames.dicegame.rest_api.model.UserEntity;
-import com.sadgames.sysutils.ISysUtilsWrapper;
+import com.sadgames.dicegame.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.rest_api.model.entities.BasicEntity;
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.rest_api.model.entities.DbPlayerEntity;
+import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.rest_api.model.entities.UserEntity;
+import com.sadgames.dicegame.rest_api.model.responses.GameInstanceStartedResponse;
+import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class RestApiService extends IntentService {
     public static final String EXTRA_CHILD_INDEX = "CHILD_INDEX";
     public static final String EXTRA_DICE_VALUE = "DICE_VALUE";
 
-    private ISysUtilsWrapper sysUtilsWrapper;
+    private SysUtilsWrapperInterface sysUtilsWrapper;
 
     public RestApiService() {
         super("RestApiService");
@@ -127,7 +126,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionGetMapImage(Context context, GameMap map) {
+    public static void startActionGetMapImage(Context context, GameMapEntity map) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_GET_MAP_IMAGE);
         intent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
@@ -135,7 +134,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionUploadMapImage(Context context, GameMap map, String fileName) {
+    public static void startActionUploadMapImage(Context context, GameMapEntity map, String fileName) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_UPLOAD_MAP_IMAGE);
         intent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
@@ -161,7 +160,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionFinishGameInstance(Context context, GameInstance instance) {
+    public static void startActionFinishGameInstance(Context context, GameInstanceEntity instance) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_FINISH_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
@@ -169,7 +168,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionStartGameInstance(Context context, StartNewGameRequest request) {
+    public static void startActionStartGameInstance(Context context, StartNewGameRequestParam request) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_START_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, request);
@@ -177,7 +176,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionRestartGameInstance(Context context, GameInstance instance) {
+    public static void startActionRestartGameInstance(Context context, GameInstanceEntity instance) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_RESTART_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
@@ -185,7 +184,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionMooveGameInstance(Context context, GameInstance instance) {
+    public static void startActionMooveGameInstance(Context context, GameInstanceEntity instance) {
         Intent intent = new Intent(context, RestApiService.class);
         intent.setAction(ACTION_MOOVE_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
@@ -245,11 +244,11 @@ public class RestApiService extends IntentService {
                 handleActionGetPlayerList();
             }
             else if (ACTION_GET_MAP_IMAGE.equals(action)) {
-                final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
+                final GameMapEntity map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
                 handleActionGetMapImage(map);
             }
             else if (ACTION_UPLOAD_MAP_IMAGE.equals(action)) {
-                final GameMap map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
+                final GameMapEntity map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
                 final String fileName = intent.getStringExtra(EXTRA_GAME_MAP_FILE);
                 handleActionUploadMapImage(map, fileName);
             }
@@ -263,19 +262,19 @@ public class RestApiService extends IntentService {
                 handleActionSaveEntity(item, responseAction);
             }
             else if (ACTION_FINISH_GAME_INSTANCE.equals(action)) {
-                final GameInstance item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                final GameInstanceEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionFinishGameInstance(item);
             }
             else if (ACTION_MOOVE_GAME_INSTANCE.equals(action)) {
-                final GameInstance item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                final GameInstanceEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionMooveGameInstance(item);
             }
             else if (ACTION_START_GAME_INSTANCE.equals(action)) {
-                final StartNewGameRequest item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                final StartNewGameRequestParam item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionStartGameInstance(item);
             }
             else if (ACTION_RESTART_GAME_INSTANCE.equals(action)) {
-                final GameInstance item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                final GameInstanceEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionReStartGameInstance(item);
             }
             else if (ACTION_REMOVE_CHILD.equals(action)) {
@@ -303,18 +302,18 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionLogin(String userName, String userPass) {
-        AuthToken response;
+        AuthTokenEntity response;
         ErrorEntity error = null;
 
         try {
             response = new LoginRequest(userName, userPass, sysUtilsWrapper).doLogin();
         }
         catch (WebServiceException e) {
-            response = new AuthToken((String)null);
+            response = new AuthTokenEntity((String)null);
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), 404);
         }
         catch (Exception e) {
-            response = new AuthToken((String)null);
+            response = new AuthTokenEntity((String)null);
             error = new ErrorEntity(e.getMessage(), 404);
         }
 
@@ -325,7 +324,7 @@ public class RestApiService extends IntentService {
     }
 
     private void handleActionRelogin(String userName, String userPass) {
-        AuthToken response;
+        AuthTokenEntity response;
         String message = "";
 
         try {
@@ -333,11 +332,11 @@ public class RestApiService extends IntentService {
         }
         catch (WebServiceException e) {
             //TODO: return error object
-            response = new AuthToken((String)null);
+            response = new AuthTokenEntity((String)null);
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
         catch (Exception e) {
-            response = new AuthToken((String)null);
+            response = new AuthTokenEntity((String)null);
             message = e.getMessage();
         }
 
@@ -380,7 +379,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionGetMapList(){
         String message = "";
-        ArrayList<GameMap> mapList = null;
+        ArrayList<GameMapEntity> mapList = null;
         try {
             mapList = new ArrayList<>(new GameMapController(sysUtilsWrapper).getResponseList());
         }
@@ -396,7 +395,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionGetGameList(){
         String message = "";
-        ArrayList<Game> mapList = null;
+        ArrayList<GameEntity> mapList = null;
 
         try {
             mapList = new ArrayList<>(new GameController(sysUtilsWrapper).getResponseList());
@@ -413,7 +412,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionGetGameInstanceList(){
         String message = "";
-        ArrayList<GameInstance> mapList = null;
+        ArrayList<GameInstanceEntity> mapList = null;
 
         try {
             mapList = new ArrayList<>(new GameInstanceController(sysUtilsWrapper).getResponseList());
@@ -430,7 +429,7 @@ public class RestApiService extends IntentService {
 
     private void handleActionGetPlayerList(){
         String message = "";
-        ArrayList<DbPlayer> mapList = null;
+        ArrayList<DbPlayerEntity> mapList = null;
 
         try {
             mapList = new ArrayList<>(new DBPlayerController(sysUtilsWrapper).getResponseList());
@@ -445,7 +444,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
 
-    private void handleActionGetMapImage(GameMap map) {
+    private void handleActionGetMapImage(GameMapEntity map) {
         ErrorEntity error = null;
 
         try {
@@ -463,7 +462,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
     }
 
-    private void handleActionUploadMapImage(GameMap map, String fileName) {
+    private void handleActionUploadMapImage(GameMapEntity map, String fileName) {
         ErrorEntity error = null;
 
         try {
@@ -516,7 +515,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(responseAction, params);
     }
 
-    private void handleActionFinishGameInstance(GameInstance item) {
+    private void handleActionFinishGameInstance(GameInstanceEntity item) {
         ErrorEntity error = null;
 
         try {
@@ -533,7 +532,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_FINISH_GAME_INSTANCE_RESPONSE, params);
     }
 
-    private void handleActionReStartGameInstance(GameInstance item) {
+    private void handleActionReStartGameInstance(GameInstanceEntity item) {
         ErrorEntity error = null;
 
         try {
@@ -550,7 +549,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_RESTART_GAME_INSTANCE_RESPONSE, params);
     }
 
-    private void handleActionStartGameInstance(StartNewGameRequest item) {
+    private void handleActionStartGameInstance(StartNewGameRequestParam item) {
         ErrorEntity error = null;
         GameInstanceStartedResponse result = null;
 
@@ -571,9 +570,9 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_START_GAME_INSTANCE_RESPONSE, params);
     }
 
-    private void handleActionMooveGameInstance(GameInstance item) {
+    private void handleActionMooveGameInstance(GameInstanceEntity item) {
         ErrorEntity error = null;
-        GameInstance result = null;
+        GameInstanceEntity result = null;
 
         try {
             result = new GameInstanceController(sysUtilsWrapper).makeTurn(item);
