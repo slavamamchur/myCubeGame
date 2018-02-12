@@ -28,8 +28,8 @@ import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.rest_api.model.entities.points.PointType;
-import com.sadgames.gl3d_engine.gl_render.GL3DRenderer;
 import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
+import com.sadgames.gl3d_engine.gl_render.platforms.android.AndroidGLES20Renderer;
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
 import com.sadgames.gl3d_engine.gl_render.scene.GLLightSource;
@@ -78,7 +78,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
     public List<InstancePlayer> savedPlayers = null;
     public GLSurfaceView glMapSurfaceView;
-    public GL3DRenderer glRenderer;
+    public AndroidGLES20Renderer glRenderer;
 
     public interface ChipAnimadedDelegate {
         void onAnimationEnd();
@@ -92,7 +92,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
                              @Nullable Bundle savedInstanceState) {
         glMapSurfaceView = new MapGLSurfaceView(getContext());
         sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getContext());
-        glRenderer = new GL3DRenderer(sysUtilsWrapper);
+        glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper, this);
 
         return  glMapSurfaceView;
     }
@@ -102,7 +102,6 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         super.onViewCreated(view, savedInstanceState);
 
         glMapSurfaceView.setRenderer(glRenderer);
-        glRenderer.setGameEventsCallBack(this);
     }
 
     @Override

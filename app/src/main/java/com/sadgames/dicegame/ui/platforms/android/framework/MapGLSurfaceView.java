@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
-import com.sadgames.gl3d_engine.gl_render.GL3DRenderer;
+import com.sadgames.gl3d_engine.gl_render.platforms.android.AndroidGLES20Renderer;
 import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
 
@@ -19,7 +19,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
 
     private static final float TOUCH_SCALE_FACTOR = 22.5f / 320;
 
-    private GL3DRenderer mRenderer;
+    private AndroidGLES20Renderer mRenderer;
     private float mPreviousX;
     private float mPreviousY;
     private float mScaleFactor = 1.0f;
@@ -38,7 +38,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
     public void setRenderer(Renderer renderer) {
         super.setRenderer(renderer);
 
-        mRenderer = (GL3DRenderer) renderer;
+        mRenderer = (AndroidGLES20Renderer) renderer;
     }
 
     @Override

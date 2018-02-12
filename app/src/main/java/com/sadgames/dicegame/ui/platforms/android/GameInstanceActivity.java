@@ -330,7 +330,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         float fxz = fy * 2f / 3f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
-        mMapFragment.glRenderer.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
+        mMapFragment.glRenderer.getScene().getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
 
     private void showAnimatedText(String text) {

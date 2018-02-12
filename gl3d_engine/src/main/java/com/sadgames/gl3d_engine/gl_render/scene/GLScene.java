@@ -1,7 +1,15 @@
 package com.sadgames.gl3d_engine.gl_render.scene;
 
+import android.graphics.RectF;
+
+import com.bulletphysics.collision.broadphase.BroadphaseInterface;
+import com.bulletphysics.collision.broadphase.DbvtBroadphase;
+import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
+import com.sadgames.gl3d_engine.gl_render.GLRendererInterface;
 import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.AbstractFBO;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.ColorBufferFBO;
@@ -19,7 +27,10 @@ import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
+import javax.vecmath.Vector3f;
 
 import static android.opengl.GLES20.GL_BACK;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
@@ -40,25 +51,41 @@ import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glViewport;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOLUTION;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ShadowMapQuality;
 import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject.MOVING_OBJECT;
+import static com.sadgames.sysutils.JavaPlatformUtils.forceGC_and_Sync;
 
-public class GLScene {
+public class GLScene implements GLRendererInterface {
 
-    public final static Object lockObject = new Object();
-    private final static float WAVE_SPEED = 0.04f;
-    public final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
-    public final static float SIMULATION_FRAMES_IN_SEC = 60f;/** FPS */
+    private final static float    DEFAULT_LIGHT_X        = -2.20F;
+    private final static float    DEFAULT_LIGHT_Y        =  1.70F;
+    private final static float    DEFAULT_LIGHT_Z        = -3.20F;
+
+    private final static Vector3f DEFAULT_LIGHT_COLOUR   = new Vector3f(1.0f, 1.0f, 0.6f);
+    private static final Vector3f DEFAULT_GRAVITY_VECTOR = new Vector3f(0f, -9.8f, 0f);
+
+    private final static float    DEFAULT_CAMERA_X       = 0f;
+    private final static float    DEFAULT_CAMERA_Y       = 4f;
+    private final static float    DEFAULT_CAMERA_Z       = 4f;
+    private final static float    DEFAULT_CAMERA_PITCH   = 45.0f;
+    private final static float    DEFAULT_CAMERA_YAW     = 0.0f;
+    private final static float    DEFAULT_CAMERA_ROLL    = 0.0f;
+
+    public  final static Object   lockObject             = new Object();
+    private final static float    WAVE_SPEED             = 0.04f;
+    public  final static long     CAMERA_ZOOM_ANIMATION_DURATION = 1000;
+    public  final static float    SIMULATION_FRAMES_IN_SEC = 60f;/** FPS */
 
     private GLCamera camera = null;
     private GLLightSource lightSource = null;
     private long simulation_time = 0;
     private boolean isSimulating = false;
-    private DiscreteDynamicsWorld physicalWorld;
+    private DiscreteDynamicsWorld physicalWorldObject = null;
     private boolean hasDepthTextureExtension = checkDepthTextureExtension();
     private int oldNumContacts = 0;
     private long old_time = System.currentTimeMillis();
@@ -79,8 +106,12 @@ public class GLScene {
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBack = null;
 
-    public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
+    public GLScene(SysUtilsWrapperInterface sysUtilsWrapper, GameEventsCallbackInterface gameEventsCallBack) {
         this.sysUtilsWrapper = sysUtilsWrapper;
+        this.gameEventsCallBack = gameEventsCallBack;
+
+        sysUtilsWrapper.iGetGLES20WrapperInterface().glEnableFacesCulling();
+        sysUtilsWrapper.iGetGLES20WrapperInterface().glEnableDepthTest();
     }
 
     private static boolean checkDepthTextureExtension() {
@@ -98,9 +129,6 @@ public class GLScene {
     }
     public void setLightSource(GLLightSource lightSource) {
         this.lightSource = lightSource;
-    }
-    public void setPhysicalWorld(DiscreteDynamicsWorld physicalWorld) {
-        this.physicalWorld = physicalWorld;
     }
     public boolean hasDepthTextureExtension() {
         return hasDepthTextureExtension;
@@ -274,7 +302,7 @@ public class GLScene {
                     movingObject.setWorldTransformMatrix(transform);
 
                 else {
-                    physicalWorld.removeRigidBody(movingObject.get_body());
+                    physicalWorldObject.removeRigidBody(movingObject.get_body());
                     movingObject.set_body(null);
 
                     if (gameEventsCallBack != null)
@@ -404,28 +432,28 @@ public class GLScene {
     }
 
     private void simulatePhysics(long currentTime) {
-        if (isSimulating && physicalWorld != null) {
+        if (isSimulating && physicalWorldObject != null) {
 
             float realInterval = frameTime / 1000f;
             float discreteInterval = 1 / 60f;
             for (float i = 0; i < (realInterval / discreteInterval); i++)
-                physicalWorld.stepSimulation(discreteInterval);
+                physicalWorldObject.stepSimulation(discreteInterval);
 
-            ///physicalWorld.stepSimulation((currentTime - simulation_time) / 1000f, 4, 1f / SIMULATION_FRAMES_IN_SEC );
+            ///physicalWorldObject.stepSimulation((currentTime - simulation_time) / 1000f, 4, 1f / SIMULATION_FRAMES_IN_SEC );
             ///simulation_time = currentTime;
 
-            for (int i = 0; i < physicalWorld.getDispatcher().getNumManifolds(); i++)
-                if (   physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0
-                    && physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts
+            for (int i = 0; i < physicalWorldObject.getDispatcher().getNumManifolds(); i++)
+                if (   physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0
+                    && physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts
                     ) {
 
                     if (gameEventsCallBack != null)
                         gameEventsCallBack.onRollingObjectStart(null); //TODO: Get Object ref from Collision example
 
-                    oldNumContacts = physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
+                    oldNumContacts = physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
                     old_time = currentTime;
                 }
-                else if ((physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
+                else if ((physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
                     if (gameEventsCallBack != null)
                         gameEventsCallBack.onRollingObjectStop(null); //TODO: Get Object ref from Collision example
                 else if (currentTime - old_time > 150)
@@ -457,5 +485,87 @@ public class GLScene {
     public void cleanUp() {
         stopSimulation();
         clearData();
+    }
+
+    private void initScene() {
+        GLCamera camera = new GLCamera(DEFAULT_CAMERA_X, DEFAULT_CAMERA_Y, DEFAULT_CAMERA_Z, DEFAULT_CAMERA_PITCH, DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_ROLL);
+        if (gameEventsCallBack != null)
+            gameEventsCallBack.onInitGLCamera(camera);
+        setCamera(camera);
+
+        GLLightSource lightSource = new GLLightSource(new float[] {DEFAULT_LIGHT_X, DEFAULT_LIGHT_Y, DEFAULT_LIGHT_Z, 1.0f}, DEFAULT_LIGHT_COLOUR, getCamera());
+        if (gameEventsCallBack != null)
+            gameEventsCallBack.onInitLightSource(lightSource);
+        setLightSource(lightSource);
+    }
+
+    private void initPhysics() {
+        BroadphaseInterface _broadphase = new DbvtBroadphase();
+
+        DefaultCollisionConfiguration _collisionConfiguration = new DefaultCollisionConfiguration();
+        CollisionDispatcher _dispatcher = new CollisionDispatcher(_collisionConfiguration);
+
+        SequentialImpulseConstraintSolver _solver = new SequentialImpulseConstraintSolver();
+
+        physicalWorldObject = new DiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
+        physicalWorldObject.setGravity(DEFAULT_GRAVITY_VECTOR);
+
+        if (gameEventsCallBack != null)
+            gameEventsCallBack.onInitPhysics(physicalWorldObject);
+    }
+
+    private void loadScene() {
+        /** Create internal shaders before loading scene  */
+        getCachedShader(SHADOWMAP_OBJECT);
+
+        /** for postprocessing effects */
+        createPostEffects2DScreen();
+
+        if (gameEventsCallBack != null)
+            gameEventsCallBack.onLoadSceneObjects(this, physicalWorldObject);
+
+        forceGC_and_Sync();
+    }
+
+    private void createPostEffects2DScreen() {
+        GLShaderProgram guiShader = getCachedShader(GUI_OBJECT);
+        setPostEffects2DScreen(new GUI2DImageObject(sysUtilsWrapper, guiShader, new RectF(-1, 1, 0, 0)));
+        getPostEffects2DScreen().loadObject();
+    }
+
+    @Override
+    public GLScene getSceneObject() {
+        return this;
+    }
+
+    @Override
+    public DiscreteDynamicsWorld getPhysicalWorldObject() {
+        return physicalWorldObject;
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        initScene();
+        initPhysics();
+
+        loadScene();
+
+        startSimulation();
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        setmDisplayWidth(width);
+        setmDisplayHeight(height);
+        getCamera().setAspectRatio(width, height);
+
+        generateShadowMapFBO();
+        /** for post effects
+         ///generateMainRenderFBO(); */
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        drawScene();
     }
 }
