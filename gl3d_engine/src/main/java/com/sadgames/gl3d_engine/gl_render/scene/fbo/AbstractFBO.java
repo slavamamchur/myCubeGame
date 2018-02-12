@@ -47,8 +47,8 @@ public abstract class AbstractFBO {
         this.height = height;
     }
 
-    public int getFboTexture() {
-        return fboTexture.getTextureId();
+    public AbstractTexture getFboTexture() {
+        return fboTexture;
     }
     public int getFboID() {
         return fboID;

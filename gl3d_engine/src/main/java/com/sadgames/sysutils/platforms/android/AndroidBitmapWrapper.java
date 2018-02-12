@@ -26,11 +26,11 @@ public class AndroidBitmapWrapper implements IBitmapWrapper {
 
     @Override
     public Buffer getRawData() {
-        ByteBuffer result = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
-        picture.copyPixelsToBuffer(result);
-        result.position(0);
+        ByteBuffer imageBuffer = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
+        picture.copyPixelsToBuffer(imageBuffer);
+        imageBuffer.position(0);
 
-        return result;
+        return imageBuffer;
     }
 
     @Override

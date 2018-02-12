@@ -1,6 +1,6 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures;
 
-import android.graphics.Bitmap;
+import com.sadgames.sysutils.IBitmapWrapper;
 
 import static android.opengl.GLES20.GL_DEPTH_COMPONENT;
 import static android.opengl.GLES20.GL_UNSIGNED_INT;
@@ -13,7 +13,7 @@ public class DepthTexture extends RGBATexture {
     }
 
     @Override
-    protected void loadTexture(Bitmap bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(IBitmapWrapper bitmap) throws UnsupportedOperationException {
         glTexImage2D(getTextureType(), 0, GL_DEPTH_COMPONENT, getWidth(), getHeight(), 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, null);
     }
 }

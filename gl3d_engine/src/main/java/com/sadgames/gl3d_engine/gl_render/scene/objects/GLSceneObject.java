@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParamVBO;
@@ -22,7 +23,6 @@ import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glDeleteTextures;
 import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.NORMALS_PARAM_NAME;
@@ -36,7 +36,7 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
 
     protected ISysUtilsWrapper sysUtilsWrapper;
     private GLObjectType objectType;
-    private int glTextureId = 0;
+    protected AbstractTexture glTexture = null;
     private GLShaderParamVBO vertexVBO = null;
     private GLShaderParamVBO texelVBO = null;
     private GLShaderParamVBO normalVBO = null;
@@ -81,10 +81,10 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
         return objectType;
     }
     public int getGlTextureId() {
-        return glTextureId;
+        return glTexture.getTextureId();
     }
-    public void setGlTextureId(int glTextureId) {
-        this.glTextureId = glTextureId;
+    public void setGlTexture(AbstractTexture glTexture) {
+        this.glTexture = glTexture;
     }
 
     public boolean hasNormalMap() {
@@ -200,7 +200,7 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
         createTexelsVBO();
         createNormalsVBO();
         facesIBOPtr = createFacesIBO();
-        glTextureId = loadTexture();
+        glTexture = loadTexture();
     }
 
     public void loadFromObject(GLSceneObject src) {
@@ -216,7 +216,7 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
         clearVBOPtr(facesIBOPtr);
         facesIBOPtr =  src.getFacesIBOPtr();
 
-        glTextureId = checkTextureBitmap(src) ? src.getGlTextureId() : loadTexture();
+        glTexture = checkTextureBitmap(src) ? src.glTexture : loadTexture();
     }
 
     private boolean checkTextureBitmap(GLSceneObject src) {
@@ -247,30 +247,26 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
             glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
     }
 
-    protected int loadTexture() {
-        int result = 0;
-
+    protected AbstractTexture loadTexture() {
         if (StringUtils.hasText(textureResName)) {
-            result = BitmapTexture.createInstance(sysUtilsWrapper, textureResName).getTextureId();
+            return BitmapTexture.createInstance(sysUtilsWrapper, textureResName);
         }
         else if (textureColor != 0) {
-            result = BitmapTexture.createInstance(sysUtilsWrapper, textureColor).getTextureId();
+            return BitmapTexture.createInstance(sysUtilsWrapper, textureColor);
         }
-
-        return result;
+        else
+            return null;
     }
 
     private void clearVBOPtr(int vboPtr) {
         if (vboPtr != 0) {
             glDeleteBuffers(1, new int[]{vboPtr}, 0);
-            vboPtr = 0;
         }
     }
 
     private void clearVBOPtr(GLShaderParamVBO param) {
         if (param != null) {
-            clearVBOPtr(param.getVboPtr());
-            param = null;
+            param.clearParamDataVBO();
         }
     }
 
@@ -281,7 +277,8 @@ public abstract class GLSceneObject implements GLAnimation.IAnimatedObject {
         clearVBOPtr(facesIBOPtr);
         facesIBOPtr = 0;
 
-        glDeleteTextures(4, new int[]{glTextureId, glCubeMapId, glDUDVMapId, glNormalMapId}, 0);
+        if (glTexture != null)
+            glTexture.deleteTexture();
     }
 
     /*public void setModelMatrix() {

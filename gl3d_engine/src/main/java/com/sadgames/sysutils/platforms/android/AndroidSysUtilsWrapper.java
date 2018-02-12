@@ -286,18 +286,18 @@ public abstract class AndroidSysUtilsWrapper implements ISysUtilsWrapper {
     }
 
     @Override
-    public Bitmap iGetBitmapFromFile(String file) {
-        return getBitmapFromFile(file, false);
+    public IBitmapWrapper iGetBitmapFromFile(String file) {
+        return new AndroidBitmapWrapper(getBitmapFromFile(file, false));
     }
 
     @Override
     public IBitmapWrapper iGetReliefFromFile(String file) {
-        return new AndroidBitmapWrapper(getBitmapFromFile(file, true));//TODO: remove wrapper
+        return new AndroidBitmapWrapper(getBitmapFromFile(file, true));
     }
 
     @Override
-    public Bitmap iCreateColorBitmap(int color) {
-        return createColorBitmap(color);
+    public IBitmapWrapper iCreateColorBitmap(int color) {
+        return new AndroidBitmapWrapper(createColorBitmap(color));
     }
 
     @Override

@@ -1,16 +1,15 @@
 package com.sadgames.dicegame.game_logic.items;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.sadgames.dicegame.rest_api.model.Game;
 import com.sadgames.dicegame.rest_api.model.points.AbstractGamePoint;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.IBitmapWrapper;
 import com.sadgames.sysutils.ISysUtilsWrapper;
-import com.sadgames.sysutils.platforms.android.AndroidBitmapWrapper;
 
 import java.util.ArrayList;
 
@@ -36,21 +35,19 @@ public class GameMapObject extends TopographicMapObject {
     }
 
     @Override
-    protected int loadTexture() {
-        Bitmap textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
+    protected AbstractTexture loadTexture() {
+        IBitmapWrapper textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
 
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
-
-        IBitmapWrapper pic = new AndroidBitmapWrapper(textureBmp); //TODO: remove wrapper
 
         ArrayList<Vector2f> way = new ArrayList<>();
         for (AbstractGamePoint point : gameEntity.getGamePoints())
             way.add(new Vector2f(point.xPos, point.yPos));
 
-        pic.drawPath(way, Color.GREEN, Color.RED);
+        textureBmp.drawPath(way, Color.GREEN, Color.RED);
 
-        return BitmapTexture.createInstance(textureBmp).getTextureId();
+        return BitmapTexture.createInstance(textureBmp);
     }
 
 }

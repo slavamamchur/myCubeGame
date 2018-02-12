@@ -337,7 +337,7 @@ public class GLScene {
         GLShaderProgram program = postEffects2DScreen.getProgram();
         program.useProgram();
 
-        postEffects2DScreen.setGlTextureId(mainRenderFBO.getFboTexture());
+        postEffects2DScreen.setGlTexture(mainRenderFBO.getFboTexture());
         program.setMaterialParams(postEffects2DScreen);
 
         postEffects2DScreen.prepare();
@@ -355,7 +355,7 @@ public class GLScene {
         program.useProgram();
 
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, shadowMapFBO.getFboTexture());
+        glBindTexture(GL_TEXTURE_2D, shadowMapFBO.getFboTexture().getTextureId());
         program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(4);
 
         synchronized (lockObject) {
@@ -396,7 +396,7 @@ public class GLScene {
         GLShaderProgram gui_program = postEffects2DScreen.getProgram();
         gui_program.useProgram();
 
-        postEffects2DScreen.setGlTextureId(shadowMapFBO.getFboTexture());
+        postEffects2DScreen.setGlTexture(shadowMapFBO.getFboTexture());
         gui_program.setMaterialParams(postEffects2DScreen);
 
         postEffects2DScreen.prepare();

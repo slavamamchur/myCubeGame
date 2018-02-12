@@ -1,6 +1,6 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures;
 
-import android.graphics.Bitmap;
+import com.sadgames.sysutils.IBitmapWrapper;
 
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_NEAREST;
@@ -34,7 +34,7 @@ public class RGBATexture extends AbstractTexture {
     }
 
     @Override
-    protected void loadTexture(Bitmap bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(IBitmapWrapper bitmap) throws UnsupportedOperationException {
         glTexImage2D(getTextureType(), 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
     }
 }
