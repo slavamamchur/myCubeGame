@@ -1,14 +1,14 @@
 package com.sadgames.gl3d_engine.gl_render.scene;
 
-import android.opengl.Matrix;
+/*import android.opengl.Matrix;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
+import javax.vecmath.Vector4f;*/
 
 public class ShadowBox {
 
-    private static final float OFFSET = 10;
+    /*private static final float OFFSET = 10;
     private static final float[] UP =  new float[]{0, 1, 0, 0};
     private static final float[] FORWARD =  new float[]{0, 0, -1, 0};
     private static final float SHADOW_DISTANCE = 100;
@@ -110,23 +110,23 @@ public class ShadowBox {
         return new Vector3f(tmp.x, tmp.y, tmp.z);
     }
 
-    /**
+    *//**
      * @return The width of the "view cuboid" (orthographic projection area).
-     */
+     *//*
     protected float getWidth() {
         return maxX - minX;
     }
 
-    /**
+    *//**
      * @return The height of the "view cuboid" (orthographic projection area).
-     */
+     *//*
     protected float getHeight() {
         return maxY - minY;
     }
 
-    /**
+    *//**
      * @return The length of the "view cuboid" (orthographic projection area).
-     */
+     *//*
     protected float getLength() {
         return maxZ - minZ;
     }
@@ -208,5 +208,5 @@ public class ShadowBox {
 
     public float getMaxZ() {
         return maxZ;
-    }
+    }*/
 }

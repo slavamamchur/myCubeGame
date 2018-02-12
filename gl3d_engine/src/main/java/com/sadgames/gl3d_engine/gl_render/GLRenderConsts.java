@@ -87,6 +87,6 @@ public  class GLRenderConsts {
     public static final String GUI_VERTEX_SHADER = "shaders/gui_vertex.glsl";
     public static final String GUI_FRAGMENT_SHADER = "shaders/gui_fragment.glsl";
 
-    public static final int SHADOW_MAP_TEXTURE_SLOT = 4;
+    public static final int FBO_TEXTURE_SLOT = 4;
 
 }

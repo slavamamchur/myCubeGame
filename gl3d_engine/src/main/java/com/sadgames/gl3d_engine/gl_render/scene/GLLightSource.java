@@ -90,7 +90,7 @@ public class GLLightSource {
     }
     public void setViewMatrix(Vector3f direction, ShadowBox shadowBox) {
         Matrix.setIdentityM(viewMatrix, 0);
-        Vector3f center = shadowBox != null ? shadowBox.getCenter() : new Vector3f(lightPosInModelSpace);
+        Vector3f center = /*shadowBox != null ? shadowBox.getCenter() : */new Vector3f(lightPosInModelSpace);
         center.negate();
 
         direction.normalize();

@@ -33,13 +33,13 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.FBO_TEXTURE_SLOT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOLUTION;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_TEXTURE_SLOT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ShadowMapQuality;
 import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGC_and_Sync;
@@ -246,13 +246,13 @@ public class GLScene implements GLRendererInterface {
 
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
        shadowMapFBO = hasDepthTextureExtension ?
-               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :
-               new ColorBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
+               new DepthBufferFBO(glES20Wrapper, shadowMapWidth, shadowMapHeight, clColor) :
+               new ColorBufferFBO(glES20Wrapper, shadowMapWidth, shadowMapHeight, clColor);
     }
 
     public void generateMainRenderFBO() {
         mainRenderFBO =
-                new ColorBufferFBO(Math.round(mDisplayWidth), Math.round(mDisplayHeight), new Color4f(0.0f, 0.0f, 0.0f, 0.0f));
+                new ColorBufferFBO(glES20Wrapper, Math.round(mDisplayWidth), Math.round(mDisplayHeight), new Color4f(0.0f, 0.0f, 0.0f, 0.0f));
     }
 
     private void calculateSceneTransformations() {
@@ -363,7 +363,7 @@ public class GLScene implements GLRendererInterface {
         TerrainRendererProgram program = (TerrainRendererProgram) getCachedShader(TERRAIN_OBJECT);
         program.useProgram();
 
-        glES20Wrapper.glActiveTexture(SHADOW_MAP_TEXTURE_SLOT);
+        glES20Wrapper.glActiveTexture(FBO_TEXTURE_SLOT);
         glES20Wrapper.glBindTexture2D(shadowMapFBO.getFboTexture().getTextureId());
         program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(4);
 

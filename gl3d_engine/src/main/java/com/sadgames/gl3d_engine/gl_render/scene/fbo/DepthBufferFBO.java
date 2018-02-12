@@ -1,29 +1,25 @@
 package com.sadgames.gl3d_engine.gl_render.scene.fbo;
 
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.DepthTexture;
 
 import javax.vecmath.Color4f;
 
-import static android.opengl.GLES20.GL_DEPTH_ATTACHMENT;
-import static android.opengl.GLES20.GL_FRAMEBUFFER;
-import static android.opengl.GLES20.GL_TEXTURE4;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.glActiveTexture;
-import static android.opengl.GLES20.glBindTexture;
-import static android.opengl.GLES20.glFramebufferTexture2D;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.FBO_TEXTURE_SLOT;
 
 public class DepthBufferFBO extends AbstractFBO {
-    public DepthBufferFBO(int width, int height, Color4f clearColor) {
-        super(width, height, clearColor);
+    public DepthBufferFBO(GLES20APIWrapperInterface glES20Wrapper, int width, int height, Color4f clearColor) {
+        super(glES20Wrapper, width, height, clearColor);
     }
 
     @Override
     protected AbstractTexture attachFboTexture() {
         AbstractTexture renderTexture = new DepthTexture(width, height);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, renderTexture.getTextureId());
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, renderTexture.getTextureId(), 0);
+
+        glES20Wrapper.glActiveTexture(FBO_TEXTURE_SLOT);
+        glES20Wrapper.glBindTexture2D(renderTexture.getTextureId());
+        glES20Wrapper.glFramebufferAttachDepthTexture(renderTexture.getTextureId());
 
         return renderTexture;
     }

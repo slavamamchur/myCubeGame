@@ -1,22 +1,9 @@
 package com.sadgames.gl3d_engine.gl_render.scene.fbo;
 
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 
 import javax.vecmath.Color4f;
-
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.GL_FRAMEBUFFER;
-import static android.opengl.GLES20.GL_FRAMEBUFFER_COMPLETE;
-import static android.opengl.GLES20.glBindFramebuffer;
-import static android.opengl.GLES20.glCheckFramebufferStatus;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glDeleteFramebuffers;
-import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glGenFramebuffers;
-import static android.opengl.GLES20.glViewport;
 
 public abstract class AbstractFBO {
     protected int width;
@@ -24,11 +11,13 @@ public abstract class AbstractFBO {
     private int fboID;
     private AbstractTexture fboTexture;
     private Color4f clearColor;
+    protected GLES20APIWrapperInterface glES20Wrapper;
 
-    public AbstractFBO(int width, int height, Color4f clearColor) {
+    public AbstractFBO(GLES20APIWrapperInterface glES20Wrapper, int width, int height, Color4f clearColor) {
         this.width = width;
         this.height = height;
         this.clearColor = clearColor;
+        this.glES20Wrapper = glES20Wrapper;
 
         fboID = createFBO();
     }
@@ -55,30 +44,30 @@ public abstract class AbstractFBO {
     }
 
     public void bind() {
-        glBindFramebuffer(GL_FRAMEBUFFER, fboID);
-        glViewport(0, 0, width, height);
-        glEnable(GL_CULL_FACE);
-        glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glES20Wrapper.glBindFramebuffer(fboID);
+        glES20Wrapper.glViewport(0, 0, width, height);
+        glES20Wrapper.glEnableFacesCulling();
+        glES20Wrapper.glSetClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+        glES20Wrapper.glClear();
     }
 
     public void unbind() {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glES20Wrapper.glBindFramebuffer(0);
     }
 
     protected int createFBO() {
         int[] fbos = new int[1];
-        glGenFramebuffers(1, fbos, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbos[0]);
+        glES20Wrapper.glGenFrameBuffers(1, fbos, 0);
+        glES20Wrapper.glBindFramebuffer(fbos[0]);
 
         fboTexture = attachFboTexture();
 
         try {
-            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            if (!glES20Wrapper.glCheckFramebufferStatus())
                 throw new RuntimeException("GL_FRAMEBUFFER_COMPLETE failed, CANNOT use FBO");
         }
         finally {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glES20Wrapper.glBindFramebuffer(0);
         }
 
         return fbos[0];
@@ -86,7 +75,7 @@ public abstract class AbstractFBO {
 
     public void cleanUp() {
         unbind();
-        glDeleteFramebuffers(1, new int[]{fboID}, 0);
+        glES20Wrapper.glDeleteFrameBuffers(1, new int[]{fboID}, 0);
         fboTexture.deleteTexture();
     }
 
