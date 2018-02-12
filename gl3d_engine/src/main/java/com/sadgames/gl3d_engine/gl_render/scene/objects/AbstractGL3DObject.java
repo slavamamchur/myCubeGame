@@ -11,8 +11,6 @@ import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.Bitma
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParamVBO;
 
-import org.springframework.util.StringUtils;
-
 import java.nio.ShortBuffer;
 
 import javax.vecmath.Vector3f;
@@ -248,7 +246,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     }
 
     protected AbstractTexture loadTexture() {
-        if (StringUtils.hasText(textureResName)) {
+        if (textureResName != null && !textureResName.isEmpty()) {
             return BitmapTexture.createInstance(sysUtilsWrapper, textureResName);
         }
         else if (textureColor != 0) {
