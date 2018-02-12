@@ -92,8 +92,8 @@ public class GL3DRenderer implements GLSurfaceView.Renderer {
     }
 
     private void initGLRender() {
-        sysUtilsWrapper.iGetGLES2WrapperInterface().glEnableFacesCulling();
-        sysUtilsWrapper.iGetGLES2WrapperInterface().glEnableDepthTest();
+        sysUtilsWrapper.iGetGLES20WrapperInterface().glEnableFacesCulling();
+        sysUtilsWrapper.iGetGLES20WrapperInterface().glEnableDepthTest();
     }
 
     private void initScene() {

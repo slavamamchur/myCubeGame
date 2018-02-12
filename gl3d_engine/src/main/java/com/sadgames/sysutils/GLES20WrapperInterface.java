@@ -1,6 +1,6 @@
 package com.sadgames.sysutils;
 
-public interface GLES2WrapperInterface {
+public interface GLES20WrapperInterface {
 
     void glEnableFacesCulling();
     void glEnableDepthTest();
