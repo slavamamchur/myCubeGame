@@ -28,7 +28,8 @@ import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.rest_api.model.entities.points.PointType;
-import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
+import com.sadgames.gl3d_engine.GameEventsCallbackInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
 import com.sadgames.gl3d_engine.gl_render.scene.GLLightSource;
@@ -40,7 +41,6 @@ import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 

@@ -1,4 +1,4 @@
-package com.sadgames.sysutils;
+package com.sadgames.gl3d_engine;
 
 public interface SettingsManagerInterface {
 

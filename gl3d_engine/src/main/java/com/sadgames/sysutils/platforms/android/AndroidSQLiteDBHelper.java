@@ -26,7 +26,8 @@ public class AndroidSQLiteDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /*if (oldVersion < 200) {
+        /** for package update with new db version
+        if (oldVersion < 200) {
             db.execSQL("ALTER TABLE CACHED_IMAGES ADD COLUMN MAP_UPDATED_DATE NUMERIC;");
 
             ContentValues cv = new ContentValues();

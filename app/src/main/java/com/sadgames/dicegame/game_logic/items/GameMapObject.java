@@ -4,12 +4,12 @@ import android.graphics.Color;
 
 import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.BitmapWrapperInterface;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
 

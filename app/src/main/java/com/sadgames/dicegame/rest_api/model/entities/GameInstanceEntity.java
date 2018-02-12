@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.dicegame.rest_api.GameInstanceController;
 import com.sadgames.dicegame.rest_api.model.entities.players.InstancePlayer;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 
 import java.util.List;
 

@@ -20,7 +20,7 @@ import com.sadgames.dicegame.rest_api.model.entities.AuthTokenEntity;
 import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.platforms.android.LoginActivity;
 import com.sadgames.dicegame.ui.platforms.android.SettingsActivity;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {

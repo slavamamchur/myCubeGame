@@ -1,4 +1,4 @@
-package com.sadgames.gl3d_engine.gl_render;
+package com.sadgames.gl3d_engine;
 
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;

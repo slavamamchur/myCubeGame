@@ -2,7 +2,7 @@ package com.sadgames.dicegame.rest_api;
 
 import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.rest_api.model.responses.GameMapCollectionResponse;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

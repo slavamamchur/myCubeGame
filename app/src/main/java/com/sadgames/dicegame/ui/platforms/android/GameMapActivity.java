@@ -14,7 +14,7 @@ import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.ui.platforms.android.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.platforms.android.framework.MapFragment;
-import com.sadgames.sysutils.DateTimeUtils;
+import com.sadgames.sysutils.common.DateTimeUtils;
 
 import static com.sadgames.dicegame.rest_api.RestApiService.EXTRA_ENTITY_OBJECT;
 

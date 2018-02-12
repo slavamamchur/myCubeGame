@@ -1,9 +1,9 @@
-package com.sadgames.sysutils;
+package com.sadgames.sysutils.common;
 
 import java.lang.ref.WeakReference;
 import java.util.Scanner;
 
-public class JavaPlatformUtils {
+public class CommonUtils {
 
     public static String convertStreamToString(java.io.InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");

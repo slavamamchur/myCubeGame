@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.dicegame.rest_api.GameMapController;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 
 import static com.sadgames.dicegame.rest_api.RestConst.URL_GAME_MAP;
 

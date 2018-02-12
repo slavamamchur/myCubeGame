@@ -7,8 +7,10 @@ import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
+import com.sadgames.gl3d_engine.GameEventsCallbackInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.GLRendererInterface;
-import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.AbstractFBO;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.ColorBufferFBO;
 import com.sadgames.gl3d_engine.gl_render.scene.fbo.DepthBufferFBO;
@@ -20,8 +22,6 @@ import com.sadgames.gl3d_engine.gl_render.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.ShapeShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.TerrainRendererProgram;
-import com.sadgames.sysutils.GLES20APIWrapperInterface;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOL
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_TEXTURE_SLOT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ShadowMapQuality;
 import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject.MOVING_OBJECT;
-import static com.sadgames.sysutils.JavaPlatformUtils.forceGC_and_Sync;
+import static com.sadgames.sysutils.common.CommonUtils.forceGC_and_Sync;
 
 public class GLScene implements GLRendererInterface {
 

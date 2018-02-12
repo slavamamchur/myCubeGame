@@ -18,7 +18,7 @@ import com.sadgames.dicegame.ui.platforms.android.framework.BaseItemDetailsActiv
 import com.sadgames.dicegame.ui.platforms.android.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.platforms.android.framework.MapFragment;
-import com.sadgames.sysutils.DateTimeUtils;
+import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.util.ArrayList;
 

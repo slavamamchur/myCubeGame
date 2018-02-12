@@ -5,9 +5,9 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
 
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.BitmapWrapperInterface;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;

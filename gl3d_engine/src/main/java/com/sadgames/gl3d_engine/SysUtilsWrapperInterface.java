@@ -1,4 +1,7 @@
-package com.sadgames.sysutils;
+package com.sadgames.gl3d_engine;
+
+import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 

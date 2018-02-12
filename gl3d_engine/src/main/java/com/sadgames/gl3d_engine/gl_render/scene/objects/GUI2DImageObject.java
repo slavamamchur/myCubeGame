@@ -1,7 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

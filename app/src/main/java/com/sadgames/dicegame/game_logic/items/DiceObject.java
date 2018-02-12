@@ -1,11 +1,11 @@
 package com.sadgames.dicegame.game_logic.items;
 
 import com.bulletphysics.collision.shapes.BoxShape;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.GameItemObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.BitmapWrapperInterface;
-import com.sadgames.sysutils.MathUtils;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.MathUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

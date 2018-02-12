@@ -1,4 +1,4 @@
-package com.sadgames.sysutils;
+package com.sadgames.sysutils.common;
 
 import android.opengl.Matrix;
 

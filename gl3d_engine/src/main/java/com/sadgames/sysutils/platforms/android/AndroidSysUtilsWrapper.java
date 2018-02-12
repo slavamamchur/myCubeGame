@@ -13,16 +13,16 @@ import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
-import com.sadgames.sysutils.BitmapWrapperInterface;
-import com.sadgames.sysutils.GLES20APIWrapperInterface;
-import com.sadgames.sysutils.SettingsManagerInterface;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SettingsManagerInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.sadgames.sysutils.JavaPlatformUtils.convertStreamToString;
+import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
 
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 

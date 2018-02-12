@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.sadgames.sysutils.SettingsManagerInterface;
+import com.sadgames.gl3d_engine.SettingsManagerInterface;
 
 public final class AndroidSettingsManager implements SettingsManagerInterface {
 

@@ -5,7 +5,7 @@ import com.sadgames.dicegame.rest_api.model.responses.GameInstanceCollectionResp
 import com.sadgames.dicegame.rest_api.model.responses.GameInstanceResponse;
 import com.sadgames.dicegame.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.dicegame.rest_api.model.responses.IdResponse;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

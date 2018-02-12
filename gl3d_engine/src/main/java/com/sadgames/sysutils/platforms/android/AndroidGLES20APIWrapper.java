@@ -2,7 +2,7 @@ package com.sadgames.sysutils.platforms.android;
 
 import android.opengl.GLES20;
 
-import com.sadgames.sysutils.GLES20APIWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 
 public class AndroidGLES20APIWrapper implements GLES20APIWrapperInterface {
 

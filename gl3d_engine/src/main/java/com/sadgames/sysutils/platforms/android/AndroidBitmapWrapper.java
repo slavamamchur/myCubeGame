@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 
-import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;

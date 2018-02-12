@@ -1,8 +1,8 @@
 package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.glGetString;

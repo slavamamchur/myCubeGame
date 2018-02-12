@@ -16,7 +16,7 @@ import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.rest_api.model.entities.UserEntity;
 import com.sadgames.dicegame.rest_api.model.responses.GameInstanceStartedResponse;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.ArrayList;

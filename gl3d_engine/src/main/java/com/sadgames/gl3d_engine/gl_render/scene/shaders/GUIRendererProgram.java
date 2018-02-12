@@ -1,7 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GUI_FRAGMENT_SHADER;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GUI_VERTEX_SHADER;

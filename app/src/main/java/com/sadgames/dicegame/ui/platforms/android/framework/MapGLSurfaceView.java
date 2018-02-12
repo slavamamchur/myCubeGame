@@ -12,8 +12,8 @@ import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.sysutils.MathUtils.cos;
-import static com.sadgames.sysutils.MathUtils.sin;
+import static com.sadgames.sysutils.common.MathUtils.cos;
+import static com.sadgames.sysutils.common.MathUtils.sin;
 
 public class MapGLSurfaceView extends GLSurfaceView {
 

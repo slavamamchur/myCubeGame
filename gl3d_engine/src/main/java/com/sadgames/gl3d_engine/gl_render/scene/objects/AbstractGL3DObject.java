@@ -4,12 +4,12 @@ import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParamVBO;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import org.springframework.util.StringUtils;
 

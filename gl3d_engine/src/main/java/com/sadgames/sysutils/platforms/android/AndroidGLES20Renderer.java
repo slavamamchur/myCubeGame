@@ -2,10 +2,10 @@ package com.sadgames.sysutils.platforms.android;
 
 import android.opengl.GLSurfaceView;
 
+import com.sadgames.gl3d_engine.GameEventsCallbackInterface;
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.GLRendererInterface;
-import com.sadgames.gl3d_engine.gl_render.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

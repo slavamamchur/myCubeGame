@@ -2,9 +2,9 @@ package com.sadgames.gl3d_engine.gl_render.scene.shaders;
 
 import android.opengl.Matrix;
 
+import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParam;
-import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
