@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
 import com.sadgames.sysutils.BitmapWrapperInterface;
+import com.sadgames.sysutils.GLES2WrapperInterface;
 import com.sadgames.sysutils.SettingsManagerInterface;
 import com.sadgames.sysutils.SysUtilsWrapperInterface;
 
@@ -323,5 +324,10 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     @Override
     public SettingsManagerInterface iGetSettingsManager() {
         return AndroidSettingsManager.getInstance(context);
+    }
+
+    @Override
+    public GLES2WrapperInterface iGetGLES2WrapperInterface() {
+        return AndroidGLES2Wrapper.getInstance();
     }
 }

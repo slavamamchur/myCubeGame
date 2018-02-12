@@ -20,9 +20,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Vector3f;
 
-import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DEPTH_TEST;
-import static android.opengl.GLES20.glEnable;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
 import static com.sadgames.sysutils.JavaPlatformUtils.forceGC_and_Sync;
@@ -52,6 +49,7 @@ public class GL3DRenderer implements GLSurfaceView.Renderer {
     public GL3DRenderer(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
     }
+
     public GLScene getScene() {
         return mScene;
     }
@@ -71,7 +69,7 @@ public class GL3DRenderer implements GLSurfaceView.Renderer {
         initScene();
         initPhysics();
 
-        loadScene();
+        loadScene(); //TODO: move to mScene ...
 
         mScene.setPhysicalWorld(physicalWorldObject);
         mScene.startSimulation();
@@ -94,8 +92,8 @@ public class GL3DRenderer implements GLSurfaceView.Renderer {
     }
 
     private void initGLRender() {
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
+        sysUtilsWrapper.iGetGLES2WrapperInterface().glEnableFacesCulling();
+        sysUtilsWrapper.iGetGLES2WrapperInterface().glEnableDepthTest();
     }
 
     private void initScene() {

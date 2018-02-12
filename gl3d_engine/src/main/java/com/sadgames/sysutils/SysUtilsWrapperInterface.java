@@ -16,5 +16,7 @@ public interface SysUtilsWrapperInterface {
     void            iStopSound();
 
     SettingsManagerInterface iGetSettingsManager();
+    GLES2WrapperInterface iGetGLES2WrapperInterface();
+
     //TODO: use java SE common lib for pictures ???
 }
