@@ -3,7 +3,7 @@ precision mediump float;
 uniform mat4 u_MV_MatrixF;
 
 uniform sampler2D u_TextureUnit;
-uniform /*samplerCube*/ sampler2D u_CubeMapUnit;
+uniform /*samplerCube*/ sampler2D u_ReflectionMapUnit;
 uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
 uniform sampler2D uShadowTexture;
@@ -35,7 +35,8 @@ const float waveStrength = 0.02;
 
 void main()
 {
-      /*if (v_wPosition.y == 0.0) {
+      /* //For drawing terrain only
+      if (v_wPosition.y == 0.0) {
         discard;
       }*/
 
@@ -60,11 +61,11 @@ void main()
       vec3 n_lookvector = normalize(lookvector);
 
       float shadow = 1.0;
-      //if the fragment is not behind light view frustum
       if (vShadowCoord.w > 0.0) {
         highp float bias = 0.001;//0.0001
 
-        /*highp vec3 l = normalize(u_lightPositionF);
+        /* //Calculated bias value
+        highp vec3 l = normalize(u_lightPositionF);
         highp float cosTheta = clamp(dot(n_normal,l), 0.0, 1.0);
         bias *= tan(acos(cosTheta));
         bias = clamp(bias, 0.0, 0.0001);*/
@@ -83,20 +84,20 @@ void main()
       }
 
       float diffuse = k_diffuse;
-      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0)) {
+      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0) || (u_RndSeed == -1.0)) {
             diffuse *= vdiffuse;
       }
       else {
             diffuse *= max(dot(n_normal, n_lightvector), 0.0);
       }
-      // Add attenuation.
-      ///float distance = length(u_lightPosition - v_Position);
-      ///diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));
+      /* //Add attenuation.
+      float distance = length(u_lightPosition - v_Position);
+      diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));*/
       float lightFactor = ambient + diffuse;
       vec3 diffuseColor = lightFactor * u_lightColour * shadow;
 
       float specular = k_specular;
-      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0)) {
+      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0) || (u_RndSeed == -1.0)) {
             specular *= vspecular;
       }
       else {
@@ -106,18 +107,17 @@ void main()
       vec3 specularColor = specular * u_lightColour;
 
       vec4 textureColor;
-      if (v_wPosition.y == 0.0 && u_isCubeMapF == 1) {
-        diffuseColor = vec3(0.8) * shadow;//(0.4 + lightFactor) * vec3(1.0);//vec3(0.8) * shadow;
+      if (v_wPosition.y == 0.0 && u_isCubeMapF == 1 &&  u_RndSeed > -1.0) {
+        diffuseColor = vec3(0.8) * shadow;
 
-        ///textureColor = vec4(0, 0.3, 0.5, 1.0);
-
-        textureColor = texture2D(u_CubeMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
+        textureColor = texture2D(u_ReflectionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
         float reflectiveFactor = 0.4;//dot(n_lookvector, vec3(0.0, 1.0, 0.0)); //0.4
         textureColor = mix(textureColor, vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
 
-        /*vec3 texcoordCube = reflect(-n_lookvector, n_normal);
+        /* //Cubemap reflection
+        vec3 texcoordCube = reflect(-n_lookvector, n_normal);
         float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0)) *//* * 0.5 *//*;
-        textureColor = mix(textureCube(u_CubeMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
+        textureColor = mix(textureCube(u_ReflectionMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
       }
       else {
         textureColor = texture2D(u_TextureUnit/*uShadowTexture*/, v_Texture);

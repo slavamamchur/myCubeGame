@@ -374,7 +374,7 @@ public class GLScene implements GLRendererInterface {
         program.setLightSourcePosition(getLightSource().getLightPosInEyeSpace());
         program.setLightColourValue(getLightSource().getLightColour());
 
-        program.setWaveMovingFactor(moveFactor);
+        program.setWaveMovingFactor(moveFactor);//TODO: by graphics quality settings -> (moveFactor or -1f)
 
         /** for rgb depth buffers */
         ///program.paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapWidth));

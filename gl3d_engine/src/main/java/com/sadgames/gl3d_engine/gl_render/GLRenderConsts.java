@@ -50,7 +50,7 @@ public  class GLRenderConsts {
     public static final String TEXELS_PARAM_NAME = "a_Texture";
     public static final String NORMALS_PARAM_NAME = "a_Normal";
     public static final String ACTIVE_TEXTURE_SLOT_PARAM_NAME = "u_TextureUnit";
-    public static final String ACTIVE_CUBEMAP_SLOT_PARAM_NAME = "u_CubeMapUnit";
+    public static final String ACTIVE_CUBEMAP_SLOT_PARAM_NAME = "u_ReflectionMapUnit";
     public static final String ACTIVE_NORMALMAP_SLOT_PARAM_NAME = "u_NormalMapUnit";
     public static final String ACTIVE_DUDVMAP_SLOT_PARAM_NAME = "u_DUDVMapUnit";
     public static final String ACTIVE_SHADOWMAP_SLOT_PARAM_NAME = "uShadowTexture";
