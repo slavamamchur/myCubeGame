@@ -81,6 +81,10 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public int getGlTextureId() {
         return glTexture.getTextureId();
     }
+    public AbstractTexture getGlTexture() {
+        return glTexture;
+    }
+
     public void setGlTexture(AbstractTexture glTexture) {
         this.glTexture = glTexture;
     }

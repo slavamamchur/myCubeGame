@@ -35,7 +35,7 @@ public  class GLRenderConsts {
     }
 
     public static final float[] SHADOW_MAP_RESOLUTION_SCALE = new float[] {0.5f, 1.0f, 1.5f, 2.0f};
-    public static final int[] RELIEF_MAP_RESOLUTION_SCALE = new int[] {4, 2, 1, 1};
+    public static final int[] TEXTURE_RESOLUTION_SCALE = new int[] {4, 2, 1, 1};
 
     public static final int VERTEX_SIZE = 3;
     public static final int TEXEL_UV_SIZE = 2;

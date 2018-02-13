@@ -296,7 +296,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         GameItemObject prevChip = null;
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            PointF chipPlace = getChipPlace(mScene, playersOnWayPoints, player, true);
+            PointF chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
 
             GameItemObject chip = new ChipObject(sysUtilsWrapper, program, 0xFF000000 | player.getColor());
             if (prevChip == null)
@@ -317,7 +317,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            PointF chipPlace = getChipPlace(mScene, playersOnWayPoints, player, true);
+            PointF chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
 
             AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", i));
 
@@ -325,7 +325,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         }
     }
 
-    public PointF getChipPlace(GLScene mScene, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
+    public PointF getChipPlaceByWayPoint(GLScene mScene, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
         int currentPointIdx = player.getCurrentPoint();
         playersOnWayPoints[currentPointIdx]++;
         int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
@@ -335,16 +335,18 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     }
 
     public PointF getChipPlace(GLScene mScene, AbstractGamePoint point, int playersCnt, boolean rotate) {
-        double toX2 = point.getxPos();
-        double toZ2 = point.getyPos();
+        TopographicMapObject map = (TopographicMapObject) mScene.getObject(TERRAIN_MESH_OBJECT);
+        float scaleFactor = map.getGlTexture().getWidth() * 1.0f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
+        double toX2 = point.getxPos() * scaleFactor;
+        double toZ2 = point.getyPos() * scaleFactor;
 
         if(rotate) {
             double angle = getChipRotationAngle(playersCnt);
-            toX2 = point.getxPos() - 10 * Math.sin(angle);
-            toZ2 = point.getyPos() - 10 * Math.cos(angle);
+            toX2 = point.getxPos() * scaleFactor - 7.5f * scaleFactor * Math.sin(angle);
+            toZ2 = point.getyPos() * scaleFactor - 7.5f * scaleFactor * Math.cos(angle);
         }
 
-        return ((TopographicMapObject) mScene.getObject(TERRAIN_MESH_OBJECT)).map2WorldCoord(new PointF((float)toX2, (float)toZ2));
+        return map.map2WorldCoord(new PointF((float)toX2, (float)toZ2));
     }
 
     private static double getChipRotationAngle(int playersCnt) {

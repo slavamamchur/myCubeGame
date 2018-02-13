@@ -25,7 +25,7 @@ import java.util.Arrays;
 import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.RELIEF_MAP_RESOLUTION_SCALE;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
 
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
@@ -241,19 +241,15 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
             dbHelper.close();
 
             if (bitmapArray != null) {
+                int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
                 final BitmapFactory.Options options = getiBitmapOptions();
 
-                //TODO: LOD settings
-                if (isRelief) {
-
-                    int reliefMapQuality = RELIEF_MAP_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
-                    options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-                    options.inSampleSize =
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+                options.inSampleSize =
                             calculateInSampleSize(options,
-                                         options.outWidth / reliefMapQuality,
-                                        options.outHeight / reliefMapQuality);
-                }
+                                         options.outWidth / scaleFactor,
+                                        options.outHeight / scaleFactor);
 
                 options.inJustDecodeBounds = false;
                 bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
@@ -268,7 +264,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
             if (dbHelper != null) dbHelper.close();
         }
 
-        return bitmap; //TODO: return byte buffer
+        return bitmap;
     }
 
     public boolean isBitmapCached(String map_id, Long updatedDate) {

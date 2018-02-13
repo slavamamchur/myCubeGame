@@ -7,6 +7,8 @@ import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 
 public abstract class BitmapTexturedObject extends AbstractGL3DObject {
 
+    public static final int DEFAULT_TEXTURE_SIZE = 500;
+
     public BitmapTexturedObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, String textureResName, GLShaderProgram program) {
         super(sysUtilsWrapper, type, program);
 

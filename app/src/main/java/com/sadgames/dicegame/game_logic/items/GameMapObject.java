@@ -40,12 +40,13 @@ public class GameMapObject extends TopographicMapObject {
 
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
+        float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
 
         ArrayList<Vector2f> way = new ArrayList<>();
         for (AbstractGamePoint point : gameEntity.getGamePoints())
-            way.add(new Vector2f(point.xPos, point.yPos));
+            way.add(new Vector2f(point.xPos * scaleFactor, point.yPos * scaleFactor));
 
-        textureBmp.drawPath(way, Color.GREEN, Color.RED);
+        textureBmp.drawPath(way, Color.GREEN, Color.RED, scaleFactor);
 
         return BitmapTexture.createInstance(getSysUtilsWrapper(), textureBmp);
     }

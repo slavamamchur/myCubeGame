@@ -18,6 +18,7 @@ import static com.sadgames.sysutils.common.MathUtils.sin;
 public class MapGLSurfaceView extends GLSurfaceView {
 
     private static final float TOUCH_SCALE_FACTOR = 22.5f / 320;
+    public static final int OGL_ES_20 = 2;
 
     private AndroidGLES20Renderer mRenderer;
     private float mPreviousX;
@@ -30,7 +31,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
     public MapGLSurfaceView(Context context) {
         super(context);
 
-        setEGLContextClientVersion(2);
+        setEGLContextClientVersion(OGL_ES_20);
         mScaleDetector = new ScaleGestureDetector(context.getApplicationContext(), new ScaleListener());
     }
 
@@ -89,7 +90,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) { //TODO: error
+    public void surfaceDestroyed(SurfaceHolder holder) { //TODO: error cleaning gl buffers
 
         /*mRenderer.getScene().setRenderStopped(true);
         try {

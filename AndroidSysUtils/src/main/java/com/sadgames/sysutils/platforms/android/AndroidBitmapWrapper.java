@@ -54,7 +54,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
-    public void drawPath(List<Vector2f> path, int pathColor, int wayPointColor) {
+    public void drawPath(List<Vector2f> path, int pathColor, int wayPointColor, float scaleFactor) {
         if (path == null)
             return;
 
@@ -62,19 +62,19 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         Path pathObject = new Path();
         final Paint paint = new Paint();
 
-        paint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
+        paint.setPathEffect(new DashPathEffect(new float[]{7.5f * scaleFactor, 3.75f * scaleFactor}, 0));
         pathObject.moveTo(path.get(0).x, path.get(0).y);
         for (int i = 1; i < path.size(); i++)
             pathObject.lineTo(path.get(i).x, path.get(i).y);
         paint.setColor(pathColor);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(3.75f * scaleFactor);
         canvas.drawPath(pathObject, paint);
 
         paint.setColor(wayPointColor);
         paint.setStyle(Paint.Style.FILL);
         for (Vector2f point : path)
-            canvas.drawCircle(point.x, point.y, 10f, paint);
+            canvas.drawCircle(point.x, point.y, 7.5f * scaleFactor, paint);
     }
 
     @Override
