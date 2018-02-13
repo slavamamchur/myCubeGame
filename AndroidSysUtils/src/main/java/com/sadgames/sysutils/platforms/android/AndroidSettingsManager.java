@@ -16,13 +16,15 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     public static final String PARAM_STAY_LOGGED_IN = "stayLoggedIn";
     public static final String PARAM_GRAPHICS_QUALITY_LEVEL = "graphicsQualityLevel";
 
-    private static final int DEFAULT_GRAPHICS_QUALITY_LEVEL = GraphicsQuality.HIGH.ordinal();
+    private static final String DEFAULT_GRAPHICS_QUALITY_LEVEL = GraphicsQuality.HIGH.name();
 
     private static final Object lockObject = new Object();
     private static AndroidSettingsManager instance = null;
     private SharedPreferences settings = null;
+    private Context context;
 
     public AndroidSettingsManager(Context context) {
+        this.context = context;
         settings = AndroidSysUtilsWrapper.getDefaultSharedPrefs(context);
     }
 
@@ -48,12 +50,6 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     public boolean safeReadProperty(String name, boolean defValue){
         synchronized (lockObject) {
             return settings.getBoolean(name, defValue);
-        }
-    }
-
-    public int safeReadProperty(String name, int defValue){
-        synchronized (lockObject) {
-            return settings.getInt(name, defValue);
         }
     }
 
@@ -112,6 +108,6 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
 
     @Override
     public GraphicsQuality getGraphicsQualityLevel() {
-        return GraphicsQuality.values()[safeReadProperty(PARAM_GRAPHICS_QUALITY_LEVEL, DEFAULT_GRAPHICS_QUALITY_LEVEL)];
+        return GraphicsQuality.valueOf(safeReadProperty(PARAM_GRAPHICS_QUALITY_LEVEL, DEFAULT_GRAPHICS_QUALITY_LEVEL));
     }
 }

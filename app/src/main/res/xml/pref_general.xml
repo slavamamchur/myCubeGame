@@ -12,5 +12,11 @@
         android:defaultValue="true"
         android:key="@string/pref_key_stay_logged"
         android:title="@string/pref_title_stay_logged" />
+    <ListPreference
+        android:defaultValue="HIGH"
+        android:entries="@array/pref_graphics_quality_titles"
+        android:entryValues="@array/pref_graphics_quality_values"
+        android:key="@string/pref_key_graphics_quality"
+        android:title="@string/pref_title_graphics_quality" />
 
 </PreferenceScreen>

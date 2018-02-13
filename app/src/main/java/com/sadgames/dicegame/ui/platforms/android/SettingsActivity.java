@@ -193,6 +193,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
 
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_web_service_url)), true);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_graphics_quality)), true);
         }
 
         @Override
