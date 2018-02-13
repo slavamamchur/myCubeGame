@@ -91,6 +91,7 @@ public class GLScene implements GLRendererInterface {
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBack = null;
     private GLES20APIWrapperInterface glES20Wrapper;
+    private GraphicsQuality graphicsQualityLevel;
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper, GameEventsCallbackInterface gameEventsCallBack) {
         glES20Wrapper = sysUtilsWrapper.iGetGLES20WrapperInterface();
@@ -98,6 +99,7 @@ public class GLScene implements GLRendererInterface {
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.gameEventsCallBack = gameEventsCallBack;
         this.hasDepthTextureExtension = checkDepthTextureExtension();
+        this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         glES20Wrapper.glEnableFacesCulling();
         glES20Wrapper.glEnableDepthTest();
@@ -240,9 +242,9 @@ public class GLScene implements GLRendererInterface {
 
     public void generateShadowMapFBO() {
        Color4f clColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
-       float shadowMapQuality = SHADOW_MAP_RESOLUTION_SCALE[GraphicsQuality.HIGH.ordinal()];
-       int shadowMapWidth = Math.round(mDisplayWidth * shadowMapQuality);
-       int shadowMapHeight = Math.round(mDisplayHeight * shadowMapQuality);
+       float shadowMapResolutionScaleFactor = SHADOW_MAP_RESOLUTION_SCALE[graphicsQualityLevel.ordinal()];
+       int shadowMapWidth = Math.round(mDisplayWidth * shadowMapResolutionScaleFactor);
+       int shadowMapHeight = Math.round(mDisplayHeight * shadowMapResolutionScaleFactor);
 
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
        shadowMapFBO = hasDepthTextureExtension ?
@@ -374,7 +376,7 @@ public class GLScene implements GLRendererInterface {
         program.setLightSourcePosition(getLightSource().getLightPosInEyeSpace());
         program.setLightColourValue(getLightSource().getLightColour());
 
-        program.setWaveMovingFactor(moveFactor);//TODO: by graphics quality settings -> (moveFactor or -1f)
+        program.setWaveMovingFactor(GraphicsQuality.LOW.equals(graphicsQualityLevel) ? -1f : moveFactor);
 
         /** for rgb depth buffers */
         ///program.paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapWidth));

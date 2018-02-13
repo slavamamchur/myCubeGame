@@ -18,7 +18,6 @@ import com.sadgames.gl3d_engine.SettingsManagerInterface;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
-import com.sadgames.gl3d_engine.gl_render.GLRenderConsts;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -246,7 +245,8 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
                 //TODO: LOD settings
                 if (isRelief) {
-                    int reliefMapQuality = RELIEF_MAP_RESOLUTION_SCALE[GLRenderConsts.GraphicsQuality.MEDIUM.ordinal()];
+
+                    int reliefMapQuality = RELIEF_MAP_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
                     options.inJustDecodeBounds = true;
                     BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
                     options.inSampleSize =

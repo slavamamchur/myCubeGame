@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.sadgames.gl3d_engine.SettingsManagerInterface;
+import com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GraphicsQuality;
 
 public final class AndroidSettingsManager implements SettingsManagerInterface {
 
@@ -13,6 +14,9 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     public static final String PARAM_USER_PASS = "userPass";
     public static final String BASE_URL = "baseUrl";
     public static final String PARAM_STAY_LOGGED_IN = "stayLoggedIn";
+    public static final String PARAM_GRAPHICS_QUALITY_LEVEL = "graphicsQualityLevel";
+
+    private static final int DEFAULT_GRAPHICS_QUALITY_LEVEL = GraphicsQuality.HIGH.ordinal();
 
     private static final Object lockObject = new Object();
     private static AndroidSettingsManager instance = null;
@@ -44,6 +48,12 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     public boolean safeReadProperty(String name, boolean defValue){
         synchronized (lockObject) {
             return settings.getBoolean(name, defValue);
+        }
+    }
+
+    public int safeReadProperty(String name, int defValue){
+        synchronized (lockObject) {
+            return settings.getInt(name, defValue);
         }
     }
 
@@ -98,5 +108,10 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     @Override
     public void setUserPass(String userPass){
         safeWriteProperty(PARAM_USER_PASS, userPass);
+    }
+
+    @Override
+    public GraphicsQuality getGraphicsQualityLevel() {
+        return GraphicsQuality.values()[safeReadProperty(PARAM_GRAPHICS_QUALITY_LEVEL, DEFAULT_GRAPHICS_QUALITY_LEVEL)];
     }
 }
