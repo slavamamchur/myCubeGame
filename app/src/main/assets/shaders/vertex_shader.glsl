@@ -10,18 +10,24 @@ attribute vec3 a_Position;
 attribute vec2 a_Texture;
 
 varying vec3 v_wPosition;
-varying vec3 v_Normal;
+//varying vec3 v_Normal;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 ///varying float visibility;
 varying vec4 vShadowCoord;
 
+varying float vdiffuse;
+varying float vspecular;
+const float shineDumper = 40.0;
+
 const float fog_density = 0.20;
 const float fog_gradient = 10.0;
 
 void main()
 {
+    vec3 v_Normal;
+
     v_Normal = (u_MV_Matrix * vec4(a_Normal, 0.0)).xyz;
 
     vec3 tmp_pos = a_Position;
@@ -35,6 +41,19 @@ void main()
 
     lightvector = u_lightPosition - v_Position;
     lookvector = u_camera - v_Position;
+
+    //Guard shading model --------------------------------------------------------------------------
+
+    vec3 n_normal = normalize(v_Normal);
+    vec3 n_lightvector = normalize(lightvector);
+    vec3 n_lookvector = normalize(lookvector);
+
+    vdiffuse = max(dot(n_normal, n_lightvector), 0.0);
+
+    vec3 reflectvector = reflect(-n_lightvector, n_normal);
+    vspecular = pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
+
+    //----------------------------------------------------------------------------------------------
 
     v_Texture = a_Texture;
 

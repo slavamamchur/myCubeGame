@@ -19,12 +19,14 @@ uniform int u_isCubeMapF;
 ///uniform float uyPixelOffset;
 
 varying vec3 v_wPosition;
-varying vec3 v_Normal;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 ///varying float visibility;
 varying vec4 vShadowCoord;
+
+varying float vdiffuse;
+varying float vspecular;
 
 const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
 const float shineDumper = 40.0;
@@ -39,21 +41,19 @@ void main()
 
       vec2 uv = v_Texture;
       vec2 totalDistortion;
+      vec3 n_normal;
       if (u_RndSeed > -1.0 && v_wPosition.y == 0.0) {
           vec2 tc = uv * nmapTiling;
           uv = texture2D(u_DUDVMapUnit, vec2(tc.x + u_RndSeed, tc.y)).rg * 0.1;
           uv = tc + vec2(uv.x, uv.y + u_RndSeed);
           totalDistortion = (texture2D(u_DUDVMapUnit, uv).rg * 2.0 - 1.0) * waveStrength;
-      }
 
-      vec3 n_normal;
-      if (v_wPosition.y == 0.0 && u_isCubeMapF == 1) {
-        vec4 normalMapColour = texture2D(u_NormalMapUnit, uv);
-        n_normal = (u_MV_MatrixF * vec4(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0, 0.0)).xyz;
-        n_normal = normalize(n_normal);
-      }
-      else {
-        n_normal = normalize(v_Normal);
+          vec4 normalMapColour = texture2D(u_NormalMapUnit, uv);
+          n_normal = (u_MV_MatrixF * vec4(normalMapColour.r * 2.0 - 1.0, normalMapColour.b, normalMapColour.g * 2.0 - 1.0, 0.0)).xyz;
+          n_normal = normalize(n_normal);
+          if (!gl_FrontFacing) {
+                n_normal = -n_normal;
+          }
       }
 
       vec3 n_lightvector = normalize(lightvector);
@@ -79,25 +79,30 @@ void main()
       float k_diffuse = u_DiffuseRate;
       float k_specular = u_SpecularRate;
       if (u_isCubeMapF == 1 && v_wPosition.y > 0.0) {
-        k_specular *= 0.5;
+        k_specular *= 0.25;
       }
 
       float diffuse = k_diffuse;
-      if (gl_FrontFacing) {
-              diffuse *= max(dot(n_normal, n_lightvector), 0.0);
-          }
+      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0)) {
+            diffuse *= vdiffuse;
+      }
       else {
-          	diffuse *= max(dot(-n_normal, n_lightvector), 0.0);
-          }
+            diffuse *= max(dot(n_normal, n_lightvector), 0.0);
+      }
       // Add attenuation.
       ///float distance = length(u_lightPosition - v_Position);
       ///diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));
-
       float lightFactor = ambient + diffuse;
       vec3 diffuseColor = lightFactor * u_lightColour * shadow;
 
-      vec3 reflectvector = reflect(-n_lightvector, n_normal);
-      float specular = k_specular * pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
+      float specular = k_specular;
+      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0)) {
+            specular *= vspecular;
+      }
+      else {
+            vec3 reflectvector = reflect(-n_lightvector, n_normal);
+            specular *= pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
+      }
       vec3 specularColor = specular * u_lightColour;
 
       vec4 textureColor;
