@@ -66,6 +66,11 @@ public class AndroidGLES20APIWrapper implements GLES20APIWrapperInterface {
     }
 
     @Override
+    public void glBindTextureCube(int id) {
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_CUBE_MAP, id);
+    }
+
+    @Override
     public void glSetClearColor(float r, float g, float b, float a) {
         GLES20.glClearColor(r, g, b ,a);
     }
@@ -81,8 +86,18 @@ public class AndroidGLES20APIWrapper implements GLES20APIWrapperInterface {
     }
 
     @Override
+    public void glGenTextures(int n, int[] textures, int offset) {
+        GLES20.glGenTextures(n, textures, offset);
+    }
+
+    @Override
     public void glDeleteFrameBuffers(int n, int[] framebuffers, int offset) {
         GLES20.glDeleteFramebuffers(n, framebuffers, offset);
+    }
+
+    @Override
+    public void glDeleteTextures(int n, int[] textures, int offset) {
+        GLES20.glDeleteTextures(n, textures, offset);
     }
 
     @Override
@@ -101,7 +116,7 @@ public class AndroidGLES20APIWrapper implements GLES20APIWrapperInterface {
     }
 
     @Override
-    public void glBindRenderbuffer(int id) {
+    public void glBindRenderBuffer(int id) {
         GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, id);
     }
 
@@ -121,7 +136,7 @@ public class AndroidGLES20APIWrapper implements GLES20APIWrapperInterface {
     }
 
     @Override
-    public void glRenderbufferStorage(int width, int height) {
+    public void glRenderBufferStorage(int width, int height) {
         GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, width, height);
     }
 }

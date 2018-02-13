@@ -49,6 +49,11 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
+    public boolean isEmpty() {
+        return picture == null;
+    }
+
+    @Override
     public void drawPath(List<Vector2f> path, int pathColor, int wayPointColor) {
         if (path == null)
             return;

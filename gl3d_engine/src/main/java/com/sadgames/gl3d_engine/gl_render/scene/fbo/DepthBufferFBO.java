@@ -15,7 +15,7 @@ public class DepthBufferFBO extends AbstractFBO {
 
     @Override
     protected AbstractTexture attachFboTexture() {
-        AbstractTexture renderTexture = new DepthTexture(width, height);
+        AbstractTexture renderTexture = new DepthTexture(glES20Wrapper, width, height);
 
         glES20Wrapper.glActiveTexture(FBO_TEXTURE_SLOT);
         glES20Wrapper.glBindTexture2D(renderTexture.getTextureId());

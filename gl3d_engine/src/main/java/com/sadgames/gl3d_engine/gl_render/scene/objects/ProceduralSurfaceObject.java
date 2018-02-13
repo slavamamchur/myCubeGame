@@ -15,7 +15,6 @@ import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glBufferData;
 import static android.opengl.GLES20.glGenBuffers;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_KM;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VBO_ITEM_SIZE;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VBO_STRIDE;
@@ -23,7 +22,10 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.VERTEX_SIZE;
 import static com.sadgames.sysutils.common.ArraysUtils.chain;
 import static com.sadgames.sysutils.common.ArraysUtils.coord2idx;
 
-public abstract class ProceduralSurfaceObject extends PNodeObject {  //TODO: random maps generation
+public abstract class ProceduralSurfaceObject extends PNodeObject {
+
+    protected static final float FLAT_MAP_DEFAULT_HEIGHT = 0.001f;
+    protected static final int FLAT_MAP_DEFAULT_DIMENSION = 3;
 
     protected float LAND_WIDTH;
     protected float LAND_HEIGHT;
@@ -48,13 +50,14 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {  //TODO: ran
     private void initMesh(float landSize) {
         LAND_WIDTH = landSize;
         LAND_HEIGHT = landSize;
-        this.landScale = landSize / LAND_SIZE_IN_KM;
+        this.landScale = calculateLandScale(landSize);
     }
 
     public float getLandScale() {
         return landScale;
     }
 
+    protected abstract float calculateLandScale(float landSize);
     protected abstract float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv);
     protected abstract BitmapWrapperInterface getReliefMap();
 
@@ -66,7 +69,7 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {  //TODO: ran
     @Override
     protected void createVertexesVBO() {
         BitmapWrapperInterface bmp = getReliefMap();
-        dimension = getDimension(bmp);
+        dimension = bmp.isEmpty() ? FLAT_MAP_DEFAULT_DIMENSION : getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
         float tdu = 1.0f / dimension;
@@ -85,13 +88,15 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {  //TODO: ran
                 vertexes[k + 3] = i * tdu; /** u*/
                 vertexes[k + 4] = j * tdv; /** v*/
 
-                vertexes[k + 1] = getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension); /** y*/
+                vertexes[k + 1] = bmp.isEmpty() ?
+                        FLAT_MAP_DEFAULT_HEIGHT :
+                        getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension); /** y*/
 
                 k += 5;
             }
         }
 
-        if (bmp != null) {
+        if (!bmp.isEmpty()) {
             bmp.release();
         }
 

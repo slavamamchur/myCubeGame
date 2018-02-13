@@ -1,6 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects.materials.textures;
 
 import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
 
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_NEAREST;
@@ -16,8 +17,8 @@ import static android.opengl.GLES20.glTexParameteri;
 
 public class RGBATexture extends AbstractTexture {
 
-    public RGBATexture(int width, int height) {
-        super(width, height, null);
+    public RGBATexture(GLES20APIWrapperInterface glES20Wrapper, int width, int height) {
+        super(glES20Wrapper, width, height, null);
     }
 
     @Override

@@ -22,16 +22,16 @@ import static android.opengl.GLES20.glTexParameteri;
 
 public class BitmapTexture extends AbstractTexture {
 
-    public BitmapTexture(BitmapWrapperInterface bitmap) {
-        super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
+    public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, BitmapWrapperInterface bitmap) {
+        super(sysUtilsWrapper.iGetGLES20WrapperInterface(), bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String file) {
-        this(sysUtilsWrapper.iGetBitmapFromFile(file));
+        this(sysUtilsWrapper, sysUtilsWrapper.iGetBitmapFromFile(file));
     }
 
     public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, int color) {
-        this(sysUtilsWrapper.iCreateColorBitmap(color));
+        this(sysUtilsWrapper, sysUtilsWrapper.iCreateColorBitmap(color));
     }
 
     @Override
@@ -60,8 +60,8 @@ public class BitmapTexture extends AbstractTexture {
         }
     }
 
-    public static AbstractTexture createInstance(BitmapWrapperInterface bitmap) {
-        return new BitmapTexture(bitmap);
+    public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, BitmapWrapperInterface bitmap) {
+        return new BitmapTexture(sysUtilsWrapper, bitmap);
     }
 
     public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String file) {

@@ -3,6 +3,7 @@ package com.sadgames.sysutils.platforms.android;
 import android.content.Context;
 
 import com.sadgames.dicegame.rest_api.GameMapController;
+import com.sadgames.dicegame.rest_api.WebServiceException;
 import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
 
 public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
@@ -16,7 +17,7 @@ public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
         GameMapController gmc = new GameMapController(this);
         GameMapEntity map = gmc.find(textureResName);
         if (isRelief)
-            gmc.saveMapRelief(map);
+            try { gmc.saveMapRelief(map); } catch (WebServiceException e) {}
         else
             gmc.saveMapImage(map);
     }

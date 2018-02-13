@@ -18,15 +18,15 @@ public class ColorBufferFBO extends AbstractFBO {
 
     @Override
     protected AbstractTexture attachFboTexture() {
-        AbstractTexture renderTexture = new RGBATexture(width, height);
+        AbstractTexture renderTexture = new RGBATexture(glES20Wrapper, width, height);
 
         glES20Wrapper.glActiveTexture(FBO_TEXTURE_SLOT);
         glES20Wrapper.glBindTexture2D(renderTexture.getTextureId());
         glES20Wrapper.glFramebufferAttachColorTexture(renderTexture.getTextureId());
 
         glES20Wrapper.glGenRenderBuffers(1, depthTextures, 0);
-        glES20Wrapper.glBindRenderbuffer(depthTextures[0]);
-        glES20Wrapper.glRenderbufferStorage(width, height);
+        glES20Wrapper.glBindRenderBuffer(depthTextures[0]);
+        glES20Wrapper.glRenderBufferStorage(width, height);
         glES20Wrapper.glFramebufferAttachDepthBuffer(depthTextures[0]);
 
         return renderTexture;

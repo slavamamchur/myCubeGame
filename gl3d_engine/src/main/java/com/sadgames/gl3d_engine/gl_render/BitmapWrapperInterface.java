@@ -14,6 +14,7 @@ public interface BitmapWrapperInterface {
 
     int     getWidth();
     int     getHeight();
+    boolean isEmpty();
 
     void    drawPath(List<Vector2f> path, int pathColor, int wayPointColor);
 

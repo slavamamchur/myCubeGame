@@ -10,6 +10,7 @@ import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_KM;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 
 public abstract class TopographicMapObject extends ProceduralSurfaceObject {
@@ -85,8 +86,6 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     protected float getYValueInternal(BitmapWrapperInterface map, int xCoord, int yCoord, int vColor) {
-        //float y = (float)Math.exp(-1.3 * (valX * valX + valZ * valZ)); !!!SUN and SKY formula (sphere and dome)
-
         ColorType cType = CheckColorType(vColor);
 
         if (cType.equals(ColorType.UNKNOWN)) {
@@ -133,6 +132,11 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     @Override
     protected int getDimension(BitmapWrapperInterface bmp) {
         return  bmp.getWidth() - 1;
+    }
+
+    @Override
+    protected float calculateLandScale(float landSize) {
+        return landSize / LAND_SIZE_IN_KM;
     }
 
     @NonNull

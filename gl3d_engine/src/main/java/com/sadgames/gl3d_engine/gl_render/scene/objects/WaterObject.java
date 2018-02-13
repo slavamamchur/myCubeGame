@@ -16,8 +16,13 @@ public class WaterObject extends ProceduralSurfaceObject {
     }
 
     @Override
+    protected float calculateLandScale(float landSize) {
+        return 1.0f;
+    }
+
+    @Override
     protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv) {
-        return 0f;
+        return 0.0f;
     }
 
     @Override
@@ -27,6 +32,6 @@ public class WaterObject extends ProceduralSurfaceObject {
 
     @Override
     protected int getDimension(BitmapWrapperInterface bmp) {
-        return 3;
-    }//250
+        return FLAT_MAP_DEFAULT_DIMENSION;//250
+    }
 }

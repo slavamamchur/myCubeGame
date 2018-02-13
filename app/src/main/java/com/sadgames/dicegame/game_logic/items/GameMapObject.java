@@ -47,7 +47,7 @@ public class GameMapObject extends TopographicMapObject {
 
         textureBmp.drawPath(way, Color.GREEN, Color.RED);
 
-        return BitmapTexture.createInstance(textureBmp);
+        return BitmapTexture.createInstance(getSysUtilsWrapper(), textureBmp);
     }
 
 }
