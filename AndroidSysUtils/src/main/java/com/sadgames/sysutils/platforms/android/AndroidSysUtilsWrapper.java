@@ -18,6 +18,7 @@ import com.sadgames.gl3d_engine.SettingsManagerInterface;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
+import com.sadgames.gl3d_engine.gl_render.GLRenderConsts;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.RELIEF_MAP_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
 
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
@@ -241,10 +243,18 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
             if (bitmapArray != null) {
                 final BitmapFactory.Options options = getiBitmapOptions();
+
                 //TODO: LOD settings
-                /*options.inJustDecodeBounds = true;
-                BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-                options.inSampleSize = calculateInSampleSize(options, options.outWidth / 2, options.outHeight / 2);*/
+                if (isRelief) {
+                    int reliefMapQuality = RELIEF_MAP_RESOLUTION_SCALE[GLRenderConsts.GraphicsQuality.MEDIUM.ordinal()];
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+                    options.inSampleSize =
+                            calculateInSampleSize(options,
+                                         options.outWidth / reliefMapQuality,
+                                        options.outHeight / reliefMapQuality);
+                }
+
                 options.inJustDecodeBounds = false;
                 bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
             }

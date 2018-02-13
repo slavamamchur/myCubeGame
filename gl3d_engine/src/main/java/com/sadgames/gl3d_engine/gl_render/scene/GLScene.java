@@ -38,9 +38,9 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GraphicsQuality;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOLUTION;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.ShadowMapQuality;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
 import static com.sadgames.gl3d_engine.gl_render.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGC_and_Sync;
 
@@ -240,7 +240,7 @@ public class GLScene implements GLRendererInterface {
 
     public void generateShadowMapFBO() {
        Color4f clColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
-       float shadowMapQuality = SHADOW_MAP_RESOLUTION[ShadowMapQuality.HIGH.ordinal()];
+       float shadowMapQuality = SHADOW_MAP_RESOLUTION_SCALE[GraphicsQuality.HIGH.ordinal()];
        int shadowMapWidth = Math.round(mDisplayWidth * shadowMapQuality);
        int shadowMapHeight = Math.round(mDisplayHeight * shadowMapQuality);
 
