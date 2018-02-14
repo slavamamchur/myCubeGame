@@ -15,11 +15,11 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector2f;
 
-public class GameMapObject extends TopographicMapObject {
+public class GameMapItem extends TopographicMapObject {
 
     private GameEntity gameEntity;
 
-    public GameMapObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
+    public GameMapItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
         this.gameEntity = gameEntity;

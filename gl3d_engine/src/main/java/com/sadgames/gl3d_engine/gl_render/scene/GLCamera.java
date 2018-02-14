@@ -174,10 +174,26 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         direction.negate();
         direction.normalize();
 
-        /** by camera rotation
-        direction.x = (float) (Math.cos(Math.toRadians(getPitch())) * Math.cos(Math.toRadians(getYaw())));
-        direction.y = (float) Math.sin(Math.toRadians(getPitch()));
-        direction.z = (float) (Math.cos(Math.toRadians(getPitch())) * Math.sin(Math.toRadians(getYaw()))); */
+        /** by camera rotation */ //TODO: get direction vector and pass into shader param
+        /*direction.x = (float) (Math.sin(Math.toRadians(getPitch())) * Math.cos(Math.toRadians(getYaw())));
+        direction.y = (float) (Math.sin(Math.toRadians(getPitch())) * Math.sin(Math.toRadians(getYaw())));
+        direction.z = (float) (Math.cos(Math.toRadians(getPitch())));
+
+        direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+
+        #apply yaw (around y)
+        x = x * cos(yaw) - z * sin(yaw)
+        z = z * cos(yaw) + x * sin(yaw)
+
+        #apply pitch (around x)
+        y = y * cos(roll) - z * sin(roll)
+        z = z * cos(roll) + y * sin(roll)
+
+        #apply roll (around z)
+        x = x * cos(pitch) - y * sin(pitch)
+        y = y * cos(pitch) + x * sin(pitch) */
 
         return direction;
     }

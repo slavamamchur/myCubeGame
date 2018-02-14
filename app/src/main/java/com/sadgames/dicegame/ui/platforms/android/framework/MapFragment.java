@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bulletphysics.dynamics.DynamicsWorld;
-import com.sadgames.dicegame.game_logic.items.ChipObject;
-import com.sadgames.dicegame.game_logic.items.DiceObject;
-import com.sadgames.dicegame.game_logic.items.GameMapObject;
+import com.sadgames.dicegame.game_logic.items.ChipItem;
+import com.sadgames.dicegame.game_logic.items.GameDiceItem;
+import com.sadgames.dicegame.game_logic.items.GameMapItem;
 import com.sadgames.dicegame.rest_api.RestApiService;
 import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
@@ -49,6 +49,7 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import static com.sadgames.dicegame.game_logic.GameConsts.DICE_TEXTURE;
 import static com.sadgames.dicegame.game_logic.GameConsts.DUDVMAP_TEXTURE;
 import static com.sadgames.dicegame.game_logic.GameConsts.NORMALMAP_TEXTURE;
 import static com.sadgames.dicegame.game_logic.GameConsts.ROLLING_DICE_SOUND;
@@ -201,7 +202,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         getContext().sendBroadcast(responseIntent);
     }
 
-    private void removeDice(DiceObject dice) {
+    private void removeDice(GameDiceItem dice) {
         //toggleActionBarProgress(true);
         if (gameInstanceEntity != null) {
             gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
@@ -224,8 +225,8 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
     @Override
     public void onStopMovingObject(PNodeObject gameObject) {
-        if (gameObject instanceof DiceObject)
-            removeDice((DiceObject) gameObject);
+        if (gameObject instanceof GameDiceItem)
+            removeDice((GameDiceItem) gameObject);
     }
 
     @Override
@@ -261,6 +262,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         dynamicsWorld.setGravity(gameEntity._getGravity());
     }
 
+    //TODO: move game logic to separate object implementing game events interface
     @Override
     public void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject) {
         /** materials lib objects */
@@ -269,7 +271,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         AbstractTexture dudvMap = new BitmapTexture(sysUtilsWrapper, DUDVMAP_TEXTURE);
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
 
-        TopographicMapObject terrain = new GameMapObject(sysUtilsWrapper, program, gameEntity);
+        TopographicMapObject terrain = new GameMapItem(sysUtilsWrapper, program, gameEntity);
         terrain.setGlCubeMapId(reflectionMap.getTextureId());
         terrain.setGlNormalMapId(normalMap.getTextureId());
         terrain.setGlDUDVMapId(dudvMap.getTextureId());
@@ -283,10 +285,10 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips(glSceneObject, program);
 
-        DiceObject dice_1 = new DiceObject(sysUtilsWrapper, program);
+        GameDiceItem dice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
         dice_1.loadObject();
         Matrix.setIdentityM(dice_1.getModelMatrix(), 0);
-        Matrix.translateM(dice_1.getModelMatrix(), 0, -100f, 0.1f, 0);
+        Matrix.translateM(dice_1.getModelMatrix(), 0, -100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0);
         glSceneObject.addObject(dice_1, DICE_MESH_OBJECT_1);
     }
 
@@ -298,14 +300,13 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
             PointF chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
 
-            GameItemObject chip = new ChipObject(sysUtilsWrapper, program, 0xFF000000 | player.getColor());
+            GameItemObject chip = new ChipItem(sysUtilsWrapper, program, player);
             if (prevChip == null)
                 chip.loadObject();
             else {
                 chip.loadFromObject(prevChip);
                 prevChip = chip;
             }
-            chip.setItemName(CHIP_MESH_OBJECT + "_" + String.format("%d", i));
             mScene.addObject(chip, chip.getItemName());
 
             chip.setInWorldPosition(chipPlace);
@@ -319,7 +320,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
             PointF chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
 
-            AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", i));
+            AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + player.getName());
 
             chip.setInWorldPosition(chipPlace);
         }
@@ -392,7 +393,8 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
         if (movedPlayerIndex >= 0)
             try {
-                animateChip(delegate, endGamePoint, playersCnt, glRenderer.getScene().getObject( CHIP_MESH_OBJECT + "_" + String.format("%d", movedPlayerIndex)));
+                animateChip(delegate, endGamePoint, playersCnt,
+                            glRenderer.getScene().getObject( CHIP_MESH_OBJECT + "_" + savedPlayers.get(movedPlayerIndex).getName()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.game_logic.items.DiceObject;
+import com.sadgames.dicegame.game_logic.items.GameDiceItem;
 import com.sadgames.dicegame.rest_api.RestApiService;
 import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;
@@ -320,7 +320,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
         prev_player_index = getItem().getCurrentPlayer();
 
-        DiceObject dice_1 = (DiceObject)mMapFragment.glRenderer.getScene().getObject(DICE_MESH_OBJECT_1);
+        GameDiceItem dice_1 = (GameDiceItem)mMapFragment.glRenderer.getScene().getObject(DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
         ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
         ///dice_1.get_body().setWorldTransformMatrix(tr);

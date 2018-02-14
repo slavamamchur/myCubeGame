@@ -13,6 +13,7 @@ varying vec3 v_wPosition;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
+//varying vec3 wlookvector;
 ///varying float visibility;
 varying vec4 vShadowCoord;
 
@@ -39,6 +40,7 @@ void main()
     //Guard shading model --------------------------------------------------------------------------
     lightvector = u_lightPosition - v_Position;
     lookvector = u_camera - v_Position;
+    //wlookvector = -u_camera;
 
     vec3 n_normal = normalize(v_Normal);
     vec3 n_lightvector = normalize(lightvector);

@@ -22,6 +22,7 @@ varying vec3 v_wPosition;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
+//varying vec3 wlookvector;
 ///varying float visibility;
 varying vec4 vShadowCoord;
 
@@ -46,7 +47,7 @@ float calcDynamicBias(float bias, vec3 normal) {
 float calcShadowRate() {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.001; //calcDynamicBias(0.0005, n_normal); //TODO: -> ultra graphics settings
+        highp float bias = 0.0001; //calcDynamicBias(0.0005, n_normal); //TODO: -> ultra graphics settings
         vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
         highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
         shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
@@ -127,7 +128,7 @@ void main()
 
           diffuseColor = texture2D(u_ReflectionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
           float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0));
-          diffuseColor = mix(diffuseColor, vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
+          diffuseColor = mix(diffuseColor, vec4(0, 0.3, 0.5, 1.0), 1.0 - reflectiveFactor);
 
           /* //Cubemap reflection //TODO: -> ultra graphics settings
           vec3 texcoordCube = reflect(-n_lookvector, n_normal);
