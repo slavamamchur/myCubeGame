@@ -3,7 +3,7 @@ precision mediump float;
 uniform mat4 u_MV_MatrixF;
 
 uniform sampler2D u_TextureUnit;
-uniform /*samplerCube*/ sampler2D u_ReflectionMapUnit;
+uniform /*samplerCube*/ sampler2D u_ReflectionMapUnit; //TODO: -> ultra graphics settings
 uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
 uniform sampler2D uShadowTexture;
@@ -16,7 +16,7 @@ uniform vec3 u_lightPositionF;
 uniform vec3 u_lightColour;
 uniform int u_isCubeMapF;
 ///uniform float uxPixelOffset;
-///uniform float uyPixelOffset;
+///uniform float uyPixelOffset; //TODO: -> for RGB depth map
 
 varying vec3 v_wPosition;
 varying vec2 v_Texture;
@@ -33,17 +33,86 @@ const float shineDumper = 40.0;
 const float nmapTiling = 6.0;
 const float waveStrength = 0.02;
 
+float calcDynamicBias(float bias, vec3 normal) {
+    highp float result;
+    highp vec3 l = normalize(u_lightPositionF);
+    highp float cosTheta = clamp(dot(normal,l), 0.0, 1.0);
+    result = bias * tan(acos(cosTheta));
+    result = clamp(result, 0.0, 0.01);
+
+    return result;
+}
+
+float calcShadowRate() {
+      highp float shadow = 1.0;
+      if (vShadowCoord.w > 0.0) {
+        highp float bias = 0.001; //calcDynamicBias(0.0005, n_normal); //TODO: -> ultra graphics settings
+        vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
+        highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
+        shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
+        shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
+      }
+
+      return shadow;
+}
+
+vec4 calcLightColor(vec3 nNormal, vec3 nLightvector, float shadowRate) {
+      float lightFactor = u_DiffuseRate;
+
+      if (v_wPosition.y == 0.0 && u_isCubeMapF == 1 &&  u_RndSeed > -1.0) {
+            lightFactor = 0.8 - u_AmbientRate;
+      }
+      else if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0) || (u_RndSeed == -1.0)) {
+            lightFactor *= vdiffuse;
+      }
+      else {
+            lightFactor *= max(dot(nNormal, nLightvector), 0.0);
+      }
+
+      vec3 lightColour = u_lightColour * (u_AmbientRate + lightFactor);
+
+      return vec4(lightColour * shadowRate, 1.0);
+}
+
+vec4 calcSpecularColor(vec3 nNormal, vec3 nLightvector, vec3 n_lookvector, float shadowRate) {
+      float specular = u_SpecularRate;
+
+      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0) || (u_RndSeed == -1.0)) {
+            specular *= vspecular;
+      }
+      else {
+            vec3 reflectvector = reflect(-nLightvector, nNormal);
+            specular *= pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
+      }
+
+      if (shadowRate < 1.0) {
+            specular = 0.0;
+      }
+      else if (u_isCubeMapF == 1 && v_wPosition.y > 0.0) {
+            specular *= 0.25;
+      }
+
+      return vec4(u_lightColour * specular, 1.0);
+}
+
+vec4 calcPhongLightingMolel(vec3 n_normal, vec3 n_lightvector, vec3 n_lookvector, vec4 diffuseColor) {
+      highp float shadowRate = calcShadowRate();
+      vec4 lightColor = calcLightColor(n_normal, n_lightvector, shadowRate);
+      vec4 specularColor = calcSpecularColor(n_normal, n_lightvector, n_lookvector, shadowRate);
+
+      return lightColor * diffuseColor + specularColor;
+}
+
 void main()
 {
-      /* //For drawing terrain only
-      if (v_wPosition.y == 0.0) {
-        discard;
-      }*/
+      vec3 n_lightvector = normalize(lightvector);
+      vec3 n_lookvector = normalize(lookvector);
 
+      vec3 n_normal;
       vec2 uv = v_Texture;
       vec2 totalDistortion;
-      vec3 n_normal;
-      if (u_RndSeed > -1.0 && v_wPosition.y == 0.0) {
+      vec4 diffuseColor;
+      if (u_RndSeed > -1.0 && v_wPosition.y == 0.0 && u_isCubeMapF == 1) {
           vec2 tc = uv * nmapTiling;
           uv = texture2D(u_DUDVMapUnit, vec2(tc.x + u_RndSeed, tc.y)).rg * 0.1;
           uv = tc + vec2(uv.x, uv.y + u_RndSeed);
@@ -55,77 +124,22 @@ void main()
           if (!gl_FrontFacing) {
                 n_normal = -n_normal;
           }
-      }
 
-      vec3 n_lightvector = normalize(lightvector);
-      vec3 n_lookvector = normalize(lookvector);
+          diffuseColor = texture2D(u_ReflectionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
+          float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0));
+          diffuseColor = mix(diffuseColor, vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
 
-      float shadow = 1.0;
-      if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.001;//0.0001
-
-        /* //Calculated bias value
-        highp vec3 l = normalize(u_lightPositionF);
-        highp float cosTheta = clamp(dot(n_normal,l), 0.0, 1.0);
-        bias *= tan(acos(cosTheta));
-        bias = clamp(bias, 0.0, 0.0001);*/
-
-        highp vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
-        highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.xy).r;
-        shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
-        shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
-      }
-
-      float ambient = u_AmbientRate;
-      float k_diffuse = u_DiffuseRate;
-      float k_specular = u_SpecularRate;
-      if (u_isCubeMapF == 1 && v_wPosition.y > 0.0) {
-        k_specular *= 0.25;
-      }
-
-      float diffuse = k_diffuse;
-      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0) || (u_RndSeed == -1.0)) {
-            diffuse *= vdiffuse;
+          /* //Cubemap reflection //TODO: -> ultra graphics settings
+          vec3 texcoordCube = reflect(-n_lookvector, n_normal);
+          float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0)) *//* * 0.5 *//*;
+          textureColor = mix(textureCube(u_ReflectionMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
       }
       else {
-            diffuse *= max(dot(n_normal, n_lightvector), 0.0);
-      }
-      /* //Add attenuation.
-      float distance = length(u_lightPosition - v_Position);
-      diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance)));*/
-      float lightFactor = ambient + diffuse;
-      vec3 diffuseColor = lightFactor * u_lightColour * shadow;
-
-      float specular = k_specular;
-      if ((v_wPosition.y > 0.0 && u_isCubeMapF == 1) || (u_isCubeMapF == 0) || (u_RndSeed == -1.0)) {
-            specular *= vspecular;
-      }
-      else {
-            vec3 reflectvector = reflect(-n_lightvector, n_normal);
-            specular *= pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
-      }
-      vec3 specularColor = specular * u_lightColour;
-
-      vec4 textureColor;
-      if (v_wPosition.y == 0.0 && u_isCubeMapF == 1 &&  u_RndSeed > -1.0) {
-        diffuseColor = vec3(0.8) * shadow;
-
-        textureColor = texture2D(u_ReflectionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
-        float reflectiveFactor = 0.4;//dot(n_lookvector, vec3(0.0, 1.0, 0.0)); //0.4
-        textureColor = mix(textureColor, vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
-
-        /* //Cubemap reflection
-        vec3 texcoordCube = reflect(-n_lookvector, n_normal);
-        float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0)) *//* * 0.5 *//*;
-        textureColor = mix(textureCube(u_ReflectionMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
-      }
-      else {
-        textureColor = texture2D(u_TextureUnit/*uShadowTexture*/, v_Texture);
+           diffuseColor = texture2D(u_TextureUnit, v_Texture);
       }
 
+      gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
-      gl_FragColor = vec4(diffuseColor, 1.0) * textureColor + vec4(specularColor, 1.0);
-      ///gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * 1.2 + 0.5;//contrast effect
       ///gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
 
 }

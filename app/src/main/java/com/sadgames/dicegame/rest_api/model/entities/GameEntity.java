@@ -126,6 +126,6 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
         return new Vector3f(-2.2f, 1.7f, -3.2f);
     }
     public Vector3f _getStartSunColor() {
-        return new Vector3f(1.0f, 1.0f, 0.6f);
+        return new Vector3f(1.0f, 1.0f, 0.8f);
     }
 }

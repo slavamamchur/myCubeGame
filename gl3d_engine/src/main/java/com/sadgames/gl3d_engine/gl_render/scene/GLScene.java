@@ -50,7 +50,7 @@ public class GLScene implements GLRendererInterface {
     private final static float    DEFAULT_LIGHT_Y        =  1.70F;
     private final static float    DEFAULT_LIGHT_Z        = -3.20F;
 
-    private final static Vector3f DEFAULT_LIGHT_COLOUR   = new Vector3f(1.0f, 1.0f, 0.6f);
+    private final static Vector3f DEFAULT_LIGHT_COLOUR   = new Vector3f(1.0f, 1.0f, 0.8f);
     private static final Vector3f DEFAULT_GRAVITY_VECTOR = new Vector3f(0f, -9.8f, 0f);
 
     private final static float    DEFAULT_CAMERA_X       = 0f;
