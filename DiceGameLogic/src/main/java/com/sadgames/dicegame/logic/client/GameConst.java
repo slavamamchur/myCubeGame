@@ -48,10 +48,10 @@ public class GameConst {
     public static final String ACTION_MOOVE_GAME_INSTANCE = "com.sadgames.dicegame.api.action.MOOVE_GAME_INSTANCE";
     public static final String ACTION_MOOVE_GAME_INSTANCE_RESPONSE = "com.sadgames.dicegame.api.action.MOOVE_GAME_INSTANCE_RESPONSE";
     public static final String ACTION_REMOVE_CHILD = "com.sadgames.dicegame.api.action.ACTION_REMOVE_CHILD";
-    public static final String ACTION_ACTION_REMOVE_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_REMOVE_CHILD_RESPONSE";
+    public static final String ACTION_REMOVE_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_REMOVE_CHILD_RESPONSE";
     public static final String ACTION_ADD_CHILD = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD";
-    public static final String ACTION_ACTION_ADD_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD_RESPONSE";
-    public static final String ACTION_ACTION_SHOW_TURN_INFO = "com.sadgames.dicegame.api.action.ACTION_SHOW_TURN_INFO";
+    public static final String ACTION_ADD_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD_RESPONSE";
+    public static final String ACTION_SHOW_TURN_INFO = "com.sadgames.dicegame.api.action.ACTION_SHOW_TURN_INFO";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -76,45 +76,77 @@ public class GameConst {
 
     public static final List<String> ACTION_LIST = new ArrayList<String>() {{
         add(ACTION_LOGIN);
+        add(ACTION_LOGIN_RESPONSE);
         add(ACTION_RELOGIN);
+        add(ACTION_RELOGIN_RESPONSE);
         add(ACTION_REGISTRATION);
+        add(ACTION_REGISTRATION_RESPONSE);
         add(ACTION_PING);
+        add(ACTION_PING_RESPONSE);
         add(ACTION_GET_GAME_MAP_LIST);
+        add(ACTION_LIST_RESPONSE);
         add(ACTION_GET_GAME_LIST);
         add(ACTION_GET_GAME_INSTANCE_LIST);
         add(ACTION_GET_PLAYER_LIST);
+        add(ACTION_PLAYER_LIST_RESPONSE);
         add(ACTION_GET_MAP_IMAGE);
+        add(ACTION_MAP_IMAGE_RESPONSE);
         add(ACTION_UPLOAD_MAP_IMAGE);
+        add(ACTION_UPLOAD_IMAGE_RESPONSE);
         add(ACTION_DELETE_ENTITY);
+        add(ACTION_DELETE_ENTITY_RESPONSE);
         add(ACTION_SAVE_ENTITY);
+        add(ACTION_SAVE_ENTITY_RESPONSE);
         add(ACTION_FINISH_GAME_INSTANCE);
+        add(ACTION_FINISH_GAME_INSTANCE_RESPONSE);
         add(ACTION_START_GAME_INSTANCE);
+        add(ACTION_START_GAME_INSTANCE_RESPONSE);
         add(ACTION_RESTART_GAME_INSTANCE);
+        add(ACTION_RESTART_GAME_INSTANCE_RESPONSE);
         add(ACTION_MOOVE_GAME_INSTANCE);
+        add(ACTION_MOOVE_GAME_INSTANCE_RESPONSE);
         add(ACTION_REMOVE_CHILD);
+        add(ACTION_REMOVE_CHILD_RESPONSE);
         add(ACTION_ADD_CHILD);
-        add(ACTION_ACTION_SHOW_TURN_INFO);
+        add(ACTION_ADD_CHILD_RESPONSE);
+        add(ACTION_SHOW_TURN_INFO);
     }};
     
     public enum UserActionType {
         LOGIN,
+        LOGIN_RESPONSE,
         RELOGIN,
+        RELOGIN_RESPONSE,
         REGISTRATION,
+        REGISTRATION_RESPONSE,
         PING,
+        PING_RESPONSE,
         GET_GAME_MAP_LIST,
+        LIST_RESPONSE,
         GET_GAME_LIST,
         GET_GAME_INSTANCE_LIST,
         GET_PLAYER_LIST,
+        PLAYER_LIST_RESPONSE,
         GET_MAP_IMAGE,
+        MAP_IMAGE_RESPONSE,
         UPLOAD_MAP_IMAGE,
+        UPLOAD_IMAGE_RESPONSE,
         DELETE_ENTITY,
+        DELETE_ENTITY_RESPONSE,
         SAVE_ENTITY,
+        SAVE_ENTITY_RESPONSE,
         FINISH_GAME_INSTANCE,
+        FINISH_GAME_INSTANCE_RESPONSE,
         START_GAME_INSTANCE,
+        START_GAME_INSTANCE_RESPONSE,
         RESTART_GAME_INSTANCE,
+        RESTART_GAME_INSTANCE_RESPONSE,
         MOOVE_GAME_INSTANCE,
+        MOOVE_GAME_INSTANCE_RESPONSE,
         REMOVE_CHILD,
+        REMOVE_CHILD_RESPONSE,
         ADD_CHILD,
+        ADD_CHILD_RESPONSE,
         SHOW_TURN_INFO
     }
     

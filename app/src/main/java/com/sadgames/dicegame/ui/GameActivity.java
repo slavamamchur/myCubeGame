@@ -22,8 +22,8 @@ import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_ADD_CHILD_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_REMOVE_CHILD_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ADD_CHILD_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_CHILD_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_CHILD_INDEX;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
@@ -116,8 +116,8 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
     @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
-        intentFilter.addAction(ACTION_ACTION_ADD_CHILD_RESPONSE);
-        intentFilter.addAction(ACTION_ACTION_REMOVE_CHILD_RESPONSE);
+        intentFilter.addAction(ACTION_ADD_CHILD_RESPONSE);
+        intentFilter.addAction(ACTION_REMOVE_CHILD_RESPONSE);
         mMapFragment.setIntentFilters(intentFilter);
 
         return intentFilter;
@@ -127,14 +127,14 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (mMapFragment.handleWebServiceResponseAction(intent))
             return  true;
-        else if (intent.getAction().equals(ACTION_ACTION_ADD_CHILD_RESPONSE)) {
+        else if (intent.getAction().equals(ACTION_ADD_CHILD_RESPONSE)) {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 NewPointRequest result = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 AbstractGamePoint newPoint = new AbstractGamePoint(result);
                 newPoint.setNextPointIndex(getItem().getGamePoints().size());
                 getItem().getGamePoints().add(newPoint);
-                tableFragment.setItems(getItem().getGamePoints()); //TODO: change logic
+                tableFragment.setItems(getItem().getGamePoints());
                 setItemChanged(true);
                 mMapFragment.updateMap();
             }
@@ -144,12 +144,12 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
 
             return  true;
         }
-        else if (intent.getAction().equals(ACTION_ACTION_REMOVE_CHILD_RESPONSE)) {
+        else if (intent.getAction().equals(ACTION_REMOVE_CHILD_RESPONSE)) {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 int pos = intent.getIntExtra(EXTRA_CHILD_INDEX, -1);
                 getItem().getGamePoints().remove(pos);
-                tableFragment.setItems(getItem().getGamePoints()); //TODO: change logic
+                tableFragment.setItems(getItem().getGamePoints());
                 setItemChanged(true);
                 mMapFragment.updateMap();
             }

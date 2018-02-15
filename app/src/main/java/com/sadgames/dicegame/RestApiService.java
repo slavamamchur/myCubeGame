@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.sadgames.dicegame.logic.client.GameConst;
 import com.sadgames.dicegame.logic.server.rest_api.WebServiceException;
 import com.sadgames.dicegame.logic.server.rest_api.controller.DBPlayerController;
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameController;
@@ -31,9 +30,8 @@ import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_ADD_CHILD_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_REMOVE_CHILD_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ADD_CHILD;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ADD_CHILD_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE;
@@ -53,6 +51,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REGISTRATION_R
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RELOGIN;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RELOGIN_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_CHILD;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_CHILD_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SAVE_ENTITY;
@@ -81,13 +80,11 @@ import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_USER_PASS;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 
 public class RestApiService extends IntentService {
-    @SuppressWarnings("unused")
-    private final String TAG = "RestApiService";
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
 
     public RestApiService() {
-        super("RestApiService");
+        super(RestApiService.class.getSimpleName());
 
         sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(this);
     }
@@ -208,9 +205,8 @@ public class RestApiService extends IntentService {
     protected void onHandleIntent(Intent intent) {
             if (intent == null) return;
 
-            UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
+            UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
             switch (actionType) {
-
                 case LOGIN:
                     handleActionLogin(intent.getStringExtra(EXTRA_USER_NAME), intent.getStringExtra(EXTRA_USER_PASS));
                     break;
@@ -585,7 +581,7 @@ public class RestApiService extends IntentService {
         else
             params.putInt(EXTRA_CHILD_INDEX, childIndex);
 
-        sendResponseIntent(ACTION_ACTION_REMOVE_CHILD_RESPONSE, params);
+        sendResponseIntent(ACTION_REMOVE_CHILD_RESPONSE, params);
     }
 
     private void handleActionAddChild(String parentId, String childName, Parcelable childEntity) {
@@ -604,7 +600,7 @@ public class RestApiService extends IntentService {
         else
             params.putParcelable(EXTRA_ENTITY_OBJECT, childEntity);
 
-        sendResponseIntent(ACTION_ACTION_ADD_CHILD_RESPONSE, params);
+        sendResponseIntent(ACTION_ADD_CHILD_RESPONSE, params);
     }
 
 }

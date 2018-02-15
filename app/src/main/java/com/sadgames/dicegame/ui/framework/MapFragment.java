@@ -47,13 +47,14 @@ import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.RestApiService.startActionMooveGameInstance;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MAP_IMAGE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
@@ -140,33 +141,19 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     }
 
     public boolean handleWebServiceResponseAction(Intent intent) {
-        if (intent.getAction().equals(ACTION_UPLOAD_IMAGE_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
-            if (error != null) {
-
-                if (webErrorHandler != null)
-                    webErrorHandler.onError(error);
-            }
-            else {
-                RestApiService.startActionGetMapImage(getContext(), mapEntity);
-            }
-
+        ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+        if (error != null) {
+            if (webErrorHandler != null)
+                webErrorHandler.onError(error);
             return true;
         }
-        else if (intent.getAction().equals(ACTION_MAP_IMAGE_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
-            if (error == null) {
-                //clearImage();
-            }
-            else
-                if (webErrorHandler != null)
-                    webErrorHandler.onError(error);
-
+        if (intent.getAction().equals(ACTION_UPLOAD_IMAGE_RESPONSE)) {
+            RestApiService.startActionGetMapImage(getContext(), mapEntity);
             return true;
         }
         else
-            return false;
+            return intent.getAction().equals(ACTION_MAP_IMAGE_RESPONSE);
     }
 
     public void InitMap(GameMapEntity map, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
@@ -205,6 +192,30 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         getContext().sendBroadcast(responseIntent);
     }
 
+    public void playTurn() {
+        glRenderer.getScene().setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
+        glRenderer.getScene().getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
+            @Override
+            public void onAnimationEnd() {
+                rollDice();
+            }
+        });
+    }
+
+    private void rollDice() {
+        GameDiceItem dice_1 = (GameDiceItem)glRenderer.getScene().getObject(DICE_MESH_OBJECT_1);
+        dice_1.createRigidBody();
+        ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
+        ///dice_1.get_body().setWorldTransformMatrix(tr);
+        Random rnd = new Random(System.currentTimeMillis());
+        int direction = rnd.nextInt(2);
+        float fy = 2f + rnd.nextInt(3) * 1f;
+        float fxz = fy * 2f / 3f;
+        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
+        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
+        glRenderer.getScene().getPhysicalWorldObject().addRigidBody(dice_1.get_body());
+    }
+
     private void removeDice(GameDiceItem dice) {
         //toggleActionBarProgress(true);
         if (gameInstanceEntity != null) {
@@ -212,7 +223,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
             Bundle params = new Bundle();
             params.putInt(EXTRA_DICE_VALUE, gameInstanceEntity.getStepsToGo());
-            sendResponseIntent(ACTION_ACTION_SHOW_TURN_INFO, params);
+            sendResponseIntent(ACTION_SHOW_TURN_INFO, params);
 
             glRenderer.getScene().setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
             glRenderer.getScene().getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
@@ -224,6 +235,23 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
             dice.setPosition(new Vector3f(100, 0, 0));
         }
+    }
+
+    public void finishGame() {
+        gameInstanceEntity.setState(GameInstanceEntity.State.FINISHED);
+    }
+
+    public void restartGame() {
+        gameInstanceEntity.setState(GameInstanceEntity.State.WAIT);
+        gameInstanceEntity.setCurrentPlayer(0);
+        gameInstanceEntity.setStepsToGo(0);
+        for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
+            player.setCurrentPoint(0);
+            player.setFinished(false);
+            player.setSkipped(false);
+        }
+
+        updateMap();
     }
 
     @Override

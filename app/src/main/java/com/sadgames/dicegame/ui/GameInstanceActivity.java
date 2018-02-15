@@ -15,7 +15,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.logic.client.entities.items.GameDiceItem;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
@@ -23,28 +22,23 @@ import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.framework.MapFragment;
-import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionMooveGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
-import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> implements BaseItemDetailsActivity.WebErrorHandler {
 
@@ -77,7 +71,6 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
         ///requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         ///requestWindowFeature(Window.FEATURE_PROGRESS);
-
         //getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         setContentView(R.layout.activity_game_instance);
@@ -149,7 +142,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         intentFilter.addAction(ACTION_FINISH_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_RESTART_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_MOOVE_GAME_INSTANCE_RESPONSE);
-        intentFilter.addAction(ACTION_ACTION_SHOW_TURN_INFO);
+        intentFilter.addAction(ACTION_SHOW_TURN_INFO);
 
         mMapFragment.setIntentFilters(intentFilter);
 
@@ -158,44 +151,26 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (mMapFragment.handleWebServiceResponseAction(intent))
-            return  true;
-        else if (intent.getAction().equals(ACTION_FINISH_GAME_INSTANCE_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+        if (mMapFragment.handleWebServiceResponseAction(intent)) return true;
 
-            if (error == null){
-                getItem().setState(GameInstanceEntity.State.FINISHED);
+        UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
+        switch (actionType) {
+            case FINISH_GAME_INSTANCE_RESPONSE:
+                mMapFragment.finishGame();
                 setItemChanged(true);
-                updateTitle ();
-            }
-            else {
-                showError(error);
-            }
 
-            return true;
-        }
-        else if (intent.getAction().equals(ACTION_RESTART_GAME_INSTANCE_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
-
-            if (error == null){
+                return true;
+            case RESTART_GAME_INSTANCE_RESPONSE:
                 resetGame();
-            }
-            else {
-                showError(error);
-            }
 
-            return true;
-        }
-        else if (intent.getAction().equals(ACTION_MOOVE_GAME_INSTANCE_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
-
-            if (error == null){
+                return true;
+            case MOOVE_GAME_INSTANCE_RESPONSE: //TODO: enable buttons
                 final GameInstanceEntity instance = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 updateGame(instance);
 
                 if (!GameInstanceEntity.State.WAIT.equals(instance.getState())
-                    && !GameInstanceEntity.State.FINISHED.equals(instance.getState())
-                   )
+                        && !GameInstanceEntity.State.FINISHED.equals(instance.getState())
+                        )
                     mMapFragment.movingChipAnimation(animationListener);
 
                 else {
@@ -203,21 +178,16 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
                     if (getItem().getPlayers().get(prev_player_index).isSkipped())
                         showAnimatedText("Skip\nnext turn");
                 }
-            }
-            else {
-                showError(error);
-            }
 
-            return true;
-        }
-        else if (intent.getAction().equals(ACTION_ACTION_SHOW_TURN_INFO)) {
-            final int diceValue = intent.getIntExtra(EXTRA_DICE_VALUE, 0);
-            showAnimatedText(String.format("%d\nSteps\nto GO", diceValue));
+                return true;
+            case SHOW_TURN_INFO:
+                final int diceValue = intent.getIntExtra(EXTRA_DICE_VALUE, 0);
+                showAnimatedText(String.format("%d\nSteps\nto GO", diceValue));
 
-            return true;
+                return true;
+            default:
+                return super.handleWebServiceResponseAction(context, intent);
         }
-        else
-            return super.handleWebServiceResponseAction(context, intent);
     }
 
     private final Handler mHandler = new Handler();
@@ -238,34 +208,17 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     }
 
     private void resetGame() {
-        getItem().setState(GameInstanceEntity.State.WAIT);
-        getItem().setCurrentPlayer(0);
-        getItem().setStepsToGo(0);
-        for (InstancePlayer player : getItem().getPlayers()) {
-            player.setCurrentPoint(0);
-            player.setFinished(false);
-            player.setSkipped(false);
-        }
-        setItemChanged(true);
+        mMapFragment.restartGame();
 
-        updateTitle ();
+        setItemChanged(true);
 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
-
-        /*mMapFragment.savedPlayers.clear();
-        mMapFragment.savedPlayers = new ArrayList<>(getItem().getPlayers());*/
-
-        mMapFragment.updateMap();
-
-        //mMapFragment.scrollMap();
     }
 
     private void updateGame(GameInstanceEntity instance) {
         setItem(instance);
         setItemChanged(true);
-
-        updateTitle ();
 
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
@@ -303,38 +256,14 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         }
     }
 
-    //TODO: disable buttons while animation in progress
+    //TODO: disable buttons
     private void playTurn() {
-
-        mMapFragment.glRenderer.getScene().setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
-        mMapFragment.glRenderer.getScene().getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-            @Override
-            public void onAnimationEnd() {
-                rollDice();
-            }
-        });
-    }
-
-    private void rollDice() {
-        //mMapFragment.glRenderer.getScene().setSimulation_time(System.currentTimeMillis());
-
         prev_player_index = getItem().getCurrentPlayer();
-
-        GameDiceItem dice_1 = (GameDiceItem)mMapFragment.glRenderer.getScene().getObject(DICE_MESH_OBJECT_1);
-        dice_1.createRigidBody();
-        ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
-        ///dice_1.get_body().setWorldTransformMatrix(tr);
-        Random rnd = new Random(System.currentTimeMillis());
-        int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(3) * 1f;
-        float fxz = fy * 2f / 3f;
-        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
-        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
-        mMapFragment.glRenderer.getScene().getPhysicalWorldObject().addRigidBody(dice_1.get_body());
+        mMapFragment.playTurn();
     }
 
     private void showAnimatedText(String text) {
-        TextView steps = (TextView) findViewById(R.id.tv_steps_to_go);
+        TextView steps = findViewById(R.id.tv_steps_to_go);
         steps.setText(text);
         steps.setVisibility(View.VISIBLE);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.view_growing);
