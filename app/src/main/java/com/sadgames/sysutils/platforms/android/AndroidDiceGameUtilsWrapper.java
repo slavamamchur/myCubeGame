@@ -2,9 +2,9 @@ package com.sadgames.sysutils.platforms.android;
 
 import android.content.Context;
 
-import com.sadgames.dicegame.rest_api.GameMapController;
-import com.sadgames.dicegame.rest_api.WebServiceException;
-import com.sadgames.dicegame.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.game.server.rest_api.GameMapController;
+import com.sadgames.dicegame.game.server.rest_api.WebServiceException;
+import com.sadgames.dicegame.game.server.rest_api.model.entities.GameMapEntity;
 
 public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
 

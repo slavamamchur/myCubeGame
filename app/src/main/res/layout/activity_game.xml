@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ui.platforms.android.GameMapActivity"
+    tools:context=".ui.GameMapActivity"
     android:orientation="horizontal"
     android:weightSum="100">
 
     <fragment
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:name="com.sadgames.dicegame.ui.platforms.android.framework.MapFragment"
+        android:name="com.sadgames.dicegame.ui.framework.MapFragment"
         tools:layout="@layout/map_fragment"
         android:id="@+id/map_fragment"
         android:layout_weight="70" />
@@ -20,7 +20,7 @@
     <fragment
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:name="com.sadgames.dicegame.ui.platforms.android.framework.DBTableFragment"
+        android:name="com.sadgames.dicegame.ui.framework.DBTableFragment"
         android:id="@+id/game_points_list_fragment"
         android:layout_weight="30"
         tools:layout="@layout/db_table_fragment" />
