@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.game_logic.items.GameDiceItem;
+import com.sadgames.dicegame.game_logic.entities.items.GameDiceItem;
 import com.sadgames.dicegame.rest_api.RestApiService;
 import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameInstanceEntity;

@@ -1,4 +1,4 @@
-package com.sadgames.dicegame.game_logic.items;
+package com.sadgames.dicegame.game_logic.entities.items;
 
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.objects.CubePrimitiveObject;

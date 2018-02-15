@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bulletphysics.dynamics.DynamicsWorld;
-import com.sadgames.dicegame.game_logic.items.ChipItem;
-import com.sadgames.dicegame.game_logic.items.GameDiceItem;
-import com.sadgames.dicegame.game_logic.items.GameMapItem;
+import com.sadgames.dicegame.game_logic.entities.DiceGameMap;
+import com.sadgames.dicegame.game_logic.entities.items.ChipItem;
+import com.sadgames.dicegame.game_logic.entities.items.GameDiceItem;
 import com.sadgames.dicegame.rest_api.RestApiService;
 import com.sadgames.dicegame.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
@@ -271,7 +271,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         AbstractTexture dudvMap = new BitmapTexture(sysUtilsWrapper, DUDVMAP_TEXTURE);
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
 
-        TopographicMapObject terrain = new GameMapItem(sysUtilsWrapper, program, gameEntity);
+        TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         terrain.setGlCubeMapId(reflectionMap.getTextureId());
         terrain.setGlNormalMapId(normalMap.getTextureId());
         terrain.setGlDUDVMapId(dudvMap.getTextureId());

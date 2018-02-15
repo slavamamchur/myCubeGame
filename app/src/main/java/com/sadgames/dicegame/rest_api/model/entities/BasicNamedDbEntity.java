@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sadgames.dicegame.rest_api.AbstractHttpRequest;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 
-public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable{
+public class BasicNamedDbEntity extends BasicDbEntity implements Parcelable { //TODO: Replace with Serializable
     @JsonProperty(required = true)
     public String name;
 

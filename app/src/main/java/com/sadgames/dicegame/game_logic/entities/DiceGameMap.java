@@ -1,7 +1,6 @@
-package com.sadgames.dicegame.game_logic.items;
+package com.sadgames.dicegame.game_logic.entities;
 
-import android.graphics.Color;
-
+import com.sadgames.dicegame.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.dicegame.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
@@ -15,17 +14,21 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector2f;
 
-public class GameMapItem extends TopographicMapObject {
+import static com.sadgames.dicegame.game_logic.GameConsts.PATH_COLOR;
+import static com.sadgames.dicegame.game_logic.GameConsts.WAY_POINT_COLOR;
+
+public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
 
     private GameEntity gameEntity;
 
-    public GameMapItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
+    public DiceGameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
         this.gameEntity = gameEntity;
     }
 
-    public GameEntity getGameEntity() {
+    @Override
+    public BasicNamedDbEntity getLinkedRESTObject() {
         return gameEntity;
     }
 
@@ -46,7 +49,7 @@ public class GameMapItem extends TopographicMapObject {
         for (AbstractGamePoint point : gameEntity.getGamePoints())
             way.add(new Vector2f(point.xPos * scaleFactor, point.yPos * scaleFactor));
 
-        textureBmp.drawPath(way, Color.GREEN, Color.RED, scaleFactor);
+        textureBmp.drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor);
 
         return BitmapTexture.createInstance(getSysUtilsWrapper(), textureBmp);
     }
