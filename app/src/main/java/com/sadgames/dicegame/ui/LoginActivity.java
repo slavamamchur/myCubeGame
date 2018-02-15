@@ -36,14 +36,17 @@ import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.AuthTokenEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.framework.BaseActivityWithMenu;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LOGIN_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
 
 /**
  * A login screen that offers login via email/password.
@@ -120,16 +123,16 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
-        intentFilter.addAction(RestApiService.ACTION_LOGIN_RESPONSE);
+        intentFilter.addAction(ACTION_LOGIN_RESPONSE);
 
         return intentFilter;
     }
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (intent.getAction().equals(RestApiService.ACTION_LOGIN_RESPONSE)){
+        if (intent.getAction().equals(ACTION_LOGIN_RESPONSE)){
             //TODO: process error object
-            AuthTokenEntity response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+            AuthTokenEntity response = intent.getParcelableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null) {
                 getSysUtilsWrapper().iGetSettingsManager().setAuthToken(response.getId());
                 getSysUtilsWrapper().iGetSettingsManager().setUserName(mEmailView.getText().toString());
@@ -140,7 +143,7 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
 
                 finish();
             } else {
-                    ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+                    ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
                     String message = error != null ? error.getError() : "Invalid password or user name.\nPlease try again.";
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

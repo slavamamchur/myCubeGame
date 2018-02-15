@@ -10,10 +10,10 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.points.AbstractGamePoint;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.points.NewPointRequest;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.NewPointRequest;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
@@ -22,10 +22,11 @@ import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_ACTION_ADD_CHILD_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.ACTION_ACTION_REMOVE_CHILD_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_CHILD_INDEX;
-import static com.sadgames.dicegame.RestApiService.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_ADD_CHILD_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_REMOVE_CHILD_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_CHILD_INDEX;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.EDIT_ENTITY_TAG;
 import static com.sadgames.dicegame.ui.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
@@ -127,7 +128,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
         if (mMapFragment.handleWebServiceResponseAction(intent))
             return  true;
         else if (intent.getAction().equals(ACTION_ACTION_ADD_CHILD_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 NewPointRequest result = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 AbstractGamePoint newPoint = new AbstractGamePoint(result);
@@ -144,7 +145,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
             return  true;
         }
         else if (intent.getAction().equals(ACTION_ACTION_REMOVE_CHILD_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 int pos = intent.getIntExtra(EXTRA_CHILD_INDEX, -1);
                 getItem().getGamePoints().remove(pos);

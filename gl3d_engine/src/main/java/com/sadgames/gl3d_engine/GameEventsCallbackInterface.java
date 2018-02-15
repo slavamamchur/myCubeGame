@@ -18,4 +18,6 @@ public interface GameEventsCallbackInterface {
     void onInitPhysics(DynamicsWorld dynamicsWorld);
 
     void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject);
+
+    void onPerformUserAction(String action, Object[] params);
 }

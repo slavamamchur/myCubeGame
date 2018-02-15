@@ -16,12 +16,17 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.AuthTokenEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.LoginActivity;
 import com.sadgames.dicegame.ui.SettingsActivity;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
+
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RELOGIN_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_BOOLEAN_RESULT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
@@ -112,16 +117,16 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     protected IntentFilter getIntentFilter(){
-        IntentFilter intentFilter = new IntentFilter(RestApiService.ACTION_PING_RESPONSE);
-        intentFilter.addAction(RestApiService.ACTION_RELOGIN_RESPONSE);
+        IntentFilter intentFilter = new IntentFilter(ACTION_PING_RESPONSE);
+        intentFilter.addAction(ACTION_RELOGIN_RESPONSE);
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 
         return intentFilter;
     }
 
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (intent.getAction().equals(RestApiService.ACTION_PING_RESPONSE)) {
-            if (!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false))
+        if (intent.getAction().equals(ACTION_PING_RESPONSE)) {
+            if (!intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false))
                 if (!sysUtilsWrapper.iGetSettingsManager().isStayLoggedIn()) {
                     doLogout();
                 } else
@@ -129,8 +134,8 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
             return true;
         }
-        else if (intent.getAction().equals(RestApiService.ACTION_RELOGIN_RESPONSE)) {
-            AuthTokenEntity response = intent.getParcelableExtra(RestApiService.EXTRA_LOGIN_RESPONSE_OBJECT);
+        else if (intent.getAction().equals(ACTION_RELOGIN_RESPONSE)) {
+            AuthTokenEntity response = intent.getParcelableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null)
                 sysUtilsWrapper.iGetSettingsManager().setAuthToken(response.getId());
             else

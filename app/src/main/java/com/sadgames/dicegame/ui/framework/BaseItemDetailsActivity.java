@@ -10,11 +10,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SAVE_ENTITY_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
 
 public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
 

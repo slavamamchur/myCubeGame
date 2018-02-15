@@ -15,11 +15,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.client.game_logic.entities.items.GameDiceItem;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.dicegame.logic.client.entities.items.GameDiceItem;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
@@ -33,15 +32,16 @@ import java.util.TimerTask;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
-import static com.sadgames.dicegame.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_DICE_VALUE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionMooveGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_SHOW_TURN_INFO;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
@@ -161,7 +161,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         if (mMapFragment.handleWebServiceResponseAction(intent))
             return  true;
         else if (intent.getAction().equals(ACTION_FINISH_GAME_INSTANCE_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null){
                 getItem().setState(GameInstanceEntity.State.FINISHED);
@@ -175,7 +175,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             return true;
         }
         else if (intent.getAction().equals(ACTION_RESTART_GAME_INSTANCE_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null){
                 resetGame();
@@ -187,10 +187,10 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             return true;
         }
         else if (intent.getAction().equals(ACTION_MOOVE_GAME_INSTANCE_RESPONSE)) {
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
 
             if (error == null){
-                final GameInstanceEntity instance = intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT);
+                final GameInstanceEntity instance = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 updateGame(instance);
 
                 if (!GameInstanceEntity.State.WAIT.equals(instance.getState())

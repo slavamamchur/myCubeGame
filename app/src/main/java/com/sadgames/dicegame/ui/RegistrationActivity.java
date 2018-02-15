@@ -15,11 +15,11 @@ import android.widget.Toast;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.UserEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.UserEntity;
 import com.sadgames.dicegame.ui.framework.BaseActivityWithMenu;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_REGISTRATION_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_REGISTRATION_RESPONSE_TEXT;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REGISTRATION_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_REGISTRATION_RESPONSE_TEXT;
 
 public class RegistrationActivity extends BaseActivityWithMenu {
 

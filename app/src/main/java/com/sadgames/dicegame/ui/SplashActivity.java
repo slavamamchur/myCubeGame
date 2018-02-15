@@ -13,6 +13,9 @@ import com.sadgames.dicegame.RestApiService;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_BOOLEAN_RESULT;
+
 public class SplashActivity extends AppCompatActivity {
 
     public static  final int HIDE_DELAY = 3000;
@@ -58,15 +61,15 @@ public class SplashActivity extends AppCompatActivity {
         mPingBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                cls = !intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
-                if(!intent.getBooleanExtra(RestApiService.EXTRA_BOOLEAN_RESULT, false)){
+                cls = !intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
+                if(!intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false)){
                     sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
                 }
                 delayedHide(HIDE_DELAY);
             }
         };
 
-        IntentFilter intentFilter = new IntentFilter(RestApiService.ACTION_PING_RESPONSE);
+        IntentFilter intentFilter = new IntentFilter(ACTION_PING_RESPONSE);
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(mPingBroadcastReceiver, intentFilter);
     }

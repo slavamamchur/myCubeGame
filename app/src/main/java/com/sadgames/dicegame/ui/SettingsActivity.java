@@ -24,7 +24,7 @@ import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.List;
 
-import static com.sadgames.dicegame.game.server.rest_api.RestConst.DEFAULT_BASE_URL_VALUE;
+import static com.sadgames.dicegame.logic.server.rest_api.RestConst.DEFAULT_BASE_URL_VALUE;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

@@ -17,9 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.points.PointType;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.lang.reflect.Field;

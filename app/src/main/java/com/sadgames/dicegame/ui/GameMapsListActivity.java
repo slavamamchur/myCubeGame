@@ -7,9 +7,9 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.ui.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DialogOnClickDelegate;
@@ -17,10 +17,11 @@ import com.sadgames.dicegame.ui.framework.InputNameDialogFragment;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_GET_GAME_MAP_LIST;
-import static com.sadgames.dicegame.RestApiService.ACTION_LIST_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.RestApiService.EXTRA_GAME_MAP_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_MAP_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_MAP_LIST;
 import static com.sadgames.dicegame.ui.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
 public class GameMapsListActivity extends BaseListActivity<GameMapEntity> {
@@ -88,7 +89,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMapEntity> {
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_CREATE_NEW_GAME_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
 
                 Intent mIntent = new Intent(getApplicationContext(), GameActivity.class);

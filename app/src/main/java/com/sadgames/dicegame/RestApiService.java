@@ -6,90 +6,87 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.sadgames.dicegame.game.server.rest_api.DBPlayerController;
-import com.sadgames.dicegame.game.server.rest_api.GameController;
-import com.sadgames.dicegame.game.server.rest_api.GameInstanceController;
-import com.sadgames.dicegame.game.server.rest_api.GameMapController;
-import com.sadgames.dicegame.game.server.rest_api.LoginRequest;
-import com.sadgames.dicegame.game.server.rest_api.PingRequest;
-import com.sadgames.dicegame.game.server.rest_api.RegistrationRequest;
-import com.sadgames.dicegame.game.server.rest_api.StartNewGameRequestParam;
-import com.sadgames.dicegame.game.server.rest_api.WebServiceException;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.AuthTokenEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.BasicEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.DbPlayerEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameMapEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.UserEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.responses.GameInstanceStartedResponse;
+import com.sadgames.dicegame.logic.client.GameConst;
+import com.sadgames.dicegame.logic.server.rest_api.WebServiceException;
+import com.sadgames.dicegame.logic.server.rest_api.controller.DBPlayerController;
+import com.sadgames.dicegame.logic.server.rest_api.controller.GameController;
+import com.sadgames.dicegame.logic.server.rest_api.controller.GameInstanceController;
+import com.sadgames.dicegame.logic.server.rest_api.controller.GameMapController;
+import com.sadgames.dicegame.logic.server.rest_api.controller.LoginRequest;
+import com.sadgames.dicegame.logic.server.rest_api.controller.PingRequest;
+import com.sadgames.dicegame.logic.server.rest_api.controller.RegistrationRequest;
+import com.sadgames.dicegame.logic.server.rest_api.model.StartNewGameRequestParam;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.DbPlayerEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.UserEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.ArrayList;
 
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_ADD_CHILD_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_REMOVE_CHILD_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ADD_CHILD;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_INSTANCE_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_MAP_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_MAP_IMAGE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_PLAYER_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LOGIN;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LOGIN_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MAP_IMAGE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REGISTRATION;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REGISTRATION_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RELOGIN;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RELOGIN_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_CHILD;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SAVE_ENTITY;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_START_GAME_INSTANCE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_START_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_UPLOAD_IMAGE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_UPLOAD_MAP_IMAGE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_BOOLEAN_RESULT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_CHILD_INDEX;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_CHILD_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_INSTANCE_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_MAP_FILE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_MAP_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_MAP_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_PARENT_ID;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_PLAYER_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_REGISTRATION_PARAMS_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_REGISTRATION_RESPONSE_TEXT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_RESPONSE_ACTION;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_USER_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_USER_PASS;
+import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
+
 public class RestApiService extends IntentService {
     @SuppressWarnings("unused")
     private final String TAG = "RestApiService";
-
-    public static final String ACTION_LOGIN = "com.sadgames.dicegame.api.action.LOGIN";
-    public static final String ACTION_RELOGIN = "com.sadgames.dicegame.api.action.RELOGIN";
-    public static final String ACTION_LOGIN_RESPONSE = "com.sadgames.dicegame.api.action.LOGIN_RESPONSE";
-    public static final String ACTION_RELOGIN_RESPONSE = "com.sadgames.dicegame.api.action.RELOGIN_RESPONSE";
-    public static final String ACTION_REGISTRATION = "com.sadgames.dicegame.api.action.REGISTRATION";
-    public static final String ACTION_REGISTRATION_RESPONSE = "com.sadgames.dicegame.api.action.REGISTRATION_RESPONSE";
-    public static final String ACTION_PING = "com.sadgames.dicegame.api.action.PING";
-    public static final String ACTION_PING_RESPONSE = "com.sadgames.dicegame.api.action.PING_RESPONSE";
-    public static final String ACTION_GET_GAME_MAP_LIST = "com.sadgames.dicegame.api.action.GET_MAP_LIST";
-    public static final String ACTION_LIST_RESPONSE = "com.sadgames.dicegame.api.action.LIST_RESPONSE";
-    public static final String ACTION_GET_GAME_LIST = "com.sadgames.dicegame.api.action.GET_GAME_LIST";
-    public static final String ACTION_GET_GAME_INSTANCE_LIST = "com.sadgames.dicegame.api.action.GET_GAME_INSTANCE_LIST";
-    public static final String ACTION_GET_PLAYER_LIST = "com.sadgames.dicegame.api.action.GET_PLAYER_LIST";
-    public static final String ACTION_PLAYER_LIST_RESPONSE = "com.sadgames.dicegame.api.action.PLAYER_LIST_RESPONSE";
-    public static final String ACTION_GET_MAP_IMAGE = "com.sadgames.dicegame.api.action.GET_MAP_IMAGE";
-    public static final String ACTION_MAP_IMAGE_RESPONSE = "com.sadgames.dicegame.api.action.MAP_IMAGE_RESPONSE";
-    public static final String ACTION_UPLOAD_MAP_IMAGE = "com.sadgames.dicegame.api.action.UPLOAD_MAP_IMAGE";
-    public static final String ACTION_UPLOAD_IMAGE_RESPONSE = "com.sadgames.dicegame.api.action.UPLOAD_IMAGE_RESPONSE";
-    public static final String ACTION_DELETE_ENTITY = "com.sadgames.dicegame.api.action.DELETE_ENTITY";
-    public static final String ACTION_DELETE_ENTITY_RESPONSE = "com.sadgames.dicegame.api.action.DELETE_ENTITY_RESPONSE";
-    public static final String ACTION_SAVE_ENTITY = "com.sadgames.dicegame.api.action.SAVE_ENTITY";
-    public static final String ACTION_SAVE_ENTITY_RESPONSE = "com.sadgames.dicegame.api.action.SAVE_ENTITY_RESPONSE";
-    public static final String ACTION_FINISH_GAME_INSTANCE = "com.sadgames.dicegame.api.action.FINISH_GAME_INSTANCE";
-    public static final String ACTION_FINISH_GAME_INSTANCE_RESPONSE = "com.sadgames.dicegame.api.action.FINISH_GAME_INSTANCE_RESPONSE";
-    public static final String ACTION_START_GAME_INSTANCE = "com.sadgames.dicegame.api.action.START_GAME_INSTANCE";
-    public static final String ACTION_START_GAME_INSTANCE_RESPONSE = "com.sadgames.dicegame.api.action.START_GAME_INSTANCE_RESPONSE";
-    public static final String ACTION_RESTART_GAME_INSTANCE = "com.sadgames.dicegame.api.action.RESTART_GAME_INSTANCE";
-    public static final String ACTION_RESTART_GAME_INSTANCE_RESPONSE = "com.sadgames.dicegame.api.action.RESTART_GAME_INSTANCE_RESPONSE";
-    public static final String ACTION_MOOVE_GAME_INSTANCE = "com.sadgames.dicegame.api.action.MOOVE_GAME_INSTANCE";
-    public static final String ACTION_MOOVE_GAME_INSTANCE_RESPONSE = "com.sadgames.dicegame.api.action.MOOVE_GAME_INSTANCE_RESPONSE";
-    public static final String ACTION_REMOVE_CHILD = "com.sadgames.dicegame.api.action.ACTION_REMOVE_CHILD";
-    public static final String ACTION_ACTION_REMOVE_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_REMOVE_CHILD_RESPONSE";
-    public static final String ACTION_ADD_CHILD = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD";
-    public static final String ACTION_ACTION_ADD_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD_RESPONSE";
-    public static final String ACTION_ACTION_SHOW_TURN_INFO = "com.sadgames.dicegame.api.action.ACTION_SHOW_TURN_INFO";
-
-    public static final String EXTRA_USER_NAME = "USER_NAME";
-    public static final String EXTRA_USER_PASS = "USER_PASS";
-    public static final String EXTRA_LOGIN_RESPONSE_OBJECT = "LOGIN_RESPONSE_OBJECT";
-    public static final String EXTRA_REGISTRATION_PARAMS_OBJECT = "LOGIN_RESPONSE_OBJECT";
-    public static final String EXTRA_REGISTRATION_RESPONSE_TEXT = "REGISTRATION_RESPONSE_TEXT";
-    public static final String EXTRA_BOOLEAN_RESULT = "BOOLEAN_RESULT";
-    public static final String EXTRA_GAME_MAP_OBJECT = "GAME_MAP_OBJECT";
-    public static final String EXTRA_GAME_MAP_FILE = "GAME_MAP_FILE";
-    public static final String EXTRA_GAME_MAP_LIST = "GAME_MAP_LIST";
-    public static final String EXTRA_GAME_INSTANCE_LIST = "GAME_INSTANCE_LIST";
-    public static final String EXTRA_GAME_INSTANCE = "GAME_INSTANCE";
-    public static final String EXTRA_GAME_LIST = "GAME_LIST";
-    public static final String EXTRA_PLAYER_LIST = "PLAYER_LIST";
-    public static final String EXTRA_ENTITY_OBJECT = "ENTITY_OBJECT";
-    public static final String EXTRA_ERROR_OBJECT = "ERROR_OBJECT";
-    public static final String EXTRA_RESPONSE_ACTION = "RESPONSE_ACTION";
-    public static final String EXTRA_PARENT_ID = "PARENT_ID";
-    public static final String EXTRA_CHILD_NAME = "CHILD_NAME";
-    public static final String EXTRA_CHILD_INDEX = "CHILD_INDEX";
-    public static final String EXTRA_DICE_VALUE = "DICE_VALUE";
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
 
@@ -99,53 +96,53 @@ public class RestApiService extends IntentService {
         sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(this);
     }
 
-    public static void startActionLogin(Context context, String userName, String userPass) {
+
+    protected static Intent getIntent(Context context, String action) {
         Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_LOGIN);
+        intent.setAction(action);
+        return intent;
+    }
+
+    public static void startActionLogin(Context context, String userName, String userPass) {
+        Intent intent = getIntent(context, ACTION_LOGIN);
         intent.putExtra(EXTRA_USER_NAME, userName);
         intent.putExtra(EXTRA_USER_PASS, userPass);
         context.startService(intent);
     }
 
     public static void startActionRelogin(Context context, String userName, String userPass) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_RELOGIN);
+        Intent intent = getIntent(context, ACTION_RELOGIN);
         intent.putExtra(EXTRA_USER_NAME, userName);
         intent.putExtra(EXTRA_USER_PASS, userPass);
         context.startService(intent);
     }
 
     public static void startActionPing(Context context) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_PING);
+        Intent intent = getIntent(context, ACTION_PING);
         context.startService(intent);
     }
 
     public static void startActionRegistration(Context context, UserEntity regParams) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_REGISTRATION);
+        Intent intent = getIntent(context, ACTION_REGISTRATION);
         intent.putExtra(EXTRA_REGISTRATION_PARAMS_OBJECT, regParams);
 
         context.startService(intent);
     }
 
     public static void startActionGetList(Context context, String action) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(action);
+        Intent intent = getIntent(context, action);
         context.startService(intent);
     }
 
     public static void startActionGetMapImage(Context context, GameMapEntity map) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_GET_MAP_IMAGE);
+        Intent intent = getIntent(context, ACTION_GET_MAP_IMAGE);
         intent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
 
         context.startService(intent);
     }
 
     public static void startActionUploadMapImage(Context context, GameMapEntity map, String fileName) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_UPLOAD_MAP_IMAGE);
+        Intent intent = getIntent(context, ACTION_UPLOAD_MAP_IMAGE);
         intent.putExtra(EXTRA_GAME_MAP_OBJECT, map);
         intent.putExtra(EXTRA_GAME_MAP_FILE, fileName);
 
@@ -153,16 +150,14 @@ public class RestApiService extends IntentService {
     }
 
     public static void startActionDeleteEntity(Context context, BasicNamedDbEntity item) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_DELETE_ENTITY);
+        Intent intent = getIntent(context, ACTION_DELETE_ENTITY);
         intent.putExtra(EXTRA_ENTITY_OBJECT, item);
 
         context.startService(intent);
     }
 
     public static void startActionSaveEntity(Context context, BasicNamedDbEntity item, String responseAction) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_SAVE_ENTITY);
+        Intent intent = getIntent(context, ACTION_SAVE_ENTITY);
         intent.putExtra(EXTRA_ENTITY_OBJECT, item);
         intent.putExtra(EXTRA_RESPONSE_ACTION, responseAction);
 
@@ -170,40 +165,35 @@ public class RestApiService extends IntentService {
     }
 
     public static void startActionFinishGameInstance(Context context, GameInstanceEntity instance) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_FINISH_GAME_INSTANCE);
+        Intent intent = getIntent(context, ACTION_FINISH_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
 
         context.startService(intent);
     }
 
     public static void startActionStartGameInstance(Context context, StartNewGameRequestParam request) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_START_GAME_INSTANCE);
+        Intent intent = getIntent(context, ACTION_START_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, request);
 
         context.startService(intent);
     }
 
     public static void startActionRestartGameInstance(Context context, GameInstanceEntity instance) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_RESTART_GAME_INSTANCE);
+        Intent intent = getIntent(context, ACTION_RESTART_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
 
         context.startService(intent);
     }
 
     public static void startActionMooveGameInstance(Context context, GameInstanceEntity instance) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_MOOVE_GAME_INSTANCE);
+        Intent intent = getIntent(context, ACTION_MOOVE_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
 
         context.startService(intent);
     }
 
     public static void startActionRemoveChild(Context context, String parentId, String childName, int childIndex) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_REMOVE_CHILD);
+        Intent intent = getIntent(context, ACTION_REMOVE_CHILD);
         intent.putExtra(EXTRA_PARENT_ID, parentId);
         intent.putExtra(EXTRA_CHILD_NAME, childName);
         intent.putExtra(EXTRA_CHILD_INDEX, childIndex);
@@ -211,8 +201,7 @@ public class RestApiService extends IntentService {
     }
 
     public static void startActionAddChild(Context context, String parentId, String childName, Parcelable childEntity) {
-        Intent intent = new Intent(context, RestApiService.class);
-        intent.setAction(ACTION_ADD_CHILD);
+        Intent intent = getIntent(context, ACTION_ADD_CHILD);
         intent.putExtra(EXTRA_PARENT_ID, parentId);
         intent.putExtra(EXTRA_CHILD_NAME, childName);
         intent.putExtra(EXTRA_ENTITY_OBJECT, childEntity);
@@ -221,8 +210,22 @@ public class RestApiService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
+            if (intent == null) return;
+
             final String action = intent.getAction();
+            UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(action)];
+
+            /*switch (actionType) {
+
+                case LOGIN:
+                    final String userName = intent.getStringExtra(EXTRA_USER_NAME);
+                    final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
+                    handleActionLogin(userName, userPass);
+                    break;
+                case RELOGIN:
+
+            }*/
+
             if (ACTION_LOGIN.equals(action)) {
                 final String userName = intent.getStringExtra(EXTRA_USER_NAME);
                 final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
@@ -298,8 +301,6 @@ public class RestApiService extends IntentService {
                 final Parcelable childEntity = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
                 handleActionAddChild(parentId, childName, childEntity);
             }
-
-        }
     }
 
     private void sendResponseIntent(String action, Bundle params){

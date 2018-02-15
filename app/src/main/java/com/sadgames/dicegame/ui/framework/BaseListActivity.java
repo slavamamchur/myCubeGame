@@ -10,8 +10,8 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.DBPlayersListActivity;
 import com.sadgames.dicegame.ui.GameInstanceListActivity;
 import com.sadgames.dicegame.ui.GameListActivity;
@@ -19,8 +19,10 @@ import com.sadgames.dicegame.ui.GameMapsListActivity;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_DELETE_ENTITY_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.ACTION_SAVE_ENTITY_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SAVE_ENTITY_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 
 public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends BaseActivityWithMenu {
 
@@ -108,7 +110,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             return true;
         }
         else if (intent.getAction().equals(ACTION_DELETE_ENTITY_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 showProgress();
                 getData();
@@ -120,10 +122,10 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             return true;
         }
         else if (intent.getAction().equals(ACTION_SAVE_ENTITY_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 Intent mIntent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(RestApiService.EXTRA_ENTITY_OBJECT));
+                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
                 mIntent.putExtra(BaseItemDetailsActivity.EXTRA_ENTITY_CHANGED, true);
                 startActivityForResult(mIntent, BaseItemDetailsActivity.EDITOR_REQUEST);
             }

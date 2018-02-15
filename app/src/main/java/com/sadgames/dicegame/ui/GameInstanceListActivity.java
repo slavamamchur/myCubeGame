@@ -7,16 +7,20 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.ui.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.ACTION_LIST_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_INSTANCE_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_INSTANCE_LIST;
 
 public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntity> {
 
@@ -47,7 +51,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntit
     }
     @Override
     protected String getListAction() {
-        return RestApiService.ACTION_GET_GAME_INSTANCE_LIST;
+        return ACTION_GET_GAME_INSTANCE_LIST;
     }
     @Override
     protected String getListResponseAction() {
@@ -55,11 +59,11 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntit
     }
     @Override
     protected String getListResponseExtra() {
-        return RestApiService.EXTRA_GAME_INSTANCE_LIST;
+        return EXTRA_GAME_INSTANCE_LIST;
     }
     @Override
     protected String getEntityExtra() {
-        return RestApiService.EXTRA_ENTITY_OBJECT;
+        return EXTRA_ENTITY_OBJECT;
     }
     @Override
     protected Class<?> getDetailsActivityClass() {
@@ -109,7 +113,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntit
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_FINISH_GAME_INSTANCE_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(RestApiService.EXTRA_ERROR_OBJECT);
+            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
 
                 //showProgress();

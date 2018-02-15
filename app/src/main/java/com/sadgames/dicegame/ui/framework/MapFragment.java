@@ -18,16 +18,17 @@ import android.view.ViewGroup;
 
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.game.client.game_logic.entities.DiceGameMap;
-import com.sadgames.dicegame.game.client.game_logic.entities.items.ChipItem;
-import com.sadgames.dicegame.game.client.game_logic.entities.items.GameDiceItem;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.GameMapEntity;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.players.InstancePlayer;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.points.AbstractGamePoint;
-import com.sadgames.dicegame.game.server.rest_api.model.entities.points.PointType;
+import com.sadgames.dicegame.logic.client.GameConst;
+import com.sadgames.dicegame.logic.client.entities.DiceGameMap;
+import com.sadgames.dicegame.logic.client.entities.items.ChipItem;
+import com.sadgames.dicegame.logic.client.entities.items.GameDiceItem;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.gl3d_engine.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
@@ -49,17 +50,19 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.dicegame.RestApiService.ACTION_ACTION_SHOW_TURN_INFO;
-import static com.sadgames.dicegame.RestApiService.ACTION_MAP_IMAGE_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.ACTION_UPLOAD_IMAGE_RESPONSE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_DICE_VALUE;
-import static com.sadgames.dicegame.RestApiService.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.RestApiService.startActionMooveGameInstance;
-import static com.sadgames.dicegame.game.client.game_logic.GameConsts.DICE_TEXTURE;
-import static com.sadgames.dicegame.game.client.game_logic.GameConsts.DUDVMAP_TEXTURE;
-import static com.sadgames.dicegame.game.client.game_logic.GameConsts.NORMALMAP_TEXTURE;
-import static com.sadgames.dicegame.game.client.game_logic.GameConsts.ROLLING_DICE_SOUND;
-import static com.sadgames.dicegame.game.client.game_logic.GameConsts.SEA_BOTTOM_TEXTURE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ACTION_SHOW_TURN_INFO;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MAP_IMAGE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_UPLOAD_IMAGE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
+import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
+import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
+import static com.sadgames.dicegame.logic.client.GameConst.SEA_BOTTOM_TEXTURE;
+import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
@@ -221,6 +224,11 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
             dice.setPosition(new Vector3f(100, 0, 0));
         }
+    }
+
+    @Override
+    public void onPerformUserAction(String action, Object[] params) {
+        handleUserAction(action, params);
     }
 
     @Override
@@ -474,5 +482,11 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         moveChips(glRenderer.getScene());
     }
 
+    private void handleUserAction(String action, Object[] params) {
+        UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(action)];
 
+        switch (actionType) {
+            default:
+        }
+    }
 }
