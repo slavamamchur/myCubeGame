@@ -38,11 +38,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_DELETE_ENTITY_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_INSTANCE_LIST;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_LIST;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_MAP_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_MAP_IMAGE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_PLAYER_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LOGIN;
@@ -212,95 +208,67 @@ public class RestApiService extends IntentService {
     protected void onHandleIntent(Intent intent) {
             if (intent == null) return;
 
-            final String action = intent.getAction();
-            UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(action)];
-
-            /*switch (actionType) {
+            UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
+            switch (actionType) {
 
                 case LOGIN:
-                    final String userName = intent.getStringExtra(EXTRA_USER_NAME);
-                    final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
-                    handleActionLogin(userName, userPass);
+                    handleActionLogin(intent.getStringExtra(EXTRA_USER_NAME), intent.getStringExtra(EXTRA_USER_PASS));
                     break;
                 case RELOGIN:
+                    handleActionRelogin(intent.getStringExtra(EXTRA_USER_NAME), intent.getStringExtra(EXTRA_USER_PASS));
+                    break;
+                case REGISTRATION:
+                    final UserEntity params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
+                    handleActionRegistration(params);
+                    break;
+                case PING:
+                    handleActionPing();
+                    break;
+                case GET_GAME_MAP_LIST:
+                    handleActionGetMapList();
+                    break;
+                case GET_GAME_LIST:
+                    handleActionGetGameList();
+                    break;
+                case GET_GAME_INSTANCE_LIST:
+                    handleActionGetGameInstanceList();
+                    break;
+                case GET_PLAYER_LIST:
+                    handleActionGetPlayerList();
+                    break;
+                case GET_MAP_IMAGE:
+                    handleActionGetMapImage((GameMapEntity) intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT));
+                    break;
+                case UPLOAD_MAP_IMAGE:
+                    handleActionUploadMapImage((GameMapEntity) intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT), intent.getStringExtra(EXTRA_GAME_MAP_FILE));
+                    break;
+                case DELETE_ENTITY:
+                    handleActionDeleteEntity((BasicNamedDbEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    break;
+                case SAVE_ENTITY:
+                    handleActionSaveEntity((BasicNamedDbEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT), intent.getStringExtra(EXTRA_RESPONSE_ACTION));
+                    break;
+                case FINISH_GAME_INSTANCE:
+                    handleActionFinishGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    break;
+                case MOOVE_GAME_INSTANCE:
+                    handleActionMooveGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    break;
+                case START_GAME_INSTANCE:
+                    handleActionStartGameInstance((StartNewGameRequestParam) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    break;
+                case RESTART_GAME_INSTANCE:
+                    handleActionReStartGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    break;
+                case REMOVE_CHILD:
+                    handleActionRemoveChild(
+                            intent.getStringExtra(EXTRA_PARENT_ID), intent.getStringExtra(EXTRA_CHILD_NAME), intent.getIntExtra(EXTRA_CHILD_INDEX, -1));
+                    break;
+                case ADD_CHILD:
+                    handleActionAddChild(
+                            intent.getStringExtra(EXTRA_PARENT_ID), intent.getStringExtra(EXTRA_CHILD_NAME), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+            }
 
-            }*/
-
-            if (ACTION_LOGIN.equals(action)) {
-                final String userName = intent.getStringExtra(EXTRA_USER_NAME);
-                final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
-                handleActionLogin(userName, userPass);
-            }
-            if (ACTION_RELOGIN.equals(action)) {
-                final String userName = intent.getStringExtra(EXTRA_USER_NAME);
-                final String userPass = intent.getStringExtra(EXTRA_USER_PASS);
-                handleActionRelogin(userName, userPass);
-            }
-            else if (ACTION_REGISTRATION.equals(action)) {
-                final UserEntity params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
-                handleActionRegistration(params);
-            }
-            else if (ACTION_PING.equals(action)) {
-                handleActionPing();
-            }
-            else if (ACTION_GET_GAME_MAP_LIST.equals(action)) {
-                handleActionGetMapList();
-            }
-            else if (ACTION_GET_GAME_LIST.equals(action)) {
-                handleActionGetGameList();
-            }
-            else if (ACTION_GET_GAME_INSTANCE_LIST.equals(action)) {
-                handleActionGetGameInstanceList();
-            }
-            else if (ACTION_GET_PLAYER_LIST.equals(action)) {
-                handleActionGetPlayerList();
-            }
-            else if (ACTION_GET_MAP_IMAGE.equals(action)) {
-                final GameMapEntity map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
-                handleActionGetMapImage(map);
-            }
-            else if (ACTION_UPLOAD_MAP_IMAGE.equals(action)) {
-                final GameMapEntity map = intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT);
-                final String fileName = intent.getStringExtra(EXTRA_GAME_MAP_FILE);
-                handleActionUploadMapImage(map, fileName);
-            }
-            else if (ACTION_DELETE_ENTITY.equals(action)) {
-                final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionDeleteEntity(item);
-            }
-            else if (ACTION_SAVE_ENTITY.equals(action)) {
-                final BasicNamedDbEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                String responseAction = intent.getStringExtra(EXTRA_RESPONSE_ACTION);
-                handleActionSaveEntity(item, responseAction);
-            }
-            else if (ACTION_FINISH_GAME_INSTANCE.equals(action)) {
-                final GameInstanceEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionFinishGameInstance(item);
-            }
-            else if (ACTION_MOOVE_GAME_INSTANCE.equals(action)) {
-                final GameInstanceEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionMooveGameInstance(item);
-            }
-            else if (ACTION_START_GAME_INSTANCE.equals(action)) {
-                final StartNewGameRequestParam item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionStartGameInstance(item);
-            }
-            else if (ACTION_RESTART_GAME_INSTANCE.equals(action)) {
-                final GameInstanceEntity item = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionReStartGameInstance(item);
-            }
-            else if (ACTION_REMOVE_CHILD.equals(action)) {
-                final String parentId = intent.getStringExtra(EXTRA_PARENT_ID);
-                final String childName = intent.getStringExtra(EXTRA_CHILD_NAME);
-                final int childIndex = intent.getIntExtra(EXTRA_CHILD_INDEX, -1);
-                handleActionRemoveChild(parentId, childName, childIndex);
-            }
-            else if (ACTION_ADD_CHILD.equals(action)) {
-                final String parentId = intent.getStringExtra(EXTRA_PARENT_ID);
-                final String childName = intent.getStringExtra(EXTRA_CHILD_NAME);
-                final Parcelable childEntity = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
-                handleActionAddChild(parentId, childName, childEntity);
-            }
     }
 
     private void sendResponseIntent(String action, Bundle params){
