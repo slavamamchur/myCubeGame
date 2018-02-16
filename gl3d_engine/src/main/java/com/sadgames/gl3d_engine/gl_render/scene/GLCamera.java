@@ -8,6 +8,8 @@ import javax.vecmath.Vector3f;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLAnimation.ROTATE_BY_X;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLAnimation.ROTATE_BY_Y;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLAnimation.ROTATE_BY_Z;
+import static com.sadgames.sysutils.common.MathUtils.cos;
+import static com.sadgames.sysutils.common.MathUtils.sin;
 
 public class GLCamera implements GLAnimation.IAnimatedObject {
 
@@ -152,7 +154,7 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
     public float getPitch() {
         return pitch;
-    }
+    }//TODO: move camera and save direction !!!
     public float getYaw() {
         return yaw;
     }
@@ -215,6 +217,16 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         if ((rotationAxesMask & ROTATE_BY_Z) != 0) roll += angle;
 
         updateViewMatrix();
+    }
+
+    public void rotateAroundViewPoint(float angle) {
+        Vector3f cameraPos = getCameraPosition();
+        Vector3f direction = getCameraDirection();
+
+        cameraPos.x = cos(angle) * (cameraPos.x - direction.x) - sin(angle) * (cameraPos.z - direction.z) + direction.x;
+        cameraPos.z = sin(angle) * (cameraPos.x - direction.x) + cos(angle) * (cameraPos.z - direction.z) + direction.z;
+
+        directSetYawByDirection(getCameraDirection(cameraPos));
     }
 
     @Override

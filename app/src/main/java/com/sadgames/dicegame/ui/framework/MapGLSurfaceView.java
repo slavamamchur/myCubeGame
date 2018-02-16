@@ -10,11 +10,6 @@ import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
-import javax.vecmath.Vector3f;
-
-import static com.sadgames.sysutils.common.MathUtils.cos;
-import static com.sadgames.sysutils.common.MathUtils.sin;
-
 public class MapGLSurfaceView extends GLSurfaceView {
 
     private static final float TOUCH_SCALE_FACTOR = 22.5f / 320;
@@ -24,7 +19,6 @@ public class MapGLSurfaceView extends GLSurfaceView {
     private float mPreviousX;
     private float mPreviousY;
     private float mScaleFactor = 1.0f;
-    private float mRotationAngle = 0.0f;
 
     private ScaleGestureDetector mScaleDetector;
 
@@ -66,15 +60,10 @@ public class MapGLSurfaceView extends GLSurfaceView {
                 camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
 
                 /** Rotate camera around scene */
-                mRotationAngle = dx * TOUCH_SCALE_FACTOR * 2;
-                Vector3f cameraPos = camera.getCameraPosition();
-                Vector3f direction = camera.getCameraDirection();
-                cameraPos.x = cos(mRotationAngle) * (cameraPos.x - direction.x) - sin(mRotationAngle) * (cameraPos.z - direction.z) + direction.x;
-                cameraPos.z = sin(mRotationAngle) * (cameraPos.x - direction.x) + cos(mRotationAngle) * (cameraPos.z - direction.z) + direction.z;
-                camera.directSetYawByDirection(camera.getCameraDirection(cameraPos));
+                camera.rotateAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
 
-                /** turn head horizontally
-                camera.directSetYaw(camera.getYaw() + (dx * TOUCH_SCALE_FACTOR)); */
+                /** turn head horizontally */
+                ///camera.directSetYaw(camera.getYaw() + (dx * TOUCH_SCALE_FACTOR));
 
                 camera.updateViewMatrix();
                 mRenderer.getScene().getLightSource().setLightPosInEyeSpace();
