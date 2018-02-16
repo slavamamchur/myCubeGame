@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bulletphysics.dynamics.DynamicsWorld;
+import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
+import com.sadgames.dicegame.logic.client.DiceGameLogic;
 import com.sadgames.dicegame.logic.client.GameConst;
 import com.sadgames.dicegame.logic.client.entities.DiceGameMap;
 import com.sadgames.dicegame.logic.client.entities.items.ChipItem;
@@ -47,7 +49,6 @@ import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.vecmath.Vector3f;
 
@@ -80,14 +81,12 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     private GameInstanceEntity gameInstanceEntity = null;
     private Bitmap cachedBitmap;/** Disable editor */
     private SysUtilsWrapperInterface sysUtilsWrapper;
+    private DiceGameLogic gameLogic;
 
     public List<InstancePlayer> savedPlayers = null;
     public GLSurfaceView glMapSurfaceView;
     public AndroidGLES20Renderer glRenderer;
 
-    public interface ChipAnimadedDelegate {
-        void onAnimationEnd();
-    }
 
     public MapFragment() {}
 
@@ -95,39 +94,31 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        glMapSurfaceView = new MapGLSurfaceView(getContext());
         sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getContext());
         glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper, this);
+        gameLogic = new DiceGameLogic(sysUtilsWrapper,
+                                      AndroidRestApiWrapper.getInstance(getContext()),
+                                      glRenderer.getScene());
 
+        glMapSurfaceView = new MapGLSurfaceView(getContext());
         return  glMapSurfaceView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         glMapSurfaceView.setRenderer(glRenderer);
     }
 
     @Override
     public void onPause() {
         glMapSurfaceView.onPause();
-
-        /*glRenderer.getScene().setRenderStopped(true);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        glRenderer.getScene().cleanUp();*/
-
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         glMapSurfaceView.onResume();
     }
 
@@ -158,13 +149,13 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
     public void InitMap(GameMapEntity map, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
         setMapEntity(map);
-        glRenderer.setMapID(map == null ? null : map.getId());
-
+        gameLogic.setMapEntity(map);
         setWebErrorHandler(errorHandler);
     }
 
     public void InitMap(GameEntity game, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
         setGameEntity(game);
+        gameLogic.setGameEntity(game);
 
         if (game != null) {
             GameMapEntity map = new GameMapEntity();
@@ -177,7 +168,9 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
     public void InitMap(GameInstanceEntity gameInst, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
         setGameInstanceEntity(gameInst);
+        gameLogic.setGameInstanceEntity(gameInst);
         savedPlayers = new ArrayList<>(gameInst != null ? gameInst.getPlayers() : null);
+        gameLogic.setSavedPlayers(savedPlayers);
         InitMap(gameInst == null ? null : gameInst.getGame(), errorHandler);
 
         if (gameInst == null)
@@ -190,30 +183,6 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         responseIntent.addCategory(Intent.CATEGORY_DEFAULT);
         responseIntent.putExtras(params);
         getContext().sendBroadcast(responseIntent);
-    }
-
-    public void playTurn() {
-        glRenderer.getScene().setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
-        glRenderer.getScene().getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-            @Override
-            public void onAnimationEnd() {
-                rollDice();
-            }
-        });
-    }
-
-    private void rollDice() {
-        GameDiceItem dice_1 = (GameDiceItem)glRenderer.getScene().getObject(DICE_MESH_OBJECT_1);
-        dice_1.createRigidBody();
-        ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
-        ///dice_1.get_body().setWorldTransformMatrix(tr);
-        Random rnd = new Random(System.currentTimeMillis());
-        int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(3) * 1f;
-        float fxz = fy * 2f / 3f;
-        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
-        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
-        glRenderer.getScene().getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
 
     private void removeDice(GameDiceItem dice) {
@@ -403,7 +372,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
-    public void movingChipAnimation(ChipAnimadedDelegate delegate) {
+    public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;
 
@@ -442,7 +411,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
     }
 
-    private void animateChip(final ChipAnimadedDelegate delegate, AbstractGamePoint endGamePoint, int playersCnt, AbstractGL3DObject chip) throws Exception {
+    private void animateChip(GLAnimation.AnimationCallBack delegate, AbstractGamePoint endGamePoint, int playersCnt, AbstractGL3DObject chip) throws Exception {
         playersCnt = playersCnt < 0 ? 0 : playersCnt;
 
         if (endGamePoint == null)
@@ -461,13 +430,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
 
         chip.setPlace(chipPlace);
         chip.setAnimation(move);
-        move.startAnimation(chip, new GLAnimation.AnimationCallBack() {
-
-            @Override
-            public void onAnimationEnd() {
-                if (delegate != null) delegate.onAnimationEnd();
-            }
-        });
+        move.startAnimation(chip, delegate);
     }
 
     public void saveMapImage(Intent data, GameMapEntity map){
@@ -498,6 +461,9 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     }
     public Bitmap getBitmap() {
         return cachedBitmap;
+    }
+    public DiceGameLogic getGameLogic() {
+        return gameLogic;
     }
 
     public void updateMap() {

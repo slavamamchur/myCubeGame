@@ -22,6 +22,7 @@ import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.framework.MapFragment;
+import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -191,7 +192,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     }
 
     private final Handler mHandler = new Handler();
-    MapFragment.ChipAnimadedDelegate animationListener = new MapFragment.ChipAnimadedDelegate() {
+    GLAnimation.AnimationCallBack animationListener = new GLAnimation.AnimationCallBack() {
         @Override
         public void onAnimationEnd() {
             mHandler.postDelayed(new Runnable() {
@@ -259,7 +260,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     //TODO: disable buttons
     private void playTurn() {
         prev_player_index = getItem().getCurrentPlayer();
-        mMapFragment.playTurn();
+        mMapFragment.getGameLogic().playTurn();
     }
 
     private void showAnimatedText(String text) {

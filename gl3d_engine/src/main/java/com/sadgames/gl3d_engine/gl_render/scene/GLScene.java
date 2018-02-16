@@ -100,9 +100,6 @@ public class GLScene implements GLRendererInterface {
         this.gameEventsCallBack = gameEventsCallBack;
         this.hasDepthTextureExtension = checkDepthTextureExtension();
         this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
-
-        glES20Wrapper.glEnableFacesCulling();
-        glES20Wrapper.glEnableDepthTest();
     }
 
     private boolean checkDepthTextureExtension() {
@@ -538,6 +535,9 @@ public class GLScene implements GLRendererInterface {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        glES20Wrapper.glEnableFacesCulling();
+        glES20Wrapper.glEnableDepthTest();
+
         setmDisplayWidth(width);
         setmDisplayHeight(height);
         getCamera().setAspectRatio(width, height);

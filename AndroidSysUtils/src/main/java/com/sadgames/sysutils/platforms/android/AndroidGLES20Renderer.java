@@ -12,7 +12,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
 
-    private String mapID = null; /** for map editor */
     private GLRendererInterface mScene;
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBack;
@@ -20,18 +19,15 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
     public AndroidGLES20Renderer(SysUtilsWrapperInterface sysUtilsWrapper, GameEventsCallbackInterface gameEventsCallBack) {
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.gameEventsCallBack = gameEventsCallBack;
+        this.mScene = new GLScene(sysUtilsWrapper, gameEventsCallBack);
     }
 
     public GLScene getScene() {
         return mScene.getSceneObject();
     }
-    public void setMapID(String mapID) {
-        this.mapID = mapID;
-    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        mScene = new GLScene(sysUtilsWrapper, gameEventsCallBack);
         mScene.onSurfaceCreated(gl, config);
     }
 
