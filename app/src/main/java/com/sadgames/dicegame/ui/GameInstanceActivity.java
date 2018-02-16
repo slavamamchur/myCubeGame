@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
-import static com.sadgames.dicegame.RestApiService.startActionMooveGameInstance;
+import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
@@ -38,10 +38,11 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_I
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 
-public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> implements BaseItemDetailsActivity.WebErrorHandler {
+public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> {
 
     public static final String FINISHED_FIELD_NAME = "finished";
     public static final String SKIPPED_FIELD_NAME = "skipped";
@@ -82,8 +83,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         playersFragment.getView().setBackgroundColor(0x40000000);
 
         if(getItem() != null && getItem().getId() != null){
-            //showProgress();
-            mMapFragment.InitMap(getItem(), this);
+            mMapFragment.InitMap(getItem());
         }
     }
 
@@ -132,27 +132,23 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     }
 
     @Override
-    public void onError(ErrorEntity error) {
-        showError(error);
-    }
-
-    @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
-
         intentFilter.addAction(ACTION_FINISH_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_RESTART_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_MOOVE_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_SHOW_TURN_INFO);
-
-        mMapFragment.setIntentFilters(intentFilter);
 
         return intentFilter;
     }
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (mMapFragment.handleWebServiceResponseAction(intent)) return true;
+        ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+        if (error != null) {
+            showError(error);
+            return true;
+        }
 
         UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
         switch (actionType) {
@@ -197,7 +193,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         public void onAnimationEnd() {
             mHandler.postDelayed(new Runnable() {
                 @Override
-                public void run() {startActionMooveGameInstance(GameInstanceActivity.this, getItem());}
+                public void run() {
+                    startActionMoveGameInstance(GameInstanceActivity.this, getItem());}
             }, 1000);
         }
     };

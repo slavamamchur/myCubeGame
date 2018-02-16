@@ -178,7 +178,7 @@ public class RestApiService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionMooveGameInstance(Context context, GameInstanceEntity instance) {
+    public static void startActionMoveGameInstance(Context context, GameInstanceEntity instance) {
         Intent intent = getIntent(context, ACTION_MOOVE_GAME_INSTANCE);
         intent.putExtra(EXTRA_ENTITY_OBJECT, instance);
 

@@ -1,7 +1,6 @@
 package com.sadgames.dicegame.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.MapFragment;
@@ -18,7 +16,7 @@ import com.sadgames.sysutils.common.DateTimeUtils;
 
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
 
-public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> implements BaseItemDetailsActivity.WebErrorHandler {
+public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> {
 
     public static final int UPLOAD_MAP_IMAGE_ACTION = 2;
 
@@ -42,7 +40,7 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> impl
 
         if(getItem() != null && getItem().getId() != null){
             showProgress();
-            mMapFragment.InitMap(getItem(), this);
+            mMapFragment.InitMap(getItem());
         }
     }
 
@@ -52,14 +50,6 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> impl
         mMapFragment.setIntentFilters(intentFilter);
 
         return intentFilter;
-    }
-
-    @Override
-    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (mMapFragment.handleWebServiceResponseAction(intent))
-            return  true;
-        else
-            return super.handleWebServiceResponseAction(context, intent);
     }
 
     @Override
@@ -97,8 +87,4 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> impl
             super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onError(ErrorEntity error) {
-        showError(error);
-    }
 }

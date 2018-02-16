@@ -30,7 +30,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.EDIT_ENTITY_TAG;
 import static com.sadgames.dicegame.ui.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
-public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements BaseItemDetailsActivity.WebErrorHandler {
+public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
 
     private static final String X_POS_FIELD_NAME = "xPos";
     private static final String Y_POS_FIELD_NAME = "yPos";
@@ -62,7 +62,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
 
         if(getItem() != null && getItem().getId() != null){
             //showProgress();
-            mMapFragment.InitMap(getItem(), this);
+            mMapFragment.InitMap(getItem());
         }
     }
 
@@ -109,11 +109,6 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
     }
 
     @Override
-    public void onError(ErrorEntity error) {
-        showError(error);
-    }
-
-    @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
         intentFilter.addAction(ACTION_ADD_CHILD_RESPONSE);
@@ -125,9 +120,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        if (mMapFragment.handleWebServiceResponseAction(intent))
-            return  true;
-        else if (intent.getAction().equals(ACTION_ADD_CHILD_RESPONSE)) {
+        if (intent.getAction().equals(ACTION_ADD_CHILD_RESPONSE)) {
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 NewPointRequest result = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);

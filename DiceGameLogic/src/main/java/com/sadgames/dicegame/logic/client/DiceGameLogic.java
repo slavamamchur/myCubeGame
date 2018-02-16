@@ -83,6 +83,22 @@ public class DiceGameLogic {
         gl3DScene.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
 
+    public void removeDice(GameDiceItem dice) {
+        //toggleActionBarProgress(true);
+        if (gameInstanceEntity != null) {
+            gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
+            restApiWrapper.showTurnInfo(gameInstanceEntity);
 
+            gl3DScene.setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
+            gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
+                @Override
+                public void onAnimationEnd() {
+                    restApiWrapper.moveGameInstance(gameInstanceEntity);
+                }
+            });
+
+            dice.setPosition(new Vector3f(100, 0, 0));
+        }
+    }
 
 }

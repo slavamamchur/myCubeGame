@@ -3,7 +3,6 @@ package com.sadgames.dicegame.ui.framework;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
@@ -24,7 +23,6 @@ import com.sadgames.dicegame.logic.client.GameConst;
 import com.sadgames.dicegame.logic.client.entities.DiceGameMap;
 import com.sadgames.dicegame.logic.client.entities.items.ChipItem;
 import com.sadgames.dicegame.logic.client.entities.items.GameDiceItem;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
@@ -50,17 +48,12 @@ import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
-
-import static com.sadgames.dicegame.RestApiService.startActionMooveGameInstance;
+import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MAP_IMAGE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SEA_BOTTOM_TEXTURE;
@@ -69,17 +62,14 @@ import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.CHIP_MESH_OBJECT
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
-import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
 public class MapFragment extends Fragment implements GameEventsCallbackInterface {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
 
-    private BaseItemDetailsActivity.WebErrorHandler webErrorHandler = null;
     private GameMapEntity mapEntity = null;
     private GameEntity gameEntity = null;
     private GameInstanceEntity gameInstanceEntity = null;
-    private Bitmap cachedBitmap;/** Disable editor */
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private DiceGameLogic gameLogic;
 
@@ -111,6 +101,12 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     }
 
     @Override
+    public void onDetach() {
+        AndroidRestApiWrapper.releaseInstance();
+        super.onDetach();
+    }
+
+    @Override
     public void onPause() {
         glMapSurfaceView.onPause();
         super.onPause();
@@ -127,83 +123,28 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         intentFilter.addAction(ACTION_UPLOAD_IMAGE_RESPONSE);
     }
 
-    public void setWebErrorHandler(BaseItemDetailsActivity.WebErrorHandler webErrorHandler) {
-        this.webErrorHandler = webErrorHandler;
-    }
-
-    public boolean handleWebServiceResponseAction(Intent intent) {
-        ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
-        if (error != null) {
-            if (webErrorHandler != null)
-                webErrorHandler.onError(error);
-            return true;
-        }
-
-        if (intent.getAction().equals(ACTION_UPLOAD_IMAGE_RESPONSE)) {
-            RestApiService.startActionGetMapImage(getContext(), mapEntity);
-            return true;
-        }
-        else
-            return intent.getAction().equals(ACTION_MAP_IMAGE_RESPONSE);
-    }
-
-    public void InitMap(GameMapEntity map, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
+    public void InitMap(GameMapEntity map) {
         setMapEntity(map);
         gameLogic.setMapEntity(map);
-        setWebErrorHandler(errorHandler);
     }
 
-    public void InitMap(GameEntity game, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
+    public void InitMap(GameEntity game) {
         setGameEntity(game);
         gameLogic.setGameEntity(game);
 
         if (game != null) {
             GameMapEntity map = new GameMapEntity();
             map.setId(game.getMapId());
-            InitMap(map, errorHandler);
+            InitMap(map);
         }
-        else
-            setWebErrorHandler(errorHandler);
     }
 
-    public void InitMap(GameInstanceEntity gameInst, BaseItemDetailsActivity.WebErrorHandler errorHandler) {
+    public void InitMap(GameInstanceEntity gameInst) {
         setGameInstanceEntity(gameInst);
         gameLogic.setGameInstanceEntity(gameInst);
         savedPlayers = new ArrayList<>(gameInst != null ? gameInst.getPlayers() : null);
         gameLogic.setSavedPlayers(savedPlayers);
-        InitMap(gameInst == null ? null : gameInst.getGame(), errorHandler);
-
-        if (gameInst == null)
-            setWebErrorHandler(errorHandler);
-    }
-
-    private void sendResponseIntent(String action, Bundle params){
-        Intent responseIntent = new Intent();
-        responseIntent.setAction(action);
-        responseIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        responseIntent.putExtras(params);
-        getContext().sendBroadcast(responseIntent);
-    }
-
-    private void removeDice(GameDiceItem dice) {
-        //toggleActionBarProgress(true);
-        if (gameInstanceEntity != null) {
-            gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
-
-            Bundle params = new Bundle();
-            params.putInt(EXTRA_DICE_VALUE, gameInstanceEntity.getStepsToGo());
-            sendResponseIntent(ACTION_SHOW_TURN_INFO, params);
-
-            glRenderer.getScene().setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
-            glRenderer.getScene().getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-                @Override
-                public void onAnimationEnd() {
-                    startActionMooveGameInstance(getContext(), gameInstanceEntity);
-                }
-            });
-
-            dice.setPosition(new Vector3f(100, 0, 0));
-        }
+        InitMap(gameInst == null ? null : gameInst.getGame());
     }
 
     public void finishGame() {
@@ -231,7 +172,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     @Override
     public void onStopMovingObject(PNodeObject gameObject) {
         if (gameObject instanceof GameDiceItem)
-            removeDice((GameDiceItem) gameObject);
+            gameLogic.removeDice((GameDiceItem) gameObject);
     }
 
     @Override
@@ -404,7 +345,7 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
                 e.printStackTrace();
             }
         else
-            startActionMooveGameInstance(getContext(), gameInstanceEntity);
+            startActionMoveGameInstance(getContext(), gameInstanceEntity);
 
         if (savedPlayers != null)
             savedPlayers.clear();
@@ -458,9 +399,6 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     }
     public void setGameInstanceEntity(GameInstanceEntity gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
-    }
-    public Bitmap getBitmap() {
-        return cachedBitmap;
     }
     public DiceGameLogic getGameLogic() {
         return gameLogic;
