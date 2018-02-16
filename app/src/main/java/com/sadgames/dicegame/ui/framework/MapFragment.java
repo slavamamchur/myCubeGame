@@ -399,7 +399,9 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     }
     public void setGameInstanceEntity(GameInstanceEntity gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
+        gameLogic.setGameInstanceEntity(gameInstanceEntity);
     }
+
     public DiceGameLogic getGameLogic() {
         return gameLogic;
     }
