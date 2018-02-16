@@ -28,9 +28,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
-import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
-import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
@@ -194,7 +191,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActionMoveGameInstance(GameInstanceActivity.this, getItem());}
+                    mMapFragment.getGameLogic().playerNextMove(getItem());
+                }
             }, 1000);
         }
     };
@@ -273,11 +271,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     private void finishGame() {
         showProgress();
-        startActionFinishGameInstance(this, getItem());
+        mMapFragment.getGameLogic().requestFinishGame();
     }
 
     private void restartGame() {
         showProgress();
-        startActionRestartGameInstance(this, getItem());
+        mMapFragment.getGameLogic().requestRestartGame();
     }
 }

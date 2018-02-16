@@ -7,7 +7,9 @@ import android.os.Bundle;
 import com.sadgames.dicegame.logic.server.rest_api.RestApiInterface;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 
+import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
+import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 
@@ -45,6 +47,16 @@ public class AndroidRestApiWrapper implements RestApiInterface {
     @Override
     public void moveGameInstance(GameInstanceEntity gameInstanceEntity) {
         startActionMoveGameInstance(context, gameInstanceEntity);
+    }
+
+    @Override
+    public void finishGameInstance(GameInstanceEntity gameInstanceEntity) {
+        startActionFinishGameInstance(context, gameInstanceEntity);
+    }
+
+    @Override
+    public void restartGameInstance(GameInstanceEntity gameInstanceEntity) {
+        startActionRestartGameInstance(context, gameInstanceEntity);
     }
 
     @Override

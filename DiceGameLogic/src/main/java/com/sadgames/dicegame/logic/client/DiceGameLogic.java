@@ -99,10 +99,20 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         });
     }
 
+    public void playerNextMove(GameInstanceEntity gameInstance) {
+        restApiWrapper.moveGameInstance(gameInstance);
+    }
+
+    public void requestFinishGame() {
+        restApiWrapper.finishGameInstance(gameInstanceEntity);
+    }
     public void onGameFinished() {
         gameInstanceEntity.setState(GameInstanceEntity.State.FINISHED);
     }
 
+    public void requestRestartGame() {
+        restApiWrapper.restartGameInstance(gameInstanceEntity);
+    }
     public void onGameRestarted() {
         gameInstanceEntity.setState(GameInstanceEntity.State.WAIT);
         gameInstanceEntity.setCurrentPlayer(0);
@@ -364,7 +374,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
                 @Override
                 public void onAnimationEnd() {
-                    restApiWrapper.moveGameInstance(gameInstanceEntity);
+                    playerNextMove(gameInstanceEntity);
                 }
             });
 
