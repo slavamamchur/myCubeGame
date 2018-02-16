@@ -1,13 +1,11 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PointF;
-import android.support.annotation.NonNull;
-
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.common.ColorUtils;
+
+import javax.vecmath.Vector2f;
 
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.LAND_SIZE_IN_KM;
@@ -82,7 +80,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         xCoord = xCoord > dimension ? dimension : xCoord;
         yCoord = yCoord > dimension ? dimension : yCoord;
 
-        return getYValueInternal(map, xCoord, yCoord, map.getPixelColor(new Point(xCoord, yCoord)));
+        return getYValueInternal(map, xCoord, yCoord, map.getPixelColor(xCoord, yCoord));
     }
 
     protected float getYValueInternal(BitmapWrapperInterface map, int xCoord, int yCoord, int vColor) {
@@ -96,7 +94,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         float deltaY = getLandScale() * (MAX_HEIGHT_VALUES[cType.ordinal()] - MIN_HEIGHT_VALUES[cType.ordinal()]);
         float minY = getLandScale() * MIN_HEIGHT_VALUES[cType.ordinal()];
 
-        float colorLight = Color.red(vColor) + Color.green(vColor) + Color.blue(vColor) - MIN_COLOR_VALUES[cType.ordinal()];
+        float colorLight = ColorUtils.red(vColor) + ColorUtils.green(vColor) + ColorUtils.blue(vColor) - MIN_COLOR_VALUES[cType.ordinal()];
         float deltaLight = DELTA_COLOR_VALUES[cType.ordinal()];
 
         float kXZ = colorLight / deltaLight;
@@ -109,9 +107,9 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     protected static ColorType CheckColorType(Integer color){
-        int R = Color.red(color);
-        int G = Color.green(color);
-        int B = Color.blue(color);
+        int R = ColorUtils.red(color);
+        int G = ColorUtils.green(color);
+        int B = ColorUtils.blue(color);
 
         if ((G <= B) && (R < G))
             return G <= 0.5 * B ? ColorType.BLUE : ColorType.CYAN; //B <= 231 ? BLUE : CYAN;//
@@ -139,7 +137,6 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         return landSize / LAND_SIZE_IN_KM;
     }
 
-    @NonNull
     protected int interpolateUnknownColorValue(BitmapWrapperInterface map, int xCoord, int yCoord) {
         int count = 0, R = 0, G = 0, B = 0;
 
@@ -149,10 +146,10 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
                     if ( !((i == xCoord) && (j == yCoord)) && (i <= dimension)
                          && (j <= dimension)
                         ) {
-                        int color = map.getPixelColor(new Point(i, j));
-                        R += Color.red(color);
-                        G += Color.green(color);
-                        B += Color.blue(color);
+                        int color = map.getPixelColor(i, j);
+                        R += ColorUtils.red(color);
+                        G += ColorUtils.green(color);
+                        B += ColorUtils.blue(color);
 
                         count++;
                     }
@@ -162,11 +159,11 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         G /= count;
         B /= count;
 
-        return Color.argb(255, R, G, B);
+        return ColorUtils.argb(255, R, G, B);
     }
 
-    public PointF map2WorldCoord(PointF texPoint) {
-        PointF result = new PointF();
+    public Vector2f map2WorldCoord(Vector2f texPoint) {
+        Vector2f result = new Vector2f();
         result.x = texPoint.x * scaleX  - (LAND_WIDTH / 2);
         result.y = texPoint.y * scaleZ  - (LAND_HEIGHT / 2);
 

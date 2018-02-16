@@ -1,6 +1,5 @@
 package com.sadgames.gl3d_engine.gl_render.scene.objects;
 
-import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -13,6 +12,7 @@ import com.sadgames.gl3d_engine.gl_render.scene.shaders.params.GLShaderParamVBO;
 
 import java.nio.ShortBuffer;
 
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
@@ -43,7 +43,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     private float[] modelMatrix = new float[16];
     private GLShaderProgram program;
     private GLAnimation animation = null;
-    private PointF place = new PointF(0, 0);
+    private Vector2f place = new Vector2f(0, 0);
     private float rotationX = 0;
     private float rotationY = 0;
     private float rotationZ = 0;
@@ -145,10 +145,10 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public GLShaderProgram getProgram() {
         return program;
     }
-    public PointF getPlace() {
+    public Vector2f getPlace() {
         return place;
     }
-    public void setPlace(PointF place) {
+    public void setPlace(Vector2f place) {
         this.place = place;
     }
 
@@ -291,7 +291,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
         Matrix.rotateM(modelMatrix, 0, angle, 0, 1, 0);
     }*/
 
-    public void setInWorldPosition(PointF newPlace) {
+    public void setInWorldPosition(Vector2f newPlace) {
         setPlace(newPlace);
         updateTransform();
     }
@@ -354,7 +354,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
 
     @Override
     public void setPosition(Vector3f position) {
-        setInWorldPosition(new PointF(position.x, position.z));
+        setInWorldPosition(new Vector2f(position.x, position.z));
     }
 
     @Override

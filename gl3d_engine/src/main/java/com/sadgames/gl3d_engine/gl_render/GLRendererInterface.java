@@ -1,6 +1,7 @@
 package com.sadgames.gl3d_engine.gl_render;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
+import com.sadgames.gl3d_engine.GameEventsCallbackInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -17,5 +18,6 @@ public interface GLRendererInterface {
     void onDrawFrame(GL10 gl);
 
     DiscreteDynamicsWorld getPhysicalWorldObject();
+    void setGameEventsCallBack(GameEventsCallbackInterface gameEventsCallBack);
 
 }

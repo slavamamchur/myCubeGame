@@ -16,14 +16,18 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBack;
 
-    public AndroidGLES20Renderer(SysUtilsWrapperInterface sysUtilsWrapper, GameEventsCallbackInterface gameEventsCallBack) {
+    public AndroidGLES20Renderer(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
-        this.gameEventsCallBack = gameEventsCallBack;
-        this.mScene = new GLScene(sysUtilsWrapper, gameEventsCallBack);
+        mScene = new GLScene(sysUtilsWrapper);
     }
 
     public GLScene getScene() {
         return mScene.getSceneObject();
+    }
+
+    public void setGameEventsCallBack(GameEventsCallbackInterface gameEventsCallBack) {
+        this.gameEventsCallBack = gameEventsCallBack;
+        mScene.setGameEventsCallBack(gameEventsCallBack);
     }
 
     @Override

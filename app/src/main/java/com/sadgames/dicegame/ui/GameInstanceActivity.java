@@ -168,7 +168,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
                 if (!GameInstanceEntity.State.WAIT.equals(instance.getState())
                         && !GameInstanceEntity.State.FINISHED.equals(instance.getState())
                         )
-                    mMapFragment.movingChipAnimation(animationListener);
+                    mMapFragment.getGameLogic().movingChipAnimation(animationListener);
 
                 else {
                     //toggleActionBarProgress(false);
@@ -221,7 +221,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         playersFragment.selecItem(getItem().getCurrentPlayer());
         playersFragment.setItems(getItem().getPlayers());
 
-        mMapFragment.setGameInstanceEntity(getItem());
+        mMapFragment.getGameLogic().setGameInstanceEntity(getItem());
     }
 
     @Override

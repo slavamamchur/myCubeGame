@@ -93,11 +93,10 @@ public class GLScene implements GLRendererInterface {
     private GLES20APIWrapperInterface glES20Wrapper;
     private GraphicsQuality graphicsQualityLevel;
 
-    public GLScene(SysUtilsWrapperInterface sysUtilsWrapper, GameEventsCallbackInterface gameEventsCallBack) {
+    public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
         glES20Wrapper = sysUtilsWrapper.iGetGLES20WrapperInterface();
 
         this.sysUtilsWrapper = sysUtilsWrapper;
-        this.gameEventsCallBack = gameEventsCallBack;
         this.hasDepthTextureExtension = checkDepthTextureExtension();
         this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
     }
@@ -154,9 +153,12 @@ public class GLScene implements GLRendererInterface {
     public void setSimulation_time(long simulation_time) {
         this.simulation_time = simulation_time;
     }
+
+    @Override
     public void setGameEventsCallBack(GameEventsCallbackInterface gameEventsCallBack) {
         this.gameEventsCallBack = gameEventsCallBack;
     }
+
     public void setRenderStopped(boolean renderStopped) {
         isRenderStopped = renderStopped;
     }

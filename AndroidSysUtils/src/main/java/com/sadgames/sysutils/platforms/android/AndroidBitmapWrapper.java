@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 
 import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
 
@@ -34,8 +33,8 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
-    public int getPixelColor(Point position) {
-        return picture.getPixel(position.x, position.y);
+    public int getPixelColor(int x, int y) {
+        return picture.getPixel(x, y);
     }
 
     @Override
