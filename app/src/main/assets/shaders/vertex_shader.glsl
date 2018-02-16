@@ -39,7 +39,7 @@ void main()
 
     //Guard shading model --------------------------------------------------------------------------
     lightvector = u_lightPosition - v_Position;
-    lookvector = u_camera - v_Position;
+    lookvector = u_camera - v_Position; //- v_Position;
     //wlookvector = -u_camera;
 
     vec3 n_normal = normalize(v_Normal);
