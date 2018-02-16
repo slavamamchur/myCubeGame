@@ -2,7 +2,6 @@ package com.sadgames.dicegame.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
@@ -42,14 +41,6 @@ public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> {
             showProgress();
             mMapFragment.InitMap(getItem());
         }
-    }
-
-    @Override
-    protected IntentFilter getIntentFilter() {
-        IntentFilter intentFilter = super.getIntentFilter();
-        mMapFragment.setIntentFilters(intentFilter);
-
-        return intentFilter;
     }
 
     @Override

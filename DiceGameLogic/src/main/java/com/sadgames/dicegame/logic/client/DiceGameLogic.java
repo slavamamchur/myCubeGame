@@ -1,21 +1,29 @@
 package com.sadgames.dicegame.logic.client;
 
+import android.graphics.PointF;
+
 import com.sadgames.dicegame.logic.client.entities.items.GameDiceItem;
 import com.sadgames.dicegame.logic.server.rest_api.RestApiInterface;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
 import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
 import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3d_engine.gl_render.scene.objects.TopographicMapObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import javax.vecmath.Vector3f;
 
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
+import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3d_engine.gl_render.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
 public class DiceGameLogic {
@@ -67,6 +75,87 @@ public class DiceGameLogic {
                 rollDice();
             }
         });
+    }
+
+    public void onGameFinished() {
+        gameInstanceEntity.setState(GameInstanceEntity.State.FINISHED);
+    }
+
+    public void onGameRestarted() {
+        gameInstanceEntity.setState(GameInstanceEntity.State.WAIT);
+        gameInstanceEntity.setCurrentPlayer(0);
+        gameInstanceEntity.setStepsToGo(0);
+        for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
+            player.setCurrentPoint(0);
+            player.setFinished(false);
+            player.setSkipped(false);
+        }
+
+        updateMap();
+    }
+
+    private void updateMap() {
+        if (mapEntity == null || mapEntity.getId() == null)
+            return;
+
+        savedPlayers.clear();
+        savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
+
+        moveChips(gl3DScene);
+    }
+
+    public void moveChips(GLScene mScene) {
+        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+
+        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
+            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
+            PointF chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
+
+            AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + player.getName());
+
+            chip.setInWorldPosition(chipPlace);
+        }
+    }
+
+    public PointF getChipPlaceByWayPoint(GLScene mScene, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
+        int currentPointIdx = player.getCurrentPoint();
+        playersOnWayPoints[currentPointIdx]++;
+        int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
+        AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
+
+        return getChipPlace(mScene, point, playersCnt, rotate);
+    }
+
+    public PointF getChipPlace(GLScene mScene, AbstractGamePoint point, int playersCnt, boolean rotate) {
+        TopographicMapObject map = (TopographicMapObject) mScene.getObject(TERRAIN_MESH_OBJECT);
+        float scaleFactor = map.getGlTexture().getWidth() * 1.0f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
+        double toX2 = point.getxPos() * scaleFactor;
+        double toZ2 = point.getyPos() * scaleFactor;
+
+        if(rotate) {
+            double angle = getChipRotationAngle(playersCnt);
+            toX2 = point.getxPos() * scaleFactor - 7.5f * scaleFactor * Math.sin(angle);
+            toZ2 = point.getyPos() * scaleFactor - 7.5f * scaleFactor * Math.cos(angle);
+        }
+
+        return map.map2WorldCoord(new PointF((float)toX2, (float)toZ2));
+    }
+
+    private static double getChipRotationAngle(int playersCnt) {
+        if (playersCnt == 0)
+            return  0;
+
+        int part = 8, b;
+        double angle;
+
+        do {
+            angle = 360 / part;
+            b = part - 1;
+
+            part /= 2;
+        } while ( ((playersCnt & part) == 0) && (part != 1) );
+
+        return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
     private void rollDice() {

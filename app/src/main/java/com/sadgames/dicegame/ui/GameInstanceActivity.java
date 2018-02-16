@@ -153,7 +153,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
         switch (actionType) {
             case FINISH_GAME_INSTANCE_RESPONSE:
-                mMapFragment.finishGame();
+                mMapFragment.getGameLogic().onGameFinished();
                 setItemChanged(true);
 
                 return true;
@@ -206,7 +206,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     }
 
     private void resetGame() {
-        mMapFragment.restartGame();
+        mMapFragment.getGameLogic().onGameRestarted();
 
         setItemChanged(true);
 

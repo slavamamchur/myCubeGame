@@ -1,7 +1,6 @@
 package com.sadgames.dicegame.ui.framework;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.PointF;
 import android.net.Uri;
@@ -50,8 +49,6 @@ import java.util.List;
 
 import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MAP_IMAGE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_UPLOAD_IMAGE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
@@ -118,11 +115,6 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         glMapSurfaceView.onResume();
     }
 
-    public void setIntentFilters(IntentFilter intentFilter) {
-        intentFilter.addAction(ACTION_MAP_IMAGE_RESPONSE);
-        intentFilter.addAction(ACTION_UPLOAD_IMAGE_RESPONSE);
-    }
-
     public void InitMap(GameMapEntity map) {
         setMapEntity(map);
         gameLogic.setMapEntity(map);
@@ -147,26 +139,12 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         InitMap(gameInst == null ? null : gameInst.getGame());
     }
 
-    public void finishGame() {
-        gameInstanceEntity.setState(GameInstanceEntity.State.FINISHED);
-    }
-
-    public void restartGame() {
-        gameInstanceEntity.setState(GameInstanceEntity.State.WAIT);
-        gameInstanceEntity.setCurrentPlayer(0);
-        gameInstanceEntity.setStepsToGo(0);
-        for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
-            player.setCurrentPoint(0);
-            player.setFinished(false);
-            player.setSkipped(false);
-        }
-
-        updateMap();
-    }
-
     @Override
     public void onPerformUserAction(String action, Object[] params) {
-        handleUserAction(action, params);
+        UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(action)];
+        switch (actionType) {
+            default:
+        }
     }
 
     @Override
@@ -254,19 +232,6 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
                 prevChip = chip;
             }
             mScene.addObject(chip, chip.getItemName());
-
-            chip.setInWorldPosition(chipPlace);
-        }
-    }
-
-    public void moveChips(GLScene mScene) {
-        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
-
-        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
-            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            PointF chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
-
-            AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + player.getName());
 
             chip.setInWorldPosition(chipPlace);
         }
@@ -394,9 +359,11 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
     public void setMapEntity(GameMapEntity mapEntity) {
         this.mapEntity = mapEntity;
     }
+
     public void setGameEntity(GameEntity gameEntity) {
         this.gameEntity = gameEntity;
     }
+
     public void setGameInstanceEntity(GameInstanceEntity gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
         gameLogic.setGameInstanceEntity(gameInstanceEntity);
@@ -406,21 +373,4 @@ public class MapFragment extends Fragment implements GameEventsCallbackInterface
         return gameLogic;
     }
 
-    public void updateMap() {
-        if (mapEntity == null || mapEntity.getId() == null)
-            return;
-
-        savedPlayers.clear();
-        savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
-
-        moveChips(glRenderer.getScene());
-    }
-
-    private void handleUserAction(String action, Object[] params) {
-        UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(action)];
-
-        switch (actionType) {
-            default:
-        }
-    }
 }
