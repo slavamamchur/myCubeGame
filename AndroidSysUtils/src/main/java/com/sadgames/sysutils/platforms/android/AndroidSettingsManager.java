@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.sadgames.gl3d_engine.SettingsManagerInterface;
-import com.sadgames.gl3d_engine.gl_render.GLRenderConsts.GraphicsQuality;
+import com.sadgames.gl3dengine.SettingsManagerInterface;
+import com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
 
 public final class AndroidSettingsManager implements SettingsManagerInterface {
 

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.DBPlayerController;
-import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_PLAYER;
 

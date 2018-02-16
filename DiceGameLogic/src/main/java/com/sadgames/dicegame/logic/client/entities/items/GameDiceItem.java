@@ -1,12 +1,12 @@
 package com.sadgames.dicegame.logic.client.entities.items;
 
-import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
-import com.sadgames.gl3d_engine.gl_render.scene.objects.CubePrimitiveObject;
-import com.sadgames.gl3d_engine.gl_render.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.glrender.scene.objects.CubePrimitiveObject;
+import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.DICE_MESH_OBJECT_1;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DICE_MESH_OBJECT_1;
 
 
 public class GameDiceItem extends CubePrimitiveObject {

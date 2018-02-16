@@ -14,10 +14,10 @@ import android.media.MediaPlayer;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
-import com.sadgames.gl3d_engine.SettingsManagerInterface;
-import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
-import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
-import com.sadgames.gl3d_engine.gl_render.GLES20APIWrapperInterface;
+import com.sadgames.gl3dengine.SettingsManagerInterface;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.sadgames.gl3d_engine.gl_render.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
 
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {

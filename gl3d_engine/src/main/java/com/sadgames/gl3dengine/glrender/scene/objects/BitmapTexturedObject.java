@@ -1,0 +1,25 @@
+package com.sadgames.gl3dengine.glrender.scene.objects;
+
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
+import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+
+public abstract class BitmapTexturedObject extends AbstractGL3DObject {
+
+    public static final int DEFAULT_TEXTURE_SIZE = 500;
+
+    public BitmapTexturedObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, String textureResName, GLShaderProgram program) {
+        super(sysUtilsWrapper, type, program);
+
+        this.textureResName = textureResName;
+    }
+
+    public BitmapTexturedObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, GLShaderProgram program, int textureColor) {
+        super(sysUtilsWrapper, type, program);
+
+        this.textureColor = textureColor;
+    }
+
+    protected abstract int getDimension(BitmapWrapperInterface bmp);
+}

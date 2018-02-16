@@ -6,7 +6,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GenericCollectionResponse;
-import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;

@@ -22,7 +22,7 @@ import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.framework.MapFragment;
-import com.sadgames.gl3d_engine.gl_render.scene.GLAnimation;
+import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
 
 import java.util.ArrayList;
 import java.util.Timer;

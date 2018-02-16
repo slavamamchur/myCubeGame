@@ -20,7 +20,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntit
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.LoginActivity;
 import com.sadgames.dicegame.ui.SettingsActivity;
-import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING_RESPONSE;

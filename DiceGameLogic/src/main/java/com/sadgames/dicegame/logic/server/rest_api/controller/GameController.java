@@ -5,7 +5,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.NewPointRequest;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameCollectionResponse;
-import com.sadgames.gl3d_engine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

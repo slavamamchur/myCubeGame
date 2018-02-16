@@ -6,8 +6,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
-import com.sadgames.gl3d_engine.gl_render.scene.GLCamera;
-import com.sadgames.gl3d_engine.gl_render.scene.GLScene;
+import com.sadgames.gl3dengine.glrender.scene.GLCamera;
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 public class MapGLSurfaceView extends GLSurfaceView {

@@ -6,7 +6,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.sadgames.gl3d_engine.gl_render.BitmapWrapperInterface;
+import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
