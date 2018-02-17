@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.fbo;
 
-import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 
@@ -10,17 +9,18 @@ public abstract class AbstractFBO {
     protected int width;
     protected int height;
     protected int fboID;
-    private AbstractTexture fboTexture;
-    private Color4f clearColor;
-    protected GLES20APIWrapperInterface glES20Wrapper;
+    protected AbstractTexture fboTexture;
+    protected Color4f clearColor;
 
-    public AbstractFBO(GLES20APIWrapperInterface glES20Wrapper, int width, int height, Color4f clearColor) {
+    public AbstractFBO(int width, int height, Color4f clearColor) {
         this.width = width;
         this.height = height;
         this.clearColor = clearColor;
-        this.glES20Wrapper = glES20Wrapper;
 
         fboID = createFBO();
+    }
+
+    protected AbstractFBO() {
     }
 
     public int getWidth() {
@@ -53,7 +53,7 @@ public abstract class AbstractFBO {
 
     protected int createFBO() {
         int[] fbos = new int[1];
-        glES20Wrapper.glGenFrameBuffers(1, fbos, 0);
+        GLES20JniWrapper.glGenFrameBuffers(1, fbos);
         GLES20JniWrapper.glBindFramebuffer(fbos[0]);
 
         fboTexture = attachFboTexture();
@@ -71,7 +71,7 @@ public abstract class AbstractFBO {
 
     public void cleanUp() {
         unbind();
-        glES20Wrapper.glDeleteFrameBuffers(1, new int[]{fboID}, 0);
+        GLES20JniWrapper.glDeleteFrameBuffers(1, new int[]{fboID});
         fboTexture.deleteTexture();
     }
 

@@ -111,6 +111,22 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glFramebufferAttachColorTexture
   (JNIEnv *, jclass, jint);
 
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glGenFrameBuffers
+ * Signature: (I[II)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenFrameBuffers
+  (JNIEnv *, jclass, jint, jintArray);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glDeleteFrameBuffers
+ * Signature: (I[II)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteFrameBuffers
+  (JNIEnv *, jclass, jint, jintArray);
+
 #ifdef __cplusplus
 }
 #endif

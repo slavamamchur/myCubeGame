@@ -11,10 +11,17 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 
 public class ColorBufferFBO extends AbstractFBO {
 
+    protected GLES20APIWrapperInterface glES20Wrapper;
     private int[] depthTextures = new int[1];
 
     public ColorBufferFBO(GLES20APIWrapperInterface glES20Wrapper, int width, int height, Color4f clearColor) {
-        super(glES20Wrapper, width, height, clearColor);
+        ///super(width, height, clearColor);
+        this.width = width;
+        this.height = height;
+        this.clearColor = clearColor;
+        this.glES20Wrapper = glES20Wrapper;
+
+        fboID = createFBO();
     }
 
     @Override

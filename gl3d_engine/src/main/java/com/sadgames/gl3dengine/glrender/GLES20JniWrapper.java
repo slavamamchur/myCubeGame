@@ -25,5 +25,7 @@ public class GLES20JniWrapper {
     public static native boolean glCheckFramebufferStatus();
     public static native void glFramebufferAttachDepthTexture(int textureId);
     public static native void glFramebufferAttachColorTexture(int textureId);
+    public static native void glGenFrameBuffers(int count, int[] framebuffers);
+    public static native void glDeleteFrameBuffers(int count, int[] framebuffers);
 
 }

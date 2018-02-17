@@ -68,3 +68,19 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
         (JNIEnv *, jclass, jint textureId) {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
 }
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenFrameBuffers
+        (JNIEnv *env, jclass, jint count, jintArray framebuffers) {
+    jboolean isCopy;
+    jint* buffer = (jint*) env->GetPrimitiveArrayCritical(framebuffers, &isCopy);
+    glGenFramebuffers(count, (GLuint *) buffer);
+    env->ReleasePrimitiveArrayCritical(framebuffers, buffer, JNI_ABORT);
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteFrameBuffers
+        (JNIEnv *env, jclass, jint count, jintArray framebuffers) {
+    jboolean isCopy;
+    jint* buffer = (jint*) env->GetPrimitiveArrayCritical(framebuffers, &isCopy);
+    glDeleteFramebuffers(count, (GLuint *) buffer);
+    env->ReleasePrimitiveArrayCritical(framebuffers, buffer, JNI_ABORT);
+}
