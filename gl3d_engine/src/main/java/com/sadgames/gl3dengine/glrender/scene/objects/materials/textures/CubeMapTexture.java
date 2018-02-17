@@ -27,7 +27,7 @@ public class CubeMapTexture extends AbstractTexture {
     private SysUtilsWrapperInterface sysUtilsWrapper;
 
     public CubeMapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String[] faces) {
-        init(sysUtilsWrapper.iGetGLES20WrapperInterface(),  -1, -1);
+        init(-1, -1);
 
         this.faces = faces;
         this.sysUtilsWrapper = sysUtilsWrapper;

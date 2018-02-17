@@ -240,13 +240,16 @@ public class GLScene implements GLRendererInterface {
 
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
        shadowMapFBO = hasDepthTextureExtension ?
-               new DepthBufferFBO(glES20Wrapper, shadowMapWidth, shadowMapHeight, clColor) :
+               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :
                new ColorBufferFBO(glES20Wrapper, shadowMapWidth, shadowMapHeight, clColor);
     }
 
     public void generateMainRenderFBO() {
-        mainRenderFBO =
-                new ColorBufferFBO(glES20Wrapper, Math.round(mDisplayWidth), Math.round(mDisplayHeight), new Color4f(0.0f, 0.0f, 0.0f, 0.0f));
+        mainRenderFBO = new ColorBufferFBO(
+                                            glES20Wrapper,
+                                            Math.round(mDisplayWidth),
+                                            Math.round(mDisplayHeight),
+                                            new Color4f(0.0f, 0.0f, 0.0f, 0.0f));
     }
 
     private void calculateSceneTransformations() {

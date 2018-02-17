@@ -28,4 +28,9 @@ public class GLES20JniWrapper {
     public static native void glGenFrameBuffers(int count, int[] framebuffers);
     public static native void glDeleteFrameBuffers(int count, int[] framebuffers);
 
+    public static native void glGenTextures(int count, int[] textures);
+    public static native void glDeleteTextures(int count, int[] textures);
+    public static native void glActiveTexture(int slot);
+    public static native void glBindTexture2D(int id);
+    public static native void glBindTextureCube(int id);
 }

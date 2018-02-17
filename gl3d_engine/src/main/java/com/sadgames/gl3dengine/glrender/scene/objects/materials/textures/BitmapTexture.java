@@ -23,7 +23,7 @@ import static android.opengl.GLES20.glTexParameteri;
 public class BitmapTexture extends AbstractTexture {
 
     public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, BitmapWrapperInterface bitmap) {
-        super(sysUtilsWrapper.iGetGLES20WrapperInterface(), bitmap.getWidth(), bitmap.getHeight(), bitmap);
+        super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String file) {

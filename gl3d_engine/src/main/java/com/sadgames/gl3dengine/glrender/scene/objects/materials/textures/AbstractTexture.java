@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
-import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
+import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 
 public abstract class AbstractTexture {
 
@@ -9,10 +9,8 @@ public abstract class AbstractTexture {
     private     int height;
     private     int textureId;
 
-    protected GLES20APIWrapperInterface glES20Wrapper;
-
-    public AbstractTexture(GLES20APIWrapperInterface glES20Wrapper, int width, int height, BitmapWrapperInterface bitmap) {
-        init(glES20Wrapper, width, height);
+    public AbstractTexture(int width, int height, BitmapWrapperInterface bitmap) {
+        init(width, height);
         createTexture(bitmap);
 
     }
@@ -29,21 +27,20 @@ public abstract class AbstractTexture {
         return textureId;
     }
 
-    protected void init(GLES20APIWrapperInterface glES20Wrapper, int width, int height) {
+    protected void init(int width, int height) {
         this.width = width;
         this.height = height;
-        this.glES20Wrapper = glES20Wrapper;
     }
 
     protected void createTexture(BitmapWrapperInterface bitmap) {
         final int[] textureIds = new int[1];
-        glES20Wrapper.glGenTextures(1, textureIds, 0);
+        GLES20JniWrapper.glGenTextures(1, textureIds);
 
         if (textureIds[0] != 0) {
             if (!(this instanceof CubeMapTexture))
-                glES20Wrapper.glBindTexture2D(textureIds[0]);
+                GLES20JniWrapper.glBindTexture2D(textureIds[0]);
             else
-                glES20Wrapper.glBindTextureCube(textureIds[0]);
+                GLES20JniWrapper.glBindTextureCube(textureIds[0]);
 
             setTextureParams();
 
@@ -62,12 +59,15 @@ public abstract class AbstractTexture {
         bind(0);
     }
     public void bind(int glTextureSlot) {
-        glES20Wrapper.glActiveTexture(glTextureSlot);
-        glES20Wrapper.glBindTexture2D(textureId);
+        GLES20JniWrapper.glActiveTexture(glTextureSlot);
+        if (!(this instanceof CubeMapTexture))
+            GLES20JniWrapper.glBindTexture2D(textureId);
+        else
+            GLES20JniWrapper.glBindTextureCube(textureId);
     }
 
     public void deleteTexture() {
-        glES20Wrapper.glDeleteTextures(1, new int[]{textureId}, 0);
+        GLES20JniWrapper.glDeleteTextures(1, new int[]{textureId});
     }
 
     protected abstract int getTextureType();

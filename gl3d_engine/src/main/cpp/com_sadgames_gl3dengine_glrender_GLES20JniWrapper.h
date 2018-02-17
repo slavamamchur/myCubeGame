@@ -114,7 +114,7 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glGenFrameBuffers
- * Signature: (I[II)V
+ * Signature: (I[I)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenFrameBuffers
   (JNIEnv *, jclass, jint, jintArray);
@@ -122,10 +122,50 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glDeleteFrameBuffers
- * Signature: (I[II)V
+ * Signature: (I[I)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteFrameBuffers
   (JNIEnv *, jclass, jint, jintArray);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glGenTextures
+ * Signature: (I[I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenTextures
+  (JNIEnv *, jclass, jint, jintArray);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glDeleteTextures
+ * Signature: (I[I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteTextures
+  (JNIEnv *, jclass, jint, jintArray);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glActiveTexture
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glActiveTexture
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glBindTexture2D
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindTexture2D
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glBindTextureCube
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindTextureCube
+  (JNIEnv *, jclass, jint);
 
 #ifdef __cplusplus
 }

@@ -26,7 +26,7 @@ public class ColorBufferFBO extends AbstractFBO {
 
     @Override
     protected AbstractTexture attachFboTexture() {
-        AbstractTexture renderTexture = new RGBATexture(glES20Wrapper, width, height);
+        AbstractTexture renderTexture = new RGBATexture(width, height);
         renderTexture.bind(FBO_TEXTURE_SLOT);
         GLES20JniWrapper.glFramebufferAttachColorTexture(renderTexture.getTextureId());
 
