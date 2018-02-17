@@ -461,8 +461,9 @@ public class GLScene implements GLRendererInterface {
 
     private void clearRenderBuffers() {
         glES20Wrapper.glBindFramebuffer(0);
-        glES20Wrapper.glSetClearColor(0f, 0.0f, 0f, 0f);
+        //glES20Wrapper.glSetClearColor(0f, 0.0f, 0f, 0f);
         //glES20Wrapper.glClear();
+        GLES20JniWrapper.glClearColor(0f, 0.0f, 0f, 0f);
         GLES20JniWrapper.glClear();
     }
 

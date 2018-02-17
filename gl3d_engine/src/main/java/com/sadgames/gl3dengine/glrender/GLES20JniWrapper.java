@@ -9,5 +9,6 @@ public class GLES20JniWrapper {
     }
 
     public static native void glClear();
+    public static native void glClearColor(float red, float green, float blue, float alpha);
 
 }
