@@ -3,6 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene.shaders;
 import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 
@@ -31,7 +32,6 @@ import static android.opengl.GLES20.glGetProgramiv;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
-import static android.opengl.GLES20.glUseProgram;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
@@ -95,7 +95,8 @@ public abstract class GLShaderProgram {
     }
 
     public void useProgram() {
-        glUseProgram(programId);
+        //glUseProgram(programId);
+        GLES20JniWrapper.glUseProgram(programId);
     }
 
     public void deleteProgram() {

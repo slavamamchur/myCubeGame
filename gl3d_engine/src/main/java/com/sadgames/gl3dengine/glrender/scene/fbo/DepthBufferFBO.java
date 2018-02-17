@@ -1,6 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.fbo;
 
 import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
+import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.DepthTexture;
 
@@ -17,9 +18,8 @@ public class DepthBufferFBO extends AbstractFBO {
     protected AbstractTexture attachFboTexture() {
         AbstractTexture renderTexture = new DepthTexture(glES20Wrapper, width, height);
 
-        glES20Wrapper.glActiveTexture(FBO_TEXTURE_SLOT);
-        glES20Wrapper.glBindTexture2D(renderTexture.getTextureId());
-        glES20Wrapper.glFramebufferAttachDepthTexture(renderTexture.getTextureId());
+        renderTexture.bind(FBO_TEXTURE_SLOT);
+        GLES20JniWrapper.glFramebufferAttachDepthTexture(renderTexture.getTextureId());
 
         return renderTexture;
     }

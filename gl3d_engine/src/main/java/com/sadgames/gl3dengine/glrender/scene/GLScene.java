@@ -95,7 +95,6 @@ public class GLScene implements GLRendererInterface {
     }
 
     public boolean checkDepthTextureExtension() {
-        //return glES20Wrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
         return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
     }
 
@@ -188,7 +187,7 @@ public class GLScene implements GLRendererInterface {
     }
 
     public void clearShaderCache() {
-        glES20Wrapper.glUseProgram(0);
+        GLES20JniWrapper.glUseProgram(0);
 
         for (GLShaderProgram program : shaders.values())
             program.deleteProgram();
@@ -310,7 +309,8 @@ public class GLScene implements GLRendererInterface {
 
     private void renderShadowMapBuffer() {
         shadowMapFBO.bind();
-        glES20Wrapper.glCullFrontFace();
+
+        GLES20JniWrapper.glEnableFrontFacesCulling();
 
         GLShaderProgram program = getCachedShader(SHADOWMAP_OBJECT);
         program.useProgram();
@@ -336,8 +336,7 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void renderPostEffectsBuffer() {
-        glES20Wrapper.glBindFramebuffer(0);
-        glES20Wrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+        GLES20JniWrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 
         GLShaderProgram program = postEffects2DScreen.getProgram();
         program.useProgram();
@@ -352,15 +351,15 @@ public class GLScene implements GLRendererInterface {
     private void renderColorBuffer() {
         /** for post effects image processing */
         ///mainRenderFBO.bind();
-        glES20Wrapper.glCullBackFace();
-        glES20Wrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+
+        GLES20JniWrapper.glEnableBackFacesCulling();
+        GLES20JniWrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 
         TerrainRendererProgram program = (TerrainRendererProgram) getCachedShader(TERRAIN_OBJECT);
         program.useProgram();
 
-        glES20Wrapper.glActiveTexture(FBO_TEXTURE_SLOT);
-        glES20Wrapper.glBindTexture2D(shadowMapFBO.getFboTexture().getTextureId());
-        program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(4);
+        shadowMapFBO.getFboTexture().bind(FBO_TEXTURE_SLOT);
+        program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
 
         synchronized (lockObject) {
             program.setCameraPosition(getCamera().getCameraPosition());
@@ -393,9 +392,6 @@ public class GLScene implements GLRendererInterface {
             object.render();
         }
 
-        /** for post effects image processing */
-        ///mainRenderFBO.unbind();
-
         /** for shadowmap debugging */
         GLShaderProgram gui_program = postEffects2DScreen.getProgram();
         gui_program.useProgram();
@@ -405,6 +401,9 @@ public class GLScene implements GLRendererInterface {
 
         postEffects2DScreen.prepare();
         postEffects2DScreen.render();
+
+        /** for post effects image processing */
+        ///mainRenderFBO.unbind();
     }
 
     private void simulatePhysics(long currentTime) {
@@ -453,9 +452,7 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void clearRenderBuffers() {
-        glES20Wrapper.glBindFramebuffer(0);
-        //glES20Wrapper.glSetClearColor(0f, 0.0f, 0f, 0f);
-        //glES20Wrapper.glClear();
+        GLES20JniWrapper.glBindFramebuffer(0);
         GLES20JniWrapper.glClearColor(0f, 0.0f, 0f, 0f);
         GLES20JniWrapper.glClear();
     }
@@ -534,8 +531,8 @@ public class GLScene implements GLRendererInterface {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        glES20Wrapper.glEnableFacesCulling();
-        glES20Wrapper.glEnableDepthTest();
+        GLES20JniWrapper.glEnableFacesCulling();
+        GLES20JniWrapper.glEnableDepthTest();
 
         setmDisplayWidth(width);
         setmDisplayHeight(height);

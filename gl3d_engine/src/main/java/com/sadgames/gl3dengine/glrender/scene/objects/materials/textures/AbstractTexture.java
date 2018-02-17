@@ -58,6 +58,14 @@ public abstract class AbstractTexture {
         textureId = textureIds[0];
     }
 
+    public void bind() {
+        bind(0);
+    }
+    public void bind(int glTextureSlot) {
+        glES20Wrapper.glActiveTexture(glTextureSlot);
+        glES20Wrapper.glBindTexture2D(textureId);
+    }
+
     public void deleteTexture() {
         glES20Wrapper.glDeleteTextures(1, new int[]{textureId}, 0);
     }
