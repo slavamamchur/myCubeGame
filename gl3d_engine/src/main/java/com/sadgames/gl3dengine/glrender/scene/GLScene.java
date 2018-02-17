@@ -30,10 +30,20 @@ import java.util.Map;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_Y;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_YAW;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_Z;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_GRAVITY_VECTOR;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_COLOUR;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_X;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_Y;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_Z;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
@@ -42,30 +52,13 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGC_and_Sync;
 
 public class GLScene implements GLRendererInterface {
 
-    private final static float    DEFAULT_LIGHT_X        = -2.20F;
-    private final static float    DEFAULT_LIGHT_Y        =  1.70F;
-    private final static float    DEFAULT_LIGHT_Z        = -3.20F;
-
-    private final static Vector3f DEFAULT_LIGHT_COLOUR   = new Vector3f(1.0f, 1.0f, 0.8f);
-    private static final Vector3f DEFAULT_GRAVITY_VECTOR = new Vector3f(0f, -9.8f, 0f);
-
-    private final static float    DEFAULT_CAMERA_X       = 0f;
-    private final static float    DEFAULT_CAMERA_Y       = 4f;
-    private final static float    DEFAULT_CAMERA_Z       = 4f;
-    private final static float    DEFAULT_CAMERA_PITCH   = 45.0f;
-    private final static float    DEFAULT_CAMERA_YAW     = 0.0f;
-    private final static float    DEFAULT_CAMERA_ROLL    = 0.0f;
-
-    public  final static Object   lockObject             = new Object();
-    private final static float    WAVE_SPEED             = 0.04f;
-    public  final static long     CAMERA_ZOOM_ANIMATION_DURATION = 1000;
-    public  final static float    SIMULATION_FRAMES_IN_SEC = 60f;
-    /** FPS */
+    public  final static Object lockObject = new Object();
 
     private GLCamera camera = null;
     private GLLightSource lightSource = null;
@@ -98,12 +91,12 @@ public class GLScene implements GLRendererInterface {
         glES20Wrapper = sysUtilsWrapper.iGetGLES20WrapperInterface();
 
         this.sysUtilsWrapper = sysUtilsWrapper;
-        this.hasDepthTextureExtension = checkDepthTextureExtension();
         this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
     }
 
-    private boolean checkDepthTextureExtension() {
-        return glES20Wrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
+    public boolean checkDepthTextureExtension() {
+        //return glES20Wrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
+        return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
     }
 
     public GLCamera getCamera() {
@@ -530,6 +523,7 @@ public class GLScene implements GLRendererInterface {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        hasDepthTextureExtension = checkDepthTextureExtension();
         initScene();
         initPhysics();
 

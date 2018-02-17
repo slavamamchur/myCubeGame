@@ -1,5 +1,7 @@
 package com.sadgames.gl3dengine.glrender;
 
+import javax.vecmath.Vector3f;
+
 public  class GLRenderConsts {
 
     public enum GLParamType {
@@ -45,6 +47,23 @@ public  class GLRenderConsts {
     public static final float LAND_SIZE_IN_WORLD_SPACE = 7.0f;
     public static final float LAND_SIZE_IN_KM = 242.0f; //242Km
     public static final float SEA_SIZE_IN_WORLD_SPACE = 7.0f;
+
+    public final static float    DEFAULT_LIGHT_X        = -2.20F;
+    public final static float    DEFAULT_LIGHT_Y        =  1.70F;
+    public final static float    DEFAULT_LIGHT_Z        = -3.20F;
+    public final static Vector3f DEFAULT_LIGHT_COLOUR   = new Vector3f(1.0f, 1.0f, 0.8f);
+    
+    public static final Vector3f DEFAULT_GRAVITY_VECTOR = new Vector3f(0f, -9.8f, 0f);
+    public  final static float    SIMULATION_FRAMES_IN_SEC = 60f; /** FPS */
+
+    public final static float    DEFAULT_CAMERA_X       = 0f;
+    public final static float    DEFAULT_CAMERA_Y       = 4f;
+    public final static float    DEFAULT_CAMERA_Z       = 4f;
+    public final static float    DEFAULT_CAMERA_PITCH   = 45.0f;
+    public final static float    DEFAULT_CAMERA_YAW     = 0.0f;
+    public final static float    DEFAULT_CAMERA_ROLL    = 0.0f;
+
+    public final static float    WAVE_SPEED             = 0.04f;
 
     public static final String VERTEXES_PARAM_NAME = "a_Position";
     public static final String TEXELS_PARAM_NAME = "a_Texture";

@@ -44,11 +44,11 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CHIP_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DICE_MESH_OBJECT_1;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TERRAIN_MESH_OBJECT;
-import static com.sadgames.gl3dengine.glrender.scene.GLScene.CAMERA_ZOOM_ANIMATION_DURATION;
 
 public class DiceGameLogic implements GameEventsCallbackInterface {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
+    private final static long     CAMERA_ZOOM_ANIMATION_DURATION = 1000;
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private RestApiInterface restApiWrapper;

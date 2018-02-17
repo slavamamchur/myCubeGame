@@ -23,6 +23,14 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glClearColor
   (JNIEnv *, jclass, jfloat, jfloat, jfloat, jfloat);
 
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glExtensions
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glExtensions
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif
