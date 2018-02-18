@@ -41,7 +41,7 @@ public abstract class AbstractFBO {
 
     public void bind() {
         GLES20JniWrapper.glBindFramebuffer(fboID);
-        GLES20JniWrapper.glViewport(0, 0, width, height);
+        GLES20JniWrapper.glViewport(width, height);
         GLES20JniWrapper.glEnableFacesCulling();
         GLES20JniWrapper.glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         GLES20JniWrapper.glClear();
@@ -53,7 +53,7 @@ public abstract class AbstractFBO {
 
     protected int createFBO() {
         int[] fbos = new int[1];
-        GLES20JniWrapper.glGenFrameBuffers(1, fbos);
+        GLES20JniWrapper.glGenFrameBuffers(fbos);
         GLES20JniWrapper.glBindFramebuffer(fbos[0]);
 
         fboTexture = attachFboTexture();
@@ -71,7 +71,7 @@ public abstract class AbstractFBO {
 
     public void cleanUp() {
         unbind();
-        GLES20JniWrapper.glDeleteFrameBuffers(1, new int[]{fboID});
+        GLES20JniWrapper.glDeleteFrameBuffers(new int[]{fboID});
         fboTexture.deleteTexture();
     }
 

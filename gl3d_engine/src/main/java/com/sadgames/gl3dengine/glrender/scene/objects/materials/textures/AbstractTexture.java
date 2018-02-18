@@ -34,7 +34,7 @@ public abstract class AbstractTexture {
 
     protected void createTexture(BitmapWrapperInterface bitmap) {
         final int[] textureIds = new int[1];
-        GLES20JniWrapper.glGenTextures(1, textureIds);
+        GLES20JniWrapper.glGenTextures(textureIds);
 
         if (textureIds[0] != 0) {
             if (!(this instanceof CubeMapTexture))
@@ -67,7 +67,7 @@ public abstract class AbstractTexture {
     }
 
     public void deleteTexture() {
-        GLES20JniWrapper.glDeleteTextures(1, new int[]{textureId});
+        GLES20JniWrapper.glDeleteTextures(new int[]{textureId});
     }
 
     protected abstract int getTextureType();

@@ -339,7 +339,7 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void renderPostEffectsBuffer() {
-        GLES20JniWrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+        GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
         GLShaderProgram program = postEffects2DScreen.getProgram();
         program.useProgram();
@@ -356,7 +356,7 @@ public class GLScene implements GLRendererInterface {
         ///mainRenderFBO.bind();
 
         GLES20JniWrapper.glEnableBackFacesCulling();
-        GLES20JniWrapper.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
+        GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
         TerrainRendererProgram program = (TerrainRendererProgram) getCachedShader(TERRAIN_OBJECT);
         program.useProgram();

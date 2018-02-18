@@ -2,7 +2,6 @@
 
 #include <GLES2/gl2.h>
 //#include <GLES2/gl2ext.h>
-//#include <string>
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glClear
         (JNIEnv *, jclass) {
@@ -15,8 +14,8 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glViewport
-        (JNIEnv *, jclass, jint x, jint y, jint width, jint height) {
-    glViewport(x, y, width, height);
+        (JNIEnv *, jclass, jint width, jint height) {
+    glViewport(0, 0, width, height);
 }
 
 JNIEXPORT jstring JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glExtensions
@@ -26,7 +25,7 @@ JNIEXPORT jstring JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glUseProgram
         (JNIEnv *, jclass, jint id) {
-    glUseProgram(id);
+    glUseProgram((GLuint) id);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glEnableFrontFacesCulling
@@ -51,7 +50,7 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindFramebuffer
         (JNIEnv *, jclass, jint id) {
-    glBindFramebuffer(GL_FRAMEBUFFER, id);
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint) id);
 }
 
 JNIEXPORT jboolean JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glCheckFramebufferStatus
@@ -61,57 +60,57 @@ JNIEXPORT jboolean JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrappe
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glFramebufferAttachDepthTexture
         (JNIEnv *, jclass, jint textureId) {
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureId, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, (GLuint) textureId, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glFramebufferAttachColorTexture
         (JNIEnv *, jclass, jint textureId) {
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint) textureId, 0);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenFrameBuffers
-        (JNIEnv *env, jclass, jint count, jintArray framebuffers) {
+        (JNIEnv *env, jclass, jintArray framebuffers) {
     jboolean isCopy;
     jint* buffer = (jint*) env->GetPrimitiveArrayCritical(framebuffers, &isCopy);
-    glGenFramebuffers(count, (GLuint *) buffer);
+    glGenFramebuffers(1, (GLuint *) buffer);
     env->ReleasePrimitiveArrayCritical(framebuffers, buffer, JNI_ABORT);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteFrameBuffers
-        (JNIEnv *env, jclass, jint count, jintArray framebuffers) {
+        (JNIEnv *env, jclass, jintArray framebuffers) {
     jboolean isCopy;
     jint* buffer = (jint*) env->GetPrimitiveArrayCritical(framebuffers, &isCopy);
-    glDeleteFramebuffers(count, (GLuint *) buffer);
+    glDeleteFramebuffers(1, (GLuint *) buffer);
     env->ReleasePrimitiveArrayCritical(framebuffers, buffer, JNI_ABORT);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenTextures
-        (JNIEnv *env, jclass, jint count, jintArray textures) {
+        (JNIEnv *env, jclass, jintArray textures) {
     jboolean isCopy;
     jint* buffer = (jint*) env->GetPrimitiveArrayCritical(textures, &isCopy);
-    glGenTextures(count, (GLuint *) buffer);
+    glGenTextures(1, (GLuint *) buffer);
     env->ReleasePrimitiveArrayCritical(textures, buffer, JNI_ABORT);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteTextures
-        (JNIEnv *env, jclass, jint count, jintArray textures) {
+        (JNIEnv *env, jclass, jintArray textures) {
     jboolean isCopy;
     jint* buffer = (jint*) env->GetPrimitiveArrayCritical(textures, &isCopy);
-    glDeleteTextures(count, (GLuint *) buffer);
+    glDeleteTextures(1, (GLuint *) buffer);
     env->ReleasePrimitiveArrayCritical(textures, buffer, JNI_ABORT);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glActiveTexture
         (JNIEnv *, jclass, jint slot) {
-    glActiveTexture(GL_TEXTURE0 + slot);
+    glActiveTexture((GLenum) (GL_TEXTURE0 + slot));
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindTexture2D
         (JNIEnv *, jclass, jint id) {
-    glBindTexture(GL_TEXTURE_2D, id);
+    glBindTexture(GL_TEXTURE_2D, (GLuint) id);
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindTextureCube
         (JNIEnv *, jclass, jint id) {
-    glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint) id);
 }
