@@ -54,17 +54,13 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
-import static com.sadgames.sysutils.common.CommonUtils.forceGC_and_Sync;
+import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class GLScene implements GLRendererInterface {
 
     public  final static Object lockObject = new Object();
 
-    private GLCamera camera = null;
-    private GLLightSource lightSource = null;
-    private long simulation_time = 0;
     private boolean isSimulating = false;
-    private DiscreteDynamicsWorld physicalWorldObject = null;
     private boolean hasDepthTextureExtension;
     private int oldNumContacts = 0;
     private long old_time = System.currentTimeMillis();
@@ -74,16 +70,17 @@ public class GLScene implements GLRendererInterface {
     private int mDisplayWidth;
     private int mDisplayHeight;
     private boolean isRenderStopped = false;
-
+    private GLCamera camera = null;
+    private GLLightSource lightSource = null;
+    private DiscreteDynamicsWorld physicalWorld = null;
     private Map<String, AbstractGL3DObject> objects = new HashMap<>();
     private Map<GLObjectType, GLShaderProgram> shaders = new HashMap<>();
-
     private AbstractFBO shadowMapFBO = null;
     private AbstractFBO mainRenderFBO = null;
     private GUI2DImageObject postEffects2DScreen = null;
     private GLAnimation zoomCameraAnimation = null;
     private SysUtilsWrapperInterface sysUtilsWrapper;
-    private GameEventsCallbackInterface gameEventsCallBack = null;
+    private GameEventsCallbackInterface gameEventsCallBackListener = null;
     private GLES20APIWrapperInterface glES20Wrapper;
     private GraphicsQuality graphicsQualityLevel;
 
@@ -94,45 +91,20 @@ public class GLScene implements GLRendererInterface {
         this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
     }
 
-    public boolean checkDepthTextureExtension() {
-        return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
-    }
-
     public GLCamera getCamera() {
         return camera;
-    }
-    public void setCamera(GLCamera camera) {
-        this.camera = camera;
     }
     public GLLightSource getLightSource() {
         return lightSource;
     }
-    public void setLightSource(GLLightSource lightSource) {
-        this.lightSource = lightSource;
-    }
-    public boolean hasDepthTextureExtension() {
+    @SuppressWarnings("unused") public boolean hasDepthTextureExtension() {
         return hasDepthTextureExtension;
     }
-    public int getmDisplayWidth() {
+    @SuppressWarnings("unused") public int getmDisplayWidth() {
         return mDisplayWidth;
     }
-    public void setmDisplayWidth(int mDisplayWidth) {
-        this.mDisplayWidth = mDisplayWidth;
-    }
-    public int getmDisplayHeight() {
+    @SuppressWarnings("unused") public int getmDisplayHeight() {
         return mDisplayHeight;
-    }
-    public void setmDisplayHeight(int mDisplayHeight) {
-        this.mDisplayHeight = mDisplayHeight;
-    }
-    public AbstractFBO getShadowMapFBO() {
-        return shadowMapFBO;
-    }
-    public GUI2DImageObject getPostEffects2DScreen() {
-        return postEffects2DScreen;
-    }
-    public void setPostEffects2DScreen(GUI2DImageObject postEffects2DScreen) {
-        this.postEffects2DScreen = postEffects2DScreen;
     }
     public GLAnimation getZoomCameraAnimation() {
         return zoomCameraAnimation;
@@ -143,23 +115,18 @@ public class GLScene implements GLRendererInterface {
     public long getFrameTime() {
         return frameTime;
     }
-    public void setSimulation_time(long simulation_time) {
-        this.simulation_time = simulation_time;
-    }
-
-    @Override
-    public void setGameEventsCallBack(GameEventsCallbackInterface gameEventsCallBack) {
-        this.gameEventsCallBack = gameEventsCallBack;
-    }
-
-    public void setRenderStopped(boolean renderStopped) {
+    @SuppressWarnings("unused") public void setRenderStopped(boolean renderStopped) {
         isRenderStopped = renderStopped;
     }
     public void addObject(AbstractGL3DObject object, String name) {
         objects.put(name, object);
     }
-    public void deleteObject(String name) {
+    @SuppressWarnings("unused") public void deleteObject(String name) {
         objects.remove(name);
+    }
+
+    public boolean checkDepthTextureExtension() {
+        return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
     }
 
     private void clearData() {
@@ -186,7 +153,7 @@ public class GLScene implements GLRendererInterface {
             postEffects2DScreen.clearData();
     }
 
-    public void clearShaderCache() {
+    private void clearShaderCache() {
         GLES20JniWrapper.glUseProgram(0);
 
         for (GLShaderProgram program : shaders.values())
@@ -223,16 +190,15 @@ public class GLScene implements GLRendererInterface {
         return program;
     }
 
-    public void startSimulation() {
-        simulation_time = System.currentTimeMillis();
+    private void startSimulation() {
         isSimulating = true;
     }
 
-    public void stopSimulation() {
+    private void stopSimulation() {
         isSimulating = false;
     }
 
-    public void generateShadowMapFBO() {
+    private void generateShadowMapFBO() {
        Color4f clColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
        float shadowMapResolutionScaleFactor = SHADOW_MAP_RESOLUTION_SCALE[graphicsQualityLevel.ordinal()];
        int shadowMapWidth = Math.round(mDisplayWidth * shadowMapResolutionScaleFactor);
@@ -244,7 +210,9 @@ public class GLScene implements GLRendererInterface {
                new ColorBufferFBO(glES20Wrapper, shadowMapWidth, shadowMapHeight, clColor);
     }
 
-    public void generateMainRenderFBO() {
+    /** for post effects image processing */
+    @SuppressWarnings("unused")
+    private void generateMainRenderFBO() {
         mainRenderFBO = new ColorBufferFBO(
                                             glES20Wrapper,
                                             Math.round(mDisplayWidth),
@@ -272,7 +240,8 @@ public class GLScene implements GLRendererInterface {
             if (animation != null && animation.isInProgress()) {
                 animation.animate(object);
             }
-            else if (isSimulating && object instanceof PNodeObject && (((PNodeObject) object).getTag() == MOVING_OBJECT)
+            else if (isSimulating && object instanceof PNodeObject
+                    && (((PNodeObject) object).getTag() == MOVING_OBJECT)
                     && ((PNodeObject) object).get_body() != null) {
 
                 PNodeObject movingObject = (PNodeObject) object;
@@ -282,17 +251,17 @@ public class GLScene implements GLRendererInterface {
                     movingObject.setWorldTransformMatrix(transform);
 
                 else {
-                    physicalWorldObject.removeRigidBody(movingObject.get_body());
+                    physicalWorld.removeRigidBody(movingObject.get_body());
                     movingObject.set_body(null);
 
-                    if (gameEventsCallBack != null)
-                        gameEventsCallBack.onStopMovingObject(movingObject);
+                    if (gameEventsCallBackListener != null)
+                        gameEventsCallBackListener.onStopMovingObject(movingObject);
                 }
             }
         }
     }
 
-    public void drawScene() {
+    private void drawScene() {
         if (isRenderStopped)
             return;
 
@@ -318,9 +287,6 @@ public class GLScene implements GLRendererInterface {
         GLShaderProgram program = getCachedShader(SHADOWMAP_OBJECT);
         program.useProgram();
 
-        /** for shadowbox implementation
-        lightSource.updateViewProjectionMatrix(); */
-
         int prevObject = -1;
         for (AbstractGL3DObject object : objects.values()) {
             if (!object.isCastShadow())
@@ -338,6 +304,8 @@ public class GLScene implements GLRendererInterface {
         shadowMapFBO.unbind();
     }
 
+    /** for post effects image processing */
+    @SuppressWarnings("unused")
     private void renderPostEffectsBuffer() {
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
@@ -365,11 +333,11 @@ public class GLScene implements GLRendererInterface {
         program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
 
         synchronized (lockObject) {
-            program.setCameraPosition(getCamera().getCameraPosition());
+            program.setCameraPosition(camera.getCameraPosition());
         }
 
-        program.setLightSourcePosition(getLightSource().getLightPosInEyeSpace());
-        program.setLightColourValue(getLightSource().getLightColour());
+        program.setLightSourcePosition(lightSource.getLightPosInEyeSpace());
+        program.setLightColourValue(lightSource.getLightColour());
 
         program.setWaveMovingFactor(GraphicsQuality.LOW.equals(graphicsQualityLevel) ? -1f : moveFactor);
 
@@ -380,10 +348,10 @@ public class GLScene implements GLRendererInterface {
         int prevObject = -1;
         for (AbstractGL3DObject object : objects.values()) {
             synchronized (lockObject) {
-                program.bindMVPMatrix(object, getCamera().getViewMatrix(), getCamera().getProjectionMatrix());
+                program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix());
             }
 
-            program.bindLightSourceMVP(object, getLightSource().getViewMatrix(), getLightSource().getProjectionMatrix(), hasDepthTextureExtension);
+            program.bindLightSourceMVP(object, lightSource.getViewMatrix(), lightSource.getProjectionMatrix(), hasDepthTextureExtension);
 
             program.setMaterialParams(object);
 
@@ -395,7 +363,7 @@ public class GLScene implements GLRendererInterface {
             object.render();
         }
 
-        /** for shadowmap debugging */
+        /** for post effects image processing OR shadowmap debugging */
         GLShaderProgram gui_program = postEffects2DScreen.getProgram();
         gui_program.useProgram();
 
@@ -410,33 +378,32 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void simulatePhysics(long currentTime) {
-        if (isSimulating && physicalWorldObject != null) {
+        if (isSimulating && physicalWorld != null) {
 
             float realInterval = frameTime / 1000f;
             float discreteInterval = 1 / 60f;
             for (float i = 0; i < (realInterval / discreteInterval); i++)
-                physicalWorldObject.stepSimulation(discreteInterval);
-
-            ///physicalWorldObject.stepSimulation((currentTime - simulation_time) / 1000f, 4, 1f / SIMULATION_FRAMES_IN_SEC );
+                physicalWorld.stepSimulation(discreteInterval);
+            ///physicalWorld.stepSimulation((currentTime - simulation_time) / 1000f, 4, 1f / SIMULATION_FRAMES_IN_SEC );
             ///simulation_time = currentTime;
 
-            for (int i = 0; i < physicalWorldObject.getDispatcher().getNumManifolds(); i++)
-                if (   physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0
-                    && physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts
+            for (int i = 0; i < physicalWorld.getDispatcher().getNumManifolds(); i++)
+                if (   physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() > 0
+                    && physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts
                     ) {
 
-                    if (gameEventsCallBack != null)
-                        gameEventsCallBack.onRollingObjectStart(null); //TODO: Get Object ref from Collision example
+                    if (gameEventsCallBackListener != null)
+                        gameEventsCallBackListener.onRollingObjectStart(null); //TODO: Get Object ref from Collision example
 
-                    oldNumContacts = physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
+                    oldNumContacts = physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
                     old_time = currentTime;
                 }
-                else if ((physicalWorldObject.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
-                    if (gameEventsCallBack != null)
-                        gameEventsCallBack.onRollingObjectStop(null); //TODO: Get Object ref from Collision example
+                else if ((physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() == 0))
+                    if (gameEventsCallBackListener != null)
+                        gameEventsCallBackListener.onRollingObjectStop(null); //TODO: Get Object ref from Collision example
                 else if (currentTime - old_time > 150)
-                        if (gameEventsCallBack != null)
-                            gameEventsCallBack.onRollingObjectStop(null); //TODO: Get Object ref from Collision example
+                        if (gameEventsCallBackListener != null)
+                            gameEventsCallBackListener.onRollingObjectStop(null); //TODO: Get Object ref from Collision example
 
         }
 
@@ -460,21 +427,29 @@ public class GLScene implements GLRendererInterface {
         GLES20JniWrapper.glClear();
     }
 
+    @SuppressWarnings("unused")
     public void cleanUp() {
         stopSimulation();
         clearData();
     }
 
     private void initScene() {
-        GLCamera camera = new GLCamera(DEFAULT_CAMERA_X, DEFAULT_CAMERA_Y, DEFAULT_CAMERA_Z, DEFAULT_CAMERA_PITCH, DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_ROLL);
-        if (gameEventsCallBack != null)
-            gameEventsCallBack.onInitGLCamera(camera);
-        setCamera(camera);
+        camera = new GLCamera(DEFAULT_CAMERA_X,
+                              DEFAULT_CAMERA_Y,
+                              DEFAULT_CAMERA_Z,
+                              DEFAULT_CAMERA_PITCH,
+                              DEFAULT_CAMERA_YAW,
+                              DEFAULT_CAMERA_ROLL);
 
-        GLLightSource lightSource = new GLLightSource(new float[] {DEFAULT_LIGHT_X, DEFAULT_LIGHT_Y, DEFAULT_LIGHT_Z, 1.0f}, DEFAULT_LIGHT_COLOUR, getCamera());
-        if (gameEventsCallBack != null)
-            gameEventsCallBack.onInitLightSource(lightSource);
-        setLightSource(lightSource);
+        if (gameEventsCallBackListener != null)
+            gameEventsCallBackListener.onInitGLCamera(camera);
+
+        lightSource = new GLLightSource(new float[] {DEFAULT_LIGHT_X, DEFAULT_LIGHT_Y, DEFAULT_LIGHT_Z, 1.0f},
+                                        DEFAULT_LIGHT_COLOUR,
+                                        getCamera());
+
+        if (gameEventsCallBackListener != null)
+            gameEventsCallBackListener.onInitLightSource(lightSource);
     }
 
     private void initPhysics() {
@@ -485,11 +460,11 @@ public class GLScene implements GLRendererInterface {
 
         SequentialImpulseConstraintSolver _solver = new SequentialImpulseConstraintSolver();
 
-        physicalWorldObject = new DiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
-        physicalWorldObject.setGravity(DEFAULT_GRAVITY_VECTOR);
+        physicalWorld = new DiscreteDynamicsWorld(_dispatcher, _broadphase, _solver, _collisionConfiguration);
+        physicalWorld.setGravity(DEFAULT_GRAVITY_VECTOR);
 
-        if (gameEventsCallBack != null)
-            gameEventsCallBack.onInitPhysics(physicalWorldObject);
+        if (gameEventsCallBackListener != null)
+            gameEventsCallBackListener.onInitPhysics(physicalWorld);
     }
 
     private void loadScene() {
@@ -499,55 +474,69 @@ public class GLScene implements GLRendererInterface {
         /** for postprocessing effects */
         createPostEffects2DScreen();
 
-        if (gameEventsCallBack != null)
-            gameEventsCallBack.onLoadSceneObjects(this, physicalWorldObject);
+        if (gameEventsCallBackListener != null)
+            gameEventsCallBackListener.onLoadSceneObjects(this, physicalWorld);
 
-        forceGC_and_Sync();
+        forceGCandWait();
     }
 
     private void createPostEffects2DScreen() {
         GLShaderProgram guiShader = getCachedShader(GUI_OBJECT);
-        setPostEffects2DScreen(new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 0, 0)));
-        getPostEffects2DScreen().loadObject();
+        postEffects2DScreen = new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 0, 0));
+        postEffects2DScreen.loadObject();
+    }
+
+    private void scenePrepare() {
+        hasDepthTextureExtension = checkDepthTextureExtension();
+        GLES20JniWrapper.glEnableFacesCulling();
+        GLES20JniWrapper.glEnableDepthTest();
+
+        initScene();
+        initPhysics();
+        loadScene();
+        startSimulation();
+    }
+
+    private void updateViewPorts(int width, int height) {
+        mDisplayWidth = width;
+        mDisplayHeight = height;
+        camera.setAspectRatio(width, height);
+
+        generateShadowMapFBO();
+        /** for post effects */
+        ///generateMainRenderFBO();
+    }
+
+    /** GLRendererInterface implementation -------------------------------------------------------*/
+    @Override
+    public void setGameEventsCallBackListener(GameEventsCallbackInterface gameEventsCallBackListener) {
+        this.gameEventsCallBackListener = gameEventsCallBackListener;
     }
 
     @Override
-    public GLScene getSceneObject() {
+    public GLScene getScene() {
         return this;
     }
 
     @Override
     public DiscreteDynamicsWorld getPhysicalWorldObject() {
-        return physicalWorldObject;
+        return physicalWorld;
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        hasDepthTextureExtension = checkDepthTextureExtension();
-        initScene();
-        initPhysics();
-
-        loadScene();
-
-        startSimulation();
+        scenePrepare();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        GLES20JniWrapper.glEnableFacesCulling();
-        GLES20JniWrapper.glEnableDepthTest();
-
-        setmDisplayWidth(width);
-        setmDisplayHeight(height);
-        getCamera().setAspectRatio(width, height);
-
-        generateShadowMapFBO();
-        /** for post effects
-         ///generateMainRenderFBO(); */
+        updateViewPorts(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         drawScene();
     }
+    /** ------------------------------------------------------------------------------------------*/
+
 }

@@ -9,7 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public interface GLRendererInterface {
 
-    GLScene getSceneObject();
+    GLScene getScene();
 
     void onSurfaceCreated(GL10 gl, EGLConfig config);
 
@@ -18,6 +18,6 @@ public interface GLRendererInterface {
     void onDrawFrame(GL10 gl);
 
     DiscreteDynamicsWorld getPhysicalWorldObject();
-    void setGameEventsCallBack(GameEventsCallbackInterface gameEventsCallBack);
+    void setGameEventsCallBackListener(GameEventsCallbackInterface gameEventsCallBackListener);
 
 }

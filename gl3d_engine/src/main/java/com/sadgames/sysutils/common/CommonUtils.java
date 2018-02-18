@@ -10,7 +10,7 @@ public class CommonUtils {
         return s.hasNext() ? s.next() : "";
     }
 
-    public static void forceGC_and_Sync() {
+    public static void forceGCandWait() {
         Object obj = new Object();
         WeakReference ref = new WeakReference<>(obj);
         obj = null;

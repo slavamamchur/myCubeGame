@@ -40,7 +40,7 @@ public class MapFragment extends Fragment {
         SysUtilsWrapperInterface sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getContext());
         glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper);
         gameLogic = new DiceGameLogic(sysUtilsWrapper, AndroidRestApiWrapper.getInstance(getContext()), glRenderer.getScene());
-        glRenderer.setGameEventsCallBack(gameLogic);
+        glRenderer.getScene().setGameEventsCallBackListener(gameLogic);
 
         glMapSurfaceView = new MapGLSurfaceView(getContext());
         return  glMapSurfaceView;
