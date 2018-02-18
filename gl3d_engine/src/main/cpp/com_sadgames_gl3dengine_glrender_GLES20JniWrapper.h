@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glViewport
- * Signature: (IIII)V
+ * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glViewport
   (JNIEnv *, jclass, jint, jint);
@@ -114,7 +114,7 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glGenFrameBuffers
- * Signature: (I[I)V
+ * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenFrameBuffers
   (JNIEnv *, jclass, jintArray);
@@ -122,15 +122,55 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glDeleteFrameBuffers
- * Signature: (I[I)V
+ * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteFrameBuffers
   (JNIEnv *, jclass, jintArray);
 
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glGenRenderBuffers
+ * Signature: ([I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenRenderBuffers
+  (JNIEnv *, jclass, jintArray);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glDeleteRenderBuffers
+ * Signature: ([I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteRenderBuffers
+  (JNIEnv *, jclass, jintArray);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glBindRenderBuffer
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindRenderBuffer
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glRenderBufferStorage
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glRenderBufferStorage
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+ * Method:    glFramebufferAttachDepthBuffer
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glFramebufferAttachDepthBuffer
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glGenTextures
- * Signature: (I[I)V
+ * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenTextures
   (JNIEnv *, jclass, jintArray);
@@ -138,7 +178,7 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glDeleteTextures
- * Signature: (I[I)V
+ * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteTextures
   (JNIEnv *, jclass, jintArray);

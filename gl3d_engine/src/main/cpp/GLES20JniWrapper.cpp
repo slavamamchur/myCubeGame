@@ -84,6 +84,37 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
     env->ReleasePrimitiveArrayCritical(framebuffers, buffer, JNI_ABORT);
 }
 
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenRenderBuffers
+        (JNIEnv *env, jclass, jintArray renderbuffers) {
+    jboolean isCopy;
+    jint* buffer = (jint*) env->GetPrimitiveArrayCritical(renderbuffers, &isCopy);
+    glGenRenderbuffers(1,  (GLuint *) buffer);
+    env->ReleasePrimitiveArrayCritical(renderbuffers, buffer, JNI_ABORT);
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteRenderBuffers
+        (JNIEnv *env, jclass, jintArray renderbuffers) {
+    jboolean isCopy;
+    jint* buffer = (jint*) env->GetPrimitiveArrayCritical(renderbuffers, &isCopy);
+    glDeleteRenderbuffers(1,  (GLuint *) buffer);
+    env->ReleasePrimitiveArrayCritical(renderbuffers, buffer, JNI_ABORT);
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindRenderBuffer
+        (JNIEnv *, jclass, jint id) {
+    glBindRenderbuffer(GL_RENDERBUFFER, (GLuint) id);
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glRenderBufferStorage
+        (JNIEnv *, jclass, jint width, jint height) {
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glFramebufferAttachDepthBuffer
+        (JNIEnv *, jclass, jint id) {
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, (GLuint) id);
+}
+
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenTextures
         (JNIEnv *env, jclass, jintArray textures) {
     jboolean isCopy;

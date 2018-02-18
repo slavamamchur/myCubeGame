@@ -9,7 +9,6 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.linearmath.Transform;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
-import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
 import com.sadgames.gl3dengine.glrender.scene.fbo.AbstractFBO;
@@ -81,12 +80,9 @@ public class GLScene implements GLRendererInterface {
     private GLAnimation zoomCameraAnimation = null;
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBackListener = null;
-    private GLES20APIWrapperInterface glES20Wrapper;
     private GraphicsQuality graphicsQualityLevel;
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
-        glES20Wrapper = sysUtilsWrapper.iGetGLES20WrapperInterface();
-
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
     }
@@ -125,6 +121,7 @@ public class GLScene implements GLRendererInterface {
         objects.remove(name);
     }
 
+    @SuppressWarnings("all")
     public boolean checkDepthTextureExtension() {
         return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
     }
@@ -207,17 +204,15 @@ public class GLScene implements GLRendererInterface {
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
        shadowMapFBO = hasDepthTextureExtension ?
                new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :
-               new ColorBufferFBO(glES20Wrapper, shadowMapWidth, shadowMapHeight, clColor);
+               new ColorBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
     }
 
     /** for post effects image processing */
     @SuppressWarnings("unused")
     private void generateMainRenderFBO() {
-        mainRenderFBO = new ColorBufferFBO(
-                                            glES20Wrapper,
-                                            Math.round(mDisplayWidth),
-                                            Math.round(mDisplayHeight),
-                                            new Color4f(0.0f, 0.0f, 0.0f, 0.0f));
+        mainRenderFBO = new ColorBufferFBO(Math.round(mDisplayWidth),
+                                           Math.round(mDisplayHeight),
+                                           new Color4f(0.0f, 0.7f, 1.0f, 1.0f));
     }
 
     private void calculateSceneTransformations() {
@@ -423,7 +418,7 @@ public class GLScene implements GLRendererInterface {
 
     private void clearRenderBuffers() {
         GLES20JniWrapper.glBindFramebuffer(0);
-        GLES20JniWrapper.glClearColor(0f, 0.0f, 0f, 0f);
+        GLES20JniWrapper.glClearColor(0.0f, 0.7f, 1.0f, 1.0f);
         GLES20JniWrapper.glClear();
     }
 
