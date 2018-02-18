@@ -1,6 +1,5 @@
 package com.sadgames.sysutils.platforms.android;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,7 +16,6 @@ import android.support.annotation.NonNull;
 import com.sadgames.gl3dengine.SettingsManagerInterface;
 import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
-import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -345,8 +343,4 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         return AndroidSettingsManager.getInstance(context);
     }
 
-    @Override
-    public GLES20APIWrapperInterface iGetGLES20WrapperInterface() {
-        return AndroidGLES20APIWrapper.getInstance();
-    }
 }

@@ -1,7 +1,6 @@
 package com.sadgames.gl3dengine;
 
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
-import com.sadgames.gl3dengine.glrender.GLES20APIWrapperInterface;
 
 import java.io.IOException;
 
@@ -23,7 +22,6 @@ public interface SysUtilsWrapperInterface {
     Vector3f               mulMV(float[] matrix, float[] vector);
 
     SettingsManagerInterface iGetSettingsManager();
-    GLES20APIWrapperInterface iGetGLES20WrapperInterface();
 
     //TODO: use java SE common lib for pictures ???
 }
