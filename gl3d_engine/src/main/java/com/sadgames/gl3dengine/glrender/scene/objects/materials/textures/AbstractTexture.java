@@ -68,6 +68,7 @@ public abstract class AbstractTexture {
 
     public void deleteTexture() {
         GLES20JniWrapper.glDeleteTextures(new int[]{textureId});
+        textureId = 0;
     }
 
     protected abstract int getTextureType();

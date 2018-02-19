@@ -277,10 +277,9 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
         clearVBOPtr(texelVBO);
         clearVBOPtr(normalVBO);
         clearVBOPtr(facesIBOPtr);
-        facesIBOPtr = 0;
 
-        if (glTexture != null)
-            glTexture.deleteTexture();
+        facesIBOPtr = 0;
+        glTexture = null;
     }
 
     /*public void setModelMatrix() {
