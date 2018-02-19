@@ -289,6 +289,7 @@ public abstract class GLShaderProgram {
     public void setMaterialParams(AbstractGL3DObject object) {
         int textureSlotIndex = 0;
 
+        //TODO: check if texture id == 0 -> call texture.load()
         if (object.getGlTextureId() > 0) {
             glActiveTexture(GL_TEXTURE0 + textureSlotIndex);
             glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
