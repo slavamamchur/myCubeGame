@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         registerRestApiResponceReceivers();
 
-        sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getApplicationContext());
+        sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(getApplicationContext());
     }
 
     @Override

@@ -37,7 +37,7 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        SysUtilsWrapperInterface sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getContext());
+        SysUtilsWrapperInterface sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(getContext());
         glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper);
         gameLogic = new DiceGameLogic(sysUtilsWrapper, AndroidRestApiWrapper.getInstance(getContext()), glRenderer.getScene());
         glRenderer.getScene().setGameEventsCallBackListener(gameLogic);

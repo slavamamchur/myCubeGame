@@ -14,7 +14,7 @@ public class GLLightSource {
     // private float[] mLightModelMatrix = new float[16];
 
     private GLCamera mCamera;
-    private SysUtilsWrapperInterface sysUtilsWrapper; //TODO: getInstance from static method
+    private SysUtilsWrapperInterface sysUtilsWrapper;
     private float[] lightPosInModelSpace = new float[4];
     private float[] lightPosInEyeSpace = new float[4];
     private Vector3f lightColour;
@@ -23,7 +23,7 @@ public class GLLightSource {
     private int width;
     private int height;
 
-    public GLLightSource(float [] lightPos, Vector3f lightColour, GLCamera camera, SysUtilsWrapperInterface sysUtilsWrapper) {
+    GLLightSource(float[] lightPos, Vector3f lightColour, GLCamera camera, SysUtilsWrapperInterface sysUtilsWrapper) {
         this.mCamera = camera;
         this.lightColour = lightColour;
         this.sysUtilsWrapper = sysUtilsWrapper;
@@ -39,6 +39,7 @@ public class GLLightSource {
         return height;
     }
 
+    @SuppressWarnings("all")
     public void updateViewProjectionMatrix(int width, int height) {
         this.width = width;
         this.height = height;

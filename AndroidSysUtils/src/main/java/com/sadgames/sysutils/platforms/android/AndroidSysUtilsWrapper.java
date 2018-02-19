@@ -25,17 +25,24 @@ import javax.vecmath.Vector3f;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
+import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
-    public static  final int BYTES_IN_2MB = 2 * 1024 * 1024;
-    private static MediaPlayer mMediaPlayer;
+    protected static  final int BYTES_IN_2MB = 2 * BYTES_IN_MB;
+    protected static final Object lockObject = new Object();
 
-    private Context context;
+    protected static MediaPlayer mMediaPlayer;
+    protected static SysUtilsWrapperInterface instance = null;
 
-    public AndroidSysUtilsWrapper(Context context) {
+    protected Context context;
+
+    @SuppressWarnings("all")
+    protected AndroidSysUtilsWrapper(Context context) {
         this.context = context;
     }
+
+    protected abstract void downloadBitmapIfNotCached(String textureResName, boolean isRelief);
 
     /** Math    sysutils ---------------------------------------------------------------------------*/
     @Override
@@ -48,20 +55,21 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     /** ------------------------------------------------------------------------------------------*/
 
     /** Prefs    sysutils ---------------------------------------------------------------------------*/
+    @SuppressWarnings("all")
     public static SharedPreferences getDefaultSharedPrefs(Context ctx) {
         return getDefaultSharedPreferences(ctx);
     }
     /** ------------------------------------------------------------------------------------------*/
 
     /** Sound    sysutils ---------------------------------------------------------------------------*/
-    public void stopSound() {
+    private static void stopSound() {
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
     }
 
-    public void playSound(String file) {
+    private void playSound(String file) {
         AssetFileDescriptor afd = null;
         stopSound();
 
@@ -90,7 +98,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     /** ------------------------------------------------------------------------------------------*/
 
     /** Resource sysutils ---------------------------------------------------------------------------*/
-    public String readTextFromAssets(String filename) {
+    private String readTextFromAssets(String filename) {
         try {
             return convertStreamToString(context.getAssets().open(filename, Context.MODE_WORLD_READABLE));
         } catch (IOException e) {
@@ -109,7 +117,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         return options;
     }
 
-    public Bitmap getBitmapFromFile(String file, boolean isRelief) {
+    private Bitmap getBitmapFromFile(String file, boolean isRelief) {
         Bitmap result;
 
         try {
@@ -122,7 +130,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
 
     @NonNull
-    public Bitmap createColorBitmap(int color) {
+    private Bitmap createColorBitmap(int color) {
         Bitmap bmp = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
         canvas.drawColor(color);
@@ -194,9 +202,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         dbHelper.close();
     }
 
-    protected abstract void downloadBitmapIfNotCached(String textureResName, boolean isRelief);
-
-    public Bitmap loadBitmapFromDB(String textureResName, boolean isRelief) {
+    private Bitmap loadBitmapFromDB(String textureResName, boolean isRelief) {
         Bitmap bitmap = null;
         byte[] bitmapArray = null;
         Cursor imageData = null;
@@ -224,7 +230,6 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
                 byte[] lastChunk = imageData.getBlob(imageData.getColumnIndex(AndroidSQLiteDBHelper.MAP_IMAGE_FIELD));
                 imageSize = lastChunk.length < BYTES_IN_2MB ? imageSize - BYTES_IN_2MB + lastChunk.length : imageSize;
                 bitmapArray = new byte[imageSize];
-                lastChunk = null;
                 imageData.moveToFirst();
 
                 do {
@@ -256,8 +261,6 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
         }
         finally {
-            bitmapArray = null;
-
             if (imageData != null) imageData.close();
             if (db != null) db.close();
             if (dbHelper != null) dbHelper.close();
@@ -266,7 +269,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         return bitmap;
     }
 
-    public boolean isBitmapCached(String map_id, Long updatedDate) {
+    private boolean isBitmapCached(String map_id, Long updatedDate) {
         Cursor imageData = null;
         AndroidSQLiteDBHelper dbHelper = null;
         SQLiteDatabase db = null;

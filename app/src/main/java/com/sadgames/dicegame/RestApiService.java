@@ -85,8 +85,7 @@ public class RestApiService extends IntentService {
 
     public RestApiService() {
         super(RestApiService.class.getSimpleName());
-
-        sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(this);
+        sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(this);
     }
 
 

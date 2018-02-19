@@ -157,8 +157,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(getApplicationContext());
+        sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(getApplicationContext());
     }
 
     @Override

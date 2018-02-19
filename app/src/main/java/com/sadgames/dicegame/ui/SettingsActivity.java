@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             else {
                 preference.setSummary(stringValue);
 
-                final SysUtilsWrapperInterface sysUtilsWrapper = new AndroidDiceGameUtilsWrapper(preference.getContext());
+                final SysUtilsWrapperInterface sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(preference.getContext());
                 if (preference.getKey().equals(preference.getContext().getString(R.string.pref_key_web_service_url))
                         && !sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
                         ) {
