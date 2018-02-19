@@ -4,6 +4,8 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import static com.sadgames.gl3dengine.GLEngineConsts.TEXTURE_CACHE_SIZE;
+
 public class TextureCacheManager extends AbstractEntityCacheManager<AbstractTexture> {
 
     private static final Object lockObject = new Object();
@@ -13,9 +15,9 @@ public class TextureCacheManager extends AbstractEntityCacheManager<AbstractText
         super(sysUtilsWrapper, cacheSize);
     }
 
-    public static TextureCacheManager getInstance(SysUtilsWrapperInterface sysUtilsWrapper, long cacheSize){
+    public static TextureCacheManager getInstance(SysUtilsWrapperInterface sysUtilsWrapper){
         synchronized (lockObject) {
-            return instance != null ? instance : new TextureCacheManager(sysUtilsWrapper, cacheSize);
+            return instance != null ? instance : new TextureCacheManager(sysUtilsWrapper, TEXTURE_CACHE_SIZE);
         }
     }
 

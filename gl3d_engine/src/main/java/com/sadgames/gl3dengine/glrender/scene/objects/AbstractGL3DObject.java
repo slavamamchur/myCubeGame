@@ -249,7 +249,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
             glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
     }
 
-    protected AbstractTexture loadTexture() {
+    protected AbstractTexture loadTexture() { //TODO: get from cache
         if (textureResName != null && !textureResName.isEmpty()) {
             return BitmapTexture.createInstance(sysUtilsWrapper, textureResName);
         }

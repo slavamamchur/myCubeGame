@@ -15,7 +15,10 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector2f;
 
+import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
+import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.PATH_COLOR;
+import static com.sadgames.dicegame.logic.client.GameConst.SEA_BOTTOM_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.WAY_POINT_COLOR;
 
 public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
@@ -25,7 +28,10 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
     public DiceGameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
-        this.gameEntity = gameEntity;
+        this.gameEntity = gameEntity; //TODO: Get mam material description from gameEntity
+        setGlCubeMapId(BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE).getTextureId()); //TODO: get from cache
+        setGlNormalMapId(BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE).getTextureId());//TODO: get from cache
+        setGlDUDVMapId(BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE).getTextureId());//TODO: get from cache
     }
 
     @Override

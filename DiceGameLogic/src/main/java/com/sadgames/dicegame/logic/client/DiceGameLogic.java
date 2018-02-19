@@ -20,8 +20,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -38,10 +36,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
-import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
-import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
-import static com.sadgames.dicegame.logic.client.GameConst.SEA_BOTTOM_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
@@ -185,21 +180,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     public void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject) {
-        /** materials lib objects */
-        AbstractTexture reflectionMap = BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE);
-        AbstractTexture normalMap = BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE);
-        AbstractTexture dudvMap = BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE);
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
 
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
-        terrain.setGlCubeMapId(reflectionMap.getTextureId());
-        terrain.setGlNormalMapId(normalMap.getTextureId());
-        terrain.setGlDUDVMapId(dudvMap.getTextureId());
         terrain.loadObject();
-
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
-
         glSceneObject.addObject(terrain, TERRAIN_MESH_OBJECT);
 
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
