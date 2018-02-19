@@ -1,9 +1,9 @@
 package com.sadgames.dicegame.logic.client.entities.items;
 
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.scene.objects.PyramidPrimitiveObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CHIP_MESH_OBJECT;
 

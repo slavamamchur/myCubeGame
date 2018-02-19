@@ -18,7 +18,7 @@ import com.sadgames.dicegame.logic.client.DiceGameLogic;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 

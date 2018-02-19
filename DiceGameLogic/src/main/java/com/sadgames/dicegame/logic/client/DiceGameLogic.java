@@ -12,7 +12,6 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.Instan
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.GLLightSource;
@@ -25,6 +24,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.MathUtils;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
 import java.util.List;

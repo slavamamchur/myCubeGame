@@ -2,10 +2,10 @@ package com.sadgames.gl3dengine.glrender.scene.shaders;
 
 import android.opengl.Matrix;
 
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;

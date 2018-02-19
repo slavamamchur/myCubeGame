@@ -1,8 +1,8 @@
 package com.sadgames.dicegame.logic.client.entities.items;
 
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.scene.objects.CubePrimitiveObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 

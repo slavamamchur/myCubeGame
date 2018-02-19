@@ -4,7 +4,7 @@ import com.sadgames.dicegame.logic.server.rest_api.RestConst;
 import com.sadgames.dicegame.logic.server.rest_api.WebServiceException;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameMapCollectionResponse;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

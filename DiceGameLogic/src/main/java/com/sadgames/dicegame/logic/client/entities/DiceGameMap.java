@@ -4,12 +4,12 @@ import com.sadgames.dicegame.logic.server.rest_api.LinkedRESTObjectInterface;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
 

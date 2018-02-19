@@ -3,12 +3,12 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParamVBO;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ShortBuffer;
 

@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING_RESPONSE;

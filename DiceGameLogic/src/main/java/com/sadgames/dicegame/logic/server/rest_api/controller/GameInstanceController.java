@@ -8,7 +8,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceC
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceResponse;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.IdResponse;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

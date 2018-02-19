@@ -19,7 +19,7 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.framework.AppCompatPreferenceActivity;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
 import java.util.List;

@@ -13,9 +13,9 @@ import android.media.MediaPlayer;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
-import com.sadgames.gl3dengine.SettingsManagerInterface;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.SettingsManagerInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.IOException;
 import java.util.Arrays;

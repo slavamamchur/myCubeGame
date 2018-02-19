@@ -1,7 +1,7 @@
 package com.sadgames.dicegame.logic.server.rest_api.controller;
 
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.PingResponse;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

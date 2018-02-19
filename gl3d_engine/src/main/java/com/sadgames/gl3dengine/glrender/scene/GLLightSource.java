@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene;
 
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.common.MathUtils;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;

@@ -1,4 +1,4 @@
-package com.sadgames.gl3dengine;
+package com.sadgames.sysutils.common;
 
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 

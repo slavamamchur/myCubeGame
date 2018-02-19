@@ -8,7 +8,6 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
-import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
 import com.sadgames.gl3dengine.glrender.scene.fbo.AbstractFBO;
@@ -22,6 +21,7 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShapeShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
+import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
 import java.util.Map;
