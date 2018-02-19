@@ -441,7 +441,8 @@ public class GLScene implements GLRendererInterface {
 
         lightSource = new GLLightSource(new float[] {DEFAULT_LIGHT_X, DEFAULT_LIGHT_Y, DEFAULT_LIGHT_Z, 1.0f},
                                         DEFAULT_LIGHT_COLOUR,
-                                        getCamera());
+                                        getCamera(),
+                                        sysUtilsWrapper);
 
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onInitLightSource(lightSource);

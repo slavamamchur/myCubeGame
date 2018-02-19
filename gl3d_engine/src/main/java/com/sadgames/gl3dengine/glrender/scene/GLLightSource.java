@@ -1,6 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene;
 
-import android.opengl.Matrix;
+import com.sadgames.gl3dengine.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.common.MathUtils;
 
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
@@ -13,6 +14,7 @@ public class GLLightSource {
     // private float[] mLightModelMatrix = new float[16];
 
     private GLCamera mCamera;
+    private SysUtilsWrapperInterface sysUtilsWrapper; //TODO: getInstance from static method
     private float[] lightPosInModelSpace = new float[4];
     private float[] lightPosInEyeSpace = new float[4];
     private Vector3f lightColour;
@@ -21,14 +23,13 @@ public class GLLightSource {
     private int width;
     private int height;
 
-    private ShadowBox shadowBox;
-
-    public GLLightSource(float [] lightPos, Vector3f lightColour, GLCamera camera) {
-        mCamera = camera;
+    public GLLightSource(float [] lightPos, Vector3f lightColour, GLCamera camera, SysUtilsWrapperInterface sysUtilsWrapper) {
+        this.mCamera = camera;
         this.lightColour = lightColour;
+        this.sysUtilsWrapper = sysUtilsWrapper;
 
         setLightPosInModelSpace(lightPos);
-        Matrix.setIdentityM(viewMatrix, 0);
+        MathUtils.setIdentityM(viewMatrix, 0);
     }
 
     public int getWidth() {
@@ -41,74 +42,70 @@ public class GLLightSource {
     public void updateViewProjectionMatrix(int width, int height) {
         this.width = width;
         this.height = height;
-
-        /** for shadowbox implementation
-        ///shadowBox = new ShadowBox(viewMatrix, mCamera, (float) width / (float) height); //TODO: empty viewMatrix ??? */
-
         Vector3f lightDirection = new Vector3f(-lightPosInModelSpace[0], -lightPosInModelSpace[1], -lightPosInModelSpace[2]);
-        setViewMatrix(lightDirection, null);
 
-        /** for shadowbox implementation
-        ///shadowBox.update(); */
-
+        setViewMatrix(lightDirection);
         setProjectionMatrix(width, height);
-        /** for shadowbox implementation
-        ///setViewMatrix(width, height, lightDirection, shadowBox); */
     }
 
     public float[] getLightPosInEyeSpace() {
         return lightPosInEyeSpace;
     }
+
     public void setLightPosInEyeSpace() {
-        /** for dynamic light
+        /** for dynamic light */
         /*Matrix.setIdentityM(mLightModelMatrix, 0);
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
-        mainShader.setLightSourcePosition(mLightPosInEyeSpace);*/
+        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);*/
 
         /** for static light*/
-        Matrix.multiplyMV(this.lightPosInEyeSpace, 0, mCamera.getViewMatrix(), 0, lightPosInModelSpace, 0);
+        Vector3f transformedLightPos = sysUtilsWrapper.mulMV(mCamera.getViewMatrix(), lightPosInModelSpace);
+        lightPosInEyeSpace[0] = transformedLightPos.x;
+        lightPosInEyeSpace[1] = transformedLightPos.y;
+        lightPosInEyeSpace[2] = transformedLightPos.z;
     }
 
     public void setLightPosInModelSpace(float[] lightPosInModelSpace) {
         this.lightPosInModelSpace = lightPosInModelSpace;
         setLightPosInEyeSpace();
     }
-    public float[] getLightPosInModelSpace() {
+
+    @SuppressWarnings("unused") public float[] getLightPosInModelSpace() {
         return lightPosInModelSpace;
     }
-
     public Vector3f getLightColour() {
         return lightColour;
     }
     public void setLightColour(Vector3f lightColour) {
         this.lightColour = lightColour;
     }
-
     public float[] getViewMatrix() {
         return viewMatrix;
     }
-    public void setViewMatrix(Vector3f direction, ShadowBox shadowBox) {
-        Matrix.setIdentityM(viewMatrix, 0);
-        Vector3f center = /*shadowBox != null ? shadowBox.getCenter() : */new Vector3f(lightPosInModelSpace);
+
+    public void setViewMatrix(Vector3f direction) {
+        MathUtils.setIdentityM(viewMatrix, 0);
+
+        Vector3f center = new Vector3f(lightPosInModelSpace);
         center.negate();
 
         direction.normalize();
-        float pitch = (float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length()));
-        Matrix.rotateM(viewMatrix, 0, pitch, 1, 0, 0);
 
+        //TODO: use for camera get direction and rotX calculation
+        float pitch = (float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length()));
         float yaw = (float) Math.toDegrees((Math.atan(direction.x / direction.z)));
         yaw = direction.z > 0 ? yaw - 180 : yaw;
-        Matrix.rotateM(viewMatrix, 0, -yaw, 0, 1, 0);
+        MathUtils.rotateM(viewMatrix, pitch, -yaw, 0.0f);
 
-        Matrix.translateM(viewMatrix, 0, center.x, center.y, center.z);
+        MathUtils.translateM(viewMatrix, 0, center.x, center.y, center.z);
 
-        /** classic opengl viewmatrix
-        Matrix.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
+        //TODO: use instead of yaw/pitch/roll
+        /** classic opengl viewmatrix */
+        /*MathUtils.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
                 -lightPosInModelSpace[0], -lightPosInModelSpace[1], -lightPosInModelSpace[2],
-                -lightPosInModelSpace[0], 0f, -lightPosInModelSpace[2]);*/
+                -lightPosInModelSpace[0], 0f, -lightPosInModelSpace[2]);
 
-        /*Matrix.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
+        MathUtils.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
                 center.x, center.y, center.z,
                 0, 0, 1);*/
     }
@@ -116,46 +113,44 @@ public class GLLightSource {
     public float[] getProjectionMatrix() {
         return projectionMatrix;
     }
+
     public void setProjectionMatrix(int width, int height) {
         float ratio;
-        float left = -0.5f;
-        float right = 0.5f;
-        float bottom = -0.5f;
-        float top = 0.5f;
-        float near = -2.5f;//2
-        float far = 7f;//12
+
+        /** for point and spot lights */
+        //float left = -0.5f;
+        //float right = 0.5f;
+        //float bottom = -0.5f;
+        //float top = 0.5f;
+        //float near = -2.5f;//2
+        //float far = 7f;//12
 
         if (width > height) {
             ratio = (float) width / height;
-            left *= ratio;
-            right *= ratio;
+
+            /** for point and spot lights */
+            //left *= ratio;
+            //right *= ratio;
         } else {
             ratio = (float) height / width;
-            bottom *= ratio;
-            top *= ratio;
+
+            /** for point and spot lights */
+            //bottom *= ratio;
+            //top *= ratio;
         }
 
-        left *= 1.5f;
-        right *= 1.5f;
-        bottom *= 1.5f;
-        top *= 1.5f;
+        /** for point and spot lights */
+        //left *= 1.5f;
+        //right *= 1.5f;
+        //bottom *= 1.5f;
+        //top *= 1.5f;
 
-        Matrix.setIdentityM(projectionMatrix, 0);
-        Matrix.orthoM(projectionMatrix, 0, -1.75f * ratio, 1.75f * ratio, -1.75f, 1.75f, 1/*NEAR_PLANE*/, FAR_PLANE);
-        /** for shadowbox implementation
-        ///Matrix.orthoM(projectionMatrix, 0, shadowBox.getMinX(), shadowBox.getMaxX(), shadowBox.getMinY(), shadowBox.getMaxY(), shadowBox.getMinZ(), shadowBox.getMaxZ());
+        MathUtils.setIdentityM(projectionMatrix, 0);
+        MathUtils.orthoM(projectionMatrix, 0, -1.75f * ratio, 1.75f * ratio, -1.75f, 1.75f, 1/*NEAR_PLANE*/, FAR_PLANE);
 
-        /** for point and spot lights
-        //Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
-        //Matrix.perspectiveM(projectionMatrix, 0 , VERTICAL_FOV, ratio, NEAR_PLANE, FAR_PLANE); */
+        /** for point and spot lights */
+        //MathUtils.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        //MathUtils.perspectiveM(projectionMatrix, 0 , VERTICAL_FOV, ratio, NEAR_PLANE, FAR_PLANE);
     }
-
-    /** for shadowbox implementation
-    private void myOrthoM(float width, float height, float length) {
-        Matrix.setIdentityM(projectionMatrix, 0);
-        projectionMatrix[0]  =  2f / (width);
-        projectionMatrix[5]  =  2f / (height);
-        projectionMatrix[10] = -2f / (length);
-    } */
 
 }

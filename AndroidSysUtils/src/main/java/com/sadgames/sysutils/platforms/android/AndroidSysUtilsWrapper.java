@@ -130,7 +130,8 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         return bmp;
     }
 
-    public static int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
+    @SuppressWarnings("unused")
+    public int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
         bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, y, bmp.getWidth(), 1);
 
         return rowPixels;
