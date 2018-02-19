@@ -3,7 +3,6 @@ package com.sadgames.gl3dengine.glrender.scene;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.scene.GLCamera.FAR_PLANE;
@@ -87,28 +86,20 @@ public class GLLightSource {
     public void setViewMatrix(Vector3f direction) {
         MathUtils.setIdentityM(viewMatrix, 0);
 
-        Vector3f center = new Vector3f(lightPosInModelSpace);
-        center.negate();
-
+        /** set view matrix via pitch/roll */
+        /*Vector3f center = new Vector3f(direction);
         direction.normalize();
 
-        //TODO: use for camera get direction and rotX calculation
         float pitch = (float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length()));
         float yaw = (float) Math.toDegrees((Math.atan(direction.x / direction.z)));
         yaw = direction.z > 0 ? yaw - 180 : yaw;
         MathUtils.rotateM(viewMatrix, pitch, -yaw, 0.0f);
+        MathUtils.translateM(viewMatrix, 0, center.x, center.y, center.z);*/
 
-        MathUtils.translateM(viewMatrix, 0, center.x, center.y, center.z);
-
-        //TODO: use instead of yaw/pitch/roll
-        /** classic opengl viewmatrix */
-        /*MathUtils.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
-                -lightPosInModelSpace[0], -lightPosInModelSpace[1], -lightPosInModelSpace[2],
-                -lightPosInModelSpace[0], 0f, -lightPosInModelSpace[2]);
-
+        /** classic opengl view matrix */
         MathUtils.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
-                center.x, center.y, center.z,
-                0, 0, 1);*/
+                direction.x, direction.y, direction.z,
+                0f, 1f, 0f);
     }
 
     public float[] getProjectionMatrix() {

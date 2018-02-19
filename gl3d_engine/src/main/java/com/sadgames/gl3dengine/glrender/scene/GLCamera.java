@@ -109,6 +109,10 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     @SuppressWarnings("unused")
+    /*
+        direction.normalize(); //TODO: use for calc after rotate camera around X instead of turn head up
+
+    */
     public void directSetPitchByDirection(Vector3f direction) {
         directSetPitch((float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length())));
     }
