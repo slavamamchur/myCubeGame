@@ -2,8 +2,8 @@ package com.sadgames.gl3dengine.glrender.scene.shaders;
 
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TERRAIN_FRAGMENT_SHADER;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TERRAIN_VERTEX_SHADER;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_FRAGMENT_SHADER;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_VERTEX_SHADER;
 
 //import static com.sadgames.gameengine.gl_render.GLRenderConsts.RND_SEED__PARAM_NAME;
 
@@ -15,12 +15,12 @@ public class WaterShaderProgram extends VBOShaderProgram {
 
     @Override
     protected String getVertexShaderResId() {
-        return TERRAIN_VERTEX_SHADER;
+        return MAIN_RENDERER_VERTEX_SHADER;
     }
 
     @Override
     protected String getFragmentShaderResId() {
-        return TERRAIN_FRAGMENT_SHADER;
+        return MAIN_RENDERER_FRAGMENT_SHADER;
     }
 
 //    @Override

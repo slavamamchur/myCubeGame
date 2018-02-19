@@ -35,15 +35,15 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SEA_BOTTOM_TEXTURE;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CHIP_MESH_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DICE_MESH_OBJECT_1;
+import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TERRAIN_MESH_OBJECT;
 
 public class DiceGameLogic implements GameEventsCallbackInterface {
 

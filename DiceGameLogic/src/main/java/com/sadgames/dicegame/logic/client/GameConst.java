@@ -14,6 +14,11 @@ public class GameConst {
 
     public static final String ROLLING_DICE_SOUND     = "rolling_dice.mp3";
 
+    public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
+    public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
+    public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
+    public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
+
     public static final int    PATH_COLOR             = ColorUtils.argb(255, 0, 255, 0);
     public static final int    WAY_POINT_COLOR        = ColorUtils.argb(255, 255, 0, 0);
 

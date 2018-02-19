@@ -6,8 +6,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DICE_MESH_OBJECT_1;
-
+import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 
 public class GameDiceItem extends CubePrimitiveObject {
 

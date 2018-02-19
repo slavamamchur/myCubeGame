@@ -91,15 +91,10 @@ public  class GLRenderConsts {
     public static final String UX_PIXEL_OFFSET_PARAM_NAME = "uxPixelOffset";
     public static final String UY_PIXEL_OFFSET_PARAM_NAME = "uyPixelOffset";
 
-    public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
-    public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
-    public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
-    public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
-
     public static final String OES_DEPTH_TEXTURE_EXTENSION = "OES_depth_texture";
 
-    public static final String TERRAIN_VERTEX_SHADER = "shaders/vertex_shader.glsl";
-    public static final String TERRAIN_FRAGMENT_SHADER = "shaders/fragment_shader.glsl";
+    public static final String MAIN_RENDERER_VERTEX_SHADER = "shaders/vertex_shader.glsl";
+    public static final String MAIN_RENDERER_FRAGMENT_SHADER = "shaders/fragment_shader.glsl";
     public static final String SHADOWMAP_VERTEX_SHADER = "shaders/v_depth_map.glsl";
     public static final String SHADOWMAP_VERTEX_SHADER_DEPTH_SUPPORT = "shaders/depth_tex_v_depth_map.glsl";
     public static final String SHADOWMAP_FRAGMENT_SHADER = "shaders/f_depth_map.glsl";

@@ -4,9 +4,9 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_FRAGMENT_SHADER;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_VERTEX_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.RND_SEED__PARAM_NAME;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TERRAIN_FRAGMENT_SHADER;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TERRAIN_VERTEX_SHADER;
 
 public class TerrainRendererProgram extends VBOShaderProgram {
 
@@ -17,11 +17,11 @@ public class TerrainRendererProgram extends VBOShaderProgram {
 
     @Override
     protected String getVertexShaderResId() {
-        return TERRAIN_VERTEX_SHADER;
+        return MAIN_RENDERER_VERTEX_SHADER;
     }
     @Override
     protected String getFragmentShaderResId() {
-        return TERRAIN_FRAGMENT_SHADER;
+        return MAIN_RENDERER_FRAGMENT_SHADER;
     }
 
     @Override
