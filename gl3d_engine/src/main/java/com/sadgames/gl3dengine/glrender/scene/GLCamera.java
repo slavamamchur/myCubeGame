@@ -2,6 +2,8 @@ package com.sadgames.gl3dengine.glrender.scene;
 
 import android.opengl.Matrix;
 
+import com.sadgames.sysutils.common.MathUtils;
+
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
@@ -33,16 +35,17 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         this.pitch = pitch;
         this.yaw = yaw;
         this.roll = roll;
-        Matrix.setIdentityM(transformMatrix, 0);
+        MathUtils.setIdentityM(transformMatrix, 0);
 
         setCameraPosition(eyeX, eyeY, eyeZ);
     }
 
+    @SuppressWarnings("unused")
     public GLCamera(Vector3f cameraPosition, float pitch, float yaw, float roll) {
         this.pitch = pitch;
         this.yaw = yaw;
         this.roll = roll;
-        Matrix.setIdentityM(transformMatrix, 0);
+        MathUtils.setIdentityM(transformMatrix, 0);
 
         setCameraPosition(cameraPosition);
     }
@@ -62,11 +65,11 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     public void updateViewMatrix() {
-        Matrix.setIdentityM(viewMatrix, 0);
+        MathUtils.setIdentityM(viewMatrix, 0);
         Matrix.rotateM(viewMatrix, 0, pitch, 1, 0, 0);
         Matrix.rotateM(viewMatrix, 0, yaw, 0, 1, 0);
         Matrix.rotateM(viewMatrix, 0, roll, 0, 0, 1);
-        Matrix.translateM(viewMatrix, 0, -cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
+        MathUtils.translateM(viewMatrix, 0, -cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
     }
 
     public void setAspectRatio(int width, int height) {
@@ -75,10 +78,11 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     private void updateProjectionMatrix() {
-        Matrix.setIdentityM(projectionMatrix, 0);
-        Matrix.perspectiveM(projectionMatrix, 0 , vfov, aspectRatio, NEAR_PLANE, FAR_PLANE);
+        MathUtils.setIdentityM(projectionMatrix, 0);
+        MathUtils.perspectiveM(projectionMatrix, 0 , vfov, aspectRatio, NEAR_PLANE, FAR_PLANE);
     }
 
+    @SuppressWarnings("unused")
     public void setPitch(float pitch) {
         if (pitch < 0 || pitch > 90)
             return;
@@ -87,11 +91,13 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         updateViewMatrix();
     }
 
+    @SuppressWarnings("unused")
     public void setYaw(float yaw) {
         this.yaw = yaw;
         updateViewMatrix();
     }
 
+    @SuppressWarnings("unused")
     public void setRoll(float roll) {
         this.roll = roll;
         updateViewMatrix();
@@ -106,6 +112,8 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
 
         this.pitch = pitch;
     }
+
+    @SuppressWarnings("unused")
     public void directSetPitchByDirection(Vector3f direction) {
         directSetPitch((float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length())));
     }
@@ -119,7 +127,7 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         directSetYaw(-myaw);
     }
 
-    public float getVfov() {
+    @SuppressWarnings("unused") public float getVfov() {
         return vfov;
     }
     public void setVfov(float vfov) {
@@ -139,16 +147,16 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     public float getPitch() {
         return pitch;
     }//TODO: move camera and save direction !!!
-    public float getYaw() {
+    @SuppressWarnings("unused") public float getYaw() {
         return yaw;
     }
-    public float getRoll() {
+    @SuppressWarnings("unused") public float getRoll() {
         return roll;
     }
     public float[] getTransformMatrix() {
         return transformMatrix;
     }
-    public void setTransformMatrix(float[] transformMatrix) {
+    @SuppressWarnings("unused") public void setTransformMatrix(float[] transformMatrix) {
         this.transformMatrix = transformMatrix;
     }
 
