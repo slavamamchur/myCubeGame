@@ -52,7 +52,7 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
 
         textureBmp.drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor);
 
-        return BitmapTexture.createInstance(getSysUtilsWrapper(), textureBmp);
+        return BitmapTexture.createInstance(textureBmp);
     }
 
 }

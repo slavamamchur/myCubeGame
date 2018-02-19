@@ -186,9 +186,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     @Override
     public void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject) {
         /** materials lib objects */
-        AbstractTexture reflectionMap = new BitmapTexture(sysUtilsWrapper, SEA_BOTTOM_TEXTURE);
-        AbstractTexture normalMap = new BitmapTexture(sysUtilsWrapper, NORMALMAP_TEXTURE);
-        AbstractTexture dudvMap = new BitmapTexture(sysUtilsWrapper, DUDVMAP_TEXTURE);
+        AbstractTexture reflectionMap = BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE);
+        AbstractTexture normalMap = BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE);
+        AbstractTexture dudvMap = BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE);
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
 
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
