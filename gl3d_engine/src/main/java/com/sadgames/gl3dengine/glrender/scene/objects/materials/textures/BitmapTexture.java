@@ -26,12 +26,8 @@ public class BitmapTexture extends AbstractTexture {
         super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
-    public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String texture_name) {
+    private BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String texture_name) {
         this(sysUtilsWrapper.iGetBitmapFromFile(texture_name));
-    }
-
-    public BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, int color) {
-        this(sysUtilsWrapper.iCreateColorBitmap(color));
     }
 
     @Override
@@ -65,11 +61,7 @@ public class BitmapTexture extends AbstractTexture {
     }
 
     public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String file) {
-
         return new BitmapTexture(sysUtilsWrapper, file);
     }
 
-    public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, int color) {
-        return new BitmapTexture(sysUtilsWrapper, color);
-    }
 }

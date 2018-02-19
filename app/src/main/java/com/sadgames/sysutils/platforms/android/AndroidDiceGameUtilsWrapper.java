@@ -24,12 +24,14 @@ public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
         GameMapController gmc = new GameMapController(this);
         GameMapEntity map = gmc.find(textureResName);
 
+        if (map == null || map.getId() == null || map.getId().isEmpty())
+            return;
+
         try {
             if (isRelief)
                 gmc.saveMapRelief(map);
             else
                 gmc.saveMapImage(map);
-        }
-        catch (WebServiceException e) {}
+        } catch (WebServiceException e) {}
     }
 }

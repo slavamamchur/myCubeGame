@@ -126,7 +126,15 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         }
         catch (Exception exception) { result = null; }
 
-        return result != null ? result : loadBitmapFromDB(file, isRelief);
+        result = result != null ? result : loadBitmapFromDB(file, isRelief);
+
+        if (result == null)
+            try {
+                result = createColorBitmap(Integer.parseInt(file));
+            }
+            catch (Exception exception) { result = null; }
+
+        return result;
     }
 
     @NonNull
