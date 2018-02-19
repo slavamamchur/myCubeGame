@@ -1,7 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene;
 
-import android.opengl.Matrix;
-
 import com.sadgames.sysutils.common.MathUtils;
 
 import javax.vecmath.Vector2f;
@@ -65,10 +63,7 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     public void updateViewMatrix() {
-        MathUtils.setIdentityM(viewMatrix, 0);
-        Matrix.rotateM(viewMatrix, 0, pitch, 1, 0, 0);
-        Matrix.rotateM(viewMatrix, 0, yaw, 0, 1, 0);
-        Matrix.rotateM(viewMatrix, 0, roll, 0, 0, 1);
+        MathUtils.rotateM(viewMatrix, pitch, yaw, roll);
         MathUtils.translateM(viewMatrix, 0, -cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
     }
 

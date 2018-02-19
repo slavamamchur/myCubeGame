@@ -29,6 +29,23 @@ public class MathUtils {
         return glMatrix;
     }
 
+    public static void rotateM(float[] target, float pitch, float yaw, float roll) {
+        Matrix4f transformer = new Matrix4f();
+        Matrix4f transformingObject = new Matrix4f();
+        transformingObject.setIdentity();
+
+        transformer.rotX((float) Math.toRadians(pitch));
+        transformingObject.mul(transformer);
+
+        transformer.rotY((float) Math.toRadians(yaw));
+        transformingObject.mul(transformer);
+
+        transformer.rotZ((float) Math.toRadians(roll));
+        transformingObject.mul(transformer);
+
+        System.arraycopy(getOpenGlMatrix(transformingObject), 0, target, 0, 16);
+    }
+
     public static void setIdentityM(float[] sm, int smOffset) {
         for (int i=0 ; i<16 ; i++) {
             sm[smOffset + i] = 0;
