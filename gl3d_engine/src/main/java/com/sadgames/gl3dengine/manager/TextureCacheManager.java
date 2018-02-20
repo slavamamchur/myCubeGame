@@ -15,7 +15,7 @@ public class TextureCacheManager extends AbstractEntityCacheManager<AbstractText
         super(sysUtilsWrapper, cacheSize);
     }
 
-    public static TextureCacheManager getInstance(SysUtilsWrapperInterface sysUtilsWrapper){
+    public static TextureCacheManager getInstance(SysUtilsWrapperInterface sysUtilsWrapper) {
         synchronized (lockObject) {
             return instance != null ? instance : new TextureCacheManager(sysUtilsWrapper, TEXTURE_CACHE_SIZE);
         }

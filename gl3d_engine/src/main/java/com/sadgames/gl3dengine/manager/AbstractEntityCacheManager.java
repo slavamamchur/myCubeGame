@@ -9,13 +9,15 @@ import static com.sadgames.gl3dengine.GLEngineConsts.NOT_ENOUGH_SPACE_IN_CACHE_E
 public abstract class AbstractEntityCacheManager<T> {
 
     private class CacheItem {
-       private T entity;
-       private String key;
-       private int usageCounter = 0;
+        private T entity;
+        private String key;
+        private int usageCounter = 0;
+        private boolean immortal;
 
-        public CacheItem(T entity, String key) {
+        public CacheItem(T entity, String key, boolean immortal) {
             this.entity = entity;
             this.key = key;
+            this.immortal = immortal;
         }
 
         public T getEntity() {
@@ -28,6 +30,9 @@ public abstract class AbstractEntityCacheManager<T> {
         }
         public String getKey() {
             return key;
+        }
+        public boolean isImmortal() {
+            return immortal;
         }
     }
 
@@ -48,15 +53,18 @@ public abstract class AbstractEntityCacheManager<T> {
     public T getItem(String key) {
         if (!items.containsKey(key)) {
             T newItem = createItem(key);
-            long itemSize = getItemSize(newItem);
-
-            freeNecessarySpace(itemSize);
-            items.put(key, new CacheItem(newItem, key));
-            actualCacheSize += itemSize;
+            putItem(newItem, key, getItemSize(newItem), false);
         }
 
         return items.get(key).getEntity();
     }
+
+    public void putItem(T item, String key, long itemSize, boolean isImmortal) {
+        freeNecessarySpace(itemSize);
+        items.put(key, new CacheItem(item, key, isImmortal));
+        actualCacheSize += itemSize;
+    }
+
 
     public void clearCache() {
         for(CacheItem item : items.values())
@@ -75,7 +83,7 @@ public abstract class AbstractEntityCacheManager<T> {
         CacheItem mortal = null;
 
         for(CacheItem item : items.values())
-            if (mortal == null || item.getUsageCounter() < minUsageCounter) {
+            if ((mortal == null || item.getUsageCounter() < minUsageCounter) && !item.isImmortal()) {
                 mortal = item;
                 minUsageCounter = item.getUsageCounter();
             }
