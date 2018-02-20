@@ -22,7 +22,7 @@ public class TextureCacheManager extends AbstractEntityCacheManager<AbstractText
     }
 
     @Override
-    protected long getItemSize(AbstractTexture item) {
+    public long getItemSize(AbstractTexture item) {
         return (long)item.getWidth() * (long)item.getHeight() * 4L;
     }
 

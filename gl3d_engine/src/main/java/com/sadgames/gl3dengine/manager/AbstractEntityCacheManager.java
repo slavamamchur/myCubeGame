@@ -52,7 +52,7 @@ public abstract class AbstractEntityCacheManager<T> {
         this.sysUtilsWrapper = sysUtilsWrapper;
     }
 
-    protected abstract long getItemSize(T item);
+    public abstract long getItemSize(T item);
     protected abstract void releaseItem(T item);
     protected abstract T createItem(String key);
 

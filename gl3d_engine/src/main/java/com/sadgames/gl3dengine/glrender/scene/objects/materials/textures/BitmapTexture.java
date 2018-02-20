@@ -22,12 +22,19 @@ import static android.opengl.GLES20.glTexParameteri;
 
 public class BitmapTexture extends AbstractTexture {
 
+    private String textureName = null;
+
     private BitmapTexture(BitmapWrapperInterface bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
-    private BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String texture_name) {
-        this(sysUtilsWrapper.iGetBitmapFromFile(texture_name));
+    private BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String textureName) {
+        this(sysUtilsWrapper.iGetBitmapFromFile(textureName));
+        this.textureName = textureName;
+    }
+
+    public String getTextureName() {
+        return textureName;
     }
 
     @Override

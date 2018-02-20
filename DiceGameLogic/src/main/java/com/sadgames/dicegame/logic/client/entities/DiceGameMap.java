@@ -9,6 +9,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
         this.gameEntity = gameEntity;
-        setGlCubeMap(BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE)); //TODO: get from cache
-        setGlNormalMap(BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE));//TODO: get from cache
-        setGlDUDVMap(BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE));//TODO: get from cache
+        setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SEA_BOTTOM_TEXTURE));
+        setGlNormalMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(NORMALMAP_TEXTURE));
+        setGlDUDVMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(DUDVMAP_TEXTURE));
     }
 
     @Override
@@ -40,25 +41,30 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
     }
 
     @Override
-    protected BitmapWrapperInterface getReliefMap() { //TODO: put into cache as immortal texture
+    protected BitmapWrapperInterface getReliefMap() {
         return textureResName != null ? getSysUtilsWrapper().iGetReliefFromFile(textureResName) : null;
     }
 
     @Override
-    public AbstractTexture loadTexture() { //TODO: put into cache as immortal texture
+    public AbstractTexture loadTexture() {
         BitmapWrapperInterface textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
-
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
-        float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
 
+        drawPath(textureBmp);
+        AbstractTexture glTexture = BitmapTexture.createInstance(textureBmp);
+        TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
+        textureCache.putItem(glTexture, textureResName, textureCache.getItemSize(glTexture) );
+
+        return glTexture;
+    }
+
+    private void drawPath(BitmapWrapperInterface textureBmp) {
+        float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
         ArrayList<Vector2f> way = new ArrayList<>();
         for (AbstractGamePoint point : gameEntity.getGamePoints())
             way.add(new Vector2f(point.xPos * scaleFactor, point.yPos * scaleFactor));
-
         textureBmp.drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor);
-
-        return BitmapTexture.createInstance(textureBmp);
     }
 
 }

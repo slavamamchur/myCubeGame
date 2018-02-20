@@ -282,16 +282,16 @@ public class GLScene implements GLRendererInterface {
         GLShaderProgram program = getCachedShader(SHADOWMAP_OBJECT);
         program.useProgram();
 
-        int prevObject = -1;
+        AbstractGL3DObject prevObject = null;
         for (AbstractGL3DObject object : objects.values()) {
             if (!object.isCastShadow())
                 continue;
 
             program.bindMVPMatrix(object, getLightSource().getViewMatrix(), getLightSource().getProjectionMatrix());
 
-            if (object.getVertexVBO().getVboPtr() != prevObject) {
-                object.prepare(program);
-                prevObject = object.getVertexVBO().getVboPtr();
+            if (!object.equals(prevObject)) {
+                object.bindVBO(program);
+                prevObject = object;
             }
             object.render();
         }
@@ -310,7 +310,7 @@ public class GLScene implements GLRendererInterface {
         postEffects2DScreen.setGlTexture(mainRenderFBO.getFboTexture());
         program.setMaterialParams(postEffects2DScreen);
 
-        postEffects2DScreen.prepare();
+        postEffects2DScreen.bindVBO();
         postEffects2DScreen.render();
     }
 
@@ -340,19 +340,17 @@ public class GLScene implements GLRendererInterface {
         ///program.paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapWidth));
         ///program.paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapHeight));
 
-        int prevObject = -1;
+        AbstractGL3DObject prevObject = null;
         for (AbstractGL3DObject object : objects.values()) {
             synchronized (lockObject) {
                 program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix());
             }
-
             program.bindLightSourceMVP(object, lightSource.getViewMatrix(), lightSource.getProjectionMatrix(), hasDepthTextureExtension);
-
             program.setMaterialParams(object);
 
-            if (object.getVertexVBO().getVboPtr() != prevObject) {
-                object.prepare(program);
-                prevObject = object.getVertexVBO().getVboPtr();
+            if (!object.equals(prevObject)) {
+                object.bindVBO(program);
+                prevObject = object;
             }
 
             object.render();
@@ -365,7 +363,7 @@ public class GLScene implements GLRendererInterface {
         postEffects2DScreen.setGlTexture(shadowMapFBO.getFboTexture());
         gui_program.setMaterialParams(postEffects2DScreen);
 
-        postEffects2DScreen.prepare();
+        postEffects2DScreen.bindVBO();
         postEffects2DScreen.render();
 
         /** for post effects image processing */

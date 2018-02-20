@@ -4,7 +4,9 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
+import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.FloatBuffer;
@@ -69,7 +71,9 @@ public abstract class GLShaderProgram {
     private int programId;
     private int vertexShaderID;
     private int fragmentShaderID;
+    protected SysUtilsWrapperInterface sysUtilsWrapper;
     protected Map<String, GLShaderParam> params = new HashMap<>();
+
 
     public GLShaderProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
 
@@ -282,12 +286,14 @@ public abstract class GLShaderProgram {
         }
     }
 
-    //TODO: move to object.prepare
+    //TODO: move to object
     public void setMaterialParams(AbstractGL3DObject object) {
         int textureSlotIndex = 0;
 
-        //TODO: check if texture id == 0 -> call texture.load()
         if (object.getGlTexture() != null) {
+            if (object.getGlTexture().getTextureId() == 0)
+                object.loadTexture();
+
             object.getGlTexture().bind(textureSlotIndex);
             setTextureSlotData(textureSlotIndex);
 
@@ -314,6 +320,11 @@ public abstract class GLShaderProgram {
 
         param = paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && object.isCubeMap()) {
+            BitmapTexture cubeMap = (BitmapTexture) object.getGlCubeMap();
+
+            if (cubeMap.getTextureId() == 0)
+                object.setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(cubeMap.getTextureName()));
+
             object.getGlCubeMap().bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
@@ -321,6 +332,11 @@ public abstract class GLShaderProgram {
 
         param = paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && object.hasNormalMap()) {
+            BitmapTexture normalMap = (BitmapTexture) object.getGlNormalMap();
+
+            if (normalMap.getTextureId() == 0)
+                object.setGlNormalMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(normalMap.getTextureName()));
+
             object.getGlNormalMap().bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
@@ -328,6 +344,11 @@ public abstract class GLShaderProgram {
 
         param = paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && object.hasDUDVMap()) {
+            BitmapTexture dudvlMap = (BitmapTexture) object.getGlDUDVMap();
+
+            if (dudvlMap.getTextureId() == 0)
+                object.setGlDUDVMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(dudvlMap.getTextureName()));
+
             object.getGlDUDVMap().bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;

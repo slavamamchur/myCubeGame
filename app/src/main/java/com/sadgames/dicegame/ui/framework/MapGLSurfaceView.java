@@ -8,6 +8,8 @@ import android.view.SurfaceHolder;
 
 import com.sadgames.gl3dengine.glrender.scene.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.gl3dengine.manager.TextureCacheManager;
+import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 public class MapGLSurfaceView extends GLSurfaceView {
@@ -88,6 +90,8 @@ public class MapGLSurfaceView extends GLSurfaceView {
             e.printStackTrace();
         }
         mRenderer.getScene().cleanUp();*/
+
+        TextureCacheManager.getInstance(AndroidDiceGameUtilsWrapper.getInstance(getContext())).clearCache();
 
         super.surfaceDestroyed(holder);
     }

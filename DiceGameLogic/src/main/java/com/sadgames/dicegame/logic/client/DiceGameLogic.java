@@ -270,14 +270,15 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             Vector2f chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
 
             GameItemObject chip = new ChipItem(sysUtilsWrapper, program, player);
-            if (prevChip == null)
+            if (prevChip == null) {
                 chip.loadObject();
+            }
             else {
                 chip.loadFromObject(prevChip);
-                prevChip = chip;
             }
-            mScene.addObject(chip, chip.getItemName());
+            prevChip = chip;
 
+            mScene.addObject(chip, chip.getItemName());
             chip.setInWorldPosition(chipPlace);
         }
     }

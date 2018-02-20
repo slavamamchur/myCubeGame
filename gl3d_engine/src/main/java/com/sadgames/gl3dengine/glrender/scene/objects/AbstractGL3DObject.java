@@ -5,9 +5,9 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParamVBO;
+import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ShortBuffer;
@@ -230,16 +230,23 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
         return textureResName.equals(src.textureResName) && textureColor == src.textureColor;
     }
 
-
-    public void prepare() {
-        prepare(program);
+    @Override
+    public boolean equals(Object obj) {
+        return !((obj == null) || !(obj instanceof AbstractGL3DObject))
+               && ((AbstractGL3DObject) obj).getVertexVBO().getVboPtr() == vertexVBO.getVboPtr();
     }
-    public void prepare(GLShaderProgram program) {
+
+    public void bindVBO() {
+        bindVBO(program);
+    }
+    public void bindVBO(GLShaderProgram program) {
         program.linkVBOData(this);
 
         if (facesIBOPtr > 0)
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
     }
+
+
 
     public void render() {
         /** USING VBO BUFFER */
@@ -254,14 +261,12 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
             glDrawElements(GL_TRIANGLE_STRIP, object.getFacesCount(), GL_UNSIGNED_SHORT, object.getIndexData());*/
     }
 
-    public AbstractTexture loadTexture() { //TODO: get from cache
+    public AbstractTexture loadTexture() {
         if (textureResName != null && !textureResName.isEmpty()) {
-            return //TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
-                    BitmapTexture.createInstance(sysUtilsWrapper, textureResName);
+            return TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
         }
         else if (textureColor != 0) {
-            return //TextureCacheManager.getInstance(sysUtilsWrapper).getItem(String.valueOf(textureColor));
-                    BitmapTexture.createInstance(sysUtilsWrapper, String.valueOf(textureColor));
+            return TextureCacheManager.getInstance(sysUtilsWrapper).getItem(String.valueOf(textureColor));
         }
         else
             return null;
