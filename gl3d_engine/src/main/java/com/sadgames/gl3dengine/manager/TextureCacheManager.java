@@ -11,13 +11,13 @@ public class TextureCacheManager extends AbstractEntityCacheManager<AbstractText
     private static final Object lockObject = new Object();
     private static TextureCacheManager instance = null;
 
-    private TextureCacheManager(SysUtilsWrapperInterface sysUtilsWrapper, long cacheSize) {
-        super(sysUtilsWrapper, cacheSize);
+    private TextureCacheManager(SysUtilsWrapperInterface sysUtilsWrapper) {
+        super(sysUtilsWrapper, TEXTURE_CACHE_SIZE);
     }
 
     public static TextureCacheManager getInstance(SysUtilsWrapperInterface sysUtilsWrapper) {
         synchronized (lockObject) {
-            return instance != null ? instance : new TextureCacheManager(sysUtilsWrapper, TEXTURE_CACHE_SIZE);
+            return instance != null ? instance : new TextureCacheManager(sysUtilsWrapper);
         }
     }
 
