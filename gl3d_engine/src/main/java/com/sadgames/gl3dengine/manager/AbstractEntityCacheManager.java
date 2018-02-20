@@ -14,6 +14,7 @@ public abstract class AbstractEntityCacheManager<T> {
         private int usageCounter = 0;
         private boolean immortal;
 
+        @SuppressWarnings("all")
         public CacheItem(T entity, String key, boolean immortal) {
             this.entity = entity;
             this.key = key;
@@ -25,13 +26,13 @@ public abstract class AbstractEntityCacheManager<T> {
             return entity;
         }
 
-        public int getUsageCounter() {
+        @SuppressWarnings("all") public int getUsageCounter() {
             return usageCounter;
         }
         public String getKey() {
             return key;
         }
-        public boolean isImmortal() {
+        @SuppressWarnings("all") public boolean isImmortal() {
             return immortal;
         }
     }
@@ -41,6 +42,7 @@ public abstract class AbstractEntityCacheManager<T> {
     private HashMap<String, CacheItem> items = new HashMap<>();
     protected SysUtilsWrapperInterface sysUtilsWrapper;
 
+    @SuppressWarnings("all")
     protected AbstractEntityCacheManager(SysUtilsWrapperInterface sysUtilsWrapper, long cacheSize) {
         this.cacheSize = cacheSize;
         this.sysUtilsWrapper = sysUtilsWrapper;
@@ -59,6 +61,7 @@ public abstract class AbstractEntityCacheManager<T> {
         return items.get(key).getEntity();
     }
 
+    /** for non-typical cubeMap textures */
     public void putItem(T item, String key, long itemSize, boolean isImmortal) {
         freeNecessarySpace(itemSize);
         items.put(key, new CacheItem(item, key, isImmortal));
