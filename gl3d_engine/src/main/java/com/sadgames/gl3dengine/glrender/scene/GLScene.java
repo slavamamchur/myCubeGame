@@ -304,13 +304,12 @@ public class GLScene implements GLRendererInterface {
     private void renderPostEffectsBuffer() {
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
-        GLShaderProgram program = postEffects2DScreen.getProgram();
-        program.useProgram();
+        postEffects2DScreen.getProgram().useProgram();
 
         postEffects2DScreen.setGlTexture(mainRenderFBO.getFboTexture());
-        program.setMaterialParams(postEffects2DScreen);
-
+        postEffects2DScreen.bindMaterial();
         postEffects2DScreen.bindVBO();
+
         postEffects2DScreen.render();
     }
 
@@ -346,7 +345,7 @@ public class GLScene implements GLRendererInterface {
                 program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix());
             }
             program.bindLightSourceMVP(object, lightSource.getViewMatrix(), lightSource.getProjectionMatrix(), hasDepthTextureExtension);
-            program.setMaterialParams(object);
+            object.bindMaterial(program);
 
             if (!object.equals(prevObject)) {
                 object.bindVBO(program);
@@ -357,13 +356,12 @@ public class GLScene implements GLRendererInterface {
         }
 
         /** for post effects image processing OR shadowmap debugging */
-        GLShaderProgram gui_program = postEffects2DScreen.getProgram();
-        gui_program.useProgram();
+        postEffects2DScreen.getProgram().useProgram();
 
         postEffects2DScreen.setGlTexture(shadowMapFBO.getFboTexture());
-        gui_program.setMaterialParams(postEffects2DScreen);
-
+        postEffects2DScreen.bindMaterial();
         postEffects2DScreen.bindVBO();
+
         postEffects2DScreen.render();
 
         /** for post effects image processing */

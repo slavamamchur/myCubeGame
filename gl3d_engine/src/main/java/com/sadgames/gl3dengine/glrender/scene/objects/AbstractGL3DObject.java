@@ -5,7 +5,9 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParamVBO;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -22,8 +24,16 @@ import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDeleteBuffers;
 import static android.opengl.GLES20.glDrawElements;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DIFFUSE_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_CUBEMAPF_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.NORMALS_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SPECULAR_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXELS_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEXES_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_X;
@@ -246,7 +256,76 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
     }
 
+    public void bindMaterial() {
+        bindMaterial(program);
+    }
+    public void bindMaterial(GLShaderProgram program) {
+        int textureSlotIndex = 0;
 
+        if (glTexture != null) {
+            if (glTexture.getTextureId() == 0)
+                loadTexture();
+
+            glTexture.bind(textureSlotIndex);
+            program.setTextureSlotData(textureSlotIndex);
+
+            textureSlotIndex++;
+        }
+
+        GLShaderParam param = program.paramByName(AMBIENT_RATE_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(ambientRate);
+        param = program.paramByName(DIFFUSE_RATE_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(diffuseRate);
+        param = program.paramByName(SPECULAR_RATE_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(specularRate);
+
+        int hasNormalMap = hasNormalMap() ? 1 : 0;
+        param = program.paramByName(IS_CUBEMAP_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(hasNormalMap);
+        param = program.paramByName(IS_CUBEMAPF_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(hasNormalMap);
+
+        param = program.paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0 && isCubeMap()) {
+            BitmapTexture cubeMap = (BitmapTexture) glCubeMap;
+
+            if (cubeMap.getTextureId() == 0)
+                glCubeMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(cubeMap.getTextureName());
+
+            glCubeMap.bind(textureSlotIndex);
+            param.setParamValue(textureSlotIndex);
+            textureSlotIndex++;
+        }
+
+        param = program.paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0 && hasNormalMap()) {
+            BitmapTexture normalMap = (BitmapTexture) glNormalMap;
+
+            if (normalMap.getTextureId() == 0)
+                glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(normalMap.getTextureName());
+
+            glNormalMap.bind(textureSlotIndex);
+            param.setParamValue(textureSlotIndex);
+            textureSlotIndex++;
+        }
+
+        param = program.paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0 && hasDUDVMap()) {
+            BitmapTexture dudvlMap = (BitmapTexture) glDUDVMap;
+
+            if (dudvlMap.getTextureId() == 0)
+                glDUDVMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(dudvlMap.getTextureName());
+
+            glDUDVMap.bind(textureSlotIndex);
+            param.setParamValue(textureSlotIndex);
+            textureSlotIndex++;
+        }
+    }
 
     public void render() {
         /** USING VBO BUFFER */

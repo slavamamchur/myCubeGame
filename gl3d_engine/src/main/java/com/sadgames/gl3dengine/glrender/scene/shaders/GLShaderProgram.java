@@ -4,9 +4,7 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
-import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.FloatBuffer;
@@ -283,75 +281,6 @@ public abstract class GLShaderProgram {
             linkNormalData(object.getNormalVBO());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        }
-    }
-
-    //TODO: move to object
-    public void setMaterialParams(AbstractGL3DObject object) {
-        int textureSlotIndex = 0;
-
-        if (object.getGlTexture() != null) {
-            if (object.getGlTexture().getTextureId() == 0)
-                object.loadTexture();
-
-            object.getGlTexture().bind(textureSlotIndex);
-            setTextureSlotData(textureSlotIndex);
-
-            textureSlotIndex++;
-        }
-
-        GLShaderParam param = paramByName(AMBIENT_RATE_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(object.getAmbientRate());
-        param = paramByName(DIFFUSE_RATE_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(object.getDiffuseRate());
-        param = paramByName(SPECULAR_RATE_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(object.getSpecularRate());
-
-        int hasNormalMap = object.hasNormalMap() ? 1 : 0;
-        param = paramByName(IS_CUBEMAP_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(hasNormalMap);
-        param = paramByName(IS_CUBEMAPF_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(hasNormalMap);
-
-        param = paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0 && object.isCubeMap()) {
-            BitmapTexture cubeMap = (BitmapTexture) object.getGlCubeMap();
-
-            if (cubeMap.getTextureId() == 0)
-                object.setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(cubeMap.getTextureName()));
-
-            object.getGlCubeMap().bind(textureSlotIndex);
-            param.setParamValue(textureSlotIndex);
-            textureSlotIndex++;
-        }
-
-        param = paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0 && object.hasNormalMap()) {
-            BitmapTexture normalMap = (BitmapTexture) object.getGlNormalMap();
-
-            if (normalMap.getTextureId() == 0)
-                object.setGlNormalMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(normalMap.getTextureName()));
-
-            object.getGlNormalMap().bind(textureSlotIndex);
-            param.setParamValue(textureSlotIndex);
-            textureSlotIndex++;
-        }
-
-        param = paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0 && object.hasDUDVMap()) {
-            BitmapTexture dudvlMap = (BitmapTexture) object.getGlDUDVMap();
-
-            if (dudvlMap.getTextureId() == 0)
-                object.setGlDUDVMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(dudvlMap.getTextureName()));
-
-            object.getGlDUDVMap().bind(textureSlotIndex);
-            param.setParamValue(textureSlotIndex);
-            textureSlotIndex++;
         }
     }
 
