@@ -35,6 +35,10 @@ public abstract class AbstractEntityCacheManager<T> {
         @SuppressWarnings("all") public boolean isImmortal() {
             return immortal;
         }
+
+        public void setImmortal(boolean immortal) {
+            this.immortal = immortal;
+        }
     }
 
     private long cacheSize;
@@ -62,12 +66,26 @@ public abstract class AbstractEntityCacheManager<T> {
     }
 
     /** for non-typical cubeMap textures */
-    public void putItem(T item, String key, long itemSize, boolean isImmortal) {
-        freeNecessarySpace(itemSize);
-        items.put(key, new CacheItem(item, key, isImmortal));
-        actualCacheSize += itemSize;
+    public void putItem(T item, String key, long itemSize) {
+        putItem(item, key, itemSize, true);
     }
 
+    @SuppressWarnings("all")
+    protected void putItem(T item, String key, long itemSize, boolean isImmortal) {
+        if (!items.containsKey(key)) {
+            freeNecessarySpace(itemSize);
+            items.put(key, new CacheItem(item, key, isImmortal));
+            actualCacheSize += itemSize;
+        }
+        else
+            items.get(key).setImmortal(isImmortal);
+    }
+
+    /** for load new level with keeping some objects if needed*/
+    public void setWeakCacheMode() {
+        for(CacheItem item : items.values())
+            item.setImmortal(false);
+    }
 
     public void clearCache() {
         for(CacheItem item : items.values())

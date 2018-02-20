@@ -251,10 +251,12 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
 
     public AbstractTexture loadTexture() { //TODO: get from cache
         if (textureResName != null && !textureResName.isEmpty()) {
-            return BitmapTexture.createInstance(sysUtilsWrapper, textureResName);
+            return //TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
+                    BitmapTexture.createInstance(sysUtilsWrapper, textureResName);
         }
         else if (textureColor != 0) {
-            return BitmapTexture.createInstance(sysUtilsWrapper, String.valueOf(textureColor));
+            return //TextureCacheManager.getInstance(sysUtilsWrapper).getItem(String.valueOf(textureColor));
+                    BitmapTexture.createInstance(sysUtilsWrapper, String.valueOf(textureColor));
         }
         else
             return null;
