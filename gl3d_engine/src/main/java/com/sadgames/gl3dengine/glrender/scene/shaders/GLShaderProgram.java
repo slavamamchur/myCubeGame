@@ -11,8 +11,6 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
-
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINK_STATUS;
@@ -246,15 +244,6 @@ public abstract class GLShaderProgram {
             param.setParamValue(data);
     }
 
-    public void setCameraPosition(Vector3f pos) {
-        paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(new float[] {pos.x, pos.y, pos.z});
-    }
-
-    public void setLightSourcePosition(float[] pos) {
-        paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(pos);
-        paramByName(LIGHT_POSITIONF_PARAM_NAME).setParamValue(pos);
-    }
-
     public void setMVPMatrixData(float[] data) {
         paramByName(MVP_MATRIX_PARAM_NAME).setParamValue(data);
     }
@@ -282,10 +271,6 @@ public abstract class GLShaderProgram {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-    }
-
-    public void setLightColourValue(Vector3f colour) {
-        paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
     }
 
     public void bindLightSourceMVP (AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {

@@ -33,8 +33,4 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         params.put(param.getParamName(), param);
     }
 
-    public void setWaveMovingFactor(float moveFactor) {
-        paramByName(RND_SEED__PARAM_NAME).setParamValue(moveFactor);
-    }
-
 }
