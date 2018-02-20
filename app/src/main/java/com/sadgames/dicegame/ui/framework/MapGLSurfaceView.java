@@ -79,7 +79,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) { //TODO: error cleaning gl buffers and clear cache
+    public void surfaceDestroyed(SurfaceHolder holder) { //TODO: error cleaning gl buffers and clear texture cache !!!
 
         /*mRenderer.getScene().setRenderStopped(true);
         try {

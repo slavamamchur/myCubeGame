@@ -28,7 +28,7 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
     public DiceGameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
-        this.gameEntity = gameEntity; //TODO: Get mam material description from gameEntity
+        this.gameEntity = gameEntity;
         setGlCubeMap(BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE)); //TODO: get from cache
         setGlNormalMap(BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE));//TODO: get from cache
         setGlDUDVMap(BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE));//TODO: get from cache
@@ -40,12 +40,12 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
     }
 
     @Override
-    protected BitmapWrapperInterface getReliefMap() {
+    protected BitmapWrapperInterface getReliefMap() { //TODO: put into cache as immortal texture
         return textureResName != null ? getSysUtilsWrapper().iGetReliefFromFile(textureResName) : null;
     }
 
     @Override
-    public AbstractTexture loadTexture() {
+    public AbstractTexture loadTexture() { //TODO: put into cache as immortal texture
         BitmapWrapperInterface textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
 
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
