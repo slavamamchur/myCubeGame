@@ -29,9 +29,9 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
         this.gameEntity = gameEntity; //TODO: Get mam material description from gameEntity
-        setGlCubeMapId(BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE).getTextureId()); //TODO: get from cache and set texture instead of id
-        setGlNormalMapId(BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE).getTextureId());//TODO: get from cache and set texture instead of id
-        setGlDUDVMapId(BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE).getTextureId());//TODO: get from cache and set texture instead of id
+        setGlCubeMap(BitmapTexture.createInstance(sysUtilsWrapper, SEA_BOTTOM_TEXTURE)); //TODO: get from cache
+        setGlNormalMap(BitmapTexture.createInstance(sysUtilsWrapper, NORMALMAP_TEXTURE));//TODO: get from cache
+        setGlDUDVMap(BitmapTexture.createInstance(sysUtilsWrapper, DUDVMAP_TEXTURE));//TODO: get from cache
     }
 
     @Override

@@ -16,12 +16,8 @@ import javax.vecmath.Vector3f;
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
 import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINK_STATUS;
-import static android.opengl.GLES20.GL_TEXTURE0;
-import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
-import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glAttachShader;
-import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glCompileShader;
 import static android.opengl.GLES20.glCreateProgram;
 import static android.opengl.GLES20.glCreateShader;
@@ -286,13 +282,13 @@ public abstract class GLShaderProgram {
         }
     }
 
+    //TODO: move to object.prepare
     public void setMaterialParams(AbstractGL3DObject object) {
         int textureSlotIndex = 0;
 
         //TODO: check if texture id == 0 -> call texture.load()
-        if (object.getGlTextureId() > 0) {
-            glActiveTexture(GL_TEXTURE0 + textureSlotIndex);
-            glBindTexture(GL_TEXTURE_2D, object.getGlTextureId());
+        if (object.getGlTexture() != null) {
+            object.getGlTexture().bind(textureSlotIndex);
             setTextureSlotData(textureSlotIndex);
 
             textureSlotIndex++;
@@ -318,24 +314,21 @@ public abstract class GLShaderProgram {
 
         param = paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && object.isCubeMap()) {
-            glActiveTexture(GL_TEXTURE0 + textureSlotIndex);
-            glBindTexture(/*GL_TEXTURE_CUBE_MAP*/GL_TEXTURE_2D, object.getGlCubeMapId());
+            object.getGlCubeMap().bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
         }
 
         param = paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && object.hasNormalMap()) {
-            glActiveTexture(GL_TEXTURE0 + textureSlotIndex);
-            glBindTexture(GL_TEXTURE_2D, object.getGlNormalMapId());
+            object.getGlNormalMap().bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
         }
 
         param = paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && object.hasDUDVMap()) {
-            glActiveTexture(GL_TEXTURE0 + textureSlotIndex);
-            glBindTexture(GL_TEXTURE_2D, object.getGlDUDVMapId());
+            object.getGlDUDVMap().bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
         }

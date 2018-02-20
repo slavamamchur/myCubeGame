@@ -53,9 +53,10 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     private float diffuseRate = 1.0f;
     private float specularRate = 0.9f;
     private boolean isCubeMap = false;
-    private int glNormalMapId = 0;
-    private int glCubeMapId = 0;
-    private int glDUDVMapId = 0;
+
+    protected AbstractTexture glNormalMap = null;
+    protected AbstractTexture glCubeMap = null;
+    protected AbstractTexture glDUDVMap = null;
 
     protected String textureResName = "";
     protected int textureColor = 0;
@@ -78,9 +79,6 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public GLObjectType getObjectType() {
         return objectType;
     }
-    public int getGlTextureId() {
-        return glTexture.getTextureId();
-    }
     public AbstractTexture getGlTexture() {
         return glTexture;
     }
@@ -90,31 +88,34 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     }
 
     public boolean hasNormalMap() {
-        return glNormalMapId > 0;
+        return glNormalMap != null;
     }
     public boolean hasDUDVMap() {
-        return glDUDVMapId > 0;
+        return glDUDVMap != null;
+    }
+    public boolean hasCubeMap() {
+        return glCubeMap != null;
     }
 
-    public int getGlNormalMapId() {
-        return glNormalMapId;
+    public AbstractTexture getGlNormalMap() {
+        return glNormalMap;
     }
-    public void setGlNormalMapId(int glNormalMapId) {
-        this.glNormalMapId = glNormalMapId;
-    }
-
-    public int getGlCubeMapId() {
-        return glCubeMapId;
-    }
-    public void setGlCubeMapId(int glCubeMapId) {
-        this.glCubeMapId = glCubeMapId;
+    public void setGlNormalMap(AbstractTexture glNormalMap) {
+        this.glNormalMap = glNormalMap;
     }
 
-    public int getGlDUDVMapId() {
-        return glDUDVMapId;
+    public AbstractTexture getGlCubeMap() {
+        return glCubeMap;
     }
-    public void setGlDUDVMapId(int glDUDVMapId) {
-        this.glDUDVMapId = glDUDVMapId;
+    public void setGlCubeMap(AbstractTexture glCubeMap) {
+        this.glCubeMap = glCubeMap;
+    }
+
+    public AbstractTexture getGlDUDVMap() {
+        return glDUDVMap;
+    }
+    public void setGlDUDVMap(AbstractTexture glDUDVMap) {
+        this.glDUDVMap = glDUDVMap;
     }
 
     public GLShaderParamVBO getVertexVBO() {
@@ -126,15 +127,18 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public GLShaderParamVBO getNormalVBO() {
         return normalVBO;
     }
-    public ShortBuffer getIndexData() {
+
+    @SuppressWarnings("unused") public ShortBuffer getIndexData() {
         return indexData;
     }
     public void setIndexData(ShortBuffer indexData) {
         this.indexData = indexData;
     }
+
     public int getFacesIBOPtr() {
         return facesIBOPtr;
     }
+
     public float[] getModelMatrix() {
         return modelMatrix;
     }
@@ -145,6 +149,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public GLShaderProgram getProgram() {
         return program;
     }
+
     public Vector2f getPlace() {
         return place;
     }
