@@ -8,6 +8,7 @@ import javax.vecmath.Vector2f;
 public interface BitmapWrapperInterface {
 
     Buffer  getRawData();
+    Buffer  getDecodedRawData();
     int     getPixelColor(int x, int y);
 
     int     getWidth();

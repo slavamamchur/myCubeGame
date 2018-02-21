@@ -1,7 +1,11 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
+import android.opengl.ETC1;
+
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
+
+import java.nio.Buffer;
 
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_LINEAR;
@@ -16,6 +20,7 @@ import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
 import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
 import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
 import static android.opengl.GLES20.glBlendFunc;
+import static android.opengl.GLES20.glCompressedTexImage2D;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glTexImage2D;
 import static android.opengl.GLES20.glTexParameteri;
@@ -54,10 +59,27 @@ public class BitmapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
+        loadTextureInternal(getTextureType(), bitmap);
+        bitmap.release();
+    }
+
+    @SuppressWarnings("all")
+    protected void loadTextureInternal(int target, BitmapWrapperInterface bitmap) {
         try {
-            //TODO: load compressed textures
-            glTexImage2D(getTextureType(), 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getRawData());
-            bitmap.release();
+            if (!bitmap.isCompressed())
+                glTexImage2D(target, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getRawData());
+            else {
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
+                Buffer data;
+                if (isETC1Supported()) {
+                    data = bitmap.getRawData();
+                    int imageSize = data.remaining();
+                    glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0, imageSize, data);
+                } else {
+                    glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());
+                }
+            }
         }
         catch (Exception exception) {
             throw new UnsupportedOperationException();

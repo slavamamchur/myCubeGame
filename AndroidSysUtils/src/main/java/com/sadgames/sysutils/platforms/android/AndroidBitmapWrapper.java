@@ -54,6 +54,21 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
+    public Buffer getDecodedRawData() {
+        if (isCompressed()) {
+            int width = compressedPicture.getWidth();
+            int height = compressedPicture.getHeight();
+            int stride = 3 * width;
+            ByteBuffer decodedData = ByteBuffer.allocateDirect(stride * height).order(ByteOrder.nativeOrder());
+            ETC1.decodeImage(compressedPicture.getData(), decodedData, width, height, 3, stride);
+
+            return decodedData;
+        }
+        else
+            return getRawData();
+    }
+
+    @Override
     public int getPixelColor(int x, int y) {
         return isCompressed() ? 0 : picture.getPixel(x, y);
     }
