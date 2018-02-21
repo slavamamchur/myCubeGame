@@ -13,6 +13,8 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iGetBitmapFromFile(String file);
     BitmapWrapperInterface iGetReliefFromFile(String file);
     BitmapWrapperInterface iCreateColorBitmap(int color);
+    BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap);
+
     boolean                iIsBitmapCached(String map_id, Long updatedDate);
     void                   iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
 

@@ -52,6 +52,8 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
 
         drawPath(textureBmp);
+
+        textureBmp = getSysUtilsWrapper().packToETC1(textureBmp);
         AbstractTexture glTexture = BitmapTexture.createInstance(textureBmp);
         TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
         textureCache.putItem(glTexture, textureResName, textureCache.getItemSize(glTexture) );

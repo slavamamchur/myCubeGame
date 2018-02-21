@@ -21,6 +21,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import javax.vecmath.Vector3f;
@@ -201,7 +202,19 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         db.replaceOrThrow(AndroidSQLiteDBHelper.TABLE_NAME, null, cv);
     }
 
-    //TODO: add compressing on fly before save to DB
+    private AndroidBitmapWrapper decodeImage(byte[] bitmapArray) {
+        int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
+        final BitmapFactory.Options options = getiBitmapOptions();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+        options.inSampleSize =
+                calculateInSampleSize(options,
+                        options.outWidth / scaleFactor,
+                        options.outHeight / scaleFactor);
+        options.inJustDecodeBounds = false;
+        return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
+    }
+
     public void saveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
         AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, AndroidSQLiteDBHelper.DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -225,7 +238,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
     @Nullable
     private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) {
-        Bitmap bitmap = null;
+        AndroidBitmapWrapper bitmap = null;
         byte[] bitmapArray = null;
         Cursor imageData = null;
         AndroidSQLiteDBHelper dbHelper = null;
@@ -241,7 +254,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
                             " from " + AndroidSQLiteDBHelper.TABLE_NAME +
                             " where " + AndroidSQLiteDBHelper.MAP_ID_FIELD + " = ?" +
                             " order by " + AndroidSQLiteDBHelper.CHUNK_NUMBER_FIELD,
-                    new String[] { (isRelief ? "rel_" : "") + textureResName }); //TODO: add ".pkm"
+                    new String[] { (isRelief ? "rel_" : "") + textureResName });
 
             if (imageData != null && imageData.moveToFirst()) {
                 int dataPtr = 0;
@@ -266,22 +279,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
             db.close();
             dbHelper.close();
 
-            //TODO: create ETC1 texture
-            if (bitmapArray != null) {
-                int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
-                final BitmapFactory.Options options = getiBitmapOptions();
-
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-                options.inSampleSize =
-                            calculateInSampleSize(options,
-                                         options.outWidth / scaleFactor,
-                                        options.outHeight / scaleFactor);
-
-                options.inJustDecodeBounds = false;
-                bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-            }
-
+            bitmap = bitmapArray != null ? decodeImage(bitmapArray) : isRelief ? new AndroidBitmapWrapper((Bitmap) null) : null;
         }
         finally {
             if (imageData != null) imageData.close();
@@ -289,7 +287,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
             if (dbHelper != null) dbHelper.close();
         }
 
-        return bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
+        return bitmap;
     }
 
     private boolean isBitmapCached(String map_id, Long updatedDate) {
@@ -324,6 +322,32 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         return result;
     }
     /** ------------------------------------------------------------------------------------------*/
+
+    @Override
+    public BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3);
+
+        for (int y = 0; y < height; y += 1) {
+            for (int x = 0; x < width; x += 1) {
+                int value = bitmap.getPixelColor(x, y);
+                bb.put((byte) (value >> 16));
+                bb.put((byte) (value >> 8));
+                bb.put((byte) value);
+            }
+        }
+        bb.rewind();
+
+        bitmap.release();
+        bitmap = null;
+
+        ETC1Util.ETC1Texture texture = ETC1Util.compressTexture(bb, width, height, 3, 3 * width);
+
+        bb.limit(0);
+
+        return new AndroidBitmapWrapper(texture);
+    }
 
     @Override
     public String iReadTextFromFile(String fileName) {
