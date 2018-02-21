@@ -32,7 +32,6 @@ import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
-    protected static  final int BYTES_IN_2MB = 2 * BYTES_IN_MB;
     protected static final Object lockObject = new Object();
 
     protected static MediaPlayer mMediaPlayer;
@@ -202,18 +201,19 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         db.replaceOrThrow(AndroidSQLiteDBHelper.TABLE_NAME, null, cv);
     }
 
+    //TODO: add compressing on fly before save to DB
     public void saveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
         AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, AndroidSQLiteDBHelper.DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         db.execSQL("delete from " + AndroidSQLiteDBHelper.TABLE_NAME + " where " + AndroidSQLiteDBHelper.MAP_ID_FIELD + " = \"" + map_id + "\"");
 
-        int chunkCount = bitmapArray.length / BYTES_IN_2MB;
-        final int lastChunkSize = bitmapArray.length % BYTES_IN_2MB;
+        int chunkCount = bitmapArray.length / (BYTES_IN_MB * 2);
+        final int lastChunkSize = bitmapArray.length % (BYTES_IN_MB * 2);
         chunkCount = lastChunkSize > 0 ? chunkCount + 1 : chunkCount;
 
         for (int i = 0; i < chunkCount; i++) {
-            int chunkSize = (i == (chunkCount - 1)) && (lastChunkSize > 0) ? lastChunkSize : BYTES_IN_2MB;
+            int chunkSize = (i == (chunkCount - 1)) && (lastChunkSize > 0) ? lastChunkSize : (BYTES_IN_MB * 2);
             byte[] chunkData = Arrays.copyOfRange(bitmapArray, i * chunkSize, (i + 1) * chunkSize);
 
             saveChunk2DB(db, map_id, i, updatedDate, chunkData);
@@ -224,7 +224,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
 
     @Nullable
-    private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) { //TODO: add compressing on fly before save to DB
+    private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) {
         Bitmap bitmap = null;
         byte[] bitmapArray = null;
         Cursor imageData = null;
@@ -241,16 +241,16 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
                             " from " + AndroidSQLiteDBHelper.TABLE_NAME +
                             " where " + AndroidSQLiteDBHelper.MAP_ID_FIELD + " = ?" +
                             " order by " + AndroidSQLiteDBHelper.CHUNK_NUMBER_FIELD,
-                    new String[] { (isRelief ? "rel_" : "") + textureResName });
+                    new String[] { (isRelief ? "rel_" : "") + textureResName }); //TODO: add ".pkm"
 
             if (imageData != null && imageData.moveToFirst()) {
                 int dataPtr = 0;
                 int chunkCount = imageData.getCount();
-                int imageSize = chunkCount * BYTES_IN_2MB;
+                int imageSize = chunkCount * (BYTES_IN_MB * 2);
 
                 imageData.moveToLast();
                 byte[] lastChunk = imageData.getBlob(imageData.getColumnIndex(AndroidSQLiteDBHelper.MAP_IMAGE_FIELD));
-                imageSize = lastChunk.length < BYTES_IN_2MB ? imageSize - BYTES_IN_2MB + lastChunk.length : imageSize;
+                imageSize = lastChunk.length < (BYTES_IN_MB * 2) ? imageSize - (BYTES_IN_MB * 2) + lastChunk.length : imageSize;
                 bitmapArray = new byte[imageSize];
                 imageData.moveToFirst();
 
@@ -266,6 +266,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
             db.close();
             dbHelper.close();
 
+            //TODO: create ETC1 texture
             if (bitmapArray != null) {
                 int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
                 final BitmapFactory.Options options = getiBitmapOptions();
