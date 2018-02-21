@@ -121,5 +121,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     public void release() {
         if (picture != null)
             picture.recycle();
+
+        compressedPicture = null;
     }
 }

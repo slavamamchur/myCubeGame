@@ -1,12 +1,11 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
-import android.opengl.ETC1;
-
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;
 
+import static android.opengl.ETC1.ETC1_RGB8_OES;
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_LINEAR;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
@@ -75,7 +74,7 @@ public class BitmapTexture extends AbstractTexture {
                 if (isETC1Supported()) {
                     data = bitmap.getRawData();
                     int imageSize = data.remaining();
-                    glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0, imageSize, data);
+                    glCompressedTexImage2D(target, 0, ETC1_RGB8_OES, width, height, 0, imageSize, data);
                 } else {
                     glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());
                 }

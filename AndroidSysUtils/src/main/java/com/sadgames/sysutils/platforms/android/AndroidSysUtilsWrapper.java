@@ -12,12 +12,14 @@ import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import javax.vecmath.Vector3f;
@@ -117,12 +119,16 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         return options;
     }
 
-    private Bitmap getBitmapFromFile(String file, boolean isRelief) {
-        Bitmap result;
+    private AndroidBitmapWrapper getBitmapFromFile(String file, boolean isRelief) {
+        AndroidBitmapWrapper result;
+        Bitmap bitmap;
 
         try {
+            InputStream source = context.getAssets().open("textures/" + file);
+
             final BitmapFactory.Options options = getiBitmapOptions();
-            result = BitmapFactory.decodeStream(context.getAssets().open("textures/" + file), null, options);
+            bitmap = BitmapFactory.decodeStream(source, null, options);
+            result = bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
         }
         catch (Exception exception) { result = null; }
 
@@ -130,7 +136,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
         if (result == null)
             try {
-                result = createColorBitmap(Integer.parseInt(file));
+                result = new AndroidBitmapWrapper(createColorBitmap(Integer.parseInt(file)));
             }
             catch (Exception exception) { result = null; }
 
@@ -210,7 +216,8 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         dbHelper.close();
     }
 
-    private Bitmap loadBitmapFromDB(String textureResName, boolean isRelief) {
+    @Nullable
+    private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) {
         Bitmap bitmap = null;
         byte[] bitmapArray = null;
         Cursor imageData = null;
@@ -274,7 +281,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
             if (dbHelper != null) dbHelper.close();
         }
 
-        return bitmap;
+        return bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
     }
 
     private boolean isBitmapCached(String map_id, Long updatedDate) {
@@ -317,12 +324,12 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
     @Override
     public BitmapWrapperInterface iGetBitmapFromFile(String file) { //TODO: load compressed textures
-        return new AndroidBitmapWrapper(getBitmapFromFile(file, false));
+        return getBitmapFromFile(file, false);
     }
 
     @Override
     public BitmapWrapperInterface iGetReliefFromFile(String file) { //TODO: load compressed textures
-        return new AndroidBitmapWrapper(getBitmapFromFile(file, true));
+        return getBitmapFromFile(file, true);
     }
 
     @Override
