@@ -13,11 +13,14 @@ public abstract class AbstractTexture {
     private     int width;
     private     int height;
     private     int textureId;
+    protected  long textureSize;
 
     public AbstractTexture(int width, int height, BitmapWrapperInterface bitmap) {
         init(width, height);
-        createTexture(bitmap);
 
+        this.textureSize = bitmap != null ? bitmap.getImageSizeBytes() : 0;
+
+        createTexture(bitmap);
     }
 
     protected AbstractTexture() {}
@@ -30,6 +33,9 @@ public abstract class AbstractTexture {
     }
     public int getTextureId() {
         return textureId;
+    }
+    public long getTextureSize() {
+        return textureSize;
     }
 
     protected void init(int width, int height) {

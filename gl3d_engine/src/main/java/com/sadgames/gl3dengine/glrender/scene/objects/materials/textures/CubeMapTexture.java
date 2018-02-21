@@ -57,11 +57,13 @@ public class CubeMapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
+        textureSize = 0;
 
         for (int i =0; i < faces.length; i++)
             try {
                 bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]);
                 loadTextureInternal(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, bitmap);
+                textureSize += bitmap.getImageSizeBytes();
                 bitmap.release();
             }
             catch (Exception exception) {

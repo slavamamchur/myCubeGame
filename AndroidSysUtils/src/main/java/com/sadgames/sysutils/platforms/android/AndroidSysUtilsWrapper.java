@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
+import android.opengl.ETC1Util;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -126,9 +127,15 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         try {
             InputStream source = context.getAssets().open("textures/" + file);
 
-            final BitmapFactory.Options options = getiBitmapOptions();
-            bitmap = BitmapFactory.decodeStream(source, null, options);
-            result = bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
+            if (file.endsWith("pkm")) {
+                ETC1Util.ETC1Texture compressedBitmap = ETC1Util.createTexture(source);
+                result = compressedBitmap == null ? null : new AndroidBitmapWrapper(compressedBitmap);
+            }
+            else {
+                final BitmapFactory.Options options = getiBitmapOptions();
+                bitmap = BitmapFactory.decodeStream(source, null, options);
+                result = bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
+            }
         }
         catch (Exception exception) { result = null; }
 
@@ -217,7 +224,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
 
     @Nullable
-    private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) {
+    private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) { //TODO: add compressing on fly before save to DB
         Bitmap bitmap = null;
         byte[] bitmapArray = null;
         Cursor imageData = null;

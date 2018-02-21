@@ -75,12 +75,12 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public int getWidth() {
-        return isCompressed() ? compressedPicture.getWidth() : picture.getWidth();
+        return isCompressed() ? compressedPicture.getWidth() : picture != null ? picture.getWidth() : 0;
     }
 
     @Override
     public int getHeight() {
-        return isCompressed() ? compressedPicture.getHeight() : picture.getHeight();
+        return isCompressed() ? compressedPicture.getHeight() : picture != null ? picture.getHeight() : 0;
     }
 
     @Override
