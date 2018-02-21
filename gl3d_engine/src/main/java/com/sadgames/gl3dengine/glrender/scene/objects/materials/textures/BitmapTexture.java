@@ -55,6 +55,7 @@ public class BitmapTexture extends AbstractTexture {
     @Override
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
         try {
+            //TODO: load compressed textures
             glTexImage2D(getTextureType(), 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getRawData());
             bitmap.release();
         }

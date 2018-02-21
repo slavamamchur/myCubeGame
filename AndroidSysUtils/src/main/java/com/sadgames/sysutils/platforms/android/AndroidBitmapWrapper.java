@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.opengl.ETC1;
+import android.opengl.ETC1Util;
 
 import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
 
@@ -17,44 +19,68 @@ import javax.vecmath.Vector2f;
 
 public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
-    private Bitmap picture;
+    private Bitmap picture = null;
+    private ETC1Util.ETC1Texture compressedPicture = null;
 
     public AndroidBitmapWrapper(Bitmap picture) {
         this.picture = picture;
     }
 
+    public AndroidBitmapWrapper(ETC1Util.ETC1Texture compressedPicture) {
+        this.compressedPicture = compressedPicture;
+    }
+
+    @Override
+    public int getImageSizeBytes() {
+        return isCompressed() ?
+                              ETC1.getEncodedDataSize(compressedPicture.getWidth(), compressedPicture.getHeight())
+                              :
+                              picture.getByteCount();
+    }
+
     @Override
     public Buffer getRawData() {
-        ByteBuffer imageBuffer = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
-        picture.copyPixelsToBuffer(imageBuffer);
-        imageBuffer.position(0);
+        ByteBuffer imageBuffer;
+
+        if (isCompressed())
+            imageBuffer = compressedPicture.getData();
+        else {
+            imageBuffer = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
+            picture.copyPixelsToBuffer(imageBuffer);
+            imageBuffer.position(0);
+        }
 
         return imageBuffer;
     }
 
     @Override
     public int getPixelColor(int x, int y) {
-        return picture.getPixel(x, y);
+        return isCompressed() ? 0 : picture.getPixel(x, y);
     }
 
     @Override
     public int getWidth() {
-        return picture.getWidth();
+        return isCompressed() ? compressedPicture.getWidth() : picture.getWidth();
     }
 
     @Override
     public int getHeight() {
-        return picture.getHeight();
+        return isCompressed() ? compressedPicture.getHeight() : picture.getHeight();
     }
 
     @Override
     public boolean isEmpty() {
-        return picture == null;
+        return picture == null && compressedPicture == null;
+    }
+
+    @Override
+    public boolean isCompressed() {
+        return compressedPicture != null;
     }
 
     @Override
     public void drawPath(List<Vector2f> path, int pathColor, int wayPointColor, float scaleFactor) {
-        if (path == null)
+        if (path == null || isCompressed())
             return;
 
         Canvas canvas = new Canvas(picture);
@@ -78,6 +104,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public void release() {
-        picture.recycle();
+        if (picture != null)
+            picture.recycle();
     }
 }

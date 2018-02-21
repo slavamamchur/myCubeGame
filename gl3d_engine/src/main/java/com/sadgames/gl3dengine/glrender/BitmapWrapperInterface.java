@@ -12,7 +12,10 @@ public interface BitmapWrapperInterface {
 
     int     getWidth();
     int     getHeight();
+    int     getImageSizeBytes();
+
     boolean isEmpty();
+    boolean isCompressed();
 
     void    drawPath(List<Vector2f> path, int pathColor, int wayPointColor, float scaleFactor);
 

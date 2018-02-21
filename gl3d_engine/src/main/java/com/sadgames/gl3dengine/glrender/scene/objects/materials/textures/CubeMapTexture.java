@@ -55,7 +55,7 @@ public class CubeMapTexture extends AbstractTexture {
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
         try {
             for (int i =0; i < faces.length; i++) {
-                bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]);
+                bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]); //TODO: use cache and load compressed
                 glTexImage2D(
                         GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                         0, GL_RGBA,
