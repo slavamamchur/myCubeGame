@@ -45,7 +45,7 @@ public class CubeMapTexture extends AbstractTexture {
     }
 
     @Override
-    protected void setTextureParams() {
+    protected void setTextureParams() {//TODO: add mimpaps support
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
 

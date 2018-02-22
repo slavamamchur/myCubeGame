@@ -62,7 +62,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
                 camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
 
                 /** Rotate camera around scene */
-                camera.rotateAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
+                camera.rotateYAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
 
                 /** turn head horizontally */
                 ///camera.directSetYaw(camera.getYaw() + (dx * TOUCH_SCALE_FACTOR));

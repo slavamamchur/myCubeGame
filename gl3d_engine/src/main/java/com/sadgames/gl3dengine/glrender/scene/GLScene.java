@@ -333,6 +333,7 @@ public class GLScene implements GLRendererInterface {
         program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
 
         synchronized (lockObject) {
+            //TODO: get direction vector and pass into shader param or calculate by position in the shader code
             Vector3f pos = camera.getCameraPosition();
             program.paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(new float[] {pos.x, pos.y, pos.z});
         }

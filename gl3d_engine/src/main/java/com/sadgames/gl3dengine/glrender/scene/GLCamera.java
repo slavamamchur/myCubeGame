@@ -109,17 +109,15 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     @SuppressWarnings("unused")
-    /*
-        direction.normalize(); //TODO: use for calc after rotate camera around X instead of turn head up
-
-    */
     public void directSetPitchByDirection(Vector3f direction) {
         directSetPitch((float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length())));
     }
 
-    public void directSetYaw(float yaw) {
+    @SuppressWarnings("all") public void directSetYaw(float yaw) {
         this.yaw = yaw;
     }
+
+    @SuppressWarnings("all")
     public void directSetYawByDirection(Vector3f direction) {
         float myaw = (float) Math.toDegrees((Math.atan(direction.x / direction.z)));
         myaw = direction.z > 0 ? myaw - 180 : myaw;
@@ -134,49 +132,66 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         updateProjectionMatrix();
     }
 
-    public float[] getViewMatrix() {
+    @SuppressWarnings("all") public float[] getViewMatrix() {
         return viewMatrix;
     }
-    public float[] getProjectionMatrix() {
+
+    @SuppressWarnings("all") public float[] getProjectionMatrix() {
         return projectionMatrix;
     }
-    public Vector3f getCameraPosition() {
+
+    @SuppressWarnings("all") public Vector3f getCameraPosition() {
         return cameraPosition;
     }
-    public float getPitch() {
+
+    @SuppressWarnings("all") public float getPitch() {
         return pitch;
-    }//TODO: move camera and save direction !!!
+    }
+
     @SuppressWarnings("unused") public float getYaw() {
         return yaw;
     }
+
     @SuppressWarnings("unused") public float getRoll() {
         return roll;
     }
-    public float[] getTransformMatrix() {
+
+    @SuppressWarnings("all") public float[] getTransformMatrix() {
         return transformMatrix;
     }
+
     @SuppressWarnings("unused") public void setTransformMatrix(float[] transformMatrix) {
         this.transformMatrix = transformMatrix;
     }
 
-    public Vector3f getCameraDirection() {
+    @SuppressWarnings("all") public Vector3f getCameraDirection() {
         return  getCameraDirection(cameraPosition);
     }
+
+    @SuppressWarnings("all")
     public Vector3f getCameraDirection(Vector3f cameraPosition) {
         Vector3f direction = new Vector3f(cameraPosition);
         direction.negate();
         direction.normalize();
 
-        /** by camera rotation */ //TODO: get direction vector and pass into shader param
-        /*direction.x = (float) (Math.sin(Math.toRadians(getPitch())) * Math.cos(Math.toRadians(getYaw())));
+        return direction;
+    }
+
+    @SuppressWarnings("unused")
+    public Vector3f getCameraDirectionByAngles() {
+        Vector3f direction = new Vector3f();
+
+        direction.x = (float) (Math.sin(Math.toRadians(getPitch())) * Math.cos(Math.toRadians(getYaw())));
         direction.y = (float) (Math.sin(Math.toRadians(getPitch())) * Math.sin(Math.toRadians(getYaw())));
         direction.z = (float) (Math.cos(Math.toRadians(getPitch())));
 
-        direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+        /** method #2 */
+        /*direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
         direction.y = sin(glm::radians(pitch));
-        direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+        direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));*/
 
-        #apply yaw (around y)
+        /** method #3 */
+        /*#apply yaw (around y)
         x = x * cos(yaw) - z * sin(yaw)
         z = z * cos(yaw) + x * sin(yaw)
 
@@ -186,12 +201,13 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
 
         #apply roll (around z)
         x = x * cos(pitch) - y * sin(pitch)
-        y = y * cos(pitch) + x * sin(pitch) */
+        y = y * cos(pitch) + x * sin(pitch)*/
 
         return direction;
     }
 
-    public void rotateAroundViewPoint(float angle) {
+    //TODO: rotateXAroundViewPoint
+    public void rotateYAroundViewPoint(float angle) {
         Vector3f cameraPos = getCameraPosition();
         Vector3f direction = getCameraDirection();
 
