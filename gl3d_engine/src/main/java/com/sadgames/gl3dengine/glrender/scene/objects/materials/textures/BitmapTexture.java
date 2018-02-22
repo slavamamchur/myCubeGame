@@ -8,7 +8,6 @@ import java.nio.Buffer;
 import static android.opengl.ETC1.ETC1_RGB8_OES;
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_LINEAR;
-import static android.opengl.GLES20.GL_LINEAR_MIPMAP_LINEAR;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.GL_REPEAT;
 import static android.opengl.GLES20.GL_RGBA;
@@ -22,7 +21,6 @@ import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glCompressedTexImage2D;
 import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glGenerateMipmap;
 import static android.opengl.GLES20.glTexImage2D;
 import static android.opengl.GLES20.glTexParameteri;
 
@@ -52,7 +50,7 @@ public class BitmapTexture extends AbstractTexture {
     protected void setTextureParams() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
-        glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(getTextureType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -82,7 +80,7 @@ public class BitmapTexture extends AbstractTexture {
                 }
             }
 
-            glGenerateMipmap(target);
+            //glGenerateMipmap(target);
         }
         catch (Exception exception) {
             throw new UnsupportedOperationException();
