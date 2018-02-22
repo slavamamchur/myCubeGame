@@ -6,6 +6,7 @@ import android.opengl.Matrix;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParamVBO;
@@ -27,6 +28,7 @@ import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DIFFUSE_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
@@ -68,6 +70,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     protected AbstractTexture glNormalMap = null;
     protected AbstractTexture glCubeMap = null;
     protected AbstractTexture glDUDVMap = null;
+    protected CubeMapTexture waterReflectionMap = null;
 
     protected String textureResName = "";
     protected int textureColor = 0;
@@ -107,6 +110,9 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public boolean hasCubeMap() {
         return glCubeMap != null;
     }
+    public boolean hasWaterReflectionMap() {
+        return waterReflectionMap != null;
+    }
 
     public AbstractTexture getGlNormalMap() {
         return glNormalMap;
@@ -127,6 +133,13 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     }
     public void setGlDUDVMap(AbstractTexture glDUDVMap) {
         this.glDUDVMap = glDUDVMap;
+    }
+
+    public CubeMapTexture getWaterReflectionMap() {
+        return waterReflectionMap;
+    }
+    public void setWaterReflectionMap(CubeMapTexture waterReflectionMap) {
+        this.waterReflectionMap = waterReflectionMap;
     }
 
     public GLShaderParamVBO getVertexVBO() {
@@ -289,10 +302,8 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
 
         param = program.paramByName(ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && isCubeMap()) {
-            BitmapTexture cubeMap = (BitmapTexture) glCubeMap;
-
-            if (cubeMap.getTextureId() == 0)
-                glCubeMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(cubeMap.getTextureName());
+            if (glCubeMap.getTextureId() == 0)
+                glCubeMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glCubeMap).getTextureName());
 
             glCubeMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
@@ -301,10 +312,8 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
 
         param = program.paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasNormalMap()) {
-            BitmapTexture normalMap = (BitmapTexture) glNormalMap;
-
-            if (normalMap.getTextureId() == 0)
-                glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(normalMap.getTextureName());
+            if (glNormalMap.getTextureId() == 0)
+                glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glNormalMap).getTextureName());
 
             glNormalMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
@@ -313,12 +322,20 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
 
         param = program.paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasDUDVMap()) {
-            BitmapTexture dudvlMap = (BitmapTexture) glDUDVMap;
-
-            if (dudvlMap.getTextureId() == 0)
-                glDUDVMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(dudvlMap.getTextureName());
+            if (glDUDVMap.getTextureId() == 0)
+                glDUDVMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glDUDVMap).getTextureName());
 
             glDUDVMap.bind(textureSlotIndex);
+            param.setParamValue(textureSlotIndex);
+            textureSlotIndex++;
+        }
+
+        param = program.paramByName(ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0 && hasWaterReflectionMap()) {
+            if (waterReflectionMap.getTextureId() == 0)
+                waterReflectionMap = (CubeMapTexture) TextureCacheManager.getInstance(sysUtilsWrapper).getItem(waterReflectionMap.getTextureName());
+
+            waterReflectionMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
         }

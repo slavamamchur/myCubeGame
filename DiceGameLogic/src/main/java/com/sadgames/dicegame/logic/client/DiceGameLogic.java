@@ -12,6 +12,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.Instan
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
+import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
@@ -180,7 +181,16 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     public void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject) {
+        GLRenderConsts.GraphicsQuality graphicsQuality =
+                sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+
+        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality)) {
+            //TODO: create skybox texture and put it into cache
+        }
+
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
+
+        //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
 
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         terrain.loadObject();

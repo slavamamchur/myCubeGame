@@ -27,16 +27,22 @@ import static android.opengl.GLES20.glTexParameteri;
 
 public class CubeMapTexture extends AbstractTexture {
 
+    private String textureName = null;
     private String[] faces;
     private SysUtilsWrapperInterface sysUtilsWrapper;
 
-    public CubeMapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String[] faces) {
+    public CubeMapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String[] faces, String textureName) {
         init(-1, -1);
 
         this.faces = faces;
         this.sysUtilsWrapper = sysUtilsWrapper;
+        this.textureName = textureName;
 
         createTexture(null);
+    }
+
+    public String getTextureName() {
+        return textureName;
     }
 
     @Override

@@ -355,12 +355,12 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
 
     @Override
-    public BitmapWrapperInterface iGetBitmapFromFile(String file) { //TODO: load compressed textures
+    public BitmapWrapperInterface iGetBitmapFromFile(String file) {
         return getBitmapFromFile(file, false);
     }
 
     @Override
-    public BitmapWrapperInterface iGetReliefFromFile(String file) { //TODO: load compressed textures
+    public BitmapWrapperInterface iGetReliefFromFile(String file) {
         return getBitmapFromFile(file, true);
     }
 
