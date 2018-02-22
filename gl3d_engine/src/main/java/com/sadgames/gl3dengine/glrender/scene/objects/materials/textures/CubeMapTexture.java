@@ -9,6 +9,7 @@ import static android.opengl.ETC1.ETC1_RGB8_OES;
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_LINEAR;
+import static android.opengl.GLES20.GL_LINEAR_MIPMAP_LINEAR;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.GL_RGBA;
 import static android.opengl.GLES20.GL_SRC_ALPHA;
@@ -22,6 +23,7 @@ import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glCompressedTexImage2D;
 import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glGenerateMipmap;
 import static android.opengl.GLES20.glTexImage2D;
 import static android.opengl.GLES20.glTexParameteri;
 
@@ -45,11 +47,11 @@ public class CubeMapTexture extends AbstractTexture {
     }
 
     @Override
-    protected void setTextureParams() {//TODO: add mimpaps support
+    protected void setTextureParams() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
 
-        glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(getTextureType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -88,6 +90,8 @@ public class CubeMapTexture extends AbstractTexture {
                     glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());
                 }
             }
+
+            glGenerateMipmap(target);
         }
         catch (Exception exception) {
             throw new UnsupportedOperationException();
