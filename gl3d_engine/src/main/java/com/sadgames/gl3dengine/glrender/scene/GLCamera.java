@@ -79,42 +79,37 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
 
     @SuppressWarnings("unused")
     public void setPitch(float pitch) {
-        if (pitch < 0 || pitch > 90)
-            return;
-
-        this.pitch = pitch;
+        directSetPitch(pitch);
         updateViewMatrix();
     }
 
     @SuppressWarnings("unused")
     public void setYaw(float yaw) {
-        this.yaw = yaw;
+        directSetYaw(yaw);
         updateViewMatrix();
     }
 
     @SuppressWarnings("unused")
     public void setRoll(float roll) {
-        this.roll = roll;
+        directSetRoll(roll);
         updateViewMatrix();
     }
+
+    public void directSetYaw(float yaw) {
+        this.yaw = yaw;
+    }
+
     public void directSetRoll(float roll) {
         this.roll = roll;
     }
 
     public void directSetPitch(float pitch) {
-        if (pitch < 0 || pitch > 90)
-            return;
-
-        this.pitch = pitch;
+            this.pitch = pitch;
     }
 
     @SuppressWarnings("unused")
     public void directSetPitchByDirection(Vector3f direction) {
         directSetPitch((float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length())));
-    }
-
-    @SuppressWarnings("all") public void directSetYaw(float yaw) {
-        this.yaw = yaw;
     }
 
     @SuppressWarnings("all")
@@ -206,15 +201,20 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         return direction;
     }
 
-    //TODO: rotateXAroundViewPoint
     public void rotateXAroundViewPoint(float angle) {
-        Vector3f cameraPos = getCameraPosition();
+        Vector3f cameraPos = new Vector3f(getCameraPosition());
         Vector3f direction = getCameraDirection();
 
         cameraPos.y = cos(angle) * (cameraPos.y - direction.y) - sin(angle) * (cameraPos.z - direction.z) + direction.y;
         cameraPos.z = sin(angle) * (cameraPos.y - direction.y) + cos(angle) * (cameraPos.z - direction.z) + direction.z;
 
+        float oldPitch = pitch;
         directSetPitchByDirection(getCameraDirection(cameraPos));
+
+        if (pitch >= 1.5f && pitch <= 90.0f)
+            cameraPosition = cameraPos;
+        else
+            pitch = oldPitch;
     }
 
     public void rotateYAroundViewPoint(float angle) {
@@ -225,6 +225,10 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         cameraPos.z = sin(angle) * (cameraPos.x - direction.x) + cos(angle) * (cameraPos.z - direction.z) + direction.z;
 
         directSetYawByDirection(getCameraDirection(cameraPos));
+    }
+
+    public void rotateZAroundViewPoint(float angleX, float angleY) {
+
     }
 
     @Override

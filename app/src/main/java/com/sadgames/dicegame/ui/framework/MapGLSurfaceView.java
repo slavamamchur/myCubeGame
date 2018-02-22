@@ -61,8 +61,8 @@ public class MapGLSurfaceView extends GLSurfaceView {
 
             //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, FixedIsometricCamera, FreeIsometricCamera
             synchronized (GLScene.lockObject) {
-                //TODO: rotateXAroundViewPoint(in fixed range [0-90]) instead of turn head vertically for isometric camera mode
-                camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
+                //camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
+                camera.rotateXAroundViewPoint(dy * TOUCH_SCALE_FACTOR / 2);
 
                 /** Rotate camera around scene for isometric camera mode */
                 camera.rotateYAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
