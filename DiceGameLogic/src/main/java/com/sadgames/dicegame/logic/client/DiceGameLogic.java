@@ -21,7 +21,9 @@ import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -38,6 +40,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
+import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
@@ -180,19 +183,24 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     @Override
+    //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
     public void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject) {
         GLRenderConsts.GraphicsQuality graphicsQuality =
                 sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
-        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality)) {
-            //TODO: create skybox texture and put it into cache
-        }
-
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
 
-        //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
+        CubeMapTexture skyBoxTexture =
+            new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxtextureNames(), SKY_BOX_TEXTURE_NAME);
+
+        TextureCacheManager.getInstance(sysUtilsWrapper).putItem(
+                                                                 skyBoxTexture,
+                                                                 skyBoxTexture.getTextureName(),
+                                                                 skyBoxTexture.getTextureSize());
 
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
+        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality))
+            terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
@@ -209,8 +217,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         dice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
         glSceneObject.addObject(dice_1, DICE_MESH_OBJECT_1);
     }
-
-
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];

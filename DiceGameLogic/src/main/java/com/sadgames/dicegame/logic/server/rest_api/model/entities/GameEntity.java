@@ -128,4 +128,14 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     public Vector3f _getStartSunColor() {
         return new Vector3f(1.0f, 1.0f, 0.8f);
     }
+    public String[] _getSkyBoxtextureNames() {
+        return new String [] {
+               "skybox_right.pkm",
+               "skybox_left.pkm",
+               "skybox_top.pkm",
+               "skybox_bottom.pkm",
+               "skybox_back.pkm",
+               "skybox_front.pkm"
+        };
+    }
 }
