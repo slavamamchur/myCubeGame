@@ -1,11 +1,12 @@
 package com.sadgames.gl3dengine.glrender.scene;
 
+import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.glrender.scene.GLCamera.FAR_PLANE;
+import static com.sadgames.gl3dengine.glrender.scene.camera.GLCamera.FAR_PLANE;
 
 public class GLLightSource {
 

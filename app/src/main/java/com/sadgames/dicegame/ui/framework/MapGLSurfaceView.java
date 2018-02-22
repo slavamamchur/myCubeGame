@@ -7,8 +7,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
-import com.sadgames.gl3dengine.glrender.scene.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
@@ -59,16 +59,10 @@ public class MapGLSurfaceView extends GLSurfaceView {
             float dx = x - mPreviousX;
             float dy = y - mPreviousY;
 
-            //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, FixedIsometricCamera, FreeIsometricCamera
             synchronized (GLScene.lockObject) {
-                //camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
-                camera.rotateXAroundViewPoint(dy * TOUCH_SCALE_FACTOR / 2);
-
-                /** Rotate camera around scene for isometric camera mode */
+                camera.rotateXAroundViewPoint(-dy * TOUCH_SCALE_FACTOR / 2);
                 camera.rotateYAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
-
-                /** turn head horizontally instead of rotate camera around scene for first person view camera mode*/
-                ///camera.directSetYaw(camera.getYaw() + (dx * TOUCH_SCALE_FACTOR));
+                camera.rotateZAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2, -dy * TOUCH_SCALE_FACTOR / 2);
 
                 camera.updateViewMatrix();
                 mRenderer.getScene().getLightSource().setLightPosInEyeSpace();

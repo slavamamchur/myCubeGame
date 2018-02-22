@@ -10,6 +10,8 @@ import com.bulletphysics.linearmath.Transform;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
+import com.sadgames.gl3dengine.glrender.scene.camera.FixedIsometricCamera;
+import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.fbo.AbstractFBO;
 import com.sadgames.gl3dengine.glrender.scene.fbo.ColorBufferFBO;
 import com.sadgames.gl3dengine.glrender.scene.fbo.DepthBufferFBO;
@@ -436,7 +438,7 @@ public class GLScene implements GLRendererInterface {
     }
 
     private void initScene() {
-        camera = new GLCamera(DEFAULT_CAMERA_X,
+        camera = new FixedIsometricCamera(DEFAULT_CAMERA_X,
                               DEFAULT_CAMERA_Y,
                               DEFAULT_CAMERA_Z,
                               DEFAULT_CAMERA_PITCH,

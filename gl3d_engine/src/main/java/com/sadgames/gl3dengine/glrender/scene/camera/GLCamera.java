@@ -1,5 +1,6 @@
-package com.sadgames.gl3dengine.glrender.scene;
+package com.sadgames.gl3dengine.glrender.scene.camera;
 
+import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
 import com.sadgames.sysutils.common.MathUtils;
 
 import javax.vecmath.Vector2f;
@@ -8,26 +9,24 @@ import javax.vecmath.Vector3f;
 import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_X;
 import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_Y;
 import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_Z;
-import static com.sadgames.sysutils.common.MathUtils.cos;
-import static com.sadgames.sysutils.common.MathUtils.sin;
 
-public class GLCamera implements GLAnimation.IAnimatedObject {
+public abstract class GLCamera implements GLAnimation.IAnimatedObject {
 
     public static final float VERTICAL_FOV = 28.0f;
     public static final float NEAR_PLANE = 0.1f;
     public static final float FAR_PLANE = 10.0f;//100
 
-    private float[] transformMatrix = new float[16];
-    private float[] viewMatrix = new float[16];
-    private float[] projectionMatrix = new float[16];
-    private Vector3f cameraPosition = new Vector3f(0.0f, 0.0f, 0.0f);
+    protected float[] transformMatrix = new float[16];
+    protected float[] viewMatrix = new float[16];
+    protected float[] projectionMatrix = new float[16];
+    protected Vector3f cameraPosition = new Vector3f(0.0f, 0.0f, 0.0f);
 
-    private float vfov = VERTICAL_FOV;
-    private float zoomed_vfov = VERTICAL_FOV;
-    private float pitch;
-    private float yaw;
-    private float roll;
-    private float aspectRatio;
+    protected float vfov = VERTICAL_FOV;
+    protected float zoomed_vfov = VERTICAL_FOV;
+    protected float pitch;
+    protected float yaw;
+    protected float roll;
+    protected float aspectRatio;
 
     public GLCamera(float eyeX, float eyeY, float eyeZ, float pitch, float yaw, float roll) {
         this.pitch = pitch;
@@ -201,35 +200,10 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
         return direction;
     }
 
-    public void rotateXAroundViewPoint(float angle) {
-        Vector3f cameraPos = new Vector3f(getCameraPosition());
-        Vector3f direction = getCameraDirection();
-
-        cameraPos.y = cos(angle) * (cameraPos.y - direction.y) - sin(angle) * (cameraPos.z - direction.z) + direction.y;
-        cameraPos.z = sin(angle) * (cameraPos.y - direction.y) + cos(angle) * (cameraPos.z - direction.z) + direction.z;
-
-        float oldPitch = pitch;
-        directSetPitchByDirection(getCameraDirection(cameraPos));
-
-        if (pitch >= 1.5f && pitch <= 90.0f)
-            cameraPosition = cameraPos;
-        else
-            pitch = oldPitch;
-    }
-
-    public void rotateYAroundViewPoint(float angle) {
-        Vector3f cameraPos = getCameraPosition();
-        Vector3f direction = getCameraDirection();
-
-        cameraPos.x = cos(angle) * (cameraPos.x - direction.x) - sin(angle) * (cameraPos.z - direction.z) + direction.x;
-        cameraPos.z = sin(angle) * (cameraPos.x - direction.x) + cos(angle) * (cameraPos.z - direction.z) + direction.z;
-
-        directSetYawByDirection(getCameraDirection(cameraPos));
-    }
-
-    public void rotateZAroundViewPoint(float angleX, float angleY) {
-
-    }
+    //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, FixedIsometricCamera, FreeIsometricCamera
+    public abstract void rotateXAroundViewPoint(float angle);
+    public abstract void rotateYAroundViewPoint(float angle);
+    public abstract void rotateZAroundViewPoint(float angleX, float angleY);
 
     @Override
     public float[] getTransformationMatrix() {

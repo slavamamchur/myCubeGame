@@ -13,9 +13,9 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.Abstrac
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
-import com.sadgames.gl3dengine.glrender.scene.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
