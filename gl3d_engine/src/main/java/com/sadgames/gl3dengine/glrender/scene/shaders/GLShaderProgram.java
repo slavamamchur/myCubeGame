@@ -26,10 +26,11 @@ import static android.opengl.GLES20.glGetProgramiv;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_TEXTURE_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
@@ -121,19 +122,23 @@ public abstract class GLShaderProgram {
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_TEXTURE_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
-        /** Active cubemap slot*/
-        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_CUBEMAP_SLOT_PARAM_NAME, getProgramId());
+        /** Active refraction map slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
-        /** Active normalmap slot*/
+        /** Active reflection map slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** Active normal map slot*/
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_NORMALMAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
-        /** Active dudvmap slot*/
+        /** Active dudv map slot*/
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_DUDVMAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
-        /** Active dudvmap slot*/
+        /** Active shadow map slot*/
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_SHADOWMAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 

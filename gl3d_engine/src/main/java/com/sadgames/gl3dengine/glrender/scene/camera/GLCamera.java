@@ -1,14 +1,14 @@
 package com.sadgames.gl3dengine.glrender.scene.camera;
 
-import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
+import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.sysutils.common.MathUtils;
 
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_X;
-import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_Y;
-import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_Z;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_X;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Y;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Z;
 
 public abstract class GLCamera implements GLAnimation.IAnimatedObject {
 

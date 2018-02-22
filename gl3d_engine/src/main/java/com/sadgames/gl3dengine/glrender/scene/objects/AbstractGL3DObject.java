@@ -3,7 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.sadgames.gl3dengine.glrender.scene.GLAnimation;
+import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -24,9 +24,9 @@ import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDeleteBuffers;
 import static android.opengl.GLES20.glDrawElements;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_CUBEMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DIFFUSE_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
@@ -36,9 +36,9 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.NORMALS_PARAM_NAME
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SPECULAR_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXELS_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEXES_PARAM_NAME;
-import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_X;
-import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_Y;
-import static com.sadgames.gl3dengine.glrender.scene.GLAnimation.ROTATE_BY_Z;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_X;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Y;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Z;
 
 public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject {
 
@@ -64,6 +64,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     private float specularRate = 0.9f;
     private boolean isCubeMap = false;
 
+    //TODO: add texturecube for water reflection map
     protected AbstractTexture glNormalMap = null;
     protected AbstractTexture glCubeMap = null;
     protected AbstractTexture glDUDVMap = null;
@@ -290,7 +291,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
         if (param != null && param.getParamReference() >= 0)
             param.setParamValue(hasNormalMap);
 
-        param = program.paramByName(ACTIVE_CUBEMAP_SLOT_PARAM_NAME);
+        param = program.paramByName(ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && isCubeMap()) {
             BitmapTexture cubeMap = (BitmapTexture) glCubeMap;
 

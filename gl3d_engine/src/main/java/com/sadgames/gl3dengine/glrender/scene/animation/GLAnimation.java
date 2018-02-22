@@ -1,4 +1,4 @@
-package com.sadgames.gl3dengine.glrender.scene;
+package com.sadgames.gl3dengine.glrender.scene.animation;
 
 import javax.vecmath.Vector3f;
 

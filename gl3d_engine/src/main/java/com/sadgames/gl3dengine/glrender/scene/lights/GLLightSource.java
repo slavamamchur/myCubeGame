@@ -1,4 +1,4 @@
-package com.sadgames.gl3dengine.glrender.scene;
+package com.sadgames.gl3dengine.glrender.scene.lights;
 
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.sysutils.common.MathUtils;
@@ -23,7 +23,7 @@ public class GLLightSource {
     private int width;
     private int height;
 
-    GLLightSource(float[] lightPos, Vector3f lightColour, GLCamera camera, SysUtilsWrapperInterface sysUtilsWrapper) {
+    public GLLightSource(float[] lightPos, Vector3f lightColour, GLCamera camera, SysUtilsWrapperInterface sysUtilsWrapper) {
         this.mCamera = camera;
         this.lightColour = lightColour;
         this.sysUtilsWrapper = sysUtilsWrapper;

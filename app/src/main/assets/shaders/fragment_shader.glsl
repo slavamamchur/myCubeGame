@@ -3,7 +3,8 @@ precision mediump float;
 uniform mat4 u_MV_MatrixF;
 
 uniform sampler2D u_TextureUnit;
-uniform /*samplerCube*/ sampler2D u_ReflectionMapUnit; //TODO: -> ultra graphics settings
+uniform sampler2D u_RefractionMapUnit;
+uniform samplerCube u_SkyboxMapUnit; //TODO: -> use as reflection map for ultra graphics settings
 uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
 uniform sampler2D uShadowTexture;
@@ -126,14 +127,13 @@ void main()
                 n_normal = -n_normal;
           }
 
-          diffuseColor = texture2D(u_ReflectionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
+          diffuseColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
           float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0));
           diffuseColor = mix(diffuseColor, vec4(0, 0.3, 0.5, 1.0), 1.0 - reflectiveFactor);
 
-          /* //Cubemap reflection //TODO: -> ultra graphics settings
+          /* //TODO: -> ultra graphics settings
           vec3 texcoordCube = reflect(-n_lookvector, n_normal);
-          float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0)) *//* * 0.5 *//*;
-          textureColor = mix(textureCube(u_ReflectionMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
+          textureColor = mix(textureCube(u_SkyboxMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
       }
       else {
            diffuseColor = texture2D(u_TextureUnit, v_Texture);

@@ -1,9 +1,9 @@
 package com.sadgames.gl3dengine;
 
 import com.bulletphysics.dynamics.DynamicsWorld;
-import com.sadgames.gl3dengine.glrender.scene.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
+import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 
 public interface GameEventsCallbackInterface {
