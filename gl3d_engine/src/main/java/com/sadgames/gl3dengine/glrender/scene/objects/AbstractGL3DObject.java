@@ -234,11 +234,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
         clearVBOPtr(facesIBOPtr);
         facesIBOPtr =  src.getFacesIBOPtr();
 
-        glTexture = checkTextureBitmap(src) ? src.glTexture : loadTexture();
-    }
-
-    private boolean checkTextureBitmap(AbstractGL3DObject src) {
-        return textureResName.equals(src.textureResName) && textureColor == src.textureColor;
+        glTexture = loadTexture();
     }
 
     @Override
