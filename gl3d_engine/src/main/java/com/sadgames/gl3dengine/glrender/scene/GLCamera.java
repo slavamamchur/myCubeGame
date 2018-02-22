@@ -207,6 +207,16 @@ public class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     //TODO: rotateXAroundViewPoint
+    public void rotateXAroundViewPoint(float angle) {
+        Vector3f cameraPos = getCameraPosition();
+        Vector3f direction = getCameraDirection();
+
+        cameraPos.y = cos(angle) * (cameraPos.y - direction.y) - sin(angle) * (cameraPos.z - direction.z) + direction.y;
+        cameraPos.z = sin(angle) * (cameraPos.y - direction.y) + cos(angle) * (cameraPos.z - direction.z) + direction.z;
+
+        directSetPitchByDirection(getCameraDirection(cameraPos));
+    }
+
     public void rotateYAroundViewPoint(float angle) {
         Vector3f cameraPos = getCameraPosition();
         Vector3f direction = getCameraDirection();

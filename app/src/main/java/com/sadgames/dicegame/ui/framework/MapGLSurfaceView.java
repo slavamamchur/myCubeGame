@@ -57,14 +57,15 @@ public class MapGLSurfaceView extends GLSurfaceView {
             float dx = x - mPreviousX;
             float dy = y - mPreviousY;
 
+            //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, IsometricCamera
             synchronized (GLScene.lockObject) {
-                /** turn head vertically */
+                //TODO: rotateXAroundViewPoint(in fixed range [0-90]) instead of turn head vertically for isometric camera mode
                 camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
 
-                /** Rotate camera around scene */
+                /** Rotate camera around scene for isometric camera mode */
                 camera.rotateYAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
 
-                /** turn head horizontally */
+                /** turn head horizontally instead of rotate camera around scene for first person view camera mode*/
                 ///camera.directSetYaw(camera.getYaw() + (dx * TOUCH_SCALE_FACTOR));
 
                 camera.updateViewMatrix();
@@ -81,8 +82,9 @@ public class MapGLSurfaceView extends GLSurfaceView {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) { //TODO: error cleaning gl buffers and clear texture cache !!!
+    public void surfaceDestroyed(SurfaceHolder holder) {
 
+        //TODO: error cleaning gl buffers
         /*mRenderer.getScene().setRenderStopped(true);
         try {
             Thread.sleep(1000);
