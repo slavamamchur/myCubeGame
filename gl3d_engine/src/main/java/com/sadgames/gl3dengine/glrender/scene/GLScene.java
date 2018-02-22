@@ -319,7 +319,7 @@ public class GLScene implements GLRendererInterface {
         postEffects2DScreen.render();
     }
 
-    private void renderColorBuffer() {
+    private void renderColorBuffer() {//TODO: add group of objects processing (with single transform matrix)
         /** for post effects image processing */
         ///mainRenderFBO.bind();
 

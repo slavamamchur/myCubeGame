@@ -1,5 +1,6 @@
 package com.sadgames.dicegame.ui.framework;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
@@ -38,6 +39,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
         mRenderer = (AndroidGLES20Renderer) renderer;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         float x = e.getX();
@@ -57,7 +59,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
             float dx = x - mPreviousX;
             float dy = y - mPreviousY;
 
-            //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, IsometricCamera
+            //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, FixedIsometricCamera, FreeIsometricCamera
             synchronized (GLScene.lockObject) {
                 //TODO: rotateXAroundViewPoint(in fixed range [0-90]) instead of turn head vertically for isometric camera mode
                 camera.directSetPitch(camera.getPitch() + (dy * TOUCH_SCALE_FACTOR / 2));
