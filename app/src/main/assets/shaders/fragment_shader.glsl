@@ -146,6 +146,11 @@ void main()
 
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
+      if (u_isCubeMapF == 1) {
+        float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
+        gl_FragColor = mix(gl_FragColor, skyColour, blendingFactor);
+      }
+
       ///gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
 
 }
