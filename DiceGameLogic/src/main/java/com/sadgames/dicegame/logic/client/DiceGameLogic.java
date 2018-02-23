@@ -191,10 +191,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
 
         CubeMapTexture skyBoxTexture =
-            new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxtextureNames(), SKY_BOX_TEXTURE_NAME);
+            new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
 
-        TextureCacheManager.getInstance(sysUtilsWrapper).putItem(
-                                                                 skyBoxTexture,
+        TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
                                                                  skyBoxTexture.getTextureName(),
                                                                  skyBoxTexture.getTextureSize());
 
