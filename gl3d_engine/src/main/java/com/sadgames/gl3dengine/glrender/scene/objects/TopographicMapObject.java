@@ -62,7 +62,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     public TopographicMapObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String mapName) {
         super(sysUtilsWrapper, TERRAIN_OBJECT, mapName, LAND_SIZE_IN_WORLD_SPACE, program);
 
-        isCastShadow = false;
+        castShadow = false;
         setCubeMap(true);
     }
 

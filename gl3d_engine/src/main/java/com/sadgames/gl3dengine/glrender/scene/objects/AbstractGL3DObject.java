@@ -78,7 +78,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     protected String textureResName = "";
     protected int textureColor = 0;
 
-    protected boolean isCastShadow = true;
+    protected boolean castShadow = true;
 
     public AbstractGL3DObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, GLShaderProgram program) {
         this.sysUtilsWrapper = sysUtilsWrapper;
@@ -230,7 +230,10 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     }
 
     public boolean isCastShadow() {
-        return isCastShadow;
+        return castShadow;
+    }
+    public void setCastShadow(boolean castShadow) {
+        this.castShadow = castShadow;
     }
 
     private void createVBOParams() {
