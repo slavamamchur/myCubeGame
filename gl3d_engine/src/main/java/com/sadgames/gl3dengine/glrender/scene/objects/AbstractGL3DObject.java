@@ -25,6 +25,7 @@ import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDeleteBuffers;
 import static android.opengl.GLES20.glDrawElements;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
@@ -71,6 +72,7 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     protected AbstractTexture glNormalMap = null;
     protected AbstractTexture glCubeMap = null;
     protected AbstractTexture glDUDVMap = null;
+    protected AbstractTexture glBlendingMap = null;
     protected CubeMapTexture waterReflectionMap = null;
 
     protected String textureResName = "";
@@ -111,6 +113,9 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     public boolean hasCubeMap() {
         return glCubeMap != null;
     }
+    public boolean hasBlendingMap() {
+        return glBlendingMap != null;
+    }
     public boolean hasWaterReflectionMap() {
         return waterReflectionMap != null;
     }
@@ -134,6 +139,13 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
     }
     public void setGlDUDVMap(AbstractTexture glDUDVMap) {
         this.glDUDVMap = glDUDVMap;
+    }
+
+    public AbstractTexture getGlBlendingMap() {
+        return glBlendingMap;
+    }
+    public void setGlBlendingMap(AbstractTexture glBlendingMap) {
+        this.glBlendingMap = glBlendingMap;
     }
 
     public CubeMapTexture getWaterReflectionMap() {
@@ -327,6 +339,16 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
                 glDUDVMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glDUDVMap).getTextureName());
 
             glDUDVMap.bind(textureSlotIndex);
+            param.setParamValue(textureSlotIndex);
+            textureSlotIndex++;
+        }
+
+        param = program.paramByName(ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0 && hasBlendingMap()) {
+            if (glBlendingMap.getTextureId() == 0)
+                glBlendingMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glBlendingMap).getTextureName());
+
+            glBlendingMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
         }

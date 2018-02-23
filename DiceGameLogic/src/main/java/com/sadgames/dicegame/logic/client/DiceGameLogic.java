@@ -188,15 +188,15 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GLRenderConsts.GraphicsQuality graphicsQuality =
                 sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
-        GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
-
+        /** Skybox and water reflection map texture */
         CubeMapTexture skyBoxTexture =
             new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
-
         TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
                                                                  skyBoxTexture.getTextureName(),
                                                                  skyBoxTexture.getTextureSize());
 
+        GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
+        /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality))
             terrain.setWaterReflectionMap(skyBoxTexture);
@@ -205,9 +205,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glSceneObject.addObject(terrain, TERRAIN_MESH_OBJECT);
 
+        /** players chips */
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
             placeChips(glSceneObject, program);
 
+        /** gaming dice */
         GameDiceItem dice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
         dice_1.loadObject();
         Matrix4f translation = new Matrix4f();

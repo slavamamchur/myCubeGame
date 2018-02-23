@@ -26,6 +26,7 @@ import static android.opengl.GLES20.glGetProgramiv;
 import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
@@ -141,6 +142,10 @@ public abstract class GLShaderProgram {
 
         /** Active dudv map slot*/
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_DUDVMAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** Active blending map slot*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** Active shadow map slot*/

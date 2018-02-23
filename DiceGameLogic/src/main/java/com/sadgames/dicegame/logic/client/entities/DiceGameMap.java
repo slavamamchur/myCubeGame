@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector2f;
 
+import static com.sadgames.dicegame.logic.client.GameConst.BLENDING_MAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.DUDVMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.NORMALMAP_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.PATH_COLOR;
@@ -33,6 +34,7 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
         setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SEA_BOTTOM_TEXTURE));
         setGlNormalMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(NORMALMAP_TEXTURE));
         setGlDUDVMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(DUDVMAP_TEXTURE));
+        setGlBlendingMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(BLENDING_MAP_TEXTURE));
     }
 
     @Override

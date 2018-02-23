@@ -7,6 +7,7 @@ uniform sampler2D u_RefractionMapUnit;
 uniform samplerCube u_SkyboxMapUnit;
 uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
+uniform sampler2D u_BlendingMapUnit;
 uniform sampler2D uShadowTexture;
 
 uniform float u_AmbientRate;
