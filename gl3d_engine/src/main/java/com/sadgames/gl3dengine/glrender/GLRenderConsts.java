@@ -76,6 +76,7 @@ public  class GLRenderConsts {
     public static final String ACTIVE_SHADOWMAP_SLOT_PARAM_NAME = "uShadowTexture";
     public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
     public static final String IS_CUBEMAPF_PARAM_NAME = "u_isCubeMapF";
+    public static final String HAS_REFLECT_MAP_PARAM_NAME = "u_hasReflectMap";
     public static final String IS_NORMALMAP_PARAM_NAME = "u_isNormalMap";
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";
     public static final String LIGHT_MVP_MATRIX_PARAM_NAME = "uShadowProjMatrix";
@@ -102,7 +103,9 @@ public  class GLRenderConsts {
     public static final String SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT = "shaders/depth_tex_f_depth_map.glsl";
     public static final String GUI_VERTEX_SHADER = "shaders/gui_vertex.glsl";
     public static final String GUI_FRAGMENT_SHADER = "shaders/gui_fragment.glsl";
+    public static final String SKYBOX_VERTEX_SHADER = "shaders/skybox_vertex.glsl";
+    public static final String SKYBOX_FRAGMENT_SHADER = "shaders/skybox_fragment.glsl";
 
-    public static final int FBO_TEXTURE_SLOT = 4;
+    public static final int FBO_TEXTURE_SLOT = 5;
 
 }

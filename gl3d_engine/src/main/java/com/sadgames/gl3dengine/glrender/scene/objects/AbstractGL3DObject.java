@@ -32,6 +32,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SKYBOX_MAP_
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DIFFUSE_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.HAS_REFLECT_MAP_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_CUBEMAPF_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.NORMALS_PARAM_NAME;
@@ -330,8 +331,11 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
             textureSlotIndex++;
         }
 
+        int hasReflectMap = 0;
         param = program.paramByName(ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasWaterReflectionMap()) {
+            hasReflectMap = 1;
+
             if (waterReflectionMap.getTextureId() == 0)
                 waterReflectionMap = (CubeMapTexture) TextureCacheManager.getInstance(sysUtilsWrapper).getItem(waterReflectionMap.getTextureName());
 
@@ -339,6 +343,10 @@ public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject 
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
         }
+
+        param = program.paramByName(HAS_REFLECT_MAP_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(hasReflectMap);
     }
 
     public void render() {

@@ -40,6 +40,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_VECTOR_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.HAS_REFLECT_MAP_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_CUBEMAPF_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_CUBEMAP_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
@@ -128,6 +129,10 @@ public abstract class GLShaderProgram {
 
         /** Active reflection map slot*/
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
+
+        /** has reflection map flag*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, HAS_REFLECT_MAP_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
 
         /** Active normal map slot*/

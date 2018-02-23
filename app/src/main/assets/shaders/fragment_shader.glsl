@@ -4,7 +4,7 @@ uniform mat4 u_MV_MatrixF;
 
 uniform sampler2D u_TextureUnit;
 uniform sampler2D u_RefractionMapUnit;
-uniform samplerCube u_SkyboxMapUnit; //TODO: -> use as reflection map for ultra graphics settings
+uniform samplerCube u_SkyboxMapUnit;
 uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
 uniform sampler2D uShadowTexture;
@@ -16,6 +16,7 @@ uniform float u_RndSeed;
 uniform vec3 u_lightPositionF;
 uniform vec3 u_lightColour;
 uniform int u_isCubeMapF;
+uniform int u_hasReflectMap;
 ///uniform float uxPixelOffset;
 ///uniform float uyPixelOffset; //TODO: -> for RGB depth map
 
@@ -48,7 +49,7 @@ float calcDynamicBias(float bias, vec3 normal) {
 float calcShadowRate() {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.0001; //calcDynamicBias(0.0005, n_normal); //TODO: -> ultra graphics settings
+        highp float bias = 0.0001; //calcDynamicBias(0.0005, n_normal); //TODO: -> use for ultra graphics settings
         vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
         highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
         shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
@@ -127,13 +128,16 @@ void main()
                 n_normal = -n_normal;
           }
 
-          diffuseColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
-          float reflectiveFactor = dot(n_lookvector, vec3(0.0, 1.0, 0.0));
-          diffuseColor = mix(diffuseColor, vec4(0, 0.3, 0.5, 1.0), 1.0 - reflectiveFactor);
+          float reflectiveFactor = 1.0 - dot(n_lookvector, vec3(0.0, 1.0, 0.0));
+          vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
-          /* //TODO: -> ultra graphics settings
-          vec3 texcoordCube = reflect(-n_lookvector, n_normal);
-          textureColor = mix(textureCube(u_SkyboxMapUnit, texcoordCube), vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);*/
+          if (u_hasReflectMap == 1) {
+            vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflect(-n_lookvector, n_normal)), vec4(0, 0.3, 0.5, 1.0), 0.5);
+            diffuseColor = mix(refractionColor, reflectionColor, reflectiveFactor);
+          }
+          else {
+            diffuseColor = mix(refractionColor, vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
+          }
       }
       else {
            diffuseColor = texture2D(u_TextureUnit, v_Texture);
