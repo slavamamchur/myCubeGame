@@ -60,9 +60,8 @@ public class MapGLSurfaceView extends GLSurfaceView {
             float dy = y - mPreviousY;
 
             synchronized (GLScene.lockObject) {
-                camera.rotateXAroundViewPoint(-dy * TOUCH_SCALE_FACTOR / 2);
-                camera.rotateYAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2);
-                camera.rotateZAroundViewPoint(dx * TOUCH_SCALE_FACTOR * 2, -dy * TOUCH_SCALE_FACTOR / 2);
+                camera.rotateX(-dy * TOUCH_SCALE_FACTOR / 2);
+                camera.rotateY(dx * TOUCH_SCALE_FACTOR * 2);
 
                 camera.updateViewMatrix();
                 mRenderer.getScene().getLightSource().setLightPosInEyeSpace();

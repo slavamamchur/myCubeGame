@@ -7,17 +7,17 @@ public class FPVCamera extends GLCamera {
     }
 
     @Override
-    public void rotateXAroundViewPoint(float angle) {
+    public void rotateX(float angle) {
         directSetPitch(pitch + angle);
     }
 
     @Override
-    public void rotateYAroundViewPoint(float angle) {
+    public void rotateY(float angle) {
         directSetYaw(yaw + angle);
     }
 
     @Override
-    public void rotateZAroundViewPoint(float angleX, float angleY) {
-
+    public void rotateZ(float angle) {
+        directSetRoll(roll + angle);
     }
 }

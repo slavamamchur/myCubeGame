@@ -200,10 +200,9 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
         return direction;
     }
 
-    //TODO: move logic to different camera objects -> FPVCamera, TPVCamera, FixedIsometricCamera, FreeIsometricCamera
-    public abstract void rotateXAroundViewPoint(float angle);
-    public abstract void rotateYAroundViewPoint(float angle);
-    public abstract void rotateZAroundViewPoint(float angleX, float angleY);
+    public abstract void rotateX(float angle);
+    public abstract void rotateY(float angle);
+    public abstract void rotateZ(float angle);
 
     @Override
     public float[] getTransformationMatrix() {

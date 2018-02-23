@@ -12,7 +12,7 @@ public class FixedIsometricCamera extends GLCamera {
     }
 
     @Override
-    public void rotateXAroundViewPoint(float angle) {
+    public void rotateX(float angle) {
         Vector3f cameraPos = new Vector3f(getCameraPosition());
         Vector3f direction = getCameraDirection();
 
@@ -29,7 +29,7 @@ public class FixedIsometricCamera extends GLCamera {
     }
 
     @Override
-    public void rotateYAroundViewPoint(float angle) {
+    public void rotateY(float angle) {
         Vector3f cameraPos = getCameraPosition();
         Vector3f direction = getCameraDirection();
 
@@ -40,7 +40,7 @@ public class FixedIsometricCamera extends GLCamera {
     }
 
     @Override
-    public void rotateZAroundViewPoint(float angleX, float angleY) {
+    public void rotateZ(float angle) {
 
     }
 }
