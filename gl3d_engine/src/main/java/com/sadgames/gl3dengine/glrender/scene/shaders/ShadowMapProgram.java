@@ -49,6 +49,10 @@ public class ShadowMapProgram extends VBOShaderProgram {
     }
 
     @Override
+    public void bindLightSourceMVP(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
+    }
+
+    @Override
     public void setMVMatrixData(float[] data) {}
 
     @Override

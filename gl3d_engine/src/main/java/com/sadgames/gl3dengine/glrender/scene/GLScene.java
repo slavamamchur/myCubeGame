@@ -24,6 +24,7 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShapeShaderProgram;
+import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -187,6 +188,9 @@ public class GLScene implements GLRendererInterface {
                 case GUI_OBJECT:
                     program = new GUIRendererProgram(sysUtilsWrapper);
                     break;
+                case SKYBOX_OBJECT:
+                    program = new SkyBoxProgram(sysUtilsWrapper);
+                    break;
                 default:
                     program = new ShapeShaderProgram(sysUtilsWrapper);
             }
@@ -331,38 +335,25 @@ public class GLScene implements GLRendererInterface {
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
         GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
-        program.useProgram();
-
-        shadowMapFBO.getFboTexture().bind(FBO_TEXTURE_SLOT);
-        program.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
-
-        synchronized (lockObject) {
-            Vector3f pos = camera.getCameraPosition();
-            program.paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(new float[] {pos.x, pos.y, pos.z});
-        }
-
-        program.paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
-        program.paramByName(LIGHT_POSITIONF_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
-
-        Vector3f colour = lightSource.getLightColour();
-        program.paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
-
-        program.paramByName(RND_SEED__PARAM_NAME).setParamValue(GraphicsQuality.LOW.equals(graphicsQualityLevel) ? -1f : moveFactor);
-
-        /** for rgb depth buffers */
-        ///program.paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapWidth));
-        ///program.paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapHeight));
+        setTerrainProgramParams(program);
 
         AbstractGL3DObject prevObject = null;
         for (AbstractGL3DObject object : objects.values()) {
+            if (object.getProgram() != program) {
+                program = object.getProgram();
+                program.useProgram();
+            }
+
             synchronized (lockObject) {
                 program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix());
             }
+
             program.bindLightSourceMVP(object, lightSource.getViewMatrix(), lightSource.getProjectionMatrix(), hasDepthTextureExtension);
-            object.bindMaterial(program);
+
+            object.bindMaterial();
 
             if (!object.equals(prevObject)) {
-                object.bindVBO(program);
+                object.bindVBO();
                 prevObject = object;
             }
 
@@ -380,6 +371,30 @@ public class GLScene implements GLRendererInterface {
 
         /** for post effects image processing */
         ///mainRenderFBO.unbind();
+    }
+
+    private void setTerrainProgramParams(GLShaderProgram terrainProgram) {
+        terrainProgram.useProgram();
+
+        shadowMapFBO.getFboTexture().bind(FBO_TEXTURE_SLOT);
+        terrainProgram.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
+
+        synchronized (lockObject) {
+            Vector3f pos = camera.getCameraPosition();
+            terrainProgram.paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(new float[] {pos.x, pos.y, pos.z});
+        }
+
+        terrainProgram.paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
+        terrainProgram.paramByName(LIGHT_POSITIONF_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
+
+        Vector3f colour = lightSource.getLightColour();
+        terrainProgram.paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
+
+        terrainProgram.paramByName(RND_SEED__PARAM_NAME).setParamValue(GraphicsQuality.LOW.equals(graphicsQualityLevel) ? -1f : moveFactor);
+
+        /** for rgb depth buffers */
+        ///terrainProgram.paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapWidth));
+        ///terrainProgram.paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapHeight));
     }
 
     private void simulatePhysics(long currentTime) {
