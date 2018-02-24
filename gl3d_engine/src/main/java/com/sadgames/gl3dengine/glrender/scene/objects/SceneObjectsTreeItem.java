@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public abstract class SceneObjectsTreeItem {
@@ -64,7 +65,13 @@ public abstract class SceneObjectsTreeItem {
     }
 
     public SceneObjectsTreeItem getChild(String name) {
-        return childs.get(name);
+        Iterator<SceneObjectsTreeItem> items = childs.values().iterator();
+        SceneObjectsTreeItem result = childs.get(name);
+
+        while (result == null && items.hasNext())
+            result = items.next().getChild(name);
+
+        return result;
     }
 
     public void putChild(SceneObjectsTreeItem item, String name, long number) {
