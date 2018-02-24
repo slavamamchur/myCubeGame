@@ -10,6 +10,10 @@ public abstract class SceneObjectsTreeItem {
     protected SceneObjectsTreeItem parent;
     protected Map<String, SceneObjectsTreeItem> childs = new HashMap<>();
 
+    public interface ISceneObjectsTreeHandler {
+        void onProcessItem(SceneObjectsTreeItem item);
+    }
+
     @SuppressWarnings("all")
     protected SceneObjectsTreeItem(long itemNumber, String itemName, SceneObjectsTreeItem parent) {
         this.itemNumber = itemNumber < 0 ? System.currentTimeMillis() : itemNumber;
@@ -79,5 +83,9 @@ public abstract class SceneObjectsTreeItem {
 
     public void putChild(SceneObjectsTreeItem item) {
         putChild(item, item.itemName);
+    }
+
+    public void proceesTreeItems(ISceneObjectsTreeHandler itemHandler) {
+        //TODO: ...
     }
 }
