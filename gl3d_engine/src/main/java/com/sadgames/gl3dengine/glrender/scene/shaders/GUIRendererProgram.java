@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -29,5 +30,10 @@ public class GUIRendererProgram extends ShadowMapProgram {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void bindAdditionalParams(GLScene scene, AbstractGL3DObject object) {
+        object.setGlTexture(scene.getShadowMapFBO().getFboTexture());
     }
 }

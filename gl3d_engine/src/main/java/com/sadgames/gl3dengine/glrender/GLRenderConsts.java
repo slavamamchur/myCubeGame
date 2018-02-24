@@ -15,10 +15,10 @@ public  class GLRenderConsts {
     public enum GLObjectType {
         WATER_OBJECT,
         TERRAIN_OBJECT,
-        SKYBOX_OBJECT,
+        SKY_BOX_OBJECT,
         LIGHT_OBJECT,
         GAME_ITEM_OBJECT,
-        SHADOWMAP_OBJECT,
+        SHADOW_MAP_OBJECT,
         GUI_OBJECT,
         UNKNOWN_OBJECT
     }

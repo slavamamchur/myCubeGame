@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -48,7 +49,13 @@ public class ShadowMapProgram extends VBOShaderProgram {
     }
 
     @Override
-    public void bindLightSourceMVP(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
+    public void bindGlobalParams(GLScene scene) {
+
+    }
+
+    @Override
+    public void bindAdditionalParams(GLScene scene, AbstractGL3DObject object) {
+
     }
 
     @Override

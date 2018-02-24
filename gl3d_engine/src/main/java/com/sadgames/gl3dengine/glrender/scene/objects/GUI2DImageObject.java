@@ -29,6 +29,8 @@ public class GUI2DImageObject extends AbstractGL3DObject {
         this.top = box.y;
         this.right = box.z;
         this.bottom = box.w;
+
+        setCastShadow(false);
     }
 
     @Override

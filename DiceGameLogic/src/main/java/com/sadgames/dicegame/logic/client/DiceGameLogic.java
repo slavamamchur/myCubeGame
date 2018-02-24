@@ -18,6 +18,7 @@ import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
@@ -34,6 +35,7 @@ import java.util.Random;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
@@ -42,6 +44,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
 public class DiceGameLogic implements GameEventsCallbackInterface {
@@ -218,11 +221,19 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         dice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
         glSceneObject.addObject(dice_1, DICE_MESH_OBJECT_1);
 
-        /** skybox */
+        /** debug shadow map gui-box */
+        //TODO: remove
+        GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
+                                                              glSceneObject.getCachedShader(GUI_OBJECT),
+                                                              new Vector4f(-1, 1, 0, 0));
+        shadowMapView.loadObject();
+        glSceneObject.addObject(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");
+
+        /** sky-box */
         //TODO: translate box bottom to water level by Y
-        /*SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glSceneObject.getCachedShader(SKYBOX_OBJECT));
+        /*SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glSceneObject.getCachedShader(SKY_BOX_OBJECT));
         skyBoxObject.loadObject();
-        glSceneObject.addObject(skyBoxObject, SKYBOX_MESH_OBJECT);*/
+        glSceneObject.addObject(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);*/
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {

@@ -3,6 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene.shaders;
 import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -75,6 +76,8 @@ public abstract class GLShaderProgram {
 
 
     public GLShaderProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
+
+        this.sysUtilsWrapper = sysUtilsWrapper;
 
         vertexShaderID = createShader(sysUtilsWrapper, GL_VERTEX_SHADER, getVertexShaderResId());
         fragmentShaderID = createShader(sysUtilsWrapper, GL_FRAGMENT_SHADER, getFragmentShaderResId());
@@ -241,6 +244,7 @@ public abstract class GLShaderProgram {
         paramByName(TEXELS_PARAM_NAME).setParamValue(TEXEL_UV_SIZE, stride, pos, data);
     }
 
+    @SuppressWarnings("all")
     public void linkTexelData(GLShaderParam param) throws IllegalAccessException {
         paramByName(TEXELS_PARAM_NAME).linkParamValue(param);
     }
@@ -249,6 +253,7 @@ public abstract class GLShaderProgram {
         paramByName(NORMALS_PARAM_NAME).setParamValue(VERTEX_SIZE, stride, pos, data);
     }
 
+    @SuppressWarnings("all")
     public void linkNormalData(GLShaderParam param) throws IllegalAccessException {
         paramByName(NORMALS_PARAM_NAME).linkParamValue(param);
     }
@@ -259,6 +264,7 @@ public abstract class GLShaderProgram {
             param.setParamValue(data);
     }
 
+    @SuppressWarnings("all")
     public void setMVPMatrixData(float[] data) {
         GLShaderParam param = paramByName(MVP_MATRIX_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0)
@@ -266,8 +272,13 @@ public abstract class GLShaderProgram {
     }
 
     public void setMVMatrixData(float[] data) {
-        paramByName(MV_MATRIX_PARAM_NAME).setParamValue(data);
-        paramByName(MV_MATRIXF_PARAM_NAME).setParamValue(data);
+        GLShaderParam param = paramByName(MV_MATRIX_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(data);
+
+        param = paramByName(MV_MATRIXF_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(data);
     }
 
     public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
@@ -290,7 +301,11 @@ public abstract class GLShaderProgram {
         }
     }
 
-    public void bindLightSourceMVP (AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
+    public abstract void bindGlobalParams(GLScene scene);
+    public abstract void bindAdditionalParams(GLScene scene, AbstractGL3DObject object);
+
+    @SuppressWarnings("all")
+    protected void bindLightSourceMVP (AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
         float [] lightMVP = new float[16];
 
         Matrix.multiplyMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
@@ -302,8 +317,8 @@ public abstract class GLShaderProgram {
         paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);
     }
 
-    /** AndroidSysUtils-------------------------------------------------------------------------------------*/
-    public static int createProgram(int vertexShaderId, int fragmentShaderId) {
+    @SuppressWarnings("all")
+    protected int createProgram(int vertexShaderId, int fragmentShaderId) {
         final int programId = glCreateProgram();
         if (programId == 0) {
             return 0;
@@ -322,11 +337,13 @@ public abstract class GLShaderProgram {
         return programId;
     }
 
-    public static int createShader(SysUtilsWrapperInterface sysUtilsWrapper, int type, String shaderRawId) {
+    @SuppressWarnings("all")
+    protected int createShader(SysUtilsWrapperInterface sysUtilsWrapper, int type, String shaderRawId) {
         return createShader(type, sysUtilsWrapper.iReadTextFromFile(shaderRawId));
     }
 
-    static int createShader(int type, String shaderText) {
+    @SuppressWarnings("all")
+    protected int createShader(int type, String shaderText) {
         final int shaderId = glCreateShader(type);
         if (shaderId == 0) {
             return 0;

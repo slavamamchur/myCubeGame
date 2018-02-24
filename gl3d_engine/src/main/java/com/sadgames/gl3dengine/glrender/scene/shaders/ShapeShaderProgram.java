@@ -1,9 +1,22 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
+import com.sadgames.gl3dengine.glrender.GLRenderConsts;
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
+import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import javax.vecmath.Vector3f;
+
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITIONF_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_FRAGMENT_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_VERTEX_SHADER;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.RND_SEED__PARAM_NAME;
 
 public class ShapeShaderProgram extends VBOShaderProgram {
 
@@ -20,30 +33,39 @@ public class ShapeShaderProgram extends VBOShaderProgram {
         return MAIN_RENDERER_FRAGMENT_SHADER;
     }
 
-/*    @Override
-    public void createParams() {
-        super.createParams();
+    @Override
+    public void bindAdditionalParams(GLScene scene, AbstractGL3DObject object) {
+        bindLightSourceMVP(object, scene.getLightSource().getViewMatrix(), scene.getLightSource().getProjectionMatrix(), scene.hasDepthTextureExtension());
+    }
 
-        GLShaderParam param;
+    @Override
+    public void bindGlobalParams(GLScene scene) {
+        GLLightSource lightSource = scene.getLightSource();
+        GLRenderConsts.GraphicsQuality graphicsQualityLevel =
+                sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
-        *//** pX*//*
-        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, PRIVOT_X_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);
+        scene.getShadowMapFBO().getFboTexture().bind(FBO_TEXTURE_SLOT);
+        paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
 
-        *//** pY*//*
-        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, PRIVOT_Y_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);
+        synchronized (GLScene.lockObject) {
+            Vector3f pos = scene.getCamera().getCameraPosition();
+            paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(new float[] {pos.x, pos.y, pos.z});
+        }
 
-        *//** rAngle*//*
-        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, ROLL_ANGLE_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);
+        paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
+        paramByName(LIGHT_POSITIONF_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
 
-        *//** objRadius*//*
-        param = new GLShaderParam(FLOAT_UNIFORM_PARAM, OBJECT_RADIUS_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);
+        Vector3f colour = lightSource.getLightColour();
+        paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
 
-        *//** rollStep*//*
-        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ROLL_STEP_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);
-    }*/
+        paramByName(RND_SEED__PARAM_NAME).setParamValue(
+                GLRenderConsts.GraphicsQuality.LOW.equals(graphicsQualityLevel) ?
+                        -1f
+                        :
+                        scene.getMoveFactor());
+
+        /** for rgb depth buffers */
+        /*paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / scene.getShadowMapFBO().getWidth()));
+        paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / scene.getShadowMapFBO().getHeight()));*/
+    }
 }

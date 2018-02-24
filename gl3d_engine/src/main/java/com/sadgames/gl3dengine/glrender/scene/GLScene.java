@@ -34,11 +34,8 @@ import java.util.Map;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
@@ -50,17 +47,11 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_COLO
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_X;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_Y;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_Z;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SHADOWMAP_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SHADOW_MAP_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITIONF_PARAM_NAME;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.RND_SEED__PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
@@ -125,6 +116,13 @@ public class GLScene implements GLRendererInterface {
     @SuppressWarnings("unused") public void setRenderStopped(boolean renderStopped) {
         isRenderStopped = renderStopped;
     }
+    public AbstractFBO getShadowMapFBO() {
+        return shadowMapFBO;
+    }
+    public float getMoveFactor() {
+        return moveFactor;
+    }
+
     public void addObject(AbstractGL3DObject object, String name) {
         objects.put(name, object);
     }
@@ -182,13 +180,13 @@ public class GLScene implements GLRendererInterface {
                 case TERRAIN_OBJECT:
                     program = new TerrainRendererProgram(sysUtilsWrapper);
                     break;
-                case SHADOWMAP_OBJECT:
+                case SHADOW_MAP_OBJECT:
                     program = new ShadowMapProgram(sysUtilsWrapper);
                     break;
                 case GUI_OBJECT:
                     program = new GUIRendererProgram(sysUtilsWrapper);
                     break;
-                case SKYBOX_OBJECT:
+                case SKY_BOX_OBJECT:
                     program = new SkyBoxProgram(sysUtilsWrapper);
                     break;
                 default:
@@ -293,7 +291,7 @@ public class GLScene implements GLRendererInterface {
 
         GLES20JniWrapper.glEnableFrontFacesCulling();
 
-        GLShaderProgram program = getCachedShader(SHADOWMAP_OBJECT);
+        GLShaderProgram program = getCachedShader(SHADOW_MAP_OBJECT);
         program.useProgram();
 
         AbstractGL3DObject prevObject = null;
@@ -314,7 +312,6 @@ public class GLScene implements GLRendererInterface {
     }
 
     /** for post effects image processing */
-    @SuppressWarnings("unused")
     private void renderPostEffectsBuffer() {
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
@@ -327,31 +324,36 @@ public class GLScene implements GLRendererInterface {
         postEffects2DScreen.render();
     }
 
-    private void renderColorBuffer() {//TODO: add group of objects processing (with single transform matrix)
+    private void renderColorBuffer() {//TODO: add group of objects processing (with single transform matrix) -> TreeNodeObject as root, map and chips pool
         /** for post effects image processing */
         ///mainRenderFBO.bind();
 
         GLES20JniWrapper.glEnableBackFacesCulling();
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
-        GLShaderProgram program = getCachedShader(TERRAIN_OBJECT);
-        setTerrainProgramParams(program);
+        drawChilds();
 
+        /** for post effects image processing */
+        ///mainRenderFBO.unbind();
+    }
+
+    private void drawChilds() {
+        GLShaderProgram program = null;
         AbstractGL3DObject prevObject = null;
+
         for (AbstractGL3DObject object : objects.values()) {
             if (object.getProgram() != program) {
                 program = object.getProgram();
                 program.useProgram();
+                program.bindGlobalParams(this);
             }
 
-            synchronized (lockObject) {
-                program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix());
-            }
+            if (program == null) continue;
 
-            program.bindLightSourceMVP(object, lightSource.getViewMatrix(), lightSource.getProjectionMatrix(), hasDepthTextureExtension);
+            synchronized (lockObject) { program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix()); }
+            program.bindAdditionalParams(this, object);
 
             object.bindMaterial();
-
             if (!object.equals(prevObject)) {
                 object.bindVBO();
                 prevObject = object;
@@ -359,42 +361,6 @@ public class GLScene implements GLRendererInterface {
 
             object.render();
         }
-
-        /** for post effects image processing OR shadowmap debugging */
-        postEffects2DScreen.getProgram().useProgram();
-
-        postEffects2DScreen.setGlTexture(shadowMapFBO.getFboTexture());
-        postEffects2DScreen.bindMaterial();
-        postEffects2DScreen.bindVBO();
-
-        postEffects2DScreen.render();
-
-        /** for post effects image processing */
-        ///mainRenderFBO.unbind();
-    }
-
-    private void setTerrainProgramParams(GLShaderProgram terrainProgram) {
-        terrainProgram.useProgram();
-
-        shadowMapFBO.getFboTexture().bind(FBO_TEXTURE_SLOT);
-        terrainProgram.paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
-
-        synchronized (lockObject) {
-            Vector3f pos = camera.getCameraPosition();
-            terrainProgram.paramByName(CAMERA_POSITION_PARAM_NAME).setParamValue(new float[] {pos.x, pos.y, pos.z});
-        }
-
-        terrainProgram.paramByName(LIGHT_POSITION_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
-        terrainProgram.paramByName(LIGHT_POSITIONF_PARAM_NAME).setParamValue(lightSource.getLightPosInEyeSpace());
-
-        Vector3f colour = lightSource.getLightColour();
-        terrainProgram.paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
-
-        terrainProgram.paramByName(RND_SEED__PARAM_NAME).setParamValue(GraphicsQuality.LOW.equals(graphicsQualityLevel) ? -1f : moveFactor);
-
-        /** for rgb depth buffers */
-        ///terrainProgram.paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapWidth));
-        ///terrainProgram.paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / mShadowMapHeight));
     }
 
     private void simulatePhysics(long currentTime) {
@@ -490,10 +456,10 @@ public class GLScene implements GLRendererInterface {
 
     private void loadScene() {
         /** Create internal shaders before loading scene  */
-        getCachedShader(SHADOWMAP_OBJECT);
+        getCachedShader(SHADOW_MAP_OBJECT);
 
         /** for postprocessing effects */
-        createPostEffects2DScreen();
+        ///createPostEffects2DScreen();
 
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onLoadSceneObjects(this, physicalWorld);
@@ -503,7 +469,7 @@ public class GLScene implements GLRendererInterface {
 
     private void createPostEffects2DScreen() {
         GLShaderProgram guiShader = getCachedShader(GUI_OBJECT);
-        postEffects2DScreen = new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 0, 0));
+        postEffects2DScreen = new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 1, -1));
         postEffects2DScreen.loadObject();
     }
 
