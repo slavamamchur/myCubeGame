@@ -44,7 +44,7 @@ import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTAT
 import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Y;
 import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Z;
 
-public abstract class AbstractGL3DObject implements GLAnimation.IAnimatedObject {
+public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements GLAnimation.IAnimatedObject {
 
     protected SysUtilsWrapperInterface sysUtilsWrapper;
     private GLObjectType objectType;

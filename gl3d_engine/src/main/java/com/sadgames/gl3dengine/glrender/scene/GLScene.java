@@ -20,6 +20,7 @@ import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShadowMapProgram;
@@ -57,7 +58,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
-public class GLScene implements GLRendererInterface {
+public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface {
 
     public  final static Object lockObject = new Object();
 
@@ -74,7 +75,7 @@ public class GLScene implements GLRendererInterface {
     private GLCamera camera = null;
     private GLLightSource lightSource = null;
     private DiscreteDynamicsWorld physicalWorld = null;
-    private Map<String, AbstractGL3DObject> objects = new HashMap<>();
+    private Map<String, AbstractGL3DObject> objects = new HashMap<>(); //TODO: change to SceneObjectsTreeItem
     private Map<GLObjectType, GLShaderProgram> shaders = new HashMap<>();
     private AbstractFBO shadowMapFBO = null;
     private AbstractFBO mainRenderFBO = null;

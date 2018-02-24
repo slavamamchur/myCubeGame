@@ -20,7 +20,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VBO_STRIDE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class GameItemObject extends PNodeObject {
-    private static int itemNumber = 0;
+    private static int itemNumber = 0; //TODO: change to SceneObjectsTreeItem
 
     private String itemName;
 
