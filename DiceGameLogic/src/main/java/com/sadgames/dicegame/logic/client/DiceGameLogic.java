@@ -217,6 +217,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         translation.setTranslation(new Vector3f(-100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0));
         dice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
         glSceneObject.addObject(dice_1, DICE_MESH_OBJECT_1);
+
+        /** skybox */
+        //TODO: translate box bottom to water level by Y
+        /*SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glSceneObject.getCachedShader(SKYBOX_OBJECT));
+        skyBoxObject.loadObject();
+        glSceneObject.addObject(skyBoxObject, SKYBOX_MESH_OBJECT);*/
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {

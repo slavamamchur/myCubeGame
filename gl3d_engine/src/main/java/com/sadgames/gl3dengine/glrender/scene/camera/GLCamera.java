@@ -14,7 +14,7 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
 
     public static final float VERTICAL_FOV = 28.0f;
     public static final float NEAR_PLANE = 0.1f;
-    public static final float FAR_PLANE = 10.0f;//100
+    public static final float FAR_PLANE = 100.0f;//10 ???
 
     protected float[] transformMatrix = new float[16];
     protected float[] viewMatrix = new float[16];

@@ -260,7 +260,9 @@ public abstract class GLShaderProgram {
     }
 
     public void setMVPMatrixData(float[] data) {
-        paramByName(MVP_MATRIX_PARAM_NAME).setParamValue(data);
+        GLShaderParam param = paramByName(MVP_MATRIX_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(data);
     }
 
     public void setMVMatrixData(float[] data) {

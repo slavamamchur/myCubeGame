@@ -6,7 +6,6 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.glGetString;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MVP_MATRIX_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_FRAGMENT_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT;
@@ -54,12 +53,5 @@ public class ShadowMapProgram extends VBOShaderProgram {
 
     @Override
     public void setMVMatrixData(float[] data) {}
-
-    @Override
-    public void setMVPMatrixData(float[] data) {
-        GLShaderParam param = paramByName(MVP_MATRIX_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(data);
-    }
 
 }
