@@ -81,8 +81,10 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     protected boolean castShadow = true;
 
     public AbstractGL3DObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, GLShaderProgram program) {
+        super();
+
         this.sysUtilsWrapper = sysUtilsWrapper;
-        objectType = type;
+        this.objectType = type;
         this.program = program;
 
         Matrix.setIdentityM(modelMatrix, 0);

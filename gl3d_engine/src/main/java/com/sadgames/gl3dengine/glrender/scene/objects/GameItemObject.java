@@ -20,30 +20,13 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VBO_STRIDE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class GameItemObject extends PNodeObject {
-    private static int itemNumber = 0; //TODO: change to SceneObjectsTreeItem
-
-    private String itemName;
 
     public GameItemObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, GAME_ITEM_OBJECT, textureResName, program, mass, tag);
-        initItem();
     }
 
     public GameItemObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag) {
         super(sysUtilsWrapper, GAME_ITEM_OBJECT, program, color, mass, tag);
-        initItem();
-    }
-
-    protected void initItem() {
-        itemName = "ITEM_" + itemNumber;
-        itemNumber++;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
     }
 
     protected abstract float[] getVertexesArray();

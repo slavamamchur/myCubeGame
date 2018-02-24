@@ -15,10 +15,6 @@ public class GameDiceItem extends CubePrimitiveObject {
 
     public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String textureName) {
         super(sysUtilsWrapper, textureName, program, 10f, MOVING_OBJECT, GAME_DICE_HALF_SIZE);
-    }
-
-    @Override
-    protected void initItem() {
         setItemName(DICE_MESH_OBJECT_1);
     }
 
