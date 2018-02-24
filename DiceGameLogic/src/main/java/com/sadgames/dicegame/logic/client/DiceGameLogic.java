@@ -21,6 +21,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -199,18 +200,18 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                                                                  skyBoxTexture.getTextureSize());
 
         GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
-        /** Terrain map */ //TODO: change to SceneObjectsTreeItem
+        /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality))
             terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
-        glSceneObject.addObject(terrain, TERRAIN_MESH_OBJECT);
+        glSceneObject.putChild(terrain, TERRAIN_MESH_OBJECT);
 
         /** players chips */
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
-            placeChips(glSceneObject, program);
+            placePlayersChips(terrain, program);//TODO: check
 
         /** gaming dice */
         GameDiceItem dice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
@@ -219,7 +220,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         translation.setIdentity();
         translation.setTranslation(new Vector3f(-100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0));
         dice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
-        glSceneObject.addObject(dice_1, DICE_MESH_OBJECT_1);
+        glSceneObject.putChild(dice_1, DICE_MESH_OBJECT_1);
 
         /** debug shadow map gui-box */
         //TODO: remove
@@ -227,7 +228,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                                                               glSceneObject.getCachedShader(GUI_OBJECT),
                                                               new Vector4f(-1, 1, 0, 0));
         shadowMapView.loadObject();
-        glSceneObject.addObject(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");
+        glSceneObject.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");
 
         /** sky-box */
         //TODO: translate box bottom to water level by Y and cull front faces !!!
@@ -295,25 +296,22 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         move.startAnimation(chip, delegate);
     }
 
-    public void placeChips(GLScene mScene, GLShaderProgram program) {
+    public void placePlayersChips(SceneObjectsTreeItem parent, GLShaderProgram program) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
         GameItemObject prevChip = null;
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            Vector2f chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
-
             GameItemObject chip = new ChipItem(sysUtilsWrapper, program, player);
-            if (prevChip == null) {
-                chip.loadObject();
-            }
-            else {
-                chip.loadFromObject(prevChip);
-            }
-            prevChip = chip;
 
-            mScene.addObject(chip, chip.getItemName());
+            Vector2f chipPlace = getChipPlaceByWayPoint(parent, playersOnWayPoints, player, true);
             chip.setInWorldPosition(chipPlace);
+
+            if (prevChip == null) chip.loadObject(); else chip.loadFromObject(prevChip);
+
+            parent.putChild(chip, chip.getItemName());
+
+            prevChip = chip;
         }
     }
 
@@ -322,25 +320,24 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            Vector2f chipPlace = getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true);
 
-            AbstractGL3DObject chip = mScene.getObject( CHIP_MESH_OBJECT + "_" + player.getName());
-
-            chip.setInWorldPosition(chipPlace);
+            mScene.getObject(
+                            CHIP_MESH_OBJECT + "_" + player.getName()
+            ).setInWorldPosition(getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true));
         }
     }
 
-    public Vector2f getChipPlaceByWayPoint(GLScene mScene, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
+    public Vector2f getChipPlaceByWayPoint(SceneObjectsTreeItem parent, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
         int currentPointIdx = player.getCurrentPoint();
         playersOnWayPoints[currentPointIdx]++;
         int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
         AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
 
-        return getChipPlace(mScene, point, playersCnt, rotate);
+        return getChipPlace(parent, point, playersCnt, rotate);
     }
 
-    public Vector2f getChipPlace(GLScene mScene, AbstractGamePoint point, int playersCnt, boolean rotate) {
-        TopographicMapObject map = (TopographicMapObject) mScene.getObject(TERRAIN_MESH_OBJECT);
+    public Vector2f getChipPlace(SceneObjectsTreeItem parent, AbstractGamePoint point, int playersCnt, boolean rotate) {
+        TopographicMapObject map = (TopographicMapObject) parent;
         float scaleFactor = map.getGlTexture().getWidth() * 1.0f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
         double toX2 = point.getxPos() * scaleFactor;
         double toZ2 = point.getyPos() * scaleFactor;

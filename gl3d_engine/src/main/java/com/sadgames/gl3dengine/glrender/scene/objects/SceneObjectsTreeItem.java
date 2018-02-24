@@ -97,12 +97,9 @@ public abstract class SceneObjectsTreeItem {
 
     public void proceesTreeItems(ISceneObjectsTreeHandler itemHandler) {
         ArrayList<SceneObjectsTreeItem> sortedItems = new ArrayList<>(childs.values());
-
         Collections.sort(sortedItems, new Comparator<SceneObjectsTreeItem>() {
             @Override
-            public int compare(SceneObjectsTreeItem i1, SceneObjectsTreeItem i2) {
-                return (int)(i1.itemNumber - i2.itemNumber);
-            }
+            public int compare(SceneObjectsTreeItem i1, SceneObjectsTreeItem i2) {return (int)(i1.itemNumber - i2.itemNumber);}
         });
 
         for (SceneObjectsTreeItem item : sortedItems) {

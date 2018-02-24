@@ -75,7 +75,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private GLCamera camera = null;
     private GLLightSource lightSource = null;
     private DiscreteDynamicsWorld physicalWorld = null;
-    private Map<String, AbstractGL3DObject> objects = new HashMap<>(); //TODO: change to SceneObjectsTreeItem
     private Map<GLObjectType, GLShaderProgram> shaders = new HashMap<>();
     private AbstractFBO shadowMapFBO = null;
     private AbstractFBO mainRenderFBO = null;
@@ -124,13 +123,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         return moveFactor;
     }
 
-    public void addObject(AbstractGL3DObject object, String name) {
-        objects.put(name, object);
-    }
-    @SuppressWarnings("unused") public void deleteObject(String name) {
-        objects.remove(name);
-    }
-
     @SuppressWarnings("all")
     public boolean checkDepthTextureExtension() {
         return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
@@ -151,10 +143,16 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void clearObjectsCache() {
-        for (AbstractGL3DObject object : objects.values())
-            object.clearData();
+        proceesTreeItems(
+            new ISceneObjectsTreeHandler() {
+                @Override
+                public void onProcessItem(SceneObjectsTreeItem item) {
+                    ((AbstractGL3DObject)item).clearData();
+                }
+            }
+        );
 
-        objects.clear();
+        childs.clear();
 
         if (postEffects2DScreen != null)
             postEffects2DScreen.clearData();
@@ -170,7 +168,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     public AbstractGL3DObject getObject(String name) {
-        return objects.get(name);
+        return (AbstractGL3DObject) getChild(name);
     }
 
     public GLShaderProgram getCachedShader(GLObjectType type) {
@@ -229,11 +227,47 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void calculateSceneTransformations() {
+        calculateCameraPosition();
+        calculateWavesMovingFactor();
 
-        if (zoomCameraAnimation != null && zoomCameraAnimation.isInProgress()) {
-            zoomCameraAnimation.animate(camera);
+        proceesTreeItems(
+            new ISceneObjectsTreeHandler() {
+                @Override
+                public void onProcessItem(SceneObjectsTreeItem item) {
+                    caclulateObjectsAnimations(item);
+                }
+            }
+        );
+    }
+
+    private void caclulateObjectsAnimations(SceneObjectsTreeItem sceneObject) {
+        AbstractGL3DObject gl3DObject = (AbstractGL3DObject) sceneObject;
+
+        GLAnimation animation = gl3DObject.getAnimation();
+        if (animation != null && animation.isInProgress()) {
+            animation.animate(gl3DObject);
         }
+        else if (isSimulating && gl3DObject instanceof PNodeObject
+                && (((PNodeObject) gl3DObject).getTag() == MOVING_OBJECT)
+                && ((PNodeObject) gl3DObject).get_body() != null) {
 
+            PNodeObject movingObject = (PNodeObject) gl3DObject;
+            Transform transform = movingObject.getWorldTransformActual();
+
+            if (!movingObject.getWorldTransformOld().equals(transform))
+                movingObject.setWorldTransformMatrix(transform);
+
+            else {
+                physicalWorld.removeRigidBody(movingObject.get_body());
+                movingObject.set_body(null);
+
+                if (gameEventsCallBackListener != null)
+                    gameEventsCallBackListener.onStopMovingObject(movingObject);
+            }
+        }
+    }
+
+    private void calculateWavesMovingFactor() {
         try {
             moveFactor += WAVE_SPEED * frameTime / 1000;
             moveFactor %= 1;
@@ -241,31 +275,11 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         catch (Exception e) {
             moveFactor = 0;
         }
+    }
 
-        for (AbstractGL3DObject object : objects.values()) {
-
-            GLAnimation animation = object.getAnimation();
-            if (animation != null && animation.isInProgress()) {
-                animation.animate(object);
-            }
-            else if (isSimulating && object instanceof PNodeObject
-                    && (((PNodeObject) object).getTag() == MOVING_OBJECT)
-                    && ((PNodeObject) object).get_body() != null) {
-
-                PNodeObject movingObject = (PNodeObject) object;
-                Transform transform = movingObject.getWorldTransformActual();
-
-                if (!movingObject.getWorldTransformOld().equals(transform))
-                    movingObject.setWorldTransformMatrix(transform);
-
-                else {
-                    physicalWorld.removeRigidBody(movingObject.get_body());
-                    movingObject.set_body(null);
-
-                    if (gameEventsCallBackListener != null)
-                        gameEventsCallBackListener.onStopMovingObject(movingObject);
-                }
-            }
+    private void calculateCameraPosition() {
+        if (zoomCameraAnimation != null && zoomCameraAnimation.isInProgress()) {
+            zoomCameraAnimation.animate(camera);
         }
     }
 
@@ -287,29 +301,42 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         ///renderPostEffectsBuffer();
     }
 
+    private AbstractGL3DObject prevObject = null;
+
     private void renderShadowMapBuffer() {
         shadowMapFBO.bind();
-
         GLES20JniWrapper.glEnableFrontFacesCulling();
 
-        GLShaderProgram program = getCachedShader(SHADOW_MAP_OBJECT);
-        program.useProgram();
+        getCachedShader(SHADOW_MAP_OBJECT).useProgram();
 
-        AbstractGL3DObject prevObject = null;
-        for (AbstractGL3DObject object : objects.values()) {
-            if (!object.isCastShadow())
-                continue;
-
-            program.bindMVPMatrix(object, getLightSource().getViewMatrix(), getLightSource().getProjectionMatrix());
-
-            if (!object.equals(prevObject)) {
-                object.bindVBO(program);
-                prevObject = object;
+        prevObject = null;
+        proceesTreeItems(
+            new ISceneObjectsTreeHandler() {
+                @Override
+                public void onProcessItem(SceneObjectsTreeItem item) {
+                    drawObjectIntoShadowMap(item);
+                }
             }
-            object.render();
-        }
+        );
 
         shadowMapFBO.unbind();
+    }
+
+    private void drawObjectIntoShadowMap(SceneObjectsTreeItem sceneObject) {
+        AbstractGL3DObject gl3DObject = (AbstractGL3DObject) sceneObject;
+        GLShaderProgram program = getCachedShader(SHADOW_MAP_OBJECT);
+
+        if (!gl3DObject.isCastShadow())
+            return;
+
+        program.bindMVPMatrix(gl3DObject, lightSource.getViewMatrix(), lightSource.getProjectionMatrix());
+
+        if (!gl3DObject.equals(prevObject)) {
+            gl3DObject.bindVBO(program);
+            prevObject = gl3DObject;
+        }
+
+        gl3DObject.render();
     }
 
     /** for post effects image processing */
@@ -325,43 +352,51 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         postEffects2DScreen.render();
     }
 
-    private void renderColorBuffer() {//TODO: add group of objects processing (with single transform matrix) -> TreeNodeObject as root, map and chips pool
+    private GLShaderProgram program = null;
+    private void renderColorBuffer() {
         /** for post effects image processing */
         ///mainRenderFBO.bind();
 
         GLES20JniWrapper.glEnableBackFacesCulling();
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
 
-        drawChilds();
+        prevObject = null;
+        program = null;
+
+        proceesTreeItems(
+            new ISceneObjectsTreeHandler() {
+                @Override
+                public void onProcessItem(SceneObjectsTreeItem item) {
+                    drawObjectIntoColorBuffer(item);
+                }
+            }//TODO: check
+        );
 
         /** for post effects image processing */
         ///mainRenderFBO.unbind();
     }
 
-    private void drawChilds() {
-        GLShaderProgram program = null;
-        AbstractGL3DObject prevObject = null;
+    private void drawObjectIntoColorBuffer(SceneObjectsTreeItem sceneObject) {
+        AbstractGL3DObject gl3DObject = (AbstractGL3DObject) sceneObject;
 
-        for (AbstractGL3DObject object : objects.values()) {
-            if (object.getProgram() != program) {
-                program = object.getProgram();
-                program.useProgram();
-                program.bindGlobalParams(this);
-            }
-
-            if (program == null) continue;
-
-            synchronized (lockObject) { program.bindMVPMatrix(object, camera.getViewMatrix(),camera.getProjectionMatrix()); }
-            program.bindAdditionalParams(this, object);
-
-            object.bindMaterial();
-            if (!object.equals(prevObject)) {
-                object.bindVBO();
-                prevObject = object;
-            }
-
-            object.render();
+        if (gl3DObject.getProgram() != program) {
+            program = gl3DObject.getProgram();
+            program.useProgram();
+            program.bindGlobalParams(this);
         }
+
+        if (program == null) return;
+
+        synchronized (lockObject) { program.bindMVPMatrix(gl3DObject, camera.getViewMatrix(),camera.getProjectionMatrix()); }
+        program.bindAdditionalParams(this, gl3DObject);
+
+        gl3DObject.bindMaterial();
+        if (!gl3DObject.equals(prevObject)) {
+            gl3DObject.bindVBO();
+            prevObject = gl3DObject;
+        }
+
+        gl3DObject.render();
     }
 
     private void simulatePhysics(long currentTime) {
