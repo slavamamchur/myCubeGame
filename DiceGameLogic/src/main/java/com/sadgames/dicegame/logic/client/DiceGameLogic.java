@@ -21,6 +21,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
+import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -41,8 +42,10 @@ import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
+import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
 public class DiceGameLogic implements GameEventsCallbackInterface {
@@ -217,13 +220,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             placePlayersChips(terrain, program);
 
         /** gaming dice */
-        GameDiceItem dice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
-        dice_1.loadObject();
+        GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
+        gameDice_1.loadObject();
         Matrix4f translation = new Matrix4f();
         translation.setIdentity();
         translation.setTranslation(new Vector3f(-100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0));
-        dice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
-        glScene.putChild(dice_1, DICE_MESH_OBJECT_1);
+        gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
+        glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
         /** debug shadow map gui-box */
         /*GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
@@ -235,9 +238,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         /** sky-box */
         //TODO: translate box bottom to water level by Y
-        /*SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glSceneObject.getCachedShader(SKY_BOX_OBJECT));
+        SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glScene.getCachedShader(SKY_BOX_OBJECT));
         skyBoxObject.loadObject();
-        glSceneObject.addObject(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);*/
+        glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
