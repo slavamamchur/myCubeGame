@@ -133,7 +133,7 @@ void main()
           vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
           if (u_hasReflectMap == 1) {
-            //TODO: transform reflected vector via skybox transform to apply rotated sky reflection.
+            //TODO: transform reflected vector via skybox view matrix to apply rotated sky reflection.
             vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflect(-n_lookvector, n_normal)), waterColour, 0.5);
             diffuseColor = mix(refractionColor, reflectionColor, reflectiveFactor);
           }
