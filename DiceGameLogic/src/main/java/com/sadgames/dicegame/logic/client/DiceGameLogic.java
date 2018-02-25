@@ -183,8 +183,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         dynamicsWorld.setGravity(gameEntity._getGravity());
     }
 
-    @Override
     //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
+    @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
         GLRenderConsts.GraphicsQuality graphicsQuality =
                 sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
@@ -208,7 +208,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         /** players chips */
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
-            placePlayersChips(terrain, program);//TODO: check
+            placePlayersChips(terrain, program);
 
         /** gaming dice */
         GameDiceItem dice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
@@ -277,16 +277,15 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        Vector2f chipPlace = getChipPlace(gl3DScene, endGamePoint, playersCnt,
+        Vector2f chipPlace = getChipPlace(chip.getParent(), endGamePoint, playersCnt,
                 (gameInstanceEntity.getStepsToGo() == 0) || endGamePoint.getType().equals(PointType.FINISH));
 
-        GLAnimation move;
-        move = new GLAnimation(
-                chip.getPlace().x, chipPlace.x,
-                0f, 0f,
-                chip.getPlace().y, chipPlace.y,
-                CHIP_ANIMATION_DURATION
-        );
+        GLAnimation move = new GLAnimation(
+                                            chip.getPlace().x, chipPlace.x,
+                                           0f, 0f,
+                                            chip.getPlace().y, chipPlace.y,
+                                            CHIP_ANIMATION_DURATION
+                                           );
 
         chip.setPlace(chipPlace);
         chip.setAnimation(move);
@@ -318,9 +317,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
 
-            mScene.getObject(
-                            CHIP_MESH_OBJECT + "_" + player.getName()
-            ).setInWorldPosition(getChipPlaceByWayPoint(mScene, playersOnWayPoints, player, true));
+            ChipItem chip = (ChipItem) mScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
+            chip.setInWorldPosition(getChipPlaceByWayPoint(chip.getParent(), playersOnWayPoints, player, true));
         }
     }
 

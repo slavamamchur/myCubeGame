@@ -284,13 +284,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void drawScene() {
-        if (isRenderStopped)
-            return;
-
-        clearRenderBuffers();
-
         long currentTime = System.currentTimeMillis();
         calculateFrameTime(currentTime);
+
+        if (isRenderStopped) return;
+
+        clearRenderBuffers();
 
         simulatePhysics(currentTime);
         calculateSceneTransformations();
@@ -308,16 +307,13 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         GLES20JniWrapper.glEnableFrontFacesCulling();
 
         getCachedShader(SHADOW_MAP_OBJECT).useProgram();
-
         prevObject = null;
-        proceesTreeItems(
-            new ISceneObjectsTreeHandler() {
+        proceesTreeItems(new ISceneObjectsTreeHandler() {
                 @Override
                 public void onProcessItem(SceneObjectsTreeItem item) {
                     drawObjectIntoShadowMap(item);
                 }
-            }
-        );
+            });
 
         shadowMapFBO.unbind();
     }
@@ -362,16 +358,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         prevObject = null;
         program = null;
-
-        //TODO: check
-        proceesTreeItems(
-            new ISceneObjectsTreeHandler() {
+        proceesTreeItems(new ISceneObjectsTreeHandler() {
                 @Override
                 public void onProcessItem(SceneObjectsTreeItem item) {
                     drawObjectIntoColorBuffer(item);
                 }
-            }
-        );
+            });
 
         /** for post effects image processing */
         ///mainRenderFBO.unbind();
