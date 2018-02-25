@@ -25,6 +25,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -195,7 +196,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
     @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
-        Matrix4f transformMatrix = new Matrix4f();
         GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         /** Skybox and water reflection map texture */
@@ -222,6 +222,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         /** gaming dice */
         GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
         gameDice_1.loadObject();
+        Matrix4f transformMatrix = new Matrix4f();
         transformMatrix.setIdentity();
         transformMatrix.setTranslation(new Vector3f(-100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0));
         gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
@@ -236,11 +237,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         /** sky-box */
-        SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glScene.getCachedShader(SKY_BOX_OBJECT));
+        GLCamera camera = glScene.getCamera();
+        SkyBoxProgram shader = (SkyBoxProgram) glScene.getCachedShader(SKY_BOX_OBJECT);
+        shader.setCamera(camera);
+        SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, shader);
         skyBoxObject.loadObject();
-        /*transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(0, LAND_SIZE_IN_WORLD_SPACE / 14f, 0));
-        skyBoxObject.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));*/
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
     }
 
