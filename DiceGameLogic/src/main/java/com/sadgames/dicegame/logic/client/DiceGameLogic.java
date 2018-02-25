@@ -228,7 +228,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         /** sky-box */
-        //TODO: translate box bottom to water level by Y and cull front faces !!!
+        //TODO: translate box bottom to water level by Y and cull front faces !!!!
         /*SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glSceneObject.getCachedShader(SKY_BOX_OBJECT));
         skyBoxObject.loadObject();
         glSceneObject.addObject(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);*/
