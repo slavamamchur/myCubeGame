@@ -4,7 +4,6 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
-import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYBOX_FRAGMENT_SHADER;
@@ -39,9 +38,9 @@ public class SkyBoxProgram extends ShadowMapProgram {
         /** remove camera translation -> skybox should stay on the fixed position */
         Matrix.setIdentityM(mMatrix, 0);
         Matrix.multiplyMM(mMatrix, 0, viewMatrix, 0, mMatrix, 0);
-        if (camera != null) {
+        /*if (camera != null) {
             MathUtils.translateM(mMatrix, 0, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
-        }
+        }*/
 
         Matrix.multiplyMM(mMatrix, 0, mMatrix, 0, object.getModelMatrix(), 0);
         Matrix.multiplyMM(mMatrix, 0, projectionMatrix, 0, mMatrix, 0);

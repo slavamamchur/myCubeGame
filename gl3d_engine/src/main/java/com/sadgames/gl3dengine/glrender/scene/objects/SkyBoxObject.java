@@ -10,7 +10,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD
 public class SkyBoxObject extends CubePrimitiveObject {
 
     public SkyBoxObject(SysUtilsWrapperInterface sysUtilsWrapper, CubeMapTexture cubeTexture, GLShaderProgram program) {
-        super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT, LAND_SIZE_IN_WORLD_SPACE + 0.5f);
+        super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT, LAND_SIZE_IN_WORLD_SPACE / 2f);
         setGlTexture(cubeTexture);
         setCastShadow(false);
     }

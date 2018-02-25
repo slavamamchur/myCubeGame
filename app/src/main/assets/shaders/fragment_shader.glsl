@@ -25,14 +25,13 @@ varying vec3 v_wPosition;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
-//varying vec3 wlookvector;
-///varying float visibility;
+varying float visibility;
 varying vec4 vShadowCoord;
 
 varying float vdiffuse;
 varying float vspecular;
 
-const vec4 skyColour = vec4(0.24, 0.27, 0.34, 1.0);
+const vec4 skyColour = vec4(0.48, 0.62, 0.68, 1.0);
 const vec4 waterColour = vec4(0, 0.3, 0.5, 1.0);
 const float shineDumper = 40.0;
 const float nmapTiling = 6.0;
@@ -152,6 +151,6 @@ void main()
         gl_FragColor = mix(gl_FragColor, waterColour, blendingFactor);
       }*/
 
-      ///gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
+      gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
 
 }

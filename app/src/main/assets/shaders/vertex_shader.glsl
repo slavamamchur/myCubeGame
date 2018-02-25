@@ -13,8 +13,7 @@ varying vec3 v_wPosition;
 varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
-//varying vec3 wlookvector;
-///varying float visibility;
+varying float visibility;
 varying vec4 vShadowCoord;
 
 varying float vdiffuse;
@@ -39,8 +38,7 @@ void main()
 
     //Guard shading model --------------------------------------------------------------------------
     lightvector = u_lightPosition - v_Position;
-    lookvector = u_camera - v_Position; //- v_Position;
-    //wlookvector = -u_camera;
+    lookvector = u_camera - v_Position;
 
     vec3 n_normal = normalize(v_Normal);
     vec3 n_lightvector = normalize(lightvector);
@@ -51,9 +49,9 @@ void main()
     vspecular = pow(max(dot(reflectvector, n_lookvector), 0.0), shineDumper);
     //----------------------------------------------------------------------------------------------
 
-    ///float fog_distance = length(v_Position);
-    ///visibility = exp(-pow(fog_distance * fog_density, fog_gradient));
-    ///visibility = clamp(visibility, 0.0, 1.0);
+    float fog_distance = length(v_Position);
+    visibility = exp(-pow(fog_distance * fog_density, fog_gradient));
+    visibility = clamp(visibility, 0.0, 1.0);
 
     v_Texture = a_Texture;
     vShadowCoord = uShadowProjMatrix * vec4(tmp_pos, 1.0);
