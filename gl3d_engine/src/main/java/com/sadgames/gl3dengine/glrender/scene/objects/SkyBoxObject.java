@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -16,8 +17,8 @@ public class SkyBoxObject extends CubePrimitiveObject {
 
     @Override
     public void render() {
-        //TODO: cull front faces
+        GLES20JniWrapper.glEnableFrontFacesCulling();
         super.render();
-        //TODO: cull back faces
+        GLES20JniWrapper.glEnableBackFacesCulling();
     }
 }

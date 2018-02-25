@@ -6,13 +6,13 @@ import com.sadgames.sysutils.common.MathUtils;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_VERTICAL_FOV;
 import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_X;
 import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Y;
 import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Z;
 
 public abstract class GLCamera implements GLAnimation.IAnimatedObject {
 
-    public static final float VERTICAL_FOV = 28.0f;
     public static final float NEAR_PLANE = 0.1f;
     public static final float FAR_PLANE = 100.0f;//10 ???
 
@@ -21,8 +21,8 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
     protected float[] projectionMatrix = new float[16];
     protected Vector3f cameraPosition = new Vector3f(0.0f, 0.0f, 0.0f);
 
-    protected float vfov = VERTICAL_FOV;
-    protected float zoomed_vfov = VERTICAL_FOV;
+    protected float vfov = DEFAULT_CAMERA_VERTICAL_FOV;
+    protected float zoomed_vfov = DEFAULT_CAMERA_VERTICAL_FOV;
     protected float pitch;
     protected float yaw;
     protected float roll;

@@ -162,10 +162,16 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     public void onInitGLCamera(GLCamera camera) {
-        camera.directSetPitch(gameEntity._getStartCameraPitch());
+        /** for future init from Game Level object */
+        /*camera.directSetPitch(gameEntity._getStartCameraPitch());
         camera.directSetYaw(gameEntity._getStartCameraYaw());
         camera.directSetRoll(gameEntity._getStartCameraRoll());
         camera.setCameraPosition(gameEntity._getStartCameraPosition());
+        camera.setVfov(gameEntity._getStartCameraVFOV());*/
+
+        /** for test */
+        camera.rotateX(22.5f);
+        camera.updateViewMatrix();
     }
 
     @Override

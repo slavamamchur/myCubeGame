@@ -110,7 +110,7 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     }
 
     public Vector3f _getStartCameraPosition() {
-        return new Vector3f(0f, 4f, 4f);
+        return new Vector3f(0f, 3f, 3f);
     }
     public float    _getStartCameraPitch() {
         return 45f;
@@ -120,6 +120,9 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     }
     public float    _getStartCameraRoll() {
         return 0f;
+    }
+    public float    _getStartCameraVFOV() {
+        return 35.0f;
     }
 
     public Vector3f _getStartSunPosition() {

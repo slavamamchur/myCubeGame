@@ -13,6 +13,8 @@ import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_VERTICAL_FOV;
+
 public class MapGLSurfaceView extends GLSurfaceView {
 
     private static final float TOUCH_SCALE_FACTOR = 22.5f / 320;
@@ -51,7 +53,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
 
         if (oldScaleFactor != mScaleFactor) {
             /** Zoom camera */
-            camera.setVfov(GLCamera.VERTICAL_FOV / mScaleFactor);
+            camera.setVfov(DEFAULT_CAMERA_VERTICAL_FOV / mScaleFactor);
             requestRender();
         }
         else if (e.getAction() == MotionEvent.ACTION_MOVE) {

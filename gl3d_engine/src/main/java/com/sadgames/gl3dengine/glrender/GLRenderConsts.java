@@ -57,11 +57,12 @@ public  class GLRenderConsts {
     public  final static float    SIMULATION_FRAMES_IN_SEC = 60f; /** FPS */
 
     public final static float    DEFAULT_CAMERA_X       = 0f;
-    public final static float    DEFAULT_CAMERA_Y       = 4f;
-    public final static float    DEFAULT_CAMERA_Z       = 4f;
+    public final static float    DEFAULT_CAMERA_Y       = 3f;
+    public final static float    DEFAULT_CAMERA_Z       = 3f;
     public final static float    DEFAULT_CAMERA_PITCH   = 45.0f;
     public final static float    DEFAULT_CAMERA_YAW     = 0.0f;
     public final static float    DEFAULT_CAMERA_ROLL    = 0.0f;
+    public static final float    DEFAULT_CAMERA_VERTICAL_FOV = 35.0f;
 
     public final static float    WAVE_SPEED             = 0.04f;
 
