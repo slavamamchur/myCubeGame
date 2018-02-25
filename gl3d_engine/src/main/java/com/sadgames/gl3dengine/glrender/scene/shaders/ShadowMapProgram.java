@@ -49,14 +49,10 @@ public class ShadowMapProgram extends VBOShaderProgram {
     }
 
     @Override
-    public void bindGlobalParams(GLScene scene) {
-
-    }
+    public void bindGlobalParams(GLScene scene) {}
 
     @Override
-    public void bindAdditionalParams(GLScene scene, AbstractGL3DObject object) {
-
-    }
+    public void bindAdditionalParams(GLScene scene, AbstractGL3DObject object) {}
 
     @Override
     public void setMVMatrixData(float[] data) {}

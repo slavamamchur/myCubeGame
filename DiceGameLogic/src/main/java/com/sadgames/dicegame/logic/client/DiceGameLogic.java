@@ -185,7 +185,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
-    public void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject) {
+    public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
         GLRenderConsts.GraphicsQuality graphicsQuality =
                 sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
@@ -196,7 +196,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                                                                  skyBoxTexture.getTextureName(),
                                                                  skyBoxTexture.getTextureSize());
 
-        GLShaderProgram program = glSceneObject.getCachedShader(TERRAIN_OBJECT);
+        GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality))
@@ -204,7 +204,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         terrain.loadObject();
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
-        glSceneObject.putChild(terrain, TERRAIN_MESH_OBJECT);
+        glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
         /** players chips */
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
@@ -217,14 +217,15 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         translation.setIdentity();
         translation.setTranslation(new Vector3f(-100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0));
         dice_1.setModelMatrix(MathUtils.getOpenGlMatrix(translation));
-        glSceneObject.putChild(dice_1, DICE_MESH_OBJECT_1);
+        glScene.putChild(dice_1, DICE_MESH_OBJECT_1);
 
         /** debug shadow map gui-box */
         /*GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
-                                                              glSceneObject.getCachedShader(GUI_OBJECT),
+                                                              glScene.getCachedShader(GUI_OBJECT),
                                                               new Vector4f(-1, 1, 0, 0));
         shadowMapView.loadObject();
-        glSceneObject.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
+        shadowMapView.setGlTexture(glScene.getShadowMapFBO().getFboTexture());
+        glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         /** sky-box */
         //TODO: translate box bottom to water level by Y and cull front faces !!!
