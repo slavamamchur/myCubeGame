@@ -15,7 +15,7 @@ import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 

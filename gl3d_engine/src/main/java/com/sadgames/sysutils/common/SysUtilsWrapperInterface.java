@@ -1,7 +1,5 @@
 package com.sadgames.sysutils.common;
 
-import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
-
 import java.io.IOException;
 
 import javax.vecmath.Vector3f;

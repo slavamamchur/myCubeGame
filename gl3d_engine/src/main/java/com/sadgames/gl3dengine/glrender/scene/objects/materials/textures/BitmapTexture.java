@@ -1,6 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
-import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;

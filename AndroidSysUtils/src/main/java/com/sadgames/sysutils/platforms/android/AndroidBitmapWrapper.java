@@ -8,7 +8,7 @@ import android.graphics.Path;
 import android.opengl.ETC1;
 import android.opengl.ETC1Util;
 
-import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapperInterface;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;

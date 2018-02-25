@@ -363,13 +363,14 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         prevObject = null;
         program = null;
 
+        //TODO: check
         proceesTreeItems(
             new ISceneObjectsTreeHandler() {
                 @Override
                 public void onProcessItem(SceneObjectsTreeItem item) {
                     drawObjectIntoColorBuffer(item);
                 }
-            }//TODO: check
+            }
         );
 
         /** for post effects image processing */

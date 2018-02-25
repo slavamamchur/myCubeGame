@@ -1,6 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
-import com.sadgames.gl3dengine.glrender.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapperInterface;
 
 import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_NEAREST;
