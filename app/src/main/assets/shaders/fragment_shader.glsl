@@ -133,6 +133,7 @@ void main()
           vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
           if (u_hasReflectMap == 1) {
+            //TODO: transform reflected vector via skybox transform to apply rotated sky reflection.
             vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflect(-n_lookvector, n_normal)), waterColour, 0.5);
             diffuseColor = mix(refractionColor, reflectionColor, reflectiveFactor);
           }
@@ -146,10 +147,10 @@ void main()
 
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
-      /*if (u_isCubeMapF == 1) {
+      if (u_isCubeMapF == 1) {
         float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
-        gl_FragColor = mix(gl_FragColor, waterColour, blendingFactor);
-      }*/
+        gl_FragColor = mix(gl_FragColor, skyColour, blendingFactor);
+      }
 
       gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
 
