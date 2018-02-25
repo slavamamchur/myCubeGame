@@ -284,6 +284,9 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         if (isRenderStopped) return;
 
+        if (gameEventsCallBackListener != null)
+            gameEventsCallBackListener.onBeforeDrawFrame(frameTime);
+
         clearRenderBuffers();
 
         simulatePhysics(currentTime);
@@ -433,7 +436,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private void clearRenderBuffers() {
         GLES20JniWrapper.glBindFramebuffer(0);
-        GLES20JniWrapper.glClearColor(0.0f, 0.7f, 1.0f, 1.0f);
+        GLES20JniWrapper.glClearColor(0.0f, 0.3f, 0.5f, 1.0f);
         GLES20JniWrapper.glClear();
     }
 

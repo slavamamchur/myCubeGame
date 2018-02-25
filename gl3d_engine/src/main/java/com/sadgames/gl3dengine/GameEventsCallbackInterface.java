@@ -19,5 +19,7 @@ public interface GameEventsCallbackInterface {
 
     void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject);
 
+    void onBeforeDrawFrame(long frametime);
+
     void onPerformUserAction(String action, Object[] params);
 }

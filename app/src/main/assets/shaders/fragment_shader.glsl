@@ -32,7 +32,8 @@ varying vec4 vShadowCoord;
 varying float vdiffuse;
 varying float vspecular;
 
-const vec4 skyColour = vec4(0.0, 0.7, 1.0, 1.0);
+const vec4 skyColour = vec4(0.24, 0.27, 0.34, 1.0);
+const vec4 waterColour = vec4(0, 0.3, 0.5, 1.0);
 const float shineDumper = 40.0;
 const float nmapTiling = 6.0;
 const float waveStrength = 0.02;
@@ -133,11 +134,11 @@ void main()
           vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
           if (u_hasReflectMap == 1) {
-            vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflect(-n_lookvector, n_normal)), vec4(0, 0.3, 0.5, 1.0), 0.5);
+            vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflect(-n_lookvector, n_normal)), waterColour, 0.5);
             diffuseColor = mix(refractionColor, reflectionColor, reflectiveFactor);
           }
           else {
-            diffuseColor = mix(refractionColor, vec4(0, 0.3, 0.5, 1.0), reflectiveFactor);
+            diffuseColor = mix(refractionColor, waterColour, reflectiveFactor);
           }
       }
       else {
@@ -146,10 +147,10 @@ void main()
 
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
-      if (u_isCubeMapF == 1) {
+      /*if (u_isCubeMapF == 1) {
         float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
-        gl_FragColor = mix(gl_FragColor, skyColour, blendingFactor);
-      }
+        gl_FragColor = mix(gl_FragColor, waterColour, blendingFactor);
+      }*/
 
       ///gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
 

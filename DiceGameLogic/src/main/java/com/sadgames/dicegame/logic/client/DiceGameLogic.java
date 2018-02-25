@@ -244,6 +244,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
     }
 
+    @Override
+    public void onBeforeDrawFrame(long frametime) {
+        //TODO: rotate sky-box  by 1 degree/sec
+    }
+
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;

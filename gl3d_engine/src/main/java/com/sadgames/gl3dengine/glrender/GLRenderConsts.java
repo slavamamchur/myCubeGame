@@ -62,7 +62,7 @@ public  class GLRenderConsts {
     public final static float    DEFAULT_CAMERA_PITCH   = 45.0f;
     public final static float    DEFAULT_CAMERA_YAW     = 0.0f;
     public final static float    DEFAULT_CAMERA_ROLL    = 0.0f;
-    public static final float    DEFAULT_CAMERA_VERTICAL_FOV = 35.0f;
+    public static final float    DEFAULT_CAMERA_VERTICAL_FOV = 40.0f;
 
     public final static float    WAVE_SPEED             = 0.04f;
 
