@@ -1,7 +1,5 @@
 package com.sadgames.dicegame.logic.client;
 
-import android.opengl.Matrix;
-
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.dicegame.logic.client.entities.DiceGameMap;
 import com.sadgames.dicegame.logic.client.entities.items.ChipItem;
@@ -250,7 +248,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     @Override
     public void onBeforeDrawFrame(long frametime) {
         SkyBoxObject skyBox = (SkyBoxObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
-        Matrix.rotateM(skyBox.getModelMatrix(), 0, 2 * frametime / 1000f, 0, 1, 0);
+        float angle = skyBox.getRotationAngle() + 2 * frametime / 1000f;
+        skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {

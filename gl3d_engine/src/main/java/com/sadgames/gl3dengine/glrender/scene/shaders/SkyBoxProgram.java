@@ -4,6 +4,7 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYBOX_FRAGMENT_SHADER;
@@ -35,9 +36,11 @@ public class SkyBoxProgram extends ShadowMapProgram {
     public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
         float[] mMatrix = new float[16];
 
-        /** remove camera translation -> skybox should stay on the fixed position */
         Matrix.setIdentityM(mMatrix, 0);
         Matrix.multiplyMM(mMatrix, 0, viewMatrix, 0, mMatrix, 0);
+        Matrix.rotateM(mMatrix, 0, ((SkyBoxObject)object).getRotationAngle(), 0, 1, 0);
+
+        /** remove camera translation -> skybox should stay on the fixed position */
         /*if (camera != null) {
             MathUtils.translateM(mMatrix, 0, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
         }*/
