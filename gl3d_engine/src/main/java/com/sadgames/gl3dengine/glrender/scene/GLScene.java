@@ -24,7 +24,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShadowMapProgram;
-import com.sadgames.gl3dengine.glrender.scene.shaders.ShapeShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -143,14 +142,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void clearObjectsCache() {
-        proceesTreeItems(
-            new ISceneObjectsTreeHandler() {
+        proceesTreeItems(new ISceneObjectsTreeHandler() {
                 @Override
                 public void onProcessItem(SceneObjectsTreeItem item) {
                     ((AbstractGL3DObject)item).clearData();
                 }
-            }
-        );
+            });
 
         childs.clear();
 
@@ -189,7 +186,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                     program = new SkyBoxProgram(sysUtilsWrapper);
                     break;
                 default:
-                    program = new ShapeShaderProgram(sysUtilsWrapper);
+                    program = new TerrainRendererProgram(sysUtilsWrapper);
             }
 
             shaders.put(type, program);
@@ -230,14 +227,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         calculateCameraPosition();
         calculateWavesMovingFactor();
 
-        proceesTreeItems(
-            new ISceneObjectsTreeHandler() {
+        proceesTreeItems(new ISceneObjectsTreeHandler() {
                 @Override
                 public void onProcessItem(SceneObjectsTreeItem item) {
                     caclulateObjectsAnimations(item);
                 }
-            }
-        );
+            });
     }
 
     private void caclulateObjectsAnimations(SceneObjectsTreeItem sceneObject) {
