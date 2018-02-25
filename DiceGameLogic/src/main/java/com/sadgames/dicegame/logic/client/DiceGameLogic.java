@@ -52,7 +52,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 public class DiceGameLogic implements GameEventsCallbackInterface {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
-    private final static long     CAMERA_ZOOM_ANIMATION_DURATION = 1000;
+    private final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private RestApiInterface restApiWrapper;
@@ -246,8 +246,17 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     @Override
-    public void onBeforeDrawFrame(long frametime) {
-        //TODO: rotate sky-box  by 1 degree/sec
+    public void onBeforeDrawFrame(long frametime) {// TODO: test on chip
+        /*SkyBoxObject skyBox = (SkyBoxObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
+        float angle = skyBox.getRotationAngle() + 2 * frametime / 1000f;
+
+        skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
+        MathUtils.rotateM(
+                          skyBox.getModelMatrix(),
+                         0,
+                          skyBox.getRotationAngle(),
+                         0
+        );*/
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
