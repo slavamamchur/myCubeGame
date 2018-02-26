@@ -18,6 +18,7 @@ import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -37,6 +38,7 @@ import java.util.Random;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
@@ -45,7 +47,10 @@ import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.SPLASH_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
+import static com.sadgames.gl3dengine.GLEngineConsts.SPLASH_SCREEN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 
@@ -193,9 +198,18 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         dynamicsWorld.setGravity(gameEntity._getGravity());
     }
 
-    //TODO: create splash GUI-box only and load other objects from background thread. Then remove GUI-box.
     @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
+        /** splash GIU screen */
+        GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
+                                                              glScene.getCachedShader(GUI_OBJECT),
+                                                              new Vector4f(-1, 1, 1, -1)
+        );
+        shadowMapView.loadObject();
+        shadowMapView.setGlTexture(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SPLASH_TEXTURE));
+        glScene.putChild(shadowMapView, SPLASH_SCREEN_OBJECT);
+
+        //TODO: load objects from background thread.
         GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         /** Skybox and water reflection map texture */

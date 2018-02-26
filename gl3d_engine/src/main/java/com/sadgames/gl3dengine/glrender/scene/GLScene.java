@@ -36,6 +36,7 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector4f;
 
+import static com.sadgames.gl3dengine.GLEngineConsts.SPLASH_SCREEN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
@@ -71,6 +72,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private int mDisplayWidth;
     private int mDisplayHeight;
     private boolean isRenderStopped = false;
+    private boolean isSceneLoaded = false;
     private GLCamera camera = null;
     private GLLightSource lightSource = null;
     private DiscreteDynamicsWorld physicalWorld = null;
@@ -120,6 +122,18 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
     public float getMoveFactor() {
         return moveFactor;
+    }
+
+    public boolean isSceneLoaded() {
+        synchronized (lockObject) {
+            return isSceneLoaded;
+        }
+    }
+
+    public void setSceneLoaded(boolean sceneLoaded) {
+        synchronized (lockObject) {
+            isSceneLoaded = sceneLoaded;
+        }
     }
 
     @SuppressWarnings("all")
@@ -356,12 +370,21 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         prevObject = null;
         program = null;
-        proceesTreeItems(new ISceneObjectsTreeHandler() {
+        if (!isSceneLoaded()) {
+            drawObjectIntoColorBuffer(getChild(SPLASH_SCREEN_OBJECT));
+        }
+        else {
+            deleteChild(SPLASH_SCREEN_OBJECT);
+
+            prevObject = null;
+            program = null;
+            proceesTreeItems(new ISceneObjectsTreeHandler() {
                 @Override
                 public void onProcessItem(SceneObjectsTreeItem item) {
                     drawObjectIntoColorBuffer(item);
                 }
             });
+        }
 
         /** for post effects image processing */
         ///mainRenderFBO.unbind();
@@ -482,6 +505,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void loadScene() {
+        setSceneLoaded(false);
+
         /** Create internal shaders before loading scene  */
         getCachedShader(SHADOW_MAP_OBJECT);
 

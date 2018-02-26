@@ -67,10 +67,10 @@ public class GUI2DImageObject extends AbstractGL3DObject {
     @Override
     protected void createTexelsVBO() {
         float[] texcoords = new float[] {
-                0.0f, 1.0f,
                 0.0f, 0.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                1.0f, 1.0f
         };
 
         FloatBuffer texelData = ByteBuffer
