@@ -13,7 +13,7 @@ public class SkyBoxObject extends CubePrimitiveObject {
     private float rotationAngle = 0;
 
     public SkyBoxObject(SysUtilsWrapperInterface sysUtilsWrapper, CubeMapTexture cubeTexture, GLShaderProgram program) {
-        super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT, LAND_SIZE_IN_WORLD_SPACE / 2f);
+        super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT, LAND_SIZE_IN_WORLD_SPACE / 2f + 0.25f);
         setGlTexture(cubeTexture);
         setCastShadow(false);
     }

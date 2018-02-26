@@ -505,6 +505,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         GLES20JniWrapper.glEnableFacesCulling();
         GLES20JniWrapper.glEnableDepthTest();
 
+        //TODO: glEnable(MULTISAMPLING)
+
         initScene();
         initPhysics();
         loadScene();
