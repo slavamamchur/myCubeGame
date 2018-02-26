@@ -36,7 +36,6 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector4f;
 
-import static com.sadgames.gl3dengine.GLEngineConsts.SPLASH_SCREEN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
@@ -162,7 +161,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                     ((AbstractGL3DObject)item).clearData();
                 }
             });
-
         childs.clear();
 
         if (postEffects2DScreen != null)
@@ -370,21 +368,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         prevObject = null;
         program = null;
-        if (!isSceneLoaded()) {
-            drawObjectIntoColorBuffer(getChild(SPLASH_SCREEN_OBJECT));
-        }
-        else {
-            deleteChild(SPLASH_SCREEN_OBJECT);
-
-            prevObject = null;
-            program = null;
-            proceesTreeItems(new ISceneObjectsTreeHandler() {
-                @Override
-                public void onProcessItem(SceneObjectsTreeItem item) {
-                    drawObjectIntoColorBuffer(item);
-                }
-            });
-        }
+        proceesTreeItems(new ISceneObjectsTreeHandler() {
+            @Override
+            public void onProcessItem(SceneObjectsTreeItem item) {
+                drawObjectIntoColorBuffer(item);
+            }
+        });
 
         /** for post effects image processing */
         ///mainRenderFBO.unbind();

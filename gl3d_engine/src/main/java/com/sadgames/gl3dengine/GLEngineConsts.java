@@ -6,6 +6,5 @@ public class GLEngineConsts {
 
     public static final String NOT_ENOUGH_SPACE_IN_CACHE_ERROR_MESSAGE = "Not enough space: item size > cache size.";
     public static final   long TEXTURE_CACHE_SIZE                      = 64L * BYTES_IN_MB;
-    public static final String SPLASH_SCREEN_OBJECT = "SPLASH_SCREEN_OBJECT";
 
 }

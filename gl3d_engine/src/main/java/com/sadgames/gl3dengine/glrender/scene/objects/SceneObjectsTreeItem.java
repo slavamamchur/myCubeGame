@@ -61,6 +61,11 @@ public abstract class SceneObjectsTreeItem {
         if (item != null) {
             childs.remove(name);
             item.setParent(null);
+
+            long inum = item.getItemNumber();
+            for (SceneObjectsTreeItem titem : childs.values())
+                if (titem.getItemNumber() > inum)
+                    titem.setItemNumber(titem.getItemNumber() - 1);
         }
     }
 
@@ -80,7 +85,7 @@ public abstract class SceneObjectsTreeItem {
                 item.parent.deleteChild(item.itemName);
 
             item.itemName = name;
-            item.itemNumber = number;
+            item.setItemNumber(number);
             item.parent = this;
 
             childs.put(name, item);

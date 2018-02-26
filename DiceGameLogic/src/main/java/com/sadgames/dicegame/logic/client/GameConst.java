@@ -12,7 +12,6 @@ public class GameConst {
     public static final String DUDVMAP_TEXTURE        = "dudvmap.pkm";
     public static final String BLENDING_MAP_TEXTURE   = "blending_map.pkm";
     public static final String DICE_TEXTURE           = "dice_texture.pkm";
-    public static final String SPLASH_TEXTURE           = "loading_splash.pkm";
     public static final String SKY_BOX_TEXTURE_NAME   = "SKY_BOX_CUBE_MAP_TEXTURE";
 
     public static final String ROLLING_DICE_SOUND     = "rolling_dice.mp3";
