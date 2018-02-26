@@ -81,7 +81,7 @@ public class BitmapTexture extends AbstractTexture {
                 }
             }
 
-            glGenerateMipmap(target);
+            glGenerateMipmap(target);//TODO: manually
         }
         catch (Exception exception) {
             throw new UnsupportedOperationException();
