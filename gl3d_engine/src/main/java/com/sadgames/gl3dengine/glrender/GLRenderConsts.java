@@ -84,6 +84,7 @@ public  class GLRenderConsts {
     public static final String LIGHT_MVP_MATRIX_PARAM_NAME = "uShadowProjMatrix";
     public static final String MV_MATRIX_PARAM_NAME = "u_MV_Matrix";
     public static final String MV_MATRIXF_PARAM_NAME = "u_MV_MatrixF";
+    public static final String SKY_BOX_MV_MATRIXF_PARAM_NAME = "u_SkyboxMV_MatrixF";
     public static final String LIGHT_POSITION_PARAM_NAME = "u_lightPosition";
     public static final String LIGHT_POSITIONF_PARAM_NAME = "u_lightPositionF";
     public static final String LIGHT_COLOUR_PARAM_NAME = "u_lightColour";
