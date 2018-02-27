@@ -242,6 +242,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, shader);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
+
+        //TODO: remove splash
     }
 
     @Override
