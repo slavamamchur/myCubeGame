@@ -95,7 +95,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         this.savedPlayers = savedPlayers;
     }
 
-    public void playTurn() { //TODO: set 2D Camera
+    public void playTurn() { //TODO: set 2D Camera and restore isometric when dice is stopped rolling
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
         gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
             @Override
