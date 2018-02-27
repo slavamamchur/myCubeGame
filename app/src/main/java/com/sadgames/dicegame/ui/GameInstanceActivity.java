@@ -75,7 +75,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
         setContentView(R.layout.activity_game_instance);
 
-        //TODO: camera navigation fragment and loading splash fragment
+        //TODO: camera navigation fragment
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         playersFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.players_fragment);
         playersFragment.getView().setBackgroundColor(0x40000000);
@@ -114,6 +114,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             playersFragment.initTable(PLAYERS_LIST_COLUMN_INFO, null);
             playersFragment.setItems(getItem().getPlayers());
         }
+
+        showProgress();
     }
 
     @Override
@@ -183,8 +185,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
                 return true;
             case REMOVE_LOADING_SPLASH:
-                //TODO: remove splash view
-
+                hideProgress();
 
                 return true;
             default:

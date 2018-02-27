@@ -95,6 +95,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
         tableFragment.initTable(GAME_POINTS_LIST_COLUMN_INFO, onItemClickDelegate);
         tableFragment.setItems(getItem().getGamePoints());
 
+        showProgress();
     }
 
     protected void performEditAction(AbstractGamePoint item) {
@@ -134,7 +135,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
         GameConst.UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
         if (GameConst.UserActionType.REMOVE_LOADING_SPLASH.equals(actionType)) {
             //TODO: remove splash view
-
+            hideProgress();
 
             return true;
         }
