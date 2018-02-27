@@ -21,14 +21,16 @@ public class GUI2DImageObject extends AbstractGL3DObject {
     private float top;
     private float right;
     private float bottom;
+    private boolean isReftectedY;
 
-    public GUI2DImageObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, Vector4f box) {
+    public GUI2DImageObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, Vector4f box, boolean isReftectedY) {
         super(sysUtilsWrapper, GUI_OBJECT, program);
 
         this.left = box.x;
         this.top = box.y;
         this.right = box.z;
         this.bottom = box.w;
+        this.isReftectedY = isReftectedY;
 
         setCastShadow(false);
     }
@@ -67,10 +69,10 @@ public class GUI2DImageObject extends AbstractGL3DObject {
     @Override
     protected void createTexelsVBO() {
         float[] texcoords = new float[] {
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                1.0f, 1.0f
+                0.0f, 1.0f - (isReftectedY ? 1 : 0),
+                0.0f, 0.0f + (isReftectedY ? 1 : 0),
+                1.0f, 1.0f - (isReftectedY ? 1 : 0),
+                1.0f, 0.0f + (isReftectedY ? 1 : 0)
         };
 
         FloatBuffer texelData = ByteBuffer

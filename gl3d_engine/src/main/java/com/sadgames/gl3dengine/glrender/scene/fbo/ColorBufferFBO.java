@@ -10,7 +10,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 
 public class ColorBufferFBO extends AbstractFBO {
 
-    private int[] depthTextures = new int[1];
+    private int[] depthTextures;
 
     public ColorBufferFBO(int width, int height, Color4f clearColor) {
         super(width, height, clearColor);
@@ -22,6 +22,7 @@ public class ColorBufferFBO extends AbstractFBO {
         renderTexture.bind(FBO_TEXTURE_SLOT);
         GLES20JniWrapper.glFramebufferAttachColorTexture(renderTexture.getTextureId());
 
+        depthTextures = new int[1];
         GLES20JniWrapper.glGenRenderBuffers(depthTextures);
         GLES20JniWrapper.glBindRenderBuffer(depthTextures[0]);
         GLES20JniWrapper.glRenderBufferStorage(width, height);

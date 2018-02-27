@@ -35,7 +35,7 @@ public class MapFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, //TODO: Create splash
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         SysUtilsWrapperInterface sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(getContext());
         glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper);

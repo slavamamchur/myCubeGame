@@ -230,7 +230,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         /** debug shadow map gui-box */
         /*GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
                                                               glScene.getCachedShader(GUI_OBJECT),
-                                                              new Vector4f(-1, 1, 0, 0));
+                                                              new Vector4f(-1, 1, 0, 0), false);
         shadowMapView.loadObject();
         shadowMapView.setGlTexture(glScene.getShadowMapFBO().getFboTexture());
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/

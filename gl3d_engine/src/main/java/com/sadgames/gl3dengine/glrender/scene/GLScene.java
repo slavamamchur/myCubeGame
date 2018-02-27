@@ -307,7 +307,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         renderShadowMapBuffer();
         renderColorBuffer();
         /** for post effects image processing */
-        ///renderPostEffectsBuffer();
+        //renderPostEffectsBuffer();
     }
 
     private AbstractGL3DObject prevObject = null;
@@ -361,7 +361,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private GLShaderProgram program = null;
     private void renderColorBuffer() {
         /** for post effects image processing */
-        ///mainRenderFBO.bind();
+        //mainRenderFBO.bind();
 
         GLES20JniWrapper.glEnableBackFacesCulling();
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
@@ -376,7 +376,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         });
 
         /** for post effects image processing */
-        ///mainRenderFBO.unbind();
+        //mainRenderFBO.unbind();
     }
 
     private void drawObjectIntoColorBuffer(SceneObjectsTreeItem sceneObject) {
@@ -500,7 +500,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         getCachedShader(SHADOW_MAP_OBJECT);
 
         /** for postprocessing effects */
-        ///createPostEffects2DScreen();
+        //createPostEffects2DScreen();
 
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onLoadSceneObjects(this, physicalWorld);
@@ -510,7 +510,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private void createPostEffects2DScreen() {
         GLShaderProgram guiShader = getCachedShader(GUI_OBJECT);
-        postEffects2DScreen = new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 1, -1));
+        postEffects2DScreen = new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 1, -1), false);
         postEffects2DScreen.loadObject();
     }
 
@@ -534,7 +534,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         generateShadowMapFBO();
         /** for post effects */
-        ///generateMainRenderFBO();
+        generateMainRenderFBO();
     }
 
     /** GLRendererInterface implementation -------------------------------------------------------*/
