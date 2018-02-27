@@ -55,7 +55,6 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
-import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface {
 
@@ -504,8 +503,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onLoadSceneObjects(this, physicalWorld);
-
-        forceGCandWait();
     }
 
     private void createPostEffects2DScreen() {

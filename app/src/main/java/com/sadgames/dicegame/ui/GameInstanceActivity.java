@@ -31,6 +31,7 @@ import java.util.TimerTask;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
@@ -74,7 +75,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
         setContentView(R.layout.activity_game_instance);
 
-        //TODO: camera navigation fragment
+        //TODO: camera navigation fragment and loading splash fragment
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         playersFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.players_fragment);
         playersFragment.getView().setBackgroundColor(0x40000000);
@@ -131,10 +132,12 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     @Override
     protected IntentFilter getIntentFilter() {
         IntentFilter intentFilter = super.getIntentFilter();
+
         intentFilter.addAction(ACTION_FINISH_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_RESTART_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_MOOVE_GAME_INSTANCE_RESPONSE);
         intentFilter.addAction(ACTION_SHOW_TURN_INFO);
+        intentFilter.addAction(ACTION_REMOVE_LOADING_SPLASH);
 
         return intentFilter;
     }
@@ -177,6 +180,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             case SHOW_TURN_INFO:
                 final int diceValue = intent.getIntExtra(EXTRA_DICE_VALUE, 0);
                 showAnimatedText(String.format("%d\nSteps\nto GO", diceValue));
+
+                return true;
+            case REMOVE_LOADING_SPLASH:
+                //TODO: remove splash view
+
 
                 return true;
             default:

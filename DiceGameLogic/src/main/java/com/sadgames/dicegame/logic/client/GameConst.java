@@ -60,6 +60,7 @@ public class GameConst {
     public static final String ACTION_ADD_CHILD = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD";
     public static final String ACTION_ADD_CHILD_RESPONSE = "com.sadgames.dicegame.api.action.ACTION_ADD_CHILD_RESPONSE";
     public static final String ACTION_SHOW_TURN_INFO = "com.sadgames.dicegame.api.action.ACTION_SHOW_TURN_INFO";
+    public static final String ACTION_REMOVE_LOADING_SPLASH = "com.sadgames.dicegame.api.action.ACTION_REMOVE_LOADING_SPLASH";
 
     public static final String EXTRA_USER_NAME = "USER_NAME";
     public static final String EXTRA_USER_PASS = "USER_PASS";
@@ -118,6 +119,7 @@ public class GameConst {
         add(ACTION_ADD_CHILD);
         add(ACTION_ADD_CHILD_RESPONSE);
         add(ACTION_SHOW_TURN_INFO);
+        add(ACTION_REMOVE_LOADING_SPLASH);
     }};
     
     public enum UserActionType {
@@ -155,7 +157,8 @@ public class GameConst {
         REMOVE_CHILD_RESPONSE,
         ADD_CHILD,
         ADD_CHILD_RESPONSE,
-        SHOW_TURN_INFO
+        SHOW_TURN_INFO,
+        REMOVE_LOADING_SPLASH
     }
     
     

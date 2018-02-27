@@ -9,5 +9,6 @@ public interface RestApiInterface {
     void restartGameInstance(GameInstanceEntity gameInstanceEntity);
 
     void showTurnInfo(GameInstanceEntity gameInstanceEntity);
+    void removeLoadingSplash();
 
 }

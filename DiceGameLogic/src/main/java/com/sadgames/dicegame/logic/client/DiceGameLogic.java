@@ -48,6 +48,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface {
 
@@ -93,7 +94,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         this.savedPlayers = savedPlayers;
     }
 
-    public void playTurn() {
+    public void playTurn() { //TODO: set 2D Camera
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
         gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
             @Override
@@ -243,7 +244,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 
-        //TODO: remove splash
+        forceGCandWait();
+        restApiWrapper.removeLoadingSplash();
     }
 
     @Override

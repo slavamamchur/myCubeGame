@@ -1,11 +1,16 @@
 package com.sadgames.dicegame.ui;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
+import com.sadgames.dicegame.logic.client.GameConst;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
@@ -16,7 +21,10 @@ import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.util.ArrayList;
 
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.EDIT_ENTITY_TAG;
 import static com.sadgames.dicegame.ui.framework.DBTableFragment.DELETE_ENTITY_TAG;
 
@@ -49,6 +57,7 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         tableFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.game_points_list_fragment);
+        //TODO: camera navigation fragment and loading splash fragment
 
         if(getItem() != null && getItem().getId() != null){
             //showProgress();
@@ -105,4 +114,31 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @Override
+    protected IntentFilter getIntentFilter() {
+        IntentFilter intentFilter = super.getIntentFilter();
+
+        intentFilter.addAction(ACTION_REMOVE_LOADING_SPLASH);
+
+        return intentFilter;
+    }
+
+    @Override
+    protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
+        ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+        if (error != null) {
+            showError(error);
+            return true;
+        }
+
+        GameConst.UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(intent.getAction())];
+        if (GameConst.UserActionType.REMOVE_LOADING_SPLASH.equals(actionType)) {
+            //TODO: remove splash view
+
+
+            return true;
+        }
+        else
+            return super.handleWebServiceResponseAction(context, intent);
+    }
 }

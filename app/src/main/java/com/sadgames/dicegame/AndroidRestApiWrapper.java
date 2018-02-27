@@ -10,6 +10,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEn
 import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
+import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 
@@ -66,5 +67,8 @@ public class AndroidRestApiWrapper implements RestApiInterface {
         sendResponseIntent(ACTION_SHOW_TURN_INFO, params);
     }
 
-
+    @Override
+    public void removeLoadingSplash() {
+        sendResponseIntent(ACTION_REMOVE_LOADING_SPLASH, new Bundle());
+    }
 }
