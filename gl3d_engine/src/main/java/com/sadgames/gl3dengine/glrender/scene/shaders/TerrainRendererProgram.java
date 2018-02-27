@@ -1,5 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
+import android.opengl.Matrix;
+
 import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
@@ -23,10 +25,14 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.RND_SEED__PARAM_NA
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKY_BOX_MV_MATRIXF_PARAM_NAME;
 
 public class TerrainRendererProgram extends VBOShaderProgram {
-
+    private float skyBoxRotationAngle = 0;
 
     public TerrainRendererProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
         super(sysUtilsWrapper);
+    }
+
+    public void setSkyBoxRotationAngle(float skyBoxRotationAngle) {
+        this.skyBoxRotationAngle = skyBoxRotationAngle;
     }
 
     @Override
@@ -81,7 +87,12 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         /*paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / scene.getShadowMapFBO().getWidth()));
         paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / scene.getShadowMapFBO().getHeight()));*/
 
-        //TODO: set SKY_BOX_MV_MATRIXF_PARAM_NAME -> scene.get(skybox).angle
+        float[] mMatrix = new float[16];
+        Matrix.setIdentityM(mMatrix, 0);
+        Matrix.rotateM(mMatrix, 0, skyBoxRotationAngle, 0, 1, 0);
+        GLShaderParam param = paramByName(SKY_BOX_MV_MATRIXF_PARAM_NAME);
+        if (param != null && param.getParamReference() >= 0)
+            param.setParamValue(mMatrix);
     }
 
     @Override

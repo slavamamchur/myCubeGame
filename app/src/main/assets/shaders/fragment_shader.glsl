@@ -134,8 +134,8 @@ void main()
           vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
           if (u_hasReflectMap == 1) {
-            vec4 reflectedSky = vec4(reflect(-n_lookvector, n_normal), 0.0); //TODO: transform -> u_SkyboxMV_MatrixF
-            vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflectedSky.xyz), waterColour, 0.5);
+            vec3 reflectedSkyDirection = (u_SkyboxMV_MatrixF * vec4(reflect(-n_lookvector, n_normal), 0.0)).xyz;
+            vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflectedSkyDirection), waterColour, 0.5);
             diffuseColor = mix(refractionColor, reflectionColor, reflectiveFactor);
           }
           else {
@@ -153,6 +153,6 @@ void main()
         gl_FragColor = mix(gl_FragColor, skyColour, blendingFactor);
       }
 
-      gl_FragColor = mix(skyColour, gl_FragColor, visibility);//fog
+      gl_FragColor = mix(skyColour, gl_FragColor, visibility);
 
 }

@@ -26,6 +26,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
+import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -253,6 +254,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         SkyBoxObject skyBox = (SkyBoxObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
         float angle = skyBox.getRotationAngle() + 0.5f * frametime / 250f;
         skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
+        ((TerrainRendererProgram)gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
