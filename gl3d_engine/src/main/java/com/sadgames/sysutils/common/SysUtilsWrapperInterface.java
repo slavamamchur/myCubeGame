@@ -1,12 +1,14 @@
 package com.sadgames.sysutils.common;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.vecmath.Vector3f;
 
 public interface SysUtilsWrapperInterface {
 
     String                 iReadTextFromFile(String fileName);
+    InputStream            getResourceStream(String fileName);
 
     BitmapWrapperInterface iGetBitmapFromFile(String file);
     BitmapWrapperInterface iGetReliefFromFile(String file);
@@ -23,5 +25,5 @@ public interface SysUtilsWrapperInterface {
 
     SettingsManagerInterface iGetSettingsManager();
 
-    //TODO: use java SE common lib for pictures ???
+    //TODO: use java SE common lib for pictures  - > PNGDecoder
 }

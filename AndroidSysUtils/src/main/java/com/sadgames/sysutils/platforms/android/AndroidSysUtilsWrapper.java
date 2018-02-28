@@ -100,11 +100,22 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
     /** ------------------------------------------------------------------------------------------*/
 
+    @Override
+    public InputStream getResourceStream(String fileName) {
+        try {
+            return context.getAssets().open(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /** Resource sysutils ---------------------------------------------------------------------------*/
+
     private String readTextFromAssets(String filename) {
         try {
-            return convertStreamToString(context.getAssets().open(filename, Context.MODE_WORLD_READABLE));
-        } catch (IOException e) {
+            return convertStreamToString(getResourceStream((filename)));
+        } catch (Exception e) {
             return "";
         }
     }
@@ -125,7 +136,7 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
         Bitmap bitmap;
 
         try {
-            InputStream source = context.getAssets().open("textures/" + file);
+            InputStream source = getResourceStream("textures/" + file);
 
             if (file.endsWith("pkm")) {
                 ETC1Util.ETC1Texture compressedBitmap = ETC1Util.createTexture(source);
