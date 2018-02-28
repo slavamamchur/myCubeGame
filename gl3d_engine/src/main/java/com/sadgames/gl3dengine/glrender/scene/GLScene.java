@@ -60,7 +60,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     public  final static Object lockObject = new Object();
 
-    //TODO: Saved camera
     private boolean isSimulating = false;
     private boolean hasDepthTextureExtension;
     private int oldNumContacts = 0;
@@ -73,6 +72,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private boolean isRenderStopped = false;
     private boolean isSceneLoaded = false;
     private GLCamera camera = null;
+    private GLCamera savedCamera = null;
     private GLLightSource lightSource = null;
     private DiscreteDynamicsWorld physicalWorld = null;
     private Map<GLObjectType, GLShaderProgram> shaders = new HashMap<>();
@@ -92,6 +92,13 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     public GLCamera getCamera() {
         return camera;
     }
+
+    public void setCamera(GLCamera camera) {
+        GLCamera oldCam = this.camera;
+        this.camera = camera == null ? savedCamera : camera;
+        savedCamera = oldCam;
+    }
+
     public GLLightSource getLightSource() {
         return lightSource;
     }
