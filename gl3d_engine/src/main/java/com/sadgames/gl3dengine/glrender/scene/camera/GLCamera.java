@@ -130,6 +130,10 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
         updateProjectionMatrix();
     }
 
+    public void setZoomed_vfov(float zoomed_vfov) {
+        this.zoomed_vfov = zoomed_vfov;
+    }
+
     public float getAspectRatio() {
         return aspectRatio;
     }

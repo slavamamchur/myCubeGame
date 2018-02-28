@@ -98,14 +98,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     public void playTurn() {
-
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
         gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-            @Override
-            public void onAnimationEnd() {
-                rollDice();
-            }
-        });
+                @Override
+                public void onAnimationEnd() {rollDice();
+                }
+            });
     }
 
     public void playerNextMove(GameInstanceEntity gameInstance) {
@@ -178,8 +176,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         camera.setCameraPosition(gameEntity._getStartCameraPosition());
         camera.setVfov(gameEntity._getStartCameraVFOV());*/
 
-        /** for test */
-        camera.rotateX(22.5f); //TODO: do not rotate camera if 2D-mode choosed in the game settings -> set (F_VOV / 1.5f) in this case
+        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
+            camera.rotateX(22.5f);
+
         camera.updateViewMatrix();
 
     }
@@ -213,7 +212,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
-        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality)) ////TODO: remove reflection map in 2D-mode
+        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality) && !sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
             terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();
@@ -420,15 +419,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                 ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
             }
 
+            dice.setPosition(new Vector3f(100, 0, 0));
+
             gl3DScene.setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
             gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-                @Override
-                public void onAnimationEnd() {
-                    playerNextMove(gameInstanceEntity);
-                }
-            });
+                    @Override
+                    public void onAnimationEnd() {playerNextMove(gameInstanceEntity);}
+                });
 
-            dice.setPosition(new Vector3f(100, 0, 0));
         }
     }
 

@@ -13,6 +13,7 @@ import com.sadgames.gl3dengine.glrender.GLRendererInterface;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.FixedIsometricCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
+import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.fbo.AbstractFBO;
 import com.sadgames.gl3dengine.glrender.scene.fbo.ColorBufferFBO;
 import com.sadgames.gl3dengine.glrender.scene.fbo.DepthBufferFBO;
@@ -51,6 +52,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SHADOW_MAP_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
@@ -471,13 +473,15 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void initScene() { //TODO: set 2D-camera if 2D-mode choosed in the game settings
-        camera =
-                new FixedIsometricCamera(DEFAULT_CAMERA_X,
-                              DEFAULT_CAMERA_Y,
-                              DEFAULT_CAMERA_Z,
-                              DEFAULT_CAMERA_PITCH,
-                              DEFAULT_CAMERA_YAW,
-                              DEFAULT_CAMERA_ROLL);
+        if (sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
+            camera = new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE);
+        else
+            camera = new FixedIsometricCamera(DEFAULT_CAMERA_X,
+                                              DEFAULT_CAMERA_Y,
+                                              DEFAULT_CAMERA_Z,
+                                              DEFAULT_CAMERA_PITCH,
+                                              DEFAULT_CAMERA_YAW,
+                                              DEFAULT_CAMERA_ROLL);
 
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onInitGLCamera(camera);
@@ -542,6 +546,11 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         mDisplayWidth = width;
         mDisplayHeight = height;
         camera.setAspectRatio(width, height);
+
+        if (sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
+            camera.setVfov(camera.getVfov() / 1.5f);
+            camera.setZoomed_vfov(camera.getVfov());
+        }
 
         generateShadowMapFBO();
         /** for post effects */

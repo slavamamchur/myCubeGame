@@ -360,15 +360,19 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
         int hasReflectMap = 0;
         param = program.paramByName(ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME);
-        if (param != null && param.getParamReference() >= 0 && hasWaterReflectionMap()) {
-            hasReflectMap = 1;
+        if (param != null && param.getParamReference() >= 0) {
+            if (hasWaterReflectionMap()) {
+                hasReflectMap = 1;
 
-            if (waterReflectionMap.getTextureId() == 0)
-                waterReflectionMap = (CubeMapTexture) TextureCacheManager.getInstance(sysUtilsWrapper).getItem(waterReflectionMap.getTextureName());
+                if (waterReflectionMap.getTextureId() == 0)
+                    waterReflectionMap = (CubeMapTexture) TextureCacheManager.getInstance(sysUtilsWrapper).getItem(waterReflectionMap.getTextureName());
 
-            waterReflectionMap.bind(textureSlotIndex);
-            param.setParamValue(textureSlotIndex);
-            textureSlotIndex++;
+                waterReflectionMap.bind(textureSlotIndex);
+                param.setParamValue(textureSlotIndex);
+                textureSlotIndex++;
+            }
+            else
+                param.setParamValue(31);
         }
 
         param = program.paramByName(HAS_REFLECT_MAP_PARAM_NAME);
