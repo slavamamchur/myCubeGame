@@ -97,6 +97,11 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         GLCamera oldCam = this.camera;
         this.camera = camera == null ? savedCamera : camera;
         savedCamera = oldCam;
+
+        if (this.camera.getAspectRatio() == -1)
+            this.camera.setAspectRatio(mDisplayWidth, mDisplayHeight);
+
+        lightSource.setCamera(this.camera);
     }
 
     public GLLightSource getLightSource() {
@@ -465,7 +470,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         clearData();
     }
 
-    private void initScene() {
+    private void initScene() { //TODO: set 2D-camera if 2D-mode choosed in the game settings
         camera =
                 new FixedIsometricCamera(DEFAULT_CAMERA_X,
                               DEFAULT_CAMERA_Y,

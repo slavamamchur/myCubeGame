@@ -53,6 +53,11 @@ public class GLLightSource {
         return lightPosInEyeSpace;
     }
 
+    public void setCamera(GLCamera camera) {
+        this.mCamera = camera;
+        setLightPosInEyeSpace();
+    }
+
     public void setLightPosInEyeSpace() {
         /** for dynamic light */
         /*Matrix.setIdentityM(mLightModelMatrix, 0);

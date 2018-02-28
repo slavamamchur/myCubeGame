@@ -16,6 +16,7 @@ import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
+import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
@@ -49,6 +50,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface {
@@ -95,7 +97,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         this.savedPlayers = savedPlayers;
     }
 
-    public void playTurn() { //TODO: set 2D Camera and restore isometric when dice is stopped rolling -> new Orthogonal2DCamera(7f);
+    public void playTurn() {
 
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
         gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
@@ -389,6 +391,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     private void rollDice() { //TODO: set random initial rotation
+        synchronized (GLScene.lockObject) {
+            gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
+            ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
+        }
+
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
         ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
@@ -407,6 +414,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         if (gameInstanceEntity != null) {
             gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
             restApiWrapper.showTurnInfo(gameInstanceEntity);
+
+            synchronized (GLScene.lockObject) {
+                gl3DScene.setCamera(null);
+                ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
+            }
 
             gl3DScene.setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
             gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {

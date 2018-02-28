@@ -26,7 +26,7 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
     protected float pitch;
     protected float yaw;
     protected float roll;
-    protected float aspectRatio;
+    protected float aspectRatio = -1;
 
     public GLCamera(float eyeX, float eyeY, float eyeZ, float pitch, float yaw, float roll) {
         this.pitch = pitch;
@@ -128,6 +128,10 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
     public void setVfov(float vfov) {
         this.vfov = vfov;
         updateProjectionMatrix();
+    }
+
+    public float getAspectRatio() {
+        return aspectRatio;
     }
 
     @SuppressWarnings("all") public float[] getViewMatrix() {
