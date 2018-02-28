@@ -71,7 +71,7 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
 
     @Override
     protected void createVertexesVBO() {
-        BitmapWrapperInterface bmp = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? null : getReliefMap();
+        BitmapWrapperInterface bmp = /*sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? null :*/ getReliefMap();
 
         dimension = (bmp == null) || bmp.isEmpty() ? FLAT_MAP_DEFAULT_DIMENSION : getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
@@ -89,7 +89,6 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
                 vertexes[k] = x0 + i * dx; /** x*/
                 vertexes[k + 2] = z0 + j * dz; /** z*/
 
-                //TODO: check if needed to be reflected by Y ???
                 vertexes[k + 3] = i * tdu; /** u*/
                 vertexes[k + 4] = j * tdv; /** v*/
 

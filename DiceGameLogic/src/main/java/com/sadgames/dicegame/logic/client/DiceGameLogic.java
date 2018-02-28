@@ -199,7 +199,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     @Override
-    public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {//TODO: remove sky-box in 2D-mode
+    public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
         GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         /** Skybox and water reflection map texture */
@@ -212,7 +212,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
-        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality) && !sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
+        //if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality) && !sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
             terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();

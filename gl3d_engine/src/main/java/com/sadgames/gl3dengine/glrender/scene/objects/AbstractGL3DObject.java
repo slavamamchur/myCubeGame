@@ -371,8 +371,8 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
                 param.setParamValue(textureSlotIndex);
                 textureSlotIndex++;
             }
-            else
-                param.setParamValue(31);
+            /*else
+                param.setParamValue(31);*/
         }
 
         param = program.paramByName(HAS_REFLECT_MAP_PARAM_NAME);
