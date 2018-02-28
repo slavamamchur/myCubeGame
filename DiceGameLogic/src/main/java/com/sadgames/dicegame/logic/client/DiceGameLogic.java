@@ -200,7 +200,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     @Override
-    public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
+    public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {//TODO: remove sky-box in 2D-mode
         GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         /** Skybox and water reflection map texture */

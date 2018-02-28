@@ -71,7 +71,7 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
 
     @Override
     protected void createVertexesVBO() {
-        BitmapWrapperInterface bmp = getReliefMap();
+        BitmapWrapperInterface bmp = getReliefMap(); //TODO: remove relief in 2d-mode
         dimension = bmp.isEmpty() ? FLAT_MAP_DEFAULT_DIMENSION : getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
