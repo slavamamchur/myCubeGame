@@ -60,6 +60,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     public  final static Object lockObject = new Object();
 
+    //TODO: Saved camera
     private boolean isSimulating = false;
     private boolean hasDepthTextureExtension;
     private int oldNumContacts = 0;
