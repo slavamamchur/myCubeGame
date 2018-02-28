@@ -10,7 +10,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 
 public class GameDiceItem extends CubePrimitiveObject {
 
-    public static final float GAME_DICE_HALF_SIZE = 0.1f;
+    public static final float GAME_DICE_HALF_SIZE = 0.15f;
     private short[] DICE_FACE_VALUES = {2, 1, 5, 6, 3, 4};
 
     public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String textureName) {

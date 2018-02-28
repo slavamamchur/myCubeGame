@@ -95,7 +95,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         this.savedPlayers = savedPlayers;
     }
 
-    public void playTurn() { //TODO: set 2D Camera and restore isometric when dice is stopped rolling
+    public void playTurn() { //TODO: set 2D Camera and restore isometric when dice is stopped rolling -> new Orthogonal2DCamera(7f);
+
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
         gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
             @Override
@@ -178,6 +179,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         /** for test */
         camera.rotateX(22.5f);
         camera.updateViewMatrix();
+
     }
 
     @Override
@@ -386,7 +388,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
-    private void rollDice() {
+    private void rollDice() { //TODO: set random initial rotation
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
         ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));

@@ -56,6 +56,9 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
     public float getLandScale() {
         return landScale;
     }
+    public float getLAND_WIDTH() {
+        return LAND_WIDTH;
+    }
 
     protected abstract float calculateLandScale(float landSize);
     protected abstract float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv);

@@ -447,7 +447,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private void clearRenderBuffers() {
         GLES20JniWrapper.glBindFramebuffer(0);
-        GLES20JniWrapper.glClearColor(0.0f, 0.3f, 0.5f, 1.0f);
+        GLES20JniWrapper.glClearColor(0.48f, 0.62f, 0.68f, 1.0f);
         GLES20JniWrapper.glClear();
     }
 
@@ -458,7 +458,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void initScene() {
-        camera = new FixedIsometricCamera(DEFAULT_CAMERA_X,
+        camera =
+                new FixedIsometricCamera(DEFAULT_CAMERA_X,
                               DEFAULT_CAMERA_Y,
                               DEFAULT_CAMERA_Z,
                               DEFAULT_CAMERA_PITCH,
