@@ -213,7 +213,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
-        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality))
+        if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality)) ////TODO: remove reflection map in 2D-mode
             terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();
