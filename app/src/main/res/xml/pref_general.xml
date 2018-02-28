@@ -12,6 +12,12 @@
         android:defaultValue="true"
         android:key="@string/pref_key_stay_logged"
         android:title="@string/pref_title_stay_logged" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key_2d_mode"
+        android:title="@string/pref_title_2d_mode" />
+
     <ListPreference
         android:defaultValue="HIGH"
         android:entries="@array/pref_graphics_quality_titles"

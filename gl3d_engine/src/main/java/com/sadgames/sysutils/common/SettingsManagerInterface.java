@@ -17,4 +17,6 @@ public interface SettingsManagerInterface {
     void setUserPass(String userPass);
 
     GraphicsQuality getGraphicsQualityLevel();
+
+    boolean isIn_2D_Mode();
 }

@@ -80,6 +80,9 @@
     <string name="pref_title_stay_logged">Stay logged in</string>
     <string name="pref_key_stay_logged">stayLoggedIn</string>
 
+    <string name="pref_title_2d_mode">2D Mode</string>
+    <string name="pref_key_2d_mode">in2DMode</string>
+
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
 

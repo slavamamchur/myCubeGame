@@ -179,7 +179,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         camera.setVfov(gameEntity._getStartCameraVFOV());*/
 
         /** for test */
-        camera.rotateX(22.5f);
+        camera.rotateX(22.5f); //TODO: do not rotate camera if 2D-mode choosed in the game settings -> set (F_VOV / 1.5f) in this case
         camera.updateViewMatrix();
 
     }

@@ -14,6 +14,7 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     public static final String PARAM_USER_PASS = "userPass";
     public static final String BASE_URL = "baseUrl";
     public static final String PARAM_STAY_LOGGED_IN = "stayLoggedIn";
+    public static final String PARAM_IN_2D_MODE = "in2DMode";
     public static final String PARAM_GRAPHICS_QUALITY_LEVEL = "graphicsQualityLevel";
 
     private static final String DEFAULT_GRAPHICS_QUALITY_LEVEL = GraphicsQuality.HIGH.name();
@@ -109,5 +110,10 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     @Override
     public GraphicsQuality getGraphicsQualityLevel() {
         return GraphicsQuality.valueOf(safeReadProperty(PARAM_GRAPHICS_QUALITY_LEVEL, DEFAULT_GRAPHICS_QUALITY_LEVEL));
+    }
+
+    @Override
+    public boolean isIn_2D_Mode() {
+        return safeReadProperty(PARAM_IN_2D_MODE, false);
     }
 }
