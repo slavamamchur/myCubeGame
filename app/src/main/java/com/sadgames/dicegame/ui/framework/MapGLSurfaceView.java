@@ -13,9 +13,6 @@ import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLContext;
-
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_VERTICAL_FOV;
 
 public class MapGLSurfaceView extends GLSurfaceView {
@@ -36,7 +33,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
         setEGLContextClientVersion(OGL_ES_20);
 
         //TODO: gl set number of samples
-        EGL10 Egl = (EGL10) EGLContext.getEGL();
+        //EGL10 Egl = (EGL10) EGLContext.getEGL();
 
         mScaleDetector = new ScaleGestureDetector(context.getApplicationContext(), new ScaleListener());
     }

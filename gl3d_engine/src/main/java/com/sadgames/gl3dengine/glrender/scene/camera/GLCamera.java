@@ -21,8 +21,8 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
     protected float[] projectionMatrix = new float[16];
     protected Vector3f cameraPosition = new Vector3f(0.0f, 0.0f, 0.0f);
 
-    protected float vfov = DEFAULT_CAMERA_VERTICAL_FOV;
-    protected float zoomed_vfov = DEFAULT_CAMERA_VERTICAL_FOV;
+    protected float vfov;
+    protected float zoomed_vfov;
     protected float pitch;
     protected float yaw;
     protected float roll;
@@ -32,8 +32,11 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
         this.pitch = pitch;
         this.yaw = yaw;
         this.roll = roll;
-        MathUtils.setIdentityM(transformMatrix, 0);
 
+        vfov = DEFAULT_CAMERA_VERTICAL_FOV;
+        zoomed_vfov = DEFAULT_CAMERA_VERTICAL_FOV;
+
+        MathUtils.setIdentityM(transformMatrix, 0);
         setCameraPosition(eyeX, eyeY, eyeZ);
     }
 
@@ -42,8 +45,11 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
         this.pitch = pitch;
         this.yaw = yaw;
         this.roll = roll;
-        MathUtils.setIdentityM(transformMatrix, 0);
 
+        vfov = DEFAULT_CAMERA_VERTICAL_FOV;
+        zoomed_vfov = DEFAULT_CAMERA_VERTICAL_FOV;
+
+        MathUtils.setIdentityM(transformMatrix, 0);
         setCameraPosition(cameraPosition);
     }
 
@@ -56,9 +62,7 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
     }
 
     public void setCameraPosition(Vector3f cameraPosition) {
-        this.cameraPosition = cameraPosition;
-
-        updateViewMatrix();
+        setCameraPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     }
 
     public void updateViewMatrix() {
@@ -71,7 +75,7 @@ public abstract class GLCamera implements GLAnimation.IAnimatedObject {
         updateProjectionMatrix();
     }
 
-    private void updateProjectionMatrix() {
+    protected void updateProjectionMatrix() {
         MathUtils.setIdentityM(projectionMatrix, 0);
         MathUtils.perspectiveM(projectionMatrix, 0 , vfov, aspectRatio, NEAR_PLANE, FAR_PLANE);
     }

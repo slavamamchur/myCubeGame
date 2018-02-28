@@ -40,18 +40,17 @@ const float waveStrength = 0.02;
 
 float calcDynamicBias(float bias, vec3 normal) {
     highp float result;
-    highp vec3 l = normalize(u_lightPositionF);
-    highp float cosTheta = clamp(dot(normal,l), 0.0, 1.0);
+    highp vec3 nLightPos = normalize(u_lightPositionF);
+    highp float cosTheta = clamp(dot(normal,nLightPos), 0.0, 1.0);
     result = bias * tan(acos(cosTheta));
-    result = clamp(result, 0.0, 0.01);
 
-    return result;
+    return clamp(result, 0.0, 0.01);
 }
 
 float calcShadowRate() {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.0001; //calcDynamicBias(0.0005, n_normal); //TODO: -> use for ultra graphics settings
+        highp float bias = 0.0001; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
         vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
         highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
         shadow = float(distanceFromLight > (shadowMapPosition.z - bias));

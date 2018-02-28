@@ -48,7 +48,5 @@ public class FixedIsometricCamera extends GLCamera {
     }
 
     @Override
-    public void rotateZ(float angle) {
-
-    }
+    public void rotateZ(float angle) {}
 }
