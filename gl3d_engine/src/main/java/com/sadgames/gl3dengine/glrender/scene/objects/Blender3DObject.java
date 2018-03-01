@@ -97,7 +97,7 @@ public class Blender3DObject extends ImportedObject {
                         textureCoordsArray[currentVertexIndex * 2 + 1] = 1f - currentTextureCoords.y;
 
                         Vector3f currentNormal = normalsList.get(facePointData.normalIndex);
-                        normalsArray[currentVertexIndex * 3] = currentNormal.x; // *-1
+                        normalsArray[currentVertexIndex * 3] = currentNormal.x; //TODO:  *-1 ???
                         normalsArray[currentVertexIndex * 3 + 1] = currentNormal.y;
                         normalsArray[currentVertexIndex * 3 + 2] = currentNormal.z;
                     }
