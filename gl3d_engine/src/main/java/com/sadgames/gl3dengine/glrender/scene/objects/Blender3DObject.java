@@ -10,7 +10,6 @@ import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT
 import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
 
 public class Blender3DObject extends ImportedObject {
-
     private static final String BLENDER_FILE_EXT = ".mdl";
 
     private String objFileName;
@@ -21,18 +20,18 @@ public class Blender3DObject extends ImportedObject {
         this.objFileName = MODELS_RESOURCE_FOLDER_NAME + objFileName + BLENDER_FILE_EXT;
     }
 
-    @Override
-    protected Raw3DModel getRaw3DModel() {
-        return parseObjFile(sysUtilsWrapper.getResourceStream(objFileName));
+    @Override protected Raw3DModel getRaw3DModel() {
+        return parseObjFile(objFileName);
     }
 
-    private Raw3DModel parseObjFile(InputStream modelStream) {
-        //TODO: parse obj-file
+    private Raw3DModel parseObjFile(String modelFileName) {
         try {
+            InputStream modelStream = sysUtilsWrapper.getResourceStream(modelFileName);
 
+            //TODO: parse obj-file
         }
         catch (Exception exc) {
-            throw new InvalidParameterException(String.format("Invalid Blender 3D-model file: \"%s\"", objFileName));
+            throw new InvalidParameterException(String.format("Invalid Blender 3D-model file: \"%s\"", modelFileName));
         }
 
         return null;
