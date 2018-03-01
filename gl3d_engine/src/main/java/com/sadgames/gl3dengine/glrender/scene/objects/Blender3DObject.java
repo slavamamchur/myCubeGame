@@ -10,7 +10,7 @@ import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME
 
 public class Blender3DObject extends ImportedObject {
 
-    private static final String BLENDER_FILE_EXT = ".obj";
+    private static final String BLENDER_FILE_EXT = ".mdl";
 
     private String objFileName;
 
