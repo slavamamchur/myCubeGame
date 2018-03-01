@@ -56,7 +56,6 @@ public class Blender3DObject extends ImportedObject {
         short[] indicesArray = null;
 
         try {
-            //TODO: parse obj-file
             BufferedReader model = new BufferedReader(new StringReader(sysUtilsWrapper.iReadTextFromFile(modelFileName)));
 
             while (!(readedLine = model.readLine()).startsWith("f ")) {

@@ -19,7 +19,6 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -212,9 +211,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
-        Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "stall", program, 1.0f, 1);
-        obj.loadObject();
-
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         //if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality) && !sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
@@ -244,6 +240,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         shadowMapView.loadObject();
         shadowMapView.setGlTexture(glScene.getShadowMapFBO().getFboTexture());
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
+
+        /** debug obj-model */
+        /*Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "stall", program, 1.0f, 1);
+        obj.loadObject();
+        transformMatrix.setIdentity();
+        transformMatrix.setScale(0.25f);
+        obj.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
+        glScene.putChild(obj, "test_obj_model");*/
 
         /** sky-box */
         GLCamera camera = glScene.getCamera();
