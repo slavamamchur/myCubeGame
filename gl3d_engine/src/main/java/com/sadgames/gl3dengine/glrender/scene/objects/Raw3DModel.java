@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
-
 public class Raw3DModel {
 
     private float[] vertexes;
