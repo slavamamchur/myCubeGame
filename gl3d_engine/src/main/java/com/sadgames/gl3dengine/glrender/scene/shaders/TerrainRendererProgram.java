@@ -78,7 +78,9 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         paramByName(LIGHT_COLOUR_PARAM_NAME).setParamValue(new float [] {colour.x, colour.y, colour.z});
 
         paramByName(RND_SEED__PARAM_NAME).setParamValue(
-                                                        GLRenderConsts.GraphicsQuality.LOW.equals(graphicsQualityLevel) ?
+                                                        GLRenderConsts.GraphicsQuality.LOW.equals(graphicsQualityLevel)
+                                                        || sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()
+                                                        ?
                                                         -1f
                                                         :
                                                         scene.getMoveFactor());
