@@ -68,7 +68,6 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     private float specularRate = 0.9f;
     private boolean isCubeMap = false;
 
-    //TODO: add texturecube for water reflection map
     protected AbstractTexture glNormalMap = null;
     protected AbstractTexture glCubeMap = null;
     protected AbstractTexture glDUDVMap = null;

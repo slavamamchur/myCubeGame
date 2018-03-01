@@ -5,14 +5,19 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.InputStream;
 
+import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
+import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
+
 public class Blender3DObject extends ImportedObject {
+
+    private static final String BLENDER_FILE_EXT = ".obj";
 
     private String objFileName;
 
-    public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, String textureResName, GLShaderProgram program, float mass, int tag) {
-        super(sysUtilsWrapper, textureResName, program, mass, tag);
+    public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
+        super(sysUtilsWrapper, objFileName + COMPRESSED_TEXTURE_FILE_EXT, program, mass, tag);
 
-        this.objFileName = objFileName;
+        this.objFileName = MODELS_RESOURCE_FOLDER_NAME + objFileName + BLENDER_FILE_EXT;
     }
 
     @Override
