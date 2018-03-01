@@ -1,11 +1,15 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.util.ObjectArrayList;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
@@ -59,6 +63,17 @@ public abstract class ImportedObject extends GameItemObject {
         vertexData.limit(0);
 
         createCollisionShape(vertexes);
+    }
+
+    @Override
+    protected void createCollisionShape(float[] vertexes) {
+        ObjectArrayList<Vector3f> points = new ObjectArrayList<>();
+        _shape = new ConvexHullShape(points);
+        for (int i = 0; i < vertexes.length; i+=3)
+        {
+            Vector3f btv = new Vector3f(vertexes[i], vertexes[i + 1], vertexes[i + 2]);
+            ((ConvexHullShape)_shape).addPoint(btv);
+        }
     }
 
     @Override
