@@ -34,7 +34,15 @@ public class Blender3DObject extends ImportedObject {
 
     public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, objFileName + COMPRESSED_TEXTURE_FILE_EXT, program, mass, tag);
+        init(objFileName);
+    }
 
+    public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, int color, float mass, int tag) {
+        super(sysUtilsWrapper, program, color, mass, tag);
+        init(objFileName);
+    }
+
+    private void init(String objFileName) {
         this.objFileName = MODELS_RESOURCE_FOLDER_NAME + objFileName + BLENDER_FILE_EXT;
     }
 
@@ -89,7 +97,7 @@ public class Blender3DObject extends ImportedObject {
                         textureCoordsArray[currentVertexIndex * 2 + 1] = 1f - currentTextureCoords.y;
 
                         Vector3f currentNormal = normalsList.get(facePointData.normalIndex);
-                        normalsArray[currentVertexIndex * 3] = currentNormal.x;
+                        normalsArray[currentVertexIndex * 3] = currentNormal.x; // *-1
                         normalsArray[currentVertexIndex * 3 + 1] = currentNormal.y;
                         normalsArray[currentVertexIndex * 3 + 2] = currentNormal.z;
                     }
