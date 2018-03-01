@@ -7,6 +7,13 @@ public class Raw3DModel {
     private float[] normals;
     private short[] faces;
 
+    public Raw3DModel(float[] vertexes, float[] textureCoords, float[] normals, short[] faces) {
+        this.vertexes = vertexes;
+        this.textureCoords = textureCoords;
+        this.normals = normals;
+        this.faces = faces;
+    }
+
     public float[] getVertexes() {
         return vertexes;
     }

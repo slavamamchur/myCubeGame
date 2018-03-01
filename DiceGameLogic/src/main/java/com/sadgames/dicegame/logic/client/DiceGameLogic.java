@@ -211,8 +211,10 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                                                                  skyBoxTexture.getTextureSize());
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
+
         Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "stall", program, 1.0f, 1);
         obj.loadObject();
+
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
         //if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality) && !sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
