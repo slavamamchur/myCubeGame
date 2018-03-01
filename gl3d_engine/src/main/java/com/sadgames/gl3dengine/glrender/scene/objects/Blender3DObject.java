@@ -25,7 +25,7 @@ public class Blender3DObject extends ImportedObject {
         return parseObjFile(sysUtilsWrapper.getResourceStream(objFileName));
     }
 
-    private Raw3DModel parseObjFile(InputStream blenderObject) {
+    private Raw3DModel parseObjFile(InputStream modelStream) {
         //TODO: parse obj-file
         return null;
     }

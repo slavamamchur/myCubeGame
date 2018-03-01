@@ -85,7 +85,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
                                                         :
                                                         scene.getMoveFactor());
 
-        /** for rgb depth buffers */
+        /** for rgb depth buffers */ //TODO:
         /*paramByName(UX_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / scene.getShadowMapFBO().getWidth()));
         paramByName(UY_PIXEL_OFFSET_PARAM_NAME).setParamValue((float) (1.0 / scene.getShadowMapFBO().getHeight()));*/
 
