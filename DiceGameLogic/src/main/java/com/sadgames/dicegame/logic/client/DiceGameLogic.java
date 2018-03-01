@@ -24,6 +24,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
@@ -208,6 +209,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
                                                                  skyBoxTexture.getTextureName(),
                                                                  skyBoxTexture.getTextureSize());
+
+        //TODO: ...
+        AbstractTexture tex = TextureCacheManager.getInstance(sysUtilsWrapper).getItem("old_map_wallpaper.pkm");
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
