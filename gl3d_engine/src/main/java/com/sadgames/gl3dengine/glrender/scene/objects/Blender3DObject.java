@@ -3,7 +3,8 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.security.InvalidParameterException;
 
 import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
@@ -25,10 +26,12 @@ public class Blender3DObject extends ImportedObject {
     }
 
     private Raw3DModel parseObjFile(String modelFileName) {
-        try {
-            InputStream modelStream = sysUtilsWrapper.getResourceStream(modelFileName);
 
+        try {
             //TODO: parse obj-file
+            BufferedReader model = new BufferedReader(new StringReader(sysUtilsWrapper.iReadTextFromFile(modelFileName)));
+
+
         }
         catch (Exception exc) {
             throw new InvalidParameterException(String.format("Invalid Blender 3D-model file: \"%s\"", modelFileName));
