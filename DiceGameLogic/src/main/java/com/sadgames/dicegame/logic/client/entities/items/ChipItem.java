@@ -7,7 +7,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 
-public class ChipItem extends PyramidPrimitiveObject {
+public class ChipItem extends PyramidPrimitiveObject { //TODO: Import blender model
 
     public static final float CHIP_BOTTOM_HALF_WIDTH = 0.05f;
     public static final float CHIP_HEIGHT = 0.1f;

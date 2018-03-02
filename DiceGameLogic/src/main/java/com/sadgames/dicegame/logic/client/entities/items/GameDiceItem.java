@@ -8,7 +8,7 @@ import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 
-public class GameDiceItem extends CubePrimitiveObject {
+public class GameDiceItem extends CubePrimitiveObject { //TODO: Import blender model and recalculate top face value
 
     public static final float GAME_DICE_HALF_SIZE = 0.15f;
     private short[] DICE_FACE_VALUES = {2, 1, 5, 6, 3, 4};
