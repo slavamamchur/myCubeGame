@@ -19,6 +19,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -247,13 +248,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         /** debug obj-model */
-        /*Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "pawn", program, ColorUtils.argb(255, 255, 0, 0), 1.0f, 1);
+        Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "cat", program, /*ColorUtils.argb(255, 255, 128, 64),*/ 1.0f, 1);
         obj.loadObject();
-        obj.setCastShadow(false);
+        //obj.setCastShadow(false);
         transformMatrix.setIdentity();
-        transformMatrix.setScale(0.125f);
+        transformMatrix.setScale(0.5f);
         obj.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
-        glScene.putChild(obj, "test_obj_model");*/
+        glScene.putChild(obj, "test_obj_model");
 
         /** sky-box */
         GLCamera camera = glScene.getCamera();

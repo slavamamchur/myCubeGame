@@ -12,6 +12,9 @@ import java.util.List;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
+import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
+import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
 import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
 
@@ -97,7 +100,7 @@ public class Blender3DObject extends ImportedObject {
                         textureCoordsArray[currentVertexIndex * 2 + 1] = 1f - currentTextureCoords.y;
 
                         Vector3f currentNormal = normalsList.get(facePointData.normalIndex);
-                        normalsArray[currentVertexIndex * 3] = currentNormal.x; //TODO:  *-1
+                        normalsArray[currentVertexIndex * 3] = currentNormal.x;
                         normalsArray[currentVertexIndex * 3 + 1] = currentNormal.y;
                         normalsArray[currentVertexIndex * 3 + 2] = currentNormal.z;
                     }
@@ -136,7 +139,6 @@ public class Blender3DObject extends ImportedObject {
 
     @Override
     public void render() {
-        super.render();
-        //glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0); //TODO:
+        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
     }
 }
