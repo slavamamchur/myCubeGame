@@ -18,7 +18,7 @@ import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
 import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
 
-public class Blender3DObject extends ImportedObject {
+public class Blender3DObject extends ImportedObject { //TODO: create normal and texture arrays by vertices if faces are absent
     private static final String BLENDER_FILE_EXT = ".mdl";
 
     private class FacePointData {
