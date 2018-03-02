@@ -56,7 +56,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
         if (oldScaleFactor != mScaleFactor) {
             /** Zoom camera */
             camera.setVfov(DEFAULT_CAMERA_VERTICAL_FOV / mScaleFactor);
-            requestRender();
+            //requestRender();
         }
         else if (e.getAction() == MotionEvent.ACTION_MOVE) {
 
@@ -71,7 +71,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
                 mRenderer.getScene().getLightSource().setLightPosInEyeSpace();
             }
 
-            requestRender();
+            //requestRender();
         }
 
         mPreviousX = x;

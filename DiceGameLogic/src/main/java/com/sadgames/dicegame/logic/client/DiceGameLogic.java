@@ -210,8 +210,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                                                                  skyBoxTexture.getTextureName(),
                                                                  skyBoxTexture.getTextureSize());
 
-        /*TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
-        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);*/
+        //TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
+        //glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
