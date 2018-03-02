@@ -9,8 +9,6 @@ import android.view.SurfaceHolder;
 
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
-import com.sadgames.gl3dengine.manager.TextureCacheManager;
-import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_VERTICAL_FOV;
@@ -94,7 +92,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
         }
         mRenderer.getScene().cleanUp();*/
 
-        TextureCacheManager.getInstance(AndroidDiceGameUtilsWrapper.getInstance(getContext())).clearCache();
+        //TextureCacheManager.getInstance(AndroidDiceGameUtilsWrapper.getInstance(getContext())).clearCache();
 
         super.surfaceDestroyed(holder);
     }
@@ -108,4 +106,13 @@ public class MapGLSurfaceView extends GLSurfaceView {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

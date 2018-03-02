@@ -76,6 +76,7 @@ public  class GLRenderConsts {
     public static final String ACTIVE_DUDVMAP_SLOT_PARAM_NAME = "u_DUDVMapUnit";
     public static final String ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME = "u_BlendingMapUnit";
     public static final String ACTIVE_SHADOWMAP_SLOT_PARAM_NAME = "uShadowTexture";
+    public static final String ACTIVE_BACKGROUND_SLOT_PARAM_NAME = "u_BackgroundUnit";
     public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
     public static final String IS_CUBEMAPF_PARAM_NAME = "u_isCubeMapF";
     public static final String HAS_REFLECT_MAP_PARAM_NAME = "u_hasReflectMap";
@@ -110,5 +111,6 @@ public  class GLRenderConsts {
     public static final String SKYBOX_FRAGMENT_SHADER = "shaders/skybox_fragment.glsl";
 
     public static final int FBO_TEXTURE_SLOT = 6;
+    public static final int BACKGROUND_TEXTURE_SLOT = 7;
 
 }

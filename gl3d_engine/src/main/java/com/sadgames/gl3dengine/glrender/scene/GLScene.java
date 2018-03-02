@@ -85,6 +85,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBackListener = null;
     private GraphicsQuality graphicsQualityLevel;
+    private String backgroundTextureName = null;
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
@@ -104,6 +105,13 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
             this.camera.setAspectRatio(mDisplayWidth, mDisplayHeight);
 
         lightSource.setCamera(this.camera);
+    }
+
+    public String getBackgroundTextureName() {
+        return backgroundTextureName;
+    }
+    public void setBackgroundTextureName(String backgroundTextureName) {
+        this.backgroundTextureName = backgroundTextureName;
     }
 
     public GLLightSource getLightSource() {

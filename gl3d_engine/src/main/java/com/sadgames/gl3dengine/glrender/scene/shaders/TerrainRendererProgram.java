@@ -55,6 +55,10 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         /** Inverted Sky-box rotation */
         param = new GLShaderParam(FLOAT_UNIFORM_MATRIX_PARAM, SKY_BOX_MV_MATRIXF_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
+
+        /** Background texture slot */
+        /*param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_BACKGROUND_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);*/
     }
 
     @Override
@@ -65,6 +69,12 @@ public class TerrainRendererProgram extends VBOShaderProgram {
 
         scene.getShadowMapFBO().getFboTexture().bind(FBO_TEXTURE_SLOT);
         paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
+
+        /*AbstractTexture background = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(scene.getBackgroundTextureName());
+        if (background != null) {
+            background.bind(BACKGROUND_TEXTURE_SLOT);
+            paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);
+        }*/
 
         synchronized (GLScene.lockObject) {
             Vector3f pos = scene.getCamera().getCameraPosition();
@@ -95,6 +105,8 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         GLShaderParam param = paramByName(SKY_BOX_MV_MATRIXF_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0)
             param.setParamValue(mMatrix);
+
+
     }
 
     @Override

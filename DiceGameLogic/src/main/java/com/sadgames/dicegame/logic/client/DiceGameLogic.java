@@ -24,7 +24,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
@@ -202,6 +201,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
         GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+        TextureCacheManager.getNewInstance(sysUtilsWrapper);
 
         /** Skybox and water reflection map texture */
         CubeMapTexture skyBoxTexture =
@@ -210,8 +210,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                                                                  skyBoxTexture.getTextureName(),
                                                                  skyBoxTexture.getTextureSize());
 
-        //TODO: ...
-        AbstractTexture tex = TextureCacheManager.getInstance(sysUtilsWrapper).getItem("old_map_wallpaper.pkm");
+        /*TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
+        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);*/
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
