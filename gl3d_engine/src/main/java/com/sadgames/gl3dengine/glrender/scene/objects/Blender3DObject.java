@@ -133,4 +133,10 @@ public class Blender3DObject extends ImportedObject {
                                  (short)(Short.parseShort(facePointData[1]) - 1),
                                  (short)(Short.parseShort(facePointData[2]) - 1));
     }
+
+    @Override
+    public void render() {
+        super.render();
+        //glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0); //TODO:
+    }
 }
