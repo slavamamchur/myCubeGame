@@ -79,6 +79,7 @@ public  class GLRenderConsts {
     public static final String ACTIVE_BACKGROUND_SLOT_PARAM_NAME = "u_BackgroundUnit";
     public static final String IS_CUBEMAP_PARAM_NAME = "u_isCubeMap";
     public static final String IS_CUBEMAPF_PARAM_NAME = "u_isCubeMapF";
+    public static final String IS_2D_MODE_PARAM_NAME = "u_is2DModeF";
     public static final String HAS_REFLECT_MAP_PARAM_NAME = "u_hasReflectMap";
     public static final String IS_NORMALMAP_PARAM_NAME = "u_isNormalMap";
     public static final String MVP_MATRIX_PARAM_NAME = "u_MVP_Matrix";

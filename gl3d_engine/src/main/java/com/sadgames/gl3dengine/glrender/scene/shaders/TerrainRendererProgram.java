@@ -21,6 +21,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.IS_2D_MODE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITIONF_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
@@ -64,6 +65,10 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         /** Background texture slot */
         param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_BACKGROUND_SLOT_PARAM_NAME, getProgramId());
         params.put(param.getParamName(), param);
+
+        /** 2D-Mode flag */
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, IS_2D_MODE_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
     }
 
     @Override
@@ -77,6 +82,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
             background.bind(BACKGROUND_TEXTURE_SLOT);
             paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);
         }
+        paramByName(IS_2D_MODE_PARAM_NAME).setParamValue(sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 1 : 0);
 
         scene.getShadowMapFBO().getFboTexture().bind(FBO_TEXTURE_SLOT);
         paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);

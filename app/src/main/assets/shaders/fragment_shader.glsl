@@ -20,6 +20,7 @@ uniform vec3 u_lightPositionF;
 uniform vec3 u_lightColour;
 uniform int u_isCubeMapF;
 uniform int u_hasReflectMap;
+uniform int u_is2DModeF;
 ///uniform float uxPixelOffset;
 ///uniform float uyPixelOffset; //TODO: -> for RGB depth map
 
