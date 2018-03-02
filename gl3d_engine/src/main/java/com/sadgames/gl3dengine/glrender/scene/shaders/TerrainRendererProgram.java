@@ -13,12 +13,14 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BACKGROUND_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.BACKGROUND_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_PARAM;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.INTEGER_UNIFORM_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_COLOUR_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITIONF_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LIGHT_POSITION_PARAM_NAME;
@@ -60,8 +62,8 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         params.put(param.getParamName(), param);
 
         /** Background texture slot */
-        /*param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_BACKGROUND_SLOT_PARAM_NAME, getProgramId());
-        params.put(param.getParamName(), param);*/
+        param = new GLShaderParam(INTEGER_UNIFORM_PARAM, ACTIVE_BACKGROUND_SLOT_PARAM_NAME, getProgramId());
+        params.put(param.getParamName(), param);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         AbstractTexture background = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(scene.getBackgroundTextureName());
         if (background != null) {
             background.bind(BACKGROUND_TEXTURE_SLOT);
-            //paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);
+            paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);
         }
 
         scene.getShadowMapFBO().getFboTexture().bind(FBO_TEXTURE_SLOT);

@@ -10,7 +10,7 @@ uniform sampler2D u_NormalMapUnit;
 uniform sampler2D u_DUDVMapUnit;
 uniform sampler2D u_BlendingMapUnit;
 uniform sampler2D uShadowTexture;
-//uniform sampler2D u_BackgroundUnit;
+uniform sampler2D u_BackgroundUnit;
 
 uniform float u_AmbientRate;
 uniform float u_DiffuseRate;
