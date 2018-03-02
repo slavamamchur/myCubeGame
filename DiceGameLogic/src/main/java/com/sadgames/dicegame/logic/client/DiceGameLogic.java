@@ -252,6 +252,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         obj.loadObject();
         //obj.setCastShadow(false);
         transformMatrix.setIdentity();
+        //transformMatrix.setTranslation(new Vector3f(1f, 0.5f, 0f));
         transformMatrix.setScale(0.5f);
         obj.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
         glScene.putChild(obj, "test_obj_model");

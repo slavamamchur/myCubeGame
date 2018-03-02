@@ -34,6 +34,7 @@ public class Blender3DObject extends ImportedObject {
     }
 
     private String objFileName;
+    private boolean hasInvertedNormals = false;
 
     public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, objFileName + COMPRESSED_TEXTURE_FILE_EXT, program, mass, tag);
@@ -47,6 +48,10 @@ public class Blender3DObject extends ImportedObject {
 
     private void init(String objFileName) {
         this.objFileName = MODELS_RESOURCE_FOLDER_NAME + objFileName + BLENDER_FILE_EXT;
+    }
+
+    public void setHasInvertedNormals(boolean hasInvertedNormals) {
+        this.hasInvertedNormals = hasInvertedNormals;
     }
 
     @Override protected Raw3DModel getRaw3DModel() {
@@ -142,9 +147,9 @@ public class Blender3DObject extends ImportedObject {
             textureCoordsArray[currentVertexIndex * 2 + 1] = 1f - currentTextureCoords.y;
 
             Vector3f currentNormal = normalsList.get(facePointData.normalIndex);
-            normalsArray[currentVertexIndex * 3] = currentNormal.x;
-            normalsArray[currentVertexIndex * 3 + 1] = currentNormal.y;
-            normalsArray[currentVertexIndex * 3 + 2] = currentNormal.z;
+            normalsArray[currentVertexIndex * 3] = hasInvertedNormals ? -currentNormal.x : currentNormal.x;
+            normalsArray[currentVertexIndex * 3 + 1] = hasInvertedNormals ? -currentNormal.y : currentNormal.y;
+            normalsArray[currentVertexIndex * 3 + 2] = hasInvertedNormals ? -currentNormal.z : currentNormal.z;
         }
     }
 
