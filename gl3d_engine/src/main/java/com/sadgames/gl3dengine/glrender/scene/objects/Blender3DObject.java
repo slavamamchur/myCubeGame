@@ -89,20 +89,13 @@ public class Blender3DObject extends ImportedObject {
             while (readedLine != null) {
                 if (readedLine.startsWith("f ")) {
                     String[] parsedValues = readedLine.split(" ");
-                    for (short i = 1; i < 4; i++) {
-                        FacePointData facePointData = getFacePointData(parsedValues[i].split("/"));
+                    for (short i = 1; i < parsedValues.length; i++) {
+                        if (i == 4) {
+                            parseFacePoint(textureCoordsList, normalsList, indicesList, textureCoordsArray, normalsArray, parsedValues[1], true);
+                            parseFacePoint(textureCoordsList, normalsList, indicesList, textureCoordsArray, normalsArray, parsedValues[3], true);
+                        }
 
-                        short currentVertexIndex = facePointData.vertexIndex;
-                        indicesList.add(currentVertexIndex);
-
-                        Vector2f currentTextureCoords = textureCoordsList.get(facePointData.textureCoordIndex);
-                        textureCoordsArray[currentVertexIndex * 2] = currentTextureCoords.x;
-                        textureCoordsArray[currentVertexIndex * 2 + 1] = 1f - currentTextureCoords.y;
-
-                        Vector3f currentNormal = normalsList.get(facePointData.normalIndex);
-                        normalsArray[currentVertexIndex * 3] = currentNormal.x;
-                        normalsArray[currentVertexIndex * 3 + 1] = currentNormal.y;
-                        normalsArray[currentVertexIndex * 3 + 2] = currentNormal.z;
+                        parseFacePoint(textureCoordsList, normalsList, indicesList, textureCoordsArray, normalsArray, parsedValues[i], false);
                     }
                 }
 
@@ -129,6 +122,30 @@ public class Blender3DObject extends ImportedObject {
             indicesArray[indexPointer++] = index;
 
         return new Raw3DModel(verticesArray, textureCoordsArray, normalsArray, indicesArray);
+    }
+
+    private void parseFacePoint(List<Vector2f> textureCoordsList,
+                                List<Vector3f> normalsList,
+                                List<Short> indicesList,
+                                float[] textureCoordsArray,
+                                float[] normalsArray,
+                                String parsedValue,
+                                boolean addIndexOnly) {
+        FacePointData facePointData = getFacePointData(parsedValue.split("/"));
+
+        short currentVertexIndex = facePointData.vertexIndex;
+        indicesList.add(currentVertexIndex);
+
+        if (!addIndexOnly) {
+            Vector2f currentTextureCoords = textureCoordsList.get(facePointData.textureCoordIndex);
+            textureCoordsArray[currentVertexIndex * 2] = currentTextureCoords.x;
+            textureCoordsArray[currentVertexIndex * 2 + 1] = 1f - currentTextureCoords.y;
+
+            Vector3f currentNormal = normalsList.get(facePointData.normalIndex);
+            normalsArray[currentVertexIndex * 3] = currentNormal.x;
+            normalsArray[currentVertexIndex * 3 + 1] = currentNormal.y;
+            normalsArray[currentVertexIndex * 3 + 2] = currentNormal.z;
+        }
     }
 
     private FacePointData getFacePointData(String[] facePointData) {
