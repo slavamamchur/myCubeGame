@@ -31,7 +31,8 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
 
     public static AndroidSettingsManager getInstance(Context context){
         synchronized (lockObject) {
-            return instance != null ? instance : new AndroidSettingsManager(context);
+            instance = instance != null ? instance : new AndroidSettingsManager(context);
+            return instance;
         }
     }
 

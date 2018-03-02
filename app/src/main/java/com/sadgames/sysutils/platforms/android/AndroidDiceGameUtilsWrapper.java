@@ -9,13 +9,16 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 public class AndroidDiceGameUtilsWrapper extends AndroidSysUtilsWrapper {
 
+    protected static SysUtilsWrapperInterface instance = null;
+
     public AndroidDiceGameUtilsWrapper(Context context) {
         super(context);
     }
 
     public static SysUtilsWrapperInterface getInstance(Context context) {
         synchronized (lockObject) {
-            return instance != null ? instance : new AndroidDiceGameUtilsWrapper(context);
+            instance = instance != null ? instance : new AndroidDiceGameUtilsWrapper(context);
+            return instance;
         }
     }
 

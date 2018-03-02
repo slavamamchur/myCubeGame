@@ -34,9 +34,7 @@ import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     protected static final Object lockObject = new Object();
-
     protected static MediaPlayer mMediaPlayer;
-    protected static SysUtilsWrapperInterface instance = null;
 
     protected Context context;
 
