@@ -151,9 +151,20 @@ void main()
 
       if (u_isCubeMapF == 1) {
         float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
-        gl_FragColor = mix(gl_FragColor, skyColour, blendingFactor);
+
+        vec4 backgroundColour;
+        if (u_is2DModeF == 1) {
+            backgroundColour = texture2D(u_BackgroundUnit, v_Texture);
+        }
+        else {
+            backgroundColour = skyColour;
+        }
+
+        gl_FragColor = mix(gl_FragColor, backgroundColour, blendingFactor);
       }
 
-      gl_FragColor = mix(skyColour, gl_FragColor, visibility);
+      if (u_is2DModeF != 1) {
+        gl_FragColor = mix(skyColour, gl_FragColor, visibility);
+      }
 
 }
