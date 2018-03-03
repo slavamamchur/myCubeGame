@@ -121,7 +121,7 @@ public class Blender3DObject extends ImportedObject {
         }
 
         verticesArray = new float[verticesList.size() * 3];
-        short vertexPointer = 0;
+        int vertexPointer = 0;
         for (Vector3f vertex : verticesList) {
             verticesArray[vertexPointer++] = vertex.x;
             verticesArray[vertexPointer++] = vertex.y;
