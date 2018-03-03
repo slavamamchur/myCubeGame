@@ -17,6 +17,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 public abstract class ImportedObject extends GameItemObject {
 
     private Raw3DModel raw3DModel = null;
+    private int facesCount = 0;
 
     public ImportedObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, textureResName, program, mass, tag);
@@ -30,7 +31,10 @@ public abstract class ImportedObject extends GameItemObject {
 
     @Override
     public int getFacesCount() {
-        return raw3DModel == null ? 0 : raw3DModel.getFaces().length;
+        return facesCount;
+    }
+    public void setFacesCount(int facesCount) {
+        this.facesCount = facesCount;
     }
 
     @Override protected float[] getVertexesArray() {

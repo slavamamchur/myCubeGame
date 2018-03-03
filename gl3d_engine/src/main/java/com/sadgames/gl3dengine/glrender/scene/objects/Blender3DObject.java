@@ -128,12 +128,36 @@ public class Blender3DObject extends ImportedObject {
             verticesArray[vertexPointer++] = vertex.z;
         }
 
-        indicesArray = new short[indicesList.size()];
+        setFacesCount(indicesList.size());
+        indicesArray = new short[getFacesCount()];
         short indexPointer = 0;
         for (Short index : indicesList)
             indicesArray[indexPointer++] = index;
 
         //TODO: create normal and texture arrays by vertices if faces are absent
+        if (getFacesCount() == 0) {
+            int pointer = 0;
+            for (Vector2f currentTextureCoords : textureCoordsList) {
+                textureCoordsArray[pointer * 2] = currentTextureCoords.x;
+                textureCoordsArray[pointer * 2 + 1] = currentTextureCoords.y;
+
+                pointer++;
+            }
+
+            pointer = 0;
+            for (Vector3f currentNormal : normalsList) {
+                normalsArray[pointer * 3] = hasInvertedNormals ? -currentNormal.x : currentNormal.x;
+                normalsArray[pointer * 3 + 1] = hasInvertedNormals ? -currentNormal.y : currentNormal.y;
+                normalsArray[pointer * 3 + 2] = hasInvertedNormals ? -currentNormal.z : currentNormal.z;
+
+                pointer++;
+            }
+
+            for (int vertexCount = 0; vertexCount < verticesList.size(); vertexCount++)
+                indicesArray[vertexCount] = (short) vertexCount;
+
+            setFacesCount(verticesList.size());
+        }
 
         return new Raw3DModel(verticesArray, textureCoordsArray, normalsArray, indicesArray);
     }
@@ -171,8 +195,9 @@ public class Blender3DObject extends ImportedObject {
     @Override
     public void render() {
         if (twoSidedSurface) glDisable(GL_CULL_FACE);
-        //TODO: draw array if faces are absent
+
         glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
+
         if (twoSidedSurface) glEnable(GL_CULL_FACE);
     }
 }
