@@ -250,7 +250,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         /** debug obj-model */
         Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "cat", program, /*ColorUtils.argb(255, 255, 128, 64),*/ 1.0f, 1);
         obj.loadObject();
-        //obj.setHasInvertedNormals(true);
         //obj.setTwoSidedSurface(true);
         transformMatrix.setIdentity();
         //transformMatrix.setTranslation(new Vector3f(1f, 0.5f, 0f));
