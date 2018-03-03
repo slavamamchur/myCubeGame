@@ -480,7 +480,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         clearData();
     }
 
-    private void initScene() { //TODO: set 2D-camera if 2D-mode choosed in the game settings
+    private void initScene() {
         if (sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
             camera = new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE);
         else
