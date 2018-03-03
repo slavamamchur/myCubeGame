@@ -19,6 +19,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -29,6 +30,7 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
+import com.sadgames.sysutils.common.ColorUtils;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -247,14 +249,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         /** debug obj-model */
-        /*Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "cat", program, *//*ColorUtils.argb(255, 255, 128, 64),*//* 1.0f, 1);
+        Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "players_chip", program, ColorUtils.argb(255, 255, 128, 64), 1.0f, 1);
         obj.loadObject();
         //obj.setTwoSidedSurface(true);
         transformMatrix.setIdentity();
-        //transformMatrix.setTranslation(new Vector3f(1f, 0.5f, 0f));
-        transformMatrix.setScale(0.5f);
+        transformMatrix.setScale(0.25f);
+        transformMatrix.setTranslation(new Vector3f(0f, 0.08f, 0f));
         obj.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
-        glScene.putChild(obj, "test_obj_model");*/
+        glScene.putChild(obj, "test_obj_model");
 
         /** sky-box */
         GLCamera camera = glScene.getCamera();
