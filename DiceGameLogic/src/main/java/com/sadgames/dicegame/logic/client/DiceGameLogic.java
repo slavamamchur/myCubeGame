@@ -248,13 +248,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         /** debug obj-model */
-        Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "cat", program, /*ColorUtils.argb(255, 255, 128, 64),*/ 1.0f, 1);
+        Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "fish", program, /*ColorUtils.argb(255, 255, 128, 64),*/ 1.0f, 1);
         obj.loadObject();
         //obj.setHasInvertedNormals(true);
+        obj.setTwoSidedSurface(true);
         //obj.setCastShadow(false);
         transformMatrix.setIdentity();
-        //transformMatrix.setTranslation(new Vector3f(1f, 0.5f, 0f));
-        transformMatrix.setScale(0.5f);
+        transformMatrix.setTranslation(new Vector3f(1f, 0.5f, 0f));
+        transformMatrix.setScale(0.25f);
         obj.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
         glScene.putChild(obj, "test_obj_model");
 

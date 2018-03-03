@@ -81,7 +81,7 @@ public class Blender3DObject extends ImportedObject {
         try {
             BufferedReader model = new BufferedReader(new StringReader(sysUtilsWrapper.iReadTextFromFile(modelFileName)));
 
-            while (!(readedLine = model.readLine()).startsWith("f ")) {
+            while (!((readedLine = model.readLine()) == null) && !readedLine.startsWith("f ")) {
                 String[] parsedValues = readedLine.split(" ");
 
                 if (readedLine.startsWith("v ")) {
@@ -134,10 +134,11 @@ public class Blender3DObject extends ImportedObject {
         for (Short index : indicesList)
             indicesArray[indexPointer++] = index;
 
-        //TODO: create normal and texture arrays by vertices if faces are absent
         if (getFacesCount() == 0) {
             int pointer = 0;
             for (Vector2f currentTextureCoords : textureCoordsList) {
+                if (pointer >= verticesList.size()) break;
+
                 textureCoordsArray[pointer * 2] = currentTextureCoords.x;
                 textureCoordsArray[pointer * 2 + 1] = currentTextureCoords.y;
 
@@ -146,6 +147,8 @@ public class Blender3DObject extends ImportedObject {
 
             pointer = 0;
             for (Vector3f currentNormal : normalsList) {
+                if (pointer >= verticesList.size()) break;
+
                 normalsArray[pointer * 3] = hasInvertedNormals ? -currentNormal.x : currentNormal.x;
                 normalsArray[pointer * 3 + 1] = hasInvertedNormals ? -currentNormal.y : currentNormal.y;
                 normalsArray[pointer * 3 + 2] = hasInvertedNormals ? -currentNormal.z : currentNormal.z;
@@ -153,6 +156,7 @@ public class Blender3DObject extends ImportedObject {
                 pointer++;
             }
 
+            indicesArray = new short[verticesList.size()];
             for (int vertexCount = 0; vertexCount < verticesList.size(); vertexCount++)
                 indicesArray[vertexCount] = (short) vertexCount;
 
