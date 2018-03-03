@@ -7,7 +7,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 
-public class ChipItem extends PyramidPrimitiveObject { //TODO: Import blender model
+public class ChipItem extends PyramidPrimitiveObject { //TODO: Blender3DObject: import blender model -> players_chip
 
     public static final float CHIP_BOTTOM_HALF_WIDTH = 0.05f;
     public static final float CHIP_HEIGHT = 0.1f;
@@ -19,6 +19,11 @@ public class ChipItem extends PyramidPrimitiveObject { //TODO: Import blender mo
 
         this.player = player;
         setItemName(CHIP_MESH_OBJECT + "_" + player.getName());
+
+        //Matrix4f transformMatrix = new Matrix4f();
+        //transformMatrix.setIdentity();
+        //transformMatrix.setScale(0.1f);
+        //transformMatrix.setTranslation(new Vector3f(0f, 0.1f, 0f));
     }
 
     public InstancePlayer getPlayer() {
