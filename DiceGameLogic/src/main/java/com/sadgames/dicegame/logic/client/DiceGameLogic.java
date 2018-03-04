@@ -19,6 +19,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -238,24 +239,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
-        /** debug shadow map gui-box */
-        /*GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
-                                                              glScene.getCachedShader(GUI_OBJECT),
-                                                              new Vector4f(-1, 1, 0, 0), false);
-        shadowMapView.loadObject();
-        shadowMapView.setGlTexture(glScene.getShadowMapFBO().getFboTexture());
-        glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
-
-        /** debug obj-model */
-        /*Blender3DObject obj = new Blender3DObject(sysUtilsWrapper, "Dice", program, 1.0f, 1);
-        obj.loadObject();
-        //obj.setTwoSidedSurface(true);
-        transformMatrix.setIdentity();
-        transformMatrix.setScale(0.1f);
-        transformMatrix.setTranslation(new Vector3f(0f, 0.1f, 0f));
-        obj.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
-        glScene.putChild(obj, "test_obj_model");*/
-
         /** sky-box */
         GLCamera camera = glScene.getCamera();
         SkyBoxProgram shader = (SkyBoxProgram) glScene.getCachedShader(SKY_BOX_OBJECT);
@@ -263,6 +246,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, shader);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
+
+        /** debug shadow map gui-box */
+        /*GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
+                                                              glScene.getCachedShader(GUI_OBJECT),
+                                                              new Vector4f(-1, 1, 0, 0), false);
+        shadowMapView.loadObject();
+        shadowMapView.setGlTexture(glScene.getShadowMapFBO().getFboTexture());
+        glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
 
         forceGCandWait();
         restApiWrapper.removeLoadingSplash();
@@ -340,12 +331,15 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GameItemObject prevChip = null;
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            GameItemObject chip = new ChipItem(sysUtilsWrapper, program, player);
+            Blender3DObject chip = new ChipItem(sysUtilsWrapper, program, player);
 
             Vector2f chipPlace = getChipPlaceByWayPoint(parent, playersOnWayPoints, player, true);
             chip.setInWorldPosition(chipPlace);
 
-            if (prevChip == null) chip.loadObject(); else chip.loadFromObject(prevChip);
+            if (prevChip == null)
+                chip.loadObject();
+            else
+                chip.loadFromObject(prevChip);
 
             parent.putChild(chip, chip.getItemName());
 

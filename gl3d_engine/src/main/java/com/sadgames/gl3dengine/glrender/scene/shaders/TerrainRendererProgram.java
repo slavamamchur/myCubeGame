@@ -123,6 +123,5 @@ public class TerrainRendererProgram extends VBOShaderProgram {
     @Override
     public void bindAdditionalParams(GLScene scene, AbstractGL3DObject object) {
         bindLightSourceMVP(object, scene.getLightSource().getViewMatrix(), scene.getLightSource().getProjectionMatrix(), scene.hasDepthTextureExtension());
-        //TODO: Create ans set 2D-WallPaper param for terrain object.
     }
 }

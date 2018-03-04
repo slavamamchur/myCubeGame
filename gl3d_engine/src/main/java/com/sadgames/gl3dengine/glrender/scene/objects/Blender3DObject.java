@@ -40,6 +40,9 @@ public class Blender3DObject extends ImportedObject {
     private boolean hasInvertedNormals = false;
     private boolean twoSidedSurface = false;
 
+    protected float initialScale;
+    protected Vector3f initialTranslation;
+
     public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, objFileName + COMPRESSED_TEXTURE_FILE_EXT, program, mass, tag);
         init(objFileName);
@@ -52,6 +55,9 @@ public class Blender3DObject extends ImportedObject {
 
     private void init(String objFileName) {
         this.objFileName = MODELS_RESOURCE_FOLDER_NAME + objFileName + BLENDER_FILE_EXT;
+        this.initialScale = 1.0f;
+        this.initialTranslation = new Vector3f(0f, 0f, 0f);
+
     }
 
     public void setHasInvertedNormals(boolean hasInvertedNormals) {
@@ -123,9 +129,9 @@ public class Blender3DObject extends ImportedObject {
         verticesArray = new float[verticesList.size() * 3];
         int vertexPointer = 0;
         for (Vector3f vertex : verticesList) {
-            verticesArray[vertexPointer++] = vertex.x;
-            verticesArray[vertexPointer++] = vertex.y;
-            verticesArray[vertexPointer++] = vertex.z;
+            verticesArray[vertexPointer++] = vertex.x * initialScale + initialTranslation.x;
+            verticesArray[vertexPointer++] = vertex.y * initialScale + initialTranslation.y;
+            verticesArray[vertexPointer++] = vertex.z * initialScale + initialTranslation.z;
         }
 
         setFacesCount(indicesList.size());

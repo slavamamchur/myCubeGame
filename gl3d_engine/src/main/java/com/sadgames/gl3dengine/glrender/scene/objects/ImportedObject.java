@@ -30,6 +30,12 @@ public abstract class ImportedObject extends GameItemObject {
     protected abstract Raw3DModel getRaw3DModel();
 
     @Override
+    public void loadFromObject(AbstractGL3DObject src) {
+        super.loadFromObject(src);
+        facesCount = src.getFacesCount();
+    }
+
+    @Override
     public int getFacesCount() {
         return facesCount;
     }

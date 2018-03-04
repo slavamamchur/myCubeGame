@@ -8,19 +8,20 @@ import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 
-public class GameDiceItem extends CubePrimitiveObject { //TODO: Blender3DObject: import blender model -> Dice and recalculate top face value
+public class GameDiceItem extends CubePrimitiveObject { //TODO: Blender3DObject: import blender model -> "Dice" and recalculate top face value.
 
     public static final float GAME_DICE_HALF_SIZE = 0.15f;
-    private short[] DICE_FACE_VALUES = {2, 1, 5, 6, 3, 4};
+    private static final float DICE_DEFAULT_WEIGHT = 10f;
+    private static short[] DICE_FACE_VALUES = {2, 1, 5, 6, 3, 4};
 
     public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String textureName) {
-        super(sysUtilsWrapper, textureName, program, 10f, MOVING_OBJECT, GAME_DICE_HALF_SIZE);
-        setItemName(DICE_MESH_OBJECT_1);
+        super(sysUtilsWrapper, textureName, program, DICE_DEFAULT_WEIGHT, MOVING_OBJECT, GAME_DICE_HALF_SIZE);
 
-        //Matrix4f transformMatrix = new Matrix4f();
-        //transformMatrix.setIdentity();
-        //transformMatrix.setScale(0.25f);
-        //transformMatrix.setTranslation(new Vector3f(0f, 0.08f, 0f));
+        //this.initialScale = 0.25f;
+        //this.initialTranslation = new Vector3f(0f, 0.08f, 0f);
+
+        //setTwoSidedSurface(false);
+        setItemName(DICE_MESH_OBJECT_1);
     }
 
     public int getTopFaceDiceValue() {
