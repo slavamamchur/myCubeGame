@@ -398,7 +398,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
-    private void rollDice() { //TODO: set random initial rotation
+    private void rollDice() { //TODO: set random initial rotation and direction
         synchronized (GLScene.lockObject) {
             gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
             ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
