@@ -16,8 +16,8 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class ImportedObject extends GameItemObject {
 
-    private Raw3DModel raw3DModel = null;
-    private int facesCount = 0;
+    protected Raw3DModel raw3DModel = null;
+    protected int facesCount = 0;
 
     public ImportedObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, textureResName, program, mass, tag);

@@ -1,5 +1,6 @@
 package com.sadgames.dicegame.logic.client.entities.items;
 
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3dengine.glrender.scene.objects.CubePrimitiveObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -29,11 +30,16 @@ public class GameDiceItem extends CubePrimitiveObject { //TODO: Blender3DObject:
     public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String textureName) {
         super(sysUtilsWrapper, textureName, program, DICE_DEFAULT_WEIGHT, MOVING_OBJECT, GAME_DICE_HALF_SIZE);
 
-        //this.initialScale = 0.25f;
+        //this.initialScale = GAME_DICE_HALF_SIZE;
         //this.initialTranslation = new Vector3f(0f, 0.08f, 0f);
 
         //setTwoSidedSurface(false);
         setItemName(DICE_MESH_OBJECT_1);
+    }
+
+    @Override
+    protected void createCollisionShape(float[] vertexes) {
+        _shape = new BoxShape(new Vector3f(GAME_DICE_HALF_SIZE, GAME_DICE_HALF_SIZE, GAME_DICE_HALF_SIZE));
     }
 
     public int getTopFaceDiceValue() {
