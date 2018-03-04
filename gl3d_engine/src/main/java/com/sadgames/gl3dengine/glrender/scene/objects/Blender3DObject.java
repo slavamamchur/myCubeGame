@@ -67,7 +67,7 @@ public class Blender3DObject extends ImportedObject {
         this.twoSidedSurface = twoSidedSurface;
     }
 
-    @Override protected Raw3DModel getRaw3DModel() {
+    @Override public Raw3DModel getRaw3DModel() {
         return parseObjFile(objFileName);
     }
 

@@ -27,12 +27,14 @@ public abstract class ImportedObject extends GameItemObject {
         super(sysUtilsWrapper, program, color, mass, tag);
     }
 
-    protected abstract Raw3DModel getRaw3DModel();
+    public abstract Raw3DModel getRaw3DModel();
 
     @Override
     public void loadFromObject(AbstractGL3DObject src) {
         super.loadFromObject(src);
+
         facesCount = src.getFacesCount();
+        raw3DModel = ((ImportedObject)src).getRaw3DModel();
     }
 
     @Override

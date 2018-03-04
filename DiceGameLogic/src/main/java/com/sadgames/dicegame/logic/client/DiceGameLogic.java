@@ -44,7 +44,6 @@ import javax.vecmath.Vector3f;
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
-import static com.sadgames.dicegame.logic.client.GameConst.DICE_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
@@ -231,11 +230,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             placePlayersChips(terrain, program);
 
         /** gaming dice */
-        GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, program, DICE_TEXTURE);
+        GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, program);
         gameDice_1.loadObject();
         Matrix4f transformMatrix = new Matrix4f();
         transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(-100f, GameDiceItem.GAME_DICE_HALF_SIZE, 0));
+        transformMatrix.setTranslation(new Vector3f(-100f, 0, 0));
         gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
