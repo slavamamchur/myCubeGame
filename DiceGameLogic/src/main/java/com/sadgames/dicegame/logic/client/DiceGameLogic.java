@@ -407,7 +407,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
 
-        //TODO: set random initial rotation and direction
+        //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
         float fy = 2f + rnd.nextInt(3) * 1f;
