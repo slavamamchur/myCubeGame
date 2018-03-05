@@ -398,7 +398,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
-    private void rollDice() { //TODO: set random initial rotation and direction
+    private void rollDice() {
         synchronized (GLScene.lockObject) {
             gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
             ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
@@ -406,14 +406,17 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
         dice_1.createRigidBody();
-        ///Transform tr = new Transform(new Matrix4f(dice_1.getModelMatrix()));
-        ///dice_1.get_body().setWorldTransformMatrix(tr);
+
+        //TODO: set random initial rotation and direction
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
         float fy = 2f + rnd.nextInt(3) * 1f;
         float fxz = fy * 2f / 3f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
-        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,fxz) : new Vector3f(fxz,fy,0f));
+        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
+        //dice_1.get_body().applyTorque(); ???
+        //dice_1.get_body().setWorldTransform(); ???
+
         gl3DScene.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
 
