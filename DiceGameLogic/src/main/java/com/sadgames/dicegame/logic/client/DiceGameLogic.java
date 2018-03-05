@@ -400,7 +400,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     private void rollDice() {
         synchronized (GLScene.lockObject) {
-            gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE)); //TODO: set 2D-Mode
+            gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE)); //TODO: set 2D-Mode on
             ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
         }
 
@@ -427,7 +427,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             restApiWrapper.showTurnInfo(gameInstanceEntity);
 
             synchronized (GLScene.lockObject) {
-                gl3DScene.setCamera(null); //TODO: set 3D-Mode
+                gl3DScene.setCamera(null); //TODO: set 2D-Mode off
                 ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
             }
 
