@@ -19,4 +19,5 @@ public interface SettingsManagerInterface {
     GraphicsQuality getGraphicsQualityLevel();
 
     boolean isIn_2D_Mode();
+    void setIn_2D_Mode(boolean value);
 }

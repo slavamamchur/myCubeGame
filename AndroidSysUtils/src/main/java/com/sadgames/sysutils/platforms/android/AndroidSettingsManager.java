@@ -63,6 +63,14 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
         }
     }
 
+    public void safeWriteProperty(String name, boolean value){
+        synchronized (lockObject) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean(name, value);
+            editor.apply();
+        }
+    }
+
     @Override
     public String getAuthToken(){
         return safeReadProperty(PARAM_AUTH_TOKEN, "");
@@ -116,5 +124,10 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     @Override
     public boolean isIn_2D_Mode() {
         return safeReadProperty(PARAM_IN_2D_MODE, false);
+    }
+
+    @Override
+    public void setIn_2D_Mode(boolean value) {
+        safeWriteProperty(PARAM_IN_2D_MODE, value);
     }
 }

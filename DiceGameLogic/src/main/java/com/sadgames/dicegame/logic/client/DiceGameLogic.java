@@ -398,9 +398,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
+    private boolean old2D_ModeValue;
+
     private void rollDice() {
         synchronized (GLScene.lockObject) {
-            gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE)); //TODO: set 2D-Mode on
+            old2D_ModeValue = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode();
+            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(true);
+            gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
             ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
         }
 
@@ -408,7 +412,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         dice_1.createRigidBody();
 
-        Matrix4f transformMatrix = new Matrix4f(); //TODO: set initial random rotation
+        Matrix4f transformMatrix = new Matrix4f();
         transformMatrix.setIdentity();
         transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2f));
         dice_1.setPWorldTransform(transformMatrix);
@@ -416,7 +420,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
-        float fy = 3f + rnd.nextInt(2) * 1f;
+        float fy = 2f + rnd.nextInt(3) * 1f;
         float fxz = fy * 3f / 4f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
@@ -431,7 +435,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             restApiWrapper.showTurnInfo(gameInstanceEntity);
 
             synchronized (GLScene.lockObject) {
-                gl3DScene.setCamera(null); //TODO: set 2D-Mode off
+                sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
+                gl3DScene.setCamera(null);
                 ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
             }
 
