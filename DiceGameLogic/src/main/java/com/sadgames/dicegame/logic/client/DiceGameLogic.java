@@ -261,9 +261,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     @Override
     public void onBeforeDrawFrame(long frametime) {
         SkyBoxObject skyBox = (SkyBoxObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
-        float angle = skyBox.getRotationAngle() + 0.5f * frametime / 250f;
+        float angle = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 0 : skyBox.getRotationAngle() + 0.5f * frametime / 250f;
         skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
-        ((TerrainRendererProgram)gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
+        ((TerrainRendererProgram) gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
@@ -414,13 +414,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         Matrix4f transformMatrix = new Matrix4f();
         transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2f));
+        transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2.5f));
         dice_1.setPWorldTransform(transformMatrix);
 
         //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(3) * 1f;
+        float fy = 2f + rnd.nextInt(4) * 1f;
         float fxz = fy * 3f / 4f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
