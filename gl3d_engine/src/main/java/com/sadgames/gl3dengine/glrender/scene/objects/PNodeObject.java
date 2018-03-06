@@ -106,4 +106,10 @@ public abstract class PNodeObject extends BitmapTexturedObject {
         _body = new RigidBody(bodyCI);
         _body.setUserPointer(this);
     }
+
+    public void setPWorldTransform(Matrix4f transformMatrix) {
+        if (_body != null) {
+            _body.setWorldTransform(new Transform(transformMatrix));
+        }
+    }
 }

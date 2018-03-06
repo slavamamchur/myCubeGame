@@ -405,7 +405,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         }
 
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
+
         dice_1.createRigidBody();
+
+        Matrix4f transformMatrix = new Matrix4f(); //TODO: set initial random rotation
+        transformMatrix.setIdentity();
+        transformMatrix.setTranslation(new Vector3f(0f, 1f, 2f));
+        dice_1.setPWorldTransform(transformMatrix);
 
         //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
         Random rnd = new Random(System.currentTimeMillis());
@@ -414,8 +420,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         float fxz = fy * 2f / 3f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
-        //dice_1.get_body().applyTorque(); ???
-        //dice_1.get_body().setWorldTransform(); ???
 
         gl3DScene.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
