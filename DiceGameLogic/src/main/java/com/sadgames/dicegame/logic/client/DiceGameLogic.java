@@ -410,14 +410,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         Matrix4f transformMatrix = new Matrix4f(); //TODO: set initial random rotation
         transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(0f, 1f, 2f));
+        transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2f));
         dice_1.setPWorldTransform(transformMatrix);
 
         //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(3) * 1f;
-        float fxz = fy * 2f / 3f;
+        float fy = 3f + rnd.nextInt(2) * 1f;
+        float fxz = fy * 3f / 4f;
         fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
         dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
 
