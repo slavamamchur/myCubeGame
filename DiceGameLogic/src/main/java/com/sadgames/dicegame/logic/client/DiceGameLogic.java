@@ -100,11 +100,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     public void playTurn() {
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
-        gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-                @Override
-                public void onAnimationEnd() {rollDice();
-                }
-            });
+        gl3DScene.getZoomCameraAnimation().startAnimation(null, () -> rollDice());
     }
 
     public void playerNextMove(GameInstanceEntity gameInstance) {
@@ -218,8 +214,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         /** Terrain map */
         TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
-        //if (GLRenderConsts.GraphicsQuality.ULTRA.equals(graphicsQuality) && !sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
-            terrain.setWaterReflectionMap(skyBoxTexture);
+        terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
@@ -443,10 +438,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             dice.setPosition(new Vector3f(100, 0, 0));
 
             gl3DScene.setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
-            gl3DScene.getZoomCameraAnimation().startAnimation(null, new GLAnimation.AnimationCallBack() {
-                    @Override
-                    public void onAnimationEnd() {playerNextMove(gameInstanceEntity);}
-                });
+            gl3DScene.getZoomCameraAnimation().startAnimation(null, () -> playerNextMove(gameInstanceEntity));
 
         }
     }

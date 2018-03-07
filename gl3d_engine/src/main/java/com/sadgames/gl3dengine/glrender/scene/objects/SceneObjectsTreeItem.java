@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -102,10 +101,7 @@ public abstract class SceneObjectsTreeItem {
 
     public void proceesTreeItems(ISceneObjectsTreeHandler itemHandler) {
         ArrayList<SceneObjectsTreeItem> sortedItems = new ArrayList<>(childs.values());
-        Collections.sort(sortedItems, new Comparator<SceneObjectsTreeItem>() {
-            @Override
-            public int compare(SceneObjectsTreeItem i1, SceneObjectsTreeItem i2) {return (int)(i1.itemNumber - i2.itemNumber);}
-        });
+        Collections.sort(sortedItems, (i1, i2) -> (int)(i1.itemNumber - i2.itemNumber));
 
         for (SceneObjectsTreeItem item : sortedItems) {
             itemHandler.onProcessItem(item);

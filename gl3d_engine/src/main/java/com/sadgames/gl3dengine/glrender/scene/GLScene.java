@@ -113,7 +113,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     public void setBackgroundTextureName(String backgroundTextureName) {
         this.backgroundTextureName = backgroundTextureName;
     }
-
     public GLLightSource getLightSource() {
         return lightSource;
     }
@@ -144,13 +143,11 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     public float getMoveFactor() {
         return moveFactor;
     }
-
     public boolean isSceneLoaded() {
         synchronized (lockObject) {
             return isSceneLoaded;
         }
     }
-
     public void setSceneLoaded(boolean sceneLoaded) {
         synchronized (lockObject) {
             isSceneLoaded = sceneLoaded;
@@ -177,12 +174,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void clearObjectsCache() {
-        proceesTreeItems(new ISceneObjectsTreeHandler() {
-                @Override
-                public void onProcessItem(SceneObjectsTreeItem item) {
-                    ((AbstractGL3DObject)item).clearData();
-                }
-            });
+        proceesTreeItems(item -> ((AbstractGL3DObject)item).clearData());
         childs.clear();
 
         if (postEffects2DScreen != null)
@@ -261,12 +253,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         calculateCameraPosition();
         calculateWavesMovingFactor();
 
-        proceesTreeItems(new ISceneObjectsTreeHandler() {
-                @Override
-                public void onProcessItem(SceneObjectsTreeItem item) {
-                    caclulateObjectsAnimations(item);
-                }
-            });
+        proceesTreeItems(item -> caclulateObjectsAnimations(item));
     }
 
     private void caclulateObjectsAnimations(SceneObjectsTreeItem sceneObject) {
@@ -340,12 +327,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         getCachedShader(SHADOW_MAP_OBJECT).useProgram();
         prevObject = null;
-        proceesTreeItems(new ISceneObjectsTreeHandler() {
-                @Override
-                public void onProcessItem(SceneObjectsTreeItem item) {
-                    drawObjectIntoShadowMap(item);
-                }
-            });
+        proceesTreeItems(item -> drawObjectIntoShadowMap(item));
 
         shadowMapFBO.unbind();
     }
@@ -390,12 +372,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         prevObject = null;
         program = null;
-        proceesTreeItems(new ISceneObjectsTreeHandler() {
-            @Override
-            public void onProcessItem(SceneObjectsTreeItem item) {
-                drawObjectIntoColorBuffer(item);
-            }
-        });
+        proceesTreeItems(item -> drawObjectIntoColorBuffer(item));
 
         /** for post effects image processing */
         //mainRenderFBO.unbind();
