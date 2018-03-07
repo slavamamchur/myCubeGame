@@ -45,11 +45,27 @@ public class GameDiceItem extends Blender3DObject {
     }
 
     public void generateInitialTransform() {
-        //TODO: set initial random rotation
-        Matrix4f transformMatrix = new Matrix4f();
-        transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2.5f));
-        setPWorldTransform(transformMatrix);
+        Random rnd = new Random(System.currentTimeMillis());
+        Matrix4f transformer = new Matrix4f();
+        Matrix4f transformingObject = new Matrix4f();
+
+        transformingObject.setIdentity();
+        transformer.setIdentity();
+
+        transformer.setTranslation(new Vector3f(0f, 0.5f, 2.5f));
+        transformingObject.mul(transformer);
+
+        transformer.rotX((float) Math.toRadians(rnd.nextInt(4) * 90f));
+        transformingObject.mul(transformer);
+
+        transformer.rotY((float) Math.toRadians(rnd.nextInt(4) * 90f));
+        transformingObject.mul(transformer);
+
+        transformer.rotZ((float) Math.toRadians(rnd.nextInt(4) * 90f));
+        transformingObject.mul(transformer);
+
+
+        setPWorldTransform(transformingObject);
     }
 
     public void generateForceVector() {
