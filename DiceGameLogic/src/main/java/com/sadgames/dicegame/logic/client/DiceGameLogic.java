@@ -12,7 +12,6 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.Instan
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
-import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
@@ -76,31 +75,32 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         this.gl3DScene = gl3DScene;
     }
 
-    public GameMapEntity getMapEntity() {
+    @SuppressWarnings("unused") public GameMapEntity getMapEntity() {
         return mapEntity;
     }
     public void setMapEntity(GameMapEntity mapEntity) {
         this.mapEntity = mapEntity;
     }
-    public GameEntity getGameEntity() {
+    @SuppressWarnings("unused") public GameEntity getGameEntity() {
         return gameEntity;
     }
     public void setGameEntity(GameEntity gameEntity) {
         this.gameEntity = gameEntity;
     }
-    public GameInstanceEntity getGameInstanceEntity() {
+    @SuppressWarnings("unused") public GameInstanceEntity getGameInstanceEntity() {
         return gameInstanceEntity;
     }
     public void setGameInstanceEntity(GameInstanceEntity gameInstanceEntity) {
         this.gameInstanceEntity = gameInstanceEntity;
     }
-    public List<InstancePlayer> getSavedPlayers() {
+    @SuppressWarnings("unused") public List<InstancePlayer> getSavedPlayers() {
         return savedPlayers;
     }
     public void setSavedPlayers(List<InstancePlayer> savedPlayers) {
         this.savedPlayers = savedPlayers;
     }
 
+    @SuppressWarnings("all")
     public void playTurn() {
         gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
         gl3DScene.getZoomCameraAnimation().startAnimation(null, () -> rollDice());
@@ -200,7 +200,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
-        GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+        //GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
 
         /** Skybox and water reflection map texture */
@@ -324,7 +324,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         move.startAnimation(chip, delegate);
     }
 
-    public void placePlayersChips(SceneObjectsTreeItem parent, GLShaderProgram program) {
+    private void placePlayersChips(SceneObjectsTreeItem parent, GLShaderProgram program) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
         GameItemObject prevChip = null;
@@ -346,7 +346,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         }
     }
 
-    public void moveChips(GLScene mScene) {
+    private void moveChips(GLScene mScene) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
@@ -357,7 +357,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         }
     }
 
-    public Vector2f getChipPlaceByWayPoint(SceneObjectsTreeItem parent, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
+    @SuppressWarnings("all")
+    private Vector2f getChipPlaceByWayPoint(SceneObjectsTreeItem parent, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
         int currentPointIdx = player.getCurrentPoint();
         playersOnWayPoints[currentPointIdx]++;
         int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
@@ -366,7 +367,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         return getChipPlace(parent, point, playersCnt, rotate);
     }
 
-    public Vector2f getChipPlace(SceneObjectsTreeItem parent, AbstractGamePoint point, int playersCnt, boolean rotate) {
+    private Vector2f getChipPlace(SceneObjectsTreeItem parent, AbstractGamePoint point, int playersCnt, boolean rotate) {
         TopographicMapObject map = (TopographicMapObject) parent;
         float scaleFactor = map.getGlTexture().getWidth() * 1.0f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
         double toX2 = point.getxPos() * scaleFactor;
@@ -427,7 +428,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         gl3DScene.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
 
-    public void removeDice(GameDiceItem dice) {
+    private void removeDice(GameDiceItem dice) {
         //toggleActionBarProgress(true);
         if (gameInstanceEntity != null) {
             gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
