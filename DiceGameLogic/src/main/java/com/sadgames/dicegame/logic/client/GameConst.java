@@ -21,6 +21,7 @@ public class GameConst {
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
     public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
     public static final String SKY_BOX_CUBE_MAP_OBJECT = "SKY_BOX_CUBE_MAP_OBJECT";
+    public static final String MINI_MAP_OBJECT = "MINI_MAP_OBJECT";
 
     public static final int    PATH_COLOR             = ColorUtils.argb(255, 0, 255, 0);
     public static final int    WAY_POINT_COLOR        = ColorUtils.argb(255, 255, 0, 0);

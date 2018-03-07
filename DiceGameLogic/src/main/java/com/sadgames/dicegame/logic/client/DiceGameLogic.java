@@ -20,6 +20,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -35,20 +36,22 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
@@ -241,13 +244,15 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 
-        /** debug shadow map gui-box */
-        /*GUI2DImageObject shadowMapView = new GUI2DImageObject(sysUtilsWrapper,
-                                                              glScene.getCachedShader(GUI_OBJECT),
-                                                              new Vector4f(-1, 1, 0, 0), false);
-        shadowMapView.loadObject();
-        shadowMapView.setGlTexture(glScene.getShadowMapFBO().getFboTexture());
-        glScene.putChild(shadowMapView,"DEBUG_SHADOW_MAP_VIEW");*/
+        /** mini-map gui-box */
+        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
+            GUI2DImageObject miniMapView = new GUI2DImageObject(sysUtilsWrapper,
+                    glScene.getCachedShader(GUI_OBJECT),
+                    new Vector4f(-1, 1, -0.75f, 0.5f), true);
+            miniMapView.loadObject();
+            miniMapView.setGlTexture(terrain.getGlTexture());
+            glScene.putChild(miniMapView, MINI_MAP_OBJECT);
+        }
 
         forceGCandWait();
         restApiWrapper.removeLoadingSplash();
@@ -394,31 +399,30 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     }
 
     private boolean old2D_ModeValue;
-
-    private void rollDice() {
+    private void switrchTo2DMode() {
         synchronized (GLScene.lockObject) {
             old2D_ModeValue = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode();
             sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(true);
             gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
             ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
         }
+    }
+
+    private void restorePrevViewMode() {
+        synchronized (GLScene.lockObject) {
+            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
+            gl3DScene.setCamera(null);
+            ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
+        }
+    }
+
+    private void rollDice() {
+        switrchTo2DMode();
 
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
-
         dice_1.createRigidBody();
-
-        Matrix4f transformMatrix = new Matrix4f();
-        transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2.5f));
-        dice_1.setPWorldTransform(transformMatrix);
-
-        //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
-        Random rnd = new Random(System.currentTimeMillis());
-        int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(4) * 1f;
-        float fxz = fy * 3f / 4f;
-        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
-        dice_1.get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
+        dice_1.generateInitialTransform();
+        dice_1.generateForceVector();
 
         gl3DScene.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
     }
@@ -429,11 +433,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
             restApiWrapper.showTurnInfo(gameInstanceEntity);
 
-            synchronized (GLScene.lockObject) {
-                sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
-                gl3DScene.setCamera(null);
-                ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
-            }
+            restorePrevViewMode();
 
             dice.setPosition(new Vector3f(100, 0, 0));
 

@@ -7,7 +7,9 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
@@ -40,6 +42,24 @@ public class GameDiceItem extends Blender3DObject {
     @Override
     protected void createCollisionShape(float[] vertexes) {
         _shape = new BoxShape(new Vector3f(GAME_DICE_HALF_SIZE, GAME_DICE_HALF_SIZE, GAME_DICE_HALF_SIZE));
+    }
+
+    public void generateInitialTransform() {
+        //TODO: set initial random rotation
+        Matrix4f transformMatrix = new Matrix4f();
+        transformMatrix.setIdentity();
+        transformMatrix.setTranslation(new Vector3f(0f, 0.5f, 2.5f));
+        setPWorldTransform(transformMatrix);
+    }
+
+    public void generateForceVector() {
+        //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
+        Random rnd = new Random(System.currentTimeMillis());
+        int direction = rnd.nextInt(2);
+        float fy = 2f + rnd.nextInt(3) * 1f;
+        float fxz = fy * 3f / 4f;
+        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
+        get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
     }
 
     public int getTopFaceDiceValue() {
