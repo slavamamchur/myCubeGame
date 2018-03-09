@@ -69,7 +69,7 @@ public class GameDiceItem extends Blender3DObject {
     }
 
     public void generateForceVector() {
-        //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle
+        //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle (-45:45)
         Random rnd = new Random(System.currentTimeMillis());
         int direction = rnd.nextInt(2);
         float fy = 2f + rnd.nextInt(3) * 1f;
