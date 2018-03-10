@@ -236,7 +236,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
        int shadowMapHeight = Math.round(mDisplayHeight * shadowMapResolutionScaleFactor);
 
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
-       shadowMapFBO = hasDepthTextureExtension ?
+       shadowMapFBO = hasDepthTextureExtension ? //TODO: always use color buffer
                new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :
                new ColorBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
     }
