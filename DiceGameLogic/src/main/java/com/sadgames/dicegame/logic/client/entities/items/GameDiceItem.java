@@ -3,6 +3,7 @@ package com.sadgames.dicegame.logic.client.entities.items;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
@@ -69,13 +70,16 @@ public class GameDiceItem extends Blender3DObject {
     }
 
     public void generateForceVector() {
-        //TODO: set random fxz and fy, then rotate force vector aground Y-axe by random angle (-45:45)
         Random rnd = new Random(System.currentTimeMillis());
-        int direction = rnd.nextInt(2);
-        float fy = 2f + rnd.nextInt(3) * 1f;
+        float fy = 3f + rnd.nextInt(2) * 1f;
         float fxz = fy * 3f / 4f;
-        fxz = direction == 1 && (rnd.nextInt(2) > 0) ? -1*fxz : fxz;
-        get_body().setLinearVelocity(direction == 0 ? new Vector3f(0f,fy,-fxz) : new Vector3f(fxz,fy,0f));
+        float[] fVector = new float[] {0f, fy, -fxz, 1f};
+
+        Matrix4f transform = new Matrix4f();
+        transform.rotY((float) Math.toRadians(45.0 - rnd.nextInt(91) * 1.0));
+
+        Vector3f force = sysUtilsWrapper.mulMV(MathUtils.getOpenGlMatrix(transform), fVector);
+        get_body().setLinearVelocity(force);
     }
 
     public int getTopFaceDiceValue() {
