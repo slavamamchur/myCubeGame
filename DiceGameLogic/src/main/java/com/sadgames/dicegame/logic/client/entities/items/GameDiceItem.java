@@ -71,8 +71,8 @@ public class GameDiceItem extends Blender3DObject {
 
     public void generateForceVector() {
         Random rnd = new Random(System.currentTimeMillis());
-        float fy = 3f + rnd.nextInt(2) * 1f;
-        float fxz = fy * 3f / 4f;
+        float fxz = 3f + rnd.nextInt(2) * 1f;
+        float fy = fxz * 3f / 4f;
         float[] fVector = new float[] {0f, fy, -fxz, 1f};
 
         Matrix4f transform = new Matrix4f();
