@@ -308,7 +308,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onBeforeDrawFrame(frameTime);
 
-        clearRenderBuffers();
+        //clearRenderBuffers();
 
         simulatePhysics(currentTime);
         calculateSceneTransformations();
@@ -369,6 +369,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         GLES20JniWrapper.glEnableBackFacesCulling();
         GLES20JniWrapper.glViewport(mDisplayWidth, mDisplayHeight);
+        clearRenderBuffers();
 
         prevObject = null;
         program = null;
