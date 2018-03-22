@@ -250,7 +250,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
                     glScene.getCachedShader(GUI_OBJECT),
                     new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
-            miniMapView.setGlTexture(terrain.getGlTexture());
+            //miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
         }
 
@@ -264,6 +264,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         float angle = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 0 : skyBox.getRotationAngle() + 0.5f * frametime / 250f;
         skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
         ((TerrainRendererProgram) gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
+
+        gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {

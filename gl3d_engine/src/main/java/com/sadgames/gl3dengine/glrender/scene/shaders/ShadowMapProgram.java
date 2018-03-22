@@ -9,9 +9,7 @@ import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.glGetString;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_FRAGMENT_SHADER;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_VERTEX_SHADER;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_VERTEX_SHADER_DEPTH_SUPPORT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEXES_PARAM_NAME;
 
 public class ShadowMapProgram extends VBOShaderProgram {
@@ -22,12 +20,12 @@ public class ShadowMapProgram extends VBOShaderProgram {
 
     @Override
     protected String getVertexShaderResId() {
-        return !checkDepthTextureExtension() ? SHADOWMAP_VERTEX_SHADER : SHADOWMAP_VERTEX_SHADER_DEPTH_SUPPORT; //TODO: use rgb only ???
+        return !checkDepthTextureExtension() ? SHADOWMAP_VERTEX_SHADER : SHADOWMAP_VERTEX_SHADER; //TODO: use rgb only ???
     }
 
     @Override
     protected String getFragmentShaderResId() {
-        return !checkDepthTextureExtension() ? SHADOWMAP_FRAGMENT_SHADER : SHADOWMAP_FRAGMENT_SHADER_DEPTH_SUPPORT;
+        return !checkDepthTextureExtension() ? SHADOWMAP_FRAGMENT_SHADER : SHADOWMAP_FRAGMENT_SHADER;
     }
 
     private boolean checkDepthTextureExtension() {

@@ -21,8 +21,6 @@ uniform vec3 u_lightColour;
 uniform int u_isCubeMapF;
 uniform int u_hasReflectMap;
 uniform int u_is2DModeF;
-///uniform float uxPixelOffset;
-///uniform float uyPixelOffset; //TODO: -> for RGB depth map
 
 varying vec3 v_wPosition;
 varying vec2 v_Texture;
@@ -49,12 +47,25 @@ float calcDynamicBias(float bias, vec3 normal) {
     return clamp(result, 0.0, 0.01);
 }
 
+float unpack (vec4 colour) {
+    const vec4 bitShifts = vec4(1.0 / (256.0 * 256.0 * 256.0),
+                                1.0 / (256.0 * 256.0),
+                                1.0 / 256.0,
+                                1);
+    return dot(colour , bitShifts);
+}
+
 float calcShadowRate() {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.0001; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
+        highp float bias = 0.0005; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
         vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
-        highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
+
+        shadowMapPosition = (shadowMapPosition + 1.0) /2.0;//TODO: use BIAS
+        vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
+        highp float distanceFromLight = unpack(packedZValue);
+        //highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
+
         shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
