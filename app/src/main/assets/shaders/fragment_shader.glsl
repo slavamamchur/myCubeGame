@@ -61,12 +61,11 @@ float calcShadowRate() {
         highp float bias = 0.0005; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
         vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
 
-        shadowMapPosition = (shadowMapPosition + 1.0) /2.0;//TODO: use BIAS
         vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
         highp float distanceFromLight = unpack(packedZValue);
         //highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
 
-        shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
+        shadow = float(packedZValue.a == 1.0); //float(distanceFromLight > (shadowMapPosition.z - bias));
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
 
