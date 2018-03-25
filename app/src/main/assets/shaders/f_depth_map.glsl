@@ -18,6 +18,6 @@ void main() {
     vec4 comp = fract(normalizedDistance * bitSh);
     comp -= comp.xxyz * bitMsk;
 
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);//comp;
+    gl_FragColor = comp;
 
 }

@@ -65,7 +65,7 @@ float calcShadowRate() {
         highp float distanceFromLight = unpack(packedZValue);
         //highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
 
-        shadow = float(packedZValue.a == 1.0); //float(distanceFromLight > (shadowMapPosition.z - bias));
+        shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
 
