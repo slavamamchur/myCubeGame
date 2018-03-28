@@ -5,19 +5,12 @@ varying vec4 vPosition;
 void main() {
 	float normalizedDistance  = vPosition.z / vPosition.w;
 	// scale -1.0;1.0 to 0.0;1.0
-	normalizedDistance = (normalizedDistance + 1.0) / 2.0;
+	//normalizedDistance = (normalizedDistance + 1.0) / 2.0;
 
-	const vec4 bitSh = vec4(256.0 * 256.0 * 256.0,
-    							256.0 * 256.0,
-    							256.0,
-    							1.0);
-    const vec4 bitMsk = vec4(0.0,
-    							 1.0 / 256.0,
-    							 1.0 / 256.0,
-    							 1.0 / 256.0);
-    vec4 comp = fract(normalizedDistance * bitSh);
-    comp -= comp.xxyz * bitMsk;
+    float value = 15.0 - normalizedDistance;
+    float whole_part = floor(value);
+    float frac_part = value - whole_part;
+    whole_part = whole_part * 0.1;
 
-    gl_FragColor = comp;
-
+    gl_FragColor = vec4(whole_part, frac_part, 0.0, 1.0);
 }

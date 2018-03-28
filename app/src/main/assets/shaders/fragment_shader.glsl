@@ -48,11 +48,8 @@ float calcDynamicBias(float bias, vec3 normal) {
 }
 
 float unpack (vec4 colour) {
-    const vec4 bitShifts = vec4(1.0 / (256.0 * 256.0 * 256.0),
-                                1.0 / (256.0 * 256.0),
-                                1.0 / 256.0,
-                                1);
-    return dot(colour , bitShifts);
+    vec2 texDepth = colour.xy;
+    return texDepth.x * 10.0 + texDepth.y;
 }
 
 float calcShadowRate() {
@@ -62,10 +59,14 @@ float calcShadowRate() {
         vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
 
         vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
+
         highp float distanceFromLight = unpack(packedZValue);
         //highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
 
-        shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
+        highp float lightDepth = (15.0 - shadowMapPosition.z) + 0.1 - distanceFromLight ;
+
+        shadow = float(!(distanceFromLight > 0.0 && lightDepth < 0.0));
+        //shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
 
