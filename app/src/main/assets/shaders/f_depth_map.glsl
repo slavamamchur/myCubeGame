@@ -1,16 +1,22 @@
 precision highp float;
 
-varying vec4 vPosition;
+varying highp vec4 vPosition;
 
 void main() {
 	float normalizedDistance  = vPosition.z / vPosition.w;
-	// scale -1.0;1.0 to 0.0;1.0
-	//normalizedDistance = (normalizedDistance + 1.0) / 2.0;
+	normalizedDistance = normalizedDistance * 0.5 + 0.5;// scale -1.0;1.0 to 0.0;1.0
 
-    float value = 15.0 - normalizedDistance;
-    float whole_part = floor(value);
-    float frac_part = value - whole_part;
-    whole_part = whole_part * 0.1;
+    float v1 = normalizedDistance * 255.0;
+    float f1 = fract(v1);
+    float vn1 = floor(v1) / 255.0;
 
-    gl_FragColor = vec4(whole_part, frac_part, 0.0, 1.0);
+    float v2 = f1 * 255.0;
+    float f2 = fract(v2);
+    float vn2 = floor(v2) / 255.0;
+
+    float v3 = f2 * 255.0;
+    float f3 = fract(v3);
+    float vn3 = floor(v3) / 255.0;
+
+    gl_FragColor = vec4(vn1, vn2, vn3, f3);
 }
