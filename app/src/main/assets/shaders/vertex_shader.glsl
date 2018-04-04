@@ -1,6 +1,6 @@
 uniform mat4 u_MVP_Matrix;
 uniform mat4 u_MV_Matrix;
-uniform mat4 uShadowProjMatrix;
+uniform highp mat4 uShadowProjMatrix;
 uniform vec3 u_lightPosition;
 uniform vec3 u_camera;
 uniform int u_isCubeMap;
@@ -14,7 +14,7 @@ varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 varying float visibility;
-varying vec4 vShadowCoord;
+varying highp vec4 vShadowCoord;
 
 varying float vdiffuse;
 varying float vspecular;
@@ -53,7 +53,9 @@ void main()
     visibility = exp(-pow(fog_distance * fog_density, fog_gradient));
     visibility = clamp(visibility, 0.0, 1.0);
 
+    highp vec4 updatedPos = vec4(tmp_pos, 1.0);
+    vShadowCoord = uShadowProjMatrix * updatedPos;
+
     v_Texture = a_Texture;
-    vShadowCoord = uShadowProjMatrix * vec4(tmp_pos, 1.0);
     gl_Position = u_MVP_Matrix * vec4(tmp_pos, 1.0);
 }

@@ -27,7 +27,7 @@ varying vec2 v_Texture;
 varying vec3 lightvector;
 varying vec3 lookvector;
 varying float visibility;
-varying vec4 vShadowCoord;
+varying highp vec4 vShadowCoord;
 
 varying float vdiffuse;
 varying float vspecular;
@@ -47,25 +47,21 @@ float calcDynamicBias(float bias, vec3 normal) {
     return clamp(result, 0.0, 0.01);
 }
 
-float unpack (vec4 colour) {
-    vec2 texDepth = colour.xy;
-    return texDepth.x * 10.0 + texDepth.y;
+highp float unpack (highp vec4 packedZValue) {
+    return packedZValue.x * 255.0  + (packedZValue.y * 255.0 + (packedZValue.z * 255.0 + packedZValue.w) / 255.0) / 255.0;
 }
 
 float calcShadowRate() {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.0005; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
-        vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
+        highp float bias = 0.5; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
+        highp vec3 shadowMapPosition = vShadowCoord.xyz / vShadowCoord.w;
+        shadowMapPosition = shadowMapPosition * 0.5 + 0.5;
 
-        //vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
-
-        //highp float distanceFromLight = unpack(packedZValue);
-        highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.st).z;
-        //highp float lightDepth = (15.0 - shadowMapPosition.z) + 0.1 - distanceFromLight ;
-
-        //shadow = float(!(distanceFromLight > 0.0 && lightDepth < 0.0));
-        shadow = float(distanceFromLight > (shadowMapPosition.z - bias));
+        highp vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.xy);
+        highp float distanceFromLight = unpack(packedZValue);
+        //highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.xy).z;
+        shadow = float(distanceFromLight > (shadowMapPosition.z * 255.0 - bias));
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
 
