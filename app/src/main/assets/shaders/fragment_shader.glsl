@@ -54,7 +54,7 @@ highp float unpack (highp vec4 packedZValue) {
 float calcShadowRate() {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.5; //TODO: Use for ultra graphics settings -> calcDynamicBias(0.0005, n_normal);
+        highp float bias = 0.5;//TODO:
         highp vec3 shadowMapPosition = vShadowCoord.xyz / vShadowCoord.w;
         shadowMapPosition = shadowMapPosition * 0.5 + 0.5;
 
