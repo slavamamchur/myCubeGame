@@ -18,5 +18,6 @@ void main() {
     float f3 = fract(v3);
     float vn3 = floor(v3) / 255.0;
 
-    gl_FragColor = vec4(vn1, vn2, vn3, f3);
+    highp vec4 result = vec4(vn1, vn2, vn3, f3);
+    gl_FragColor = result;
 }

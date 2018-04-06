@@ -3,10 +3,10 @@
 precision highp float;
 
 // model-view projection matrix
-uniform mat4 u_MVP_Matrix;
+uniform highp mat4 u_MVP_Matrix;
 
 // position of the vertices
-attribute vec3 a_Position;
+attribute highp vec3 a_Position;
 
 varying highp vec4 vPosition;
 
