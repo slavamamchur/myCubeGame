@@ -144,7 +144,7 @@ public class GLLightSource {
         //top *= 1.5f;
 
         MathUtils.setIdentityM(projectionMatrix, 0);
-        //TODO:
+        //TODO: < or >
         MathUtils.orthoM(projectionMatrix, 0, -10.75f * ratio, 10.75f * ratio, -10.75f, 10.75f, 1/*NEAR_PLANE*/, FAR_PLANE);
 
         /** for point and spot lights */

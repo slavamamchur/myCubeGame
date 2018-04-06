@@ -311,7 +311,7 @@ public abstract class GLShaderProgram {
         Matrix.multiplyMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
         Matrix.multiplyMM(lightMVP, 0, projectionMatrix, 0, viewMatrix, 0);
         //if (hasDepthTextureExtension)
-            //Matrix.multiplyMM(lightMVP, 0, BIAS, 0, lightMVP, 0);
+            //Matrix.multiplyMM(lightMVP, 0, BIAS, 0, lightMVP, 0); //TODO: optimize
 
         paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);
     }
