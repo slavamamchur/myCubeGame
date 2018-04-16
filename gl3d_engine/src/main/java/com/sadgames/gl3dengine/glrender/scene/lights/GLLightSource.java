@@ -106,6 +106,10 @@ public class GLLightSource {
         MathUtils.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
                 direction.x, direction.y, direction.z,
                 0f, 1f, 0f);
+
+        /*MathUtils.setLookAtM(viewMatrix, 0, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2],
+                lightPosInModelSpace[0], -lightPosInModelSpace[1], lightPosInModelSpace[2],
+                -lightPosInModelSpace[0], 0f, -lightPosInModelSpace[2]);*/
     }
 
     public float[] getProjectionMatrix() {
@@ -120,7 +124,7 @@ public class GLLightSource {
         //float right = 0.5f;
         //float bottom = -0.5f;
         //float top = 0.5f;
-        //float near = -2.5f;//2
+        //float near = 1f;//2
         //float far = 7f;//12
 
         if (width > height) {
@@ -146,10 +150,11 @@ public class GLLightSource {
         MathUtils.setIdentityM(projectionMatrix, 0);
         //TODO: < or >
         MathUtils.orthoM(projectionMatrix, 0, -1.75f * ratio, 1.75f * ratio, -1.75f, 1.75f, 1f/*NEAR_PLANE*/, FAR_PLANE);
+        //MathUtils.frustumM(projectionMatrix, 0, -1.1f*ratio, 1.1f*ratio, -1.1f, 1.1f, NEAR_PLANE, FAR_PLANE);
 
         /** for point and spot lights */
         //MathUtils.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
-        //MathUtils.perspectiveM(projectionMatrix, 0 , VERTICAL_FOV, ratio, NEAR_PLANE, FAR_PLANE);
+        //MathUtils.perspectiveM(projectionMatrix, 0 , DEFAULT_CAMERA_VERTICAL_FOV, ratio, 1f, 100f);
     }
 
 }

@@ -236,9 +236,9 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
        int shadowMapHeight = Math.round(mDisplayHeight * shadowMapResolutionScaleFactor);
 
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
-       shadowMapFBO = /*hasDepthTextureExtension ? //TODO:  use color buffer android example */
-               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor); /*:
-               new ColorBufferFBO(shadowMapWidth, shadowMapHeight, clColor);*/
+       shadowMapFBO = /*hasDepthTextureExtension ? //TODO:  use color buffer android example
+               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :*/
+               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
     }
 
     /** for post effects image processing */
@@ -332,7 +332,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         shadowMapFBO.unbind();
     }
 
-    private void drawObjectIntoShadowMap(SceneObjectsTreeItem sceneObject) {
+    private void drawObjectIntoShadowMap(SceneObjectsTreeItem sceneObject) { //TODO: draw terrain ??? backface and polygonoffset
         AbstractGL3DObject gl3DObject = (AbstractGL3DObject) sceneObject;
         GLShaderProgram program = getCachedShader(SHADOW_MAP_OBJECT);
 

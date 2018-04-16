@@ -29,6 +29,7 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
 
     public DiceGameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
+        //castShadow = true;
 
         this.gameEntity = gameEntity;
         setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SEA_BOTTOM_TEXTURE));
