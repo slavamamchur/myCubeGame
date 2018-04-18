@@ -37,6 +37,10 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector4f;
 
+import static android.opengl.GLES20.GL_POLYGON_OFFSET_FILL;
+import static android.opengl.GLES20.glDisable;
+import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glPolygonOffset;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
@@ -323,13 +327,18 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private void renderShadowMapBuffer() {
         shadowMapFBO.bind();
-        GLES20JniWrapper.glEnableFrontFacesCulling();
+        //GLES20JniWrapper.glEnableFrontFacesCulling();
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(0.5f, 0.0f);
 
         getCachedShader(SHADOW_MAP_OBJECT).useProgram();
         prevObject = null;
         proceesTreeItems(item -> drawObjectIntoShadowMap(item));
 
         shadowMapFBO.unbind();
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
     private void drawObjectIntoShadowMap(SceneObjectsTreeItem sceneObject) { //TODO: draw terrain ??? backface and polygonoffset
