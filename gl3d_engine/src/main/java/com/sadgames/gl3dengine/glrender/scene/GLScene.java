@@ -325,12 +325,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private AbstractGL3DObject prevObject = null;
 
-    private void renderShadowMapBuffer() { //TODO: draw terrain ??? backface and polygonoffset
+    private void renderShadowMapBuffer() { //TODO: draw terrain ??? backface
         shadowMapFBO.bind();
         GLES20JniWrapper.glEnableFrontFacesCulling();
 
         glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonOffset(0.35f, 0.0f);
+        glPolygonOffset(1f, 2f);
 
         getCachedShader(SHADOW_MAP_OBJECT).useProgram();
         prevObject = null;

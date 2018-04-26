@@ -22,7 +22,7 @@ highp vec4 pack (float depth)
 void main() {
 	//float normalizedDistance  = vPosition.z / vPosition.w;
 	//normalizedDistance = normalizedDistance * 0.5 + 0.5;// scale -1.0;1.0 to 0.0;1.0
-	//normalizedDistance += 0.0005;
+	//normalizedDistance += 0.0005; //TODO: use with rgb buffer
 
     /*float v1 = normalizedDistance * 255.0;
     float f1 = fract(v1);
