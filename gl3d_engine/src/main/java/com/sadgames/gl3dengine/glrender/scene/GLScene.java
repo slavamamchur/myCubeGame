@@ -327,7 +327,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private void renderShadowMapBuffer() { //TODO: draw terrain ??? backface
         shadowMapFBO.bind();
-        GLES20JniWrapper.glEnableFrontFacesCulling();
+        GLES20JniWrapper.glEnableFrontFacesCulling(); //todo: disable ?
 
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonOffset(1f, 2f);
