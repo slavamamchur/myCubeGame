@@ -16,7 +16,6 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.fbo.AbstractFBO;
 import com.sadgames.gl3dengine.glrender.scene.fbo.ColorBufferFBO;
-import com.sadgames.gl3dengine.glrender.scene.fbo.DepthBufferFBO;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
@@ -242,7 +241,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
        shadowMapFBO = /*hasDepthTextureExtension ? //TODO:  use color buffer android example
                new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :*/
-               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
+               new ColorBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
     }
 
     /** for post effects image processing */

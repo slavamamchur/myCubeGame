@@ -111,7 +111,7 @@ public  class GLRenderConsts {
     public static final String SKYBOX_VERTEX_SHADER = "shaders/skybox_vertex.glsl";
     public static final String SKYBOX_FRAGMENT_SHADER = "shaders/skybox_fragment.glsl";
 
-    public static final int FBO_TEXTURE_SLOT = 6;
+    public static final int FBO_TEXTURE_SLOT = 0; //6;
     public static final int BACKGROUND_TEXTURE_SLOT = 7;
 
 }
