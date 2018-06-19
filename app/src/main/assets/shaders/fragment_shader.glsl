@@ -48,8 +48,6 @@ highp float calcDynamicBias(highp float bias, vec3 normal) {
 }
 
 highp float unpack (highp vec4 packedZValue) {
-    //return packedZValue.x * 255.0  + (packedZValue.y * 255.0 + (packedZValue.z * 255.0 + packedZValue.w) / 255.0) / 255.0;
-
     const highp vec4 bitShifts = vec4(1.0 / (256.0 * 256.0 * 256.0),
                                     1.0 / (256.0 * 256.0),
                                     1.0 / 256.0,
@@ -61,14 +59,13 @@ highp float unpack (highp vec4 packedZValue) {
 float calcShadowRate(vec3 nNormal) {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.1; //calcDynamicBias(0.1, nNormal); //TODO: < or > ??? -> 0.35
-        highp vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
-        shadowMapPosition = shadowMapPosition * 0.5 + 0.5;
+        highp float bias = 0.001; //calcDynamicBias(0.1, nNormal);
+        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/;
 
         highp vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
-        highp float distanceFromLight = unpack(packedZValue);
-        //highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.xy).z;
-        shadow = float(distanceFromLight > (shadowMapPosition.z /** 255.0*/ + bias));
+        //highp float distanceFromLight = unpack(packedZValue);
+        highp float distanceFromLight = texture2D(uShadowTexture, shadowMapPosition.xy).z;
+        shadow = float(distanceFromLight > (shadowMapPosition.z /** 255.0*/ - bias)); // + bias ???
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
 
@@ -162,7 +159,7 @@ void main()
 
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
-      if (u_isCubeMapF == 1) {
+      /*if (u_isCubeMapF == 1) {
         float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
 
         vec4 backgroundColour;
@@ -174,7 +171,7 @@ void main()
         }
 
         gl_FragColor = mix(gl_FragColor, backgroundColour, blendingFactor);
-      }
+      }*/
 
       if (u_is2DModeF != 1) {
         gl_FragColor = mix(skyColour, gl_FragColor, visibility);

@@ -6,8 +6,6 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.glrender.scene.camera.GLCamera.FAR_PLANE;
-
 public class GLLightSource {
 
     /** Stores a copy of the model matrix specifically for the light position. */
@@ -149,7 +147,7 @@ public class GLLightSource {
 
         MathUtils.setIdentityM(projectionMatrix, 0);
         //TODO: < or >
-        MathUtils.orthoM(projectionMatrix, 0, -1.75f * ratio, 1.75f * ratio, -1.75f, 1.75f, 1f/*NEAR_PLANE*/, FAR_PLANE);
+        MathUtils.orthoM(projectionMatrix, 0, -1.75f * ratio, 1.75f * ratio, -1.75f, 1.75f, 0.1f/*NEAR_PLANE*/, 10f/*FAR_PLANE*/);
         //MathUtils.frustumM(projectionMatrix, 0, -1.1f*ratio, 1.1f*ratio, -1.1f, 1.1f, NEAR_PLANE, FAR_PLANE);
 
         /** for point and spot lights */

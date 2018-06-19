@@ -16,6 +16,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.fbo.AbstractFBO;
 import com.sadgames.gl3dengine.glrender.scene.fbo.ColorBufferFBO;
+import com.sadgames.gl3dengine.glrender.scene.fbo.DepthBufferFBO;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
@@ -36,10 +37,6 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector4f;
 
-import static android.opengl.GLES20.GL_POLYGON_OFFSET_FILL;
-import static android.opengl.GLES20.glDisable;
-import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glPolygonOffset;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
@@ -239,8 +236,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
        int shadowMapHeight = Math.round(mDisplayHeight * shadowMapResolutionScaleFactor);
 
        getLightSource().updateViewProjectionMatrix(shadowMapWidth, shadowMapHeight);
-       shadowMapFBO = /*hasDepthTextureExtension ? //TODO:  use color buffer android example
-               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :*/
+       shadowMapFBO = hasDepthTextureExtension ?
+               new DepthBufferFBO(shadowMapWidth, shadowMapHeight, clColor) :
                new ColorBufferFBO(shadowMapWidth, shadowMapHeight, clColor);
     }
 
@@ -328,8 +325,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         shadowMapFBO.bind();
         GLES20JniWrapper.glEnableFrontFacesCulling();
 
-        glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonOffset(1f, 2f);
+        //glEnable(GL_POLYGON_OFFSET_FILL);
+        //glPolygonOffset(1f, 2f);
 
         getCachedShader(SHADOW_MAP_OBJECT).useProgram();
         prevObject = null;
@@ -337,7 +334,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         shadowMapFBO.unbind();
 
-        glDisable(GL_POLYGON_OFFSET_FILL);
+        //     glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
     private void drawObjectIntoShadowMap(SceneObjectsTreeItem sceneObject) {

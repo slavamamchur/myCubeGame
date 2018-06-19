@@ -178,6 +178,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
         if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
             camera.rotateX(22.5f);
+        //else
+            //camera.setZoomLevel(0.7f);
 
         camera.updateViewMatrix();
 
@@ -232,7 +234,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         gameDice_1.loadObject();
         Matrix4f transformMatrix = new Matrix4f();
         transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(-100f, 0, 0));
+        transformMatrix.setTranslation(new Vector3f(-100f, 0f, 0f));
         gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
@@ -265,7 +267,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
         ((TerrainRendererProgram) gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
 
-        gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());
+        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
+            gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {

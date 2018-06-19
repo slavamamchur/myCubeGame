@@ -25,7 +25,6 @@ import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDeleteBuffers;
 import static android.opengl.GLES20.glDrawElements;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
@@ -347,7 +346,8 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
             textureSlotIndex++;
         }
 
-        param = program.paramByName(ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME);
+        //TODO: blending map
+        /*param = program.paramByName(ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasBlendingMap()) {
             if (glBlendingMap.getTextureId() == 0)
                 glBlendingMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glBlendingMap).getTextureName());
@@ -355,7 +355,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
             glBlendingMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
             textureSlotIndex++;
-        }
+        }*/
 
         int hasReflectMap = 0;
         param = program.paramByName(ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME);
