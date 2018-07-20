@@ -25,5 +25,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'cz.advel.jbullet:jbullet:20101010-1'
     implementation project(':GLES3DGameEngine')
 }

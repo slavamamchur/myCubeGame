@@ -30,8 +30,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:support-v4:27.1.1'
-    compile 'cz.advel.jbullet:jbullet:20101010-1'
-    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+    implementation 'cz.advel.jbullet:jbullet:20101010-1'
+    implementation 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     implementation project(':GLES3DGameEngine')
 }
