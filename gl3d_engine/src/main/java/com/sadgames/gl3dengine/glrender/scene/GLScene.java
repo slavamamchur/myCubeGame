@@ -274,7 +274,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                 movingObject.setWorldTransformMatrix(transform);
 
             else {
-                physicalWorld.removeRigidBody(movingObject.get_body());
+                physicalWorld.removeRigidBody(movingObject.get_body());//TODO: do not remove and make invisible only ???
                 movingObject.set_body(null);
 
                 if (gameEventsCallBackListener != null)
