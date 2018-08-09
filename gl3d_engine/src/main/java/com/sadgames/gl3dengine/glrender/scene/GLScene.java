@@ -229,7 +229,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         isSimulating = false;
     }
 
-    private void generateShadowMapFBO() {
+    private void generateShadowMapFBO() { //TODO: dice texture corrupted by shadowmap texture - low memory or other reason?
        Color4f clColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
        float shadowMapResolutionScaleFactor = SHADOW_MAP_RESOLUTION_SCALE[graphicsQualityLevel.ordinal()];
        int shadowMapWidth = Math.round(mDisplayWidth * shadowMapResolutionScaleFactor);
@@ -274,7 +274,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                 movingObject.setWorldTransformMatrix(transform);
 
             else {
-                physicalWorld.removeRigidBody(movingObject.get_body());//TODO: do not remove and make invisible only ???
+                physicalWorld.removeRigidBody(movingObject.get_body());
                 movingObject.set_body(null);
 
                 if (gameEventsCallBackListener != null)

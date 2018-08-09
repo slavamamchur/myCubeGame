@@ -440,7 +440,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             restApiWrapper.showTurnInfo(gameInstanceEntity);
 
             restorePrevViewMode();
-
             dice.setPosition(new Vector3f(100, 0, 0));
 
             gl3DScene.setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));

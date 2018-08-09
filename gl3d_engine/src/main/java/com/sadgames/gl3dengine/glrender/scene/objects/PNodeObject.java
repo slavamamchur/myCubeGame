@@ -24,6 +24,7 @@ public abstract class PNodeObject extends BitmapTexturedObject {
     protected float mass;
     protected int tag;
     private RigidBody _body = null;
+    private RigidBody old_body = null;
     protected CollisionShape _shape = null;
     private Transform worldTransformOld = new Transform(new Matrix4f(new float[16]));
 
@@ -54,8 +55,21 @@ public abstract class PNodeObject extends BitmapTexturedObject {
         return _body;
     }
 
+    public RigidBody getOld_body() {
+        return old_body;
+    }
+
     public void set_body(RigidBody _body) {
         this._body = _body;
+    }
+
+    public void hideBody() {
+        old_body = _body;
+        _body = null;
+    }
+
+    public void showBody() {
+        _body = old_body;
     }
 
     public int getTag() {
