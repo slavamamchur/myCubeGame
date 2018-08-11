@@ -229,7 +229,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         isSimulating = false;
     }
 
-    private void generateShadowMapFBO() { //TODO: dice texture corrupted by shadowmap texture - low memory or other reason?
+    private void generateShadowMapFBO() {
        Color4f clColor = new Color4f(1.0f, 1.0f, 1.0f, 1.0f);
        float shadowMapResolutionScaleFactor = SHADOW_MAP_RESOLUTION_SCALE[graphicsQualityLevel.ordinal()];
        int shadowMapWidth = Math.round(mDisplayWidth * shadowMapResolutionScaleFactor);
@@ -321,7 +321,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private AbstractGL3DObject prevObject = null;
 
-    private void renderShadowMapBuffer() { //TODO: draw terrain ??? backface
+    private void renderShadowMapBuffer() {
         shadowMapFBO.bind();
         GLES20JniWrapper.glEnableFrontFacesCulling();
 
@@ -334,9 +334,10 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         shadowMapFBO.unbind();
 
-        //     glDisable(GL_POLYGON_OFFSET_FILL);
+        //glDisable(GL_POLYGON_OFFSET_FILL);
     }
 
+    //TODO: dice texture corrupted by shadowmap texture - low memory or other reason?
     private void drawObjectIntoShadowMap(SceneObjectsTreeItem sceneObject) {
         AbstractGL3DObject gl3DObject = (AbstractGL3DObject) sceneObject;
         GLShaderProgram program = getCachedShader(SHADOW_MAP_OBJECT);
