@@ -16,6 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/table_fragment"
-        tools:layout="@layout/db_table_fragment" />
+        tools:layout="@layout/db_table_fragment"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

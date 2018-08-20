@@ -33,7 +33,7 @@ public class BitmapTexture extends AbstractTexture {
     }
 
     private BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String textureName) {
-        this(sysUtilsWrapper.iGetBitmapFromFile(textureName));
+        this(sysUtilsWrapper.iGetBitmapFromFile(textureName));//TODO: if null -> iGetReliefFromFile(textureName)
         this.textureName = textureName;
     }
 

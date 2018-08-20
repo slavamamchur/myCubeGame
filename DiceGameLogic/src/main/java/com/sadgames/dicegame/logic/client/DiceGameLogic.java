@@ -19,7 +19,6 @@ import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -39,18 +38,15 @@ import java.util.List;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
-import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
@@ -247,14 +243,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 
         /** mini-map gui-box */
-        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
+        /*if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(sysUtilsWrapper,
                     glScene.getCachedShader(GUI_OBJECT),
                     new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
             //miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
-        }
+        }*/
 
         forceGCandWait();
         restApiWrapper.removeLoadingSplash();
@@ -267,8 +263,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
         ((TerrainRendererProgram) gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
 
-        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
-            gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());
+        /*if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
+            gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());*/
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
