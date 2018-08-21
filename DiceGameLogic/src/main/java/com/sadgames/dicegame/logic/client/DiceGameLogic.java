@@ -202,6 +202,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
 
         /** Skybox and water reflection map texture */
+        //TODO: change to sky-dome with one sphere-map texture
         CubeMapTexture skyBoxTexture =
             new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
         TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
