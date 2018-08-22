@@ -18,6 +18,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
@@ -26,7 +27,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
@@ -47,7 +47,6 @@ import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
@@ -236,10 +235,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
         /** sky-box */
-        GLCamera camera = glScene.getCamera();
-        SkyBoxProgram shader = (SkyBoxProgram) glScene.getCachedShader(SKY_BOX_OBJECT);
-        shader.setCamera(camera);
-        SkyBoxObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, shader);
+        AbstractSkyObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glScene);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 
@@ -259,7 +255,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     public void onBeforeDrawFrame(long frametime) {
-        SkyBoxObject skyBox = (SkyBoxObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
+        AbstractSkyObject skyBox = (AbstractSkyObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
         float angle = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 0 : skyBox.getRotationAngle() + 0.5f * frametime / 250f;
         skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
         ((TerrainRendererProgram) gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
@@ -407,7 +403,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
             old2D_ModeValue = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode();
             sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(true);
             gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
-            ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
         }
     }
 
@@ -415,7 +410,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         synchronized (GLScene.lockObject) {
             sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
             gl3DScene.setCamera(null);
-            ((SkyBoxProgram) gl3DScene.getCachedShader(SKY_BOX_OBJECT)).setCamera(gl3DScene.getCamera());
         }
     }
 

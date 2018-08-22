@@ -1,34 +1,20 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
-import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
 
-public class SkyBoxObject extends CubePrimitiveObject {
+public class SkyBoxObject extends AbstractSkyObject {
 
-    private float rotationAngle = 0;
 
-    public SkyBoxObject(SysUtilsWrapperInterface sysUtilsWrapper, CubeMapTexture cubeTexture, GLShaderProgram program) {
-        super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT, LAND_SIZE_IN_WORLD_SPACE / 2f + 0.25f);
-        setGlTexture(cubeTexture);
-        setCastShadow(false);
-    }
-
-    public float getRotationAngle() {
-        return rotationAngle;
-    }
-    public void setRotationAngle(float rotationAngle) {
-        this.rotationAngle = rotationAngle;
+    public SkyBoxObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLScene glScene) {
+        super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_BOX_OBJECT));
     }
 
     @Override
-    public void render() {
-        glEnableFrontFacesCulling();
-        super.render();
-        glEnableBackFacesCulling();
+    protected GameItemObject createSkyPrimitive(SysUtilsWrapperInterface sysUtilsWrapper, float halfSize) {
+        return new CubePrimitiveObject(sysUtilsWrapper, null, getProgram(), 1f, COLLISION_OBJECT, halfSize);
     }
 }
