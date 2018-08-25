@@ -235,7 +235,10 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
         /** sky-box */
-        AbstractSkyObject skyBoxObject = new SkyBoxObject(sysUtilsWrapper, skyBoxTexture, glScene);
+        AbstractSkyObject skyBoxObject =
+                new SkyBoxObject(sysUtilsWrapper,
+                                 skyBoxTexture/*TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);*/, //TODO: set sphere texture
+                                 glScene);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 

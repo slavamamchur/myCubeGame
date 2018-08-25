@@ -15,7 +15,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_B
 public class SkyDomeObject extends AbstractSkyObject {
 
     public SkyDomeObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLScene glScene) {
-        super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_BOX_OBJECT));
+        super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_BOX_OBJECT));//TODO: new shader
     }
 
     @Override
