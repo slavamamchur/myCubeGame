@@ -17,7 +17,6 @@ public class SpherePrimitiveObject extends GameItemObject {
     protected List<Integer> _mIndices;
     protected int _mCountVertex;
     protected int _mCountIndex;
-    protected int _mCountNormal;
     protected int _mCountTriangle;
 
 
@@ -190,16 +189,25 @@ public class SpherePrimitiveObject extends GameItemObject {
 
     @Override
     protected float[] getNormalsArray() {
-        return new float[0];//TODO: same as vertices with negative???
+        float[] a = new float[_mVertices.size()];
+        for (int i = 0; i < _mVertices.size(); i++)
+            a[i] = -_mVertices.get(i);
+
+        return a;
     }
 
     @Override
     protected short[] getFacesArray() {
-        return new short[0];
+        short[] a = new short[_mIndices.size()];
+        for (int i = 0; i < _mIndices.size(); i++)
+            a[i] = _mIndices.get(i).shortValue();
+
+        return a;
     }
 
     @Override
     public int getFacesCount() {
-        return 0;
+        return _mIndices.size();
     }
+
 }
