@@ -59,11 +59,12 @@ public class SpherePrimitiveObject extends GameItemObject {
         middle[2] = (point1[2] + point2[2]) / 2.0f;
 
         //Normalize the new vertex to make sure it's on a unit sphere
-        float len = (float) Math.sqrt(middle[0] * middle[0] + middle[1] * middle[1] + middle[2] * middle[2]);
-        middle[0] /= len;
-        middle[1] /= len;
-        middle[2] /= len;
+        float len = len(middle[0], middle[1], middle[2]);
+        middle[0] /= len/halfSize;
+        middle[1] /= len/halfSize;
+        middle[2] /= len/halfSize;
 
+        //TODO: set scale
         _mVertices.add(middle[0]);
         _mVertices.add(middle[1]);
         _mVertices.add(middle[2]);
@@ -78,7 +79,7 @@ public class SpherePrimitiveObject extends GameItemObject {
     }
 
     private void CreateIcosphere(int refineLevel) {
-        //TODO:
+        //TODO: set scale
         //Start by creating the 12 vertices of an icosahedron
         //Phi is the golden ratio
         //http://paulbourke.net/geometry/platonic/
@@ -88,7 +89,7 @@ public class SpherePrimitiveObject extends GameItemObject {
         _mCountVertex = 12;
         _mVertices = new ArrayList<>();
 
-        float plen = len(-1f, phi, 0f);
+        float plen = len(-1f, phi, 0f)/halfSize;
 
         _mVertices.add(-1f/plen); _mVertices.add( phi/plen); _mVertices.add(0f); //v0
         _mVertices.add( 1f/plen); _mVertices.add( phi/plen); _mVertices.add(0f); //v1

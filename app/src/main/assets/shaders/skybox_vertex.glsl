@@ -6,6 +6,6 @@ varying vec3 v_Texture;
 
 void main()
 {
-	v_Texture = a_Position;
+	v_Texture = a_Position;//TODO:
 	gl_Position = u_MVP_Matrix * vec4(a_Position, 1.0);
 }
