@@ -60,9 +60,9 @@ public class SpherePrimitiveObject extends GameItemObject {
 
         //Normalize the new vertex to make sure it's on a unit sphere
         float len = len(middle[0], middle[1], middle[2]);
-        middle[0] /= len/halfSize;
-        middle[1] /= len/halfSize;
-        middle[2] /= len/halfSize;
+        middle[0] /= len;
+        middle[1] /= len;
+        middle[2] /= len;
 
         //TODO: set scale
         _mVertices.add(middle[0]);
@@ -89,7 +89,7 @@ public class SpherePrimitiveObject extends GameItemObject {
         _mCountVertex = 12;
         _mVertices = new ArrayList<>();
 
-        float plen = len(-1f, phi, 0f)/halfSize;
+        float plen = len(-1f, phi, 0f);
 
         _mVertices.add(-1f/plen); _mVertices.add( phi/plen); _mVertices.add(0f); //v0
         _mVertices.add( 1f/plen); _mVertices.add( phi/plen); _mVertices.add(0f); //v1
@@ -183,7 +183,7 @@ public class SpherePrimitiveObject extends GameItemObject {
     protected float[] getVertexesArray() {
         float[] a = new float[_mVertices.size()];
         for (int i = 0; i < _mVertices.size(); i++)
-            a[i] = _mVertices.get(i);
+            a[i] = _mVertices.get(i)*halfSize;
 
         return a;
     }
@@ -192,7 +192,7 @@ public class SpherePrimitiveObject extends GameItemObject {
     protected float[] getNormalsArray() {
         float[] a = new float[_mVertices.size()];
         for (int i = 0; i < _mVertices.size(); i++)
-            a[i] = -_mVertices.get(i);
+            a[i] = -_mVertices.get(i)*halfSize;
 
         return a;
     }

@@ -16,6 +16,7 @@ public  class GLRenderConsts {
         WATER_OBJECT,
         TERRAIN_OBJECT,
         SKY_BOX_OBJECT,
+        SKY_DOME_OBJECT,
         LIGHT_OBJECT,
         GAME_ITEM_OBJECT,
         SHADOW_MAP_OBJECT,
@@ -110,6 +111,8 @@ public  class GLRenderConsts {
     public static final String GUI_FRAGMENT_SHADER = "shaders/gui_fragment.glsl";
     public static final String SKYBOX_VERTEX_SHADER = "shaders/skybox_vertex.glsl";
     public static final String SKYBOX_FRAGMENT_SHADER = "shaders/skybox_fragment.glsl";
+    public static final String SKYDOME_VERTEX_SHADER = "shaders/skydome_vertex.glsl";
+    public static final String SKYDOME_FRAGMENT_SHADER = "shaders/skydome_fragment.glsl";
 
     public static final int FBO_TEXTURE_SLOT = 0; //6;
     public static final int BACKGROUND_TEXTURE_SLOT = 7;

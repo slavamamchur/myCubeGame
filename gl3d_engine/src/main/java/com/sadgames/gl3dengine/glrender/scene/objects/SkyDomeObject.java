@@ -10,12 +10,12 @@ import static android.opengl.GLES20.GL_UNSIGNED_INT;
 import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_BOX_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_DOME_OBJECT;
 
 public class SkyDomeObject extends AbstractSkyObject {
 
     public SkyDomeObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLScene glScene) {
-        super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_BOX_OBJECT));//TODO: new shader
+        super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_DOME_OBJECT));
     }
 
     @Override

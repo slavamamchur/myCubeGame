@@ -26,6 +26,7 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GUIRendererProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
+import com.sadgames.gl3dengine.glrender.scene.shaders.SkyDomeProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -210,6 +211,9 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                     break;
                 case SKY_BOX_OBJECT:
                     program = new SkyBoxProgram(sysUtilsWrapper);
+                    break;
+                case SKY_DOME_OBJECT:
+                    program = new SkyDomeProgram(sysUtilsWrapper);
                     break;
                 default:
                     program = new TerrainRendererProgram(sysUtilsWrapper);
