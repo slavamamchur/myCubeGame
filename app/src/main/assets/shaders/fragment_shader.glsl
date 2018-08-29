@@ -145,14 +145,14 @@ void main()
           float reflectiveFactor = 1.0 - dot(n_lookvector, vec3(0.0, 1.0, 0.0));
           vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
-          if (u_hasReflectMap == 1) {
+          /*if (u_hasReflectMap == 1) {
             vec3 reflectedSkyDirection = (u_SkyboxMV_MatrixF * vec4(reflect(-n_lookvector, n_normal), 0.0)).xyz;
             vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflectedSkyDirection), waterColour, 0.5);
             diffuseColor = mix(refractionColor, reflectionColor, reflectiveFactor);
           }
-          else {
+          else {*/
             diffuseColor = mix(refractionColor, waterColour, reflectiveFactor);
-          }
+          //}
       }
       else {
            diffuseColor = texture2D(u_TextureUnit, v_Texture);

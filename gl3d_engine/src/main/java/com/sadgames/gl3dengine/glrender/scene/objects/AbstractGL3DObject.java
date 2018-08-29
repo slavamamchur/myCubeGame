@@ -28,7 +28,6 @@ import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.AMBIENT_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DIFFUSE_RATE_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
@@ -357,7 +356,8 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
             textureSlotIndex++;
         }*/
 
-        int hasReflectMap = 0;
+        //TODO: reflection map
+        /*int hasReflectMap = 0;
         param = program.paramByName(ACTIVE_SKYBOX_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0) {
             if (hasWaterReflectionMap()) {
@@ -370,13 +370,11 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
                 param.setParamValue(textureSlotIndex);
                 textureSlotIndex++;
             }
-            /*else
-                param.setParamValue(31);*/
-        }
+        }*/
 
         param = program.paramByName(HAS_REFLECT_MAP_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0)
-            param.setParamValue(hasReflectMap);
+            param.setParamValue(/*hasReflectMap*/1);
     }
 
     public void render() {
