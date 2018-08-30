@@ -6,7 +6,7 @@ varying vec3 v_Normal;
 
 void main()
 {
-	v_Normal.xyz = a_Position * -1;;
+	v_Normal.xyz = a_Position * -1;
 	gl_Position = u_MVP_Matrix * vec4(a_Position, 1.0);
 
 	/*

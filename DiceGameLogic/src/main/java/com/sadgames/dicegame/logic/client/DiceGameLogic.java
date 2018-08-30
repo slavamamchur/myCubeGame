@@ -31,6 +31,13 @@ import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.ResourceFinder;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+import org.luaj.vm2.lib.jse.JsePlatform;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +49,6 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
-import static com.sadgames.dicegame.logic.client.GameConst.ROLLING_DICE_SOUND;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
@@ -50,7 +56,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
-public class DiceGameLogic implements GameEventsCallbackInterface {
+public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
     private final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
@@ -62,11 +68,18 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
     private GameEntity gameEntity = null;
     private GameInstanceEntity gameInstanceEntity = null;
     private List<InstancePlayer> savedPlayers = null;
+    private final Globals globals;
+    private LuaValue luaSysUtilsWrapper;
 
     public DiceGameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.restApiWrapper = restApiWrapper;
         this.gl3DScene = gl3DScene;
+
+        globals = JsePlatform.standardGlobals();
+        globals.finder = this;
+        luaSysUtilsWrapper = CoerceJavaToLua.coerce(sysUtilsWrapper);
+        globals.loadfile("scripts/gameLogic.lua").call(luaSysUtilsWrapper);
     }
 
     @SuppressWarnings("unused") public GameMapEntity getMapEntity() {
@@ -153,12 +166,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
 
     @Override
     public void onRollingObjectStart(PNodeObject gameObject) {
-        sysUtilsWrapper.iPlaySound(ROLLING_DICE_SOUND);
+        globals.get("startSound").call();
     }
 
     @Override
     public void onRollingObjectStop(PNodeObject gameObject) {
-        sysUtilsWrapper.iStopSound();
+        globals.get("stopSound").call();
     }
 
     @Override
@@ -440,4 +453,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface {
         }
     }
 
+    @Override
+    public InputStream findResource(String name) {
+        return sysUtilsWrapper.getResourceStream(name);
+    }
 }

@@ -33,5 +33,6 @@ dependencies {
     implementation 'cz.advel.jbullet:jbullet:20101010-1'
     implementation 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+    implementation 'org.luaj:luaj-jse:3.0.1'
     implementation project(':GLES3DGameEngine')
 }
