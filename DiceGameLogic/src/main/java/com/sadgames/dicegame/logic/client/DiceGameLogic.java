@@ -25,7 +25,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
@@ -51,7 +51,6 @@ import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
@@ -215,11 +214,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
 
         /** Skybox and water reflection map texture */
-        CubeMapTexture skyBoxTexture =
+        /*CubeMapTexture skyBoxTexture =
             new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
         TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
                                                                  skyBoxTexture.getTextureName(),
-                                                                 skyBoxTexture.getTextureSize());
+                                                                 skyBoxTexture.getTextureSize());*/
 
         TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
@@ -248,9 +247,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
         /** sky-box */
-        //TODO: set sphere texture -> null ???
+        AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
         AbstractSkyObject skyBoxObject =
-                new SkyDomeObject(sysUtilsWrapper,/*skyBoxTexture*/TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME),
+                new SkyDomeObject(sysUtilsWrapper,/*skyBoxTexture*/skyDomeTexture,
                                  glScene);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);

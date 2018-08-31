@@ -3,6 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
@@ -21,6 +22,9 @@ public class SkyDomeObject extends AbstractSkyObject {
 
     public SkyDomeObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLScene glScene) {
         super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_DOME_OBJECT));
+
+        textureResName = cubeTexture != null && cubeTexture instanceof BitmapTexture ?
+                ((BitmapTexture)cubeTexture).getTextureName() : null;
     }
 
     @Override
