@@ -23,11 +23,10 @@ import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
-import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -50,9 +49,13 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
@@ -69,18 +72,21 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     private GameEntity gameEntity = null;
     private GameInstanceEntity gameInstanceEntity = null;
     private List<InstancePlayer> savedPlayers = null;
-    private final Globals globals;
+    private final Globals luaEngine;
     private LuaValue luaSysUtilsWrapper;
+    private LuaValue luaGl3DScene;
 
     public DiceGameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.restApiWrapper = restApiWrapper;
         this.gl3DScene = gl3DScene;
 
-        globals = JsePlatform.standardGlobals();
-        globals.finder = this;
+        luaEngine = JsePlatform.standardGlobals();
+        luaEngine.finder = this;
         luaSysUtilsWrapper = CoerceJavaToLua.coerce(sysUtilsWrapper);
-        globals.loadfile("scripts/gameLogic.lua").call(luaSysUtilsWrapper);
+        luaGl3DScene = CoerceJavaToLua.coerce(gl3DScene);
+
+        luaEngine.loadfile("scripts/gameLogic.lua").call(luaSysUtilsWrapper, luaGl3DScene);
     }
 
     @SuppressWarnings("unused") public GameMapEntity getMapEntity() {
@@ -153,7 +159,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onPerformUserAction(String action, Object[] params) {
-        GameConst.UserActionType actionType = GameConst.UserActionType.values()[ACTION_LIST.indexOf(action)];
+        UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(action)];
         switch (actionType) {
             default:
         }
@@ -167,12 +173,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onRollingObjectStart(PNodeObject gameObject) {
-        globals.get("startSound").call();
+        luaEngine.get(ON_ROLLING_OBJECT_START_EVENT_HANDLER).call(CoerceJavaToLua.coerce(gameObject));
     }
 
     @Override
     public void onRollingObjectStop(PNodeObject gameObject) {
-        globals.get("stopSound").call();
+        luaEngine.get(ON_ROLLING_OBJECT_STOP_EVENT_HANDLER).call(CoerceJavaToLua.coerce(gameObject));
     }
 
     @Override
@@ -214,11 +220,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
 
         /** Skybox and water reflection map texture */
-        /*CubeMapTexture skyBoxTexture =
+        CubeMapTexture skyBoxTexture =
             new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
         TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
                                                                  skyBoxTexture.getTextureName(),
-                                                                 skyBoxTexture.getTextureSize());*/
+                                                                 skyBoxTexture.getTextureSize());
 
         TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
@@ -247,9 +253,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
         /** sky-box */
-        AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
+        //AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
         AbstractSkyObject skyBoxObject =
-                new SkyDomeObject(sysUtilsWrapper,/*skyBoxTexture*/skyDomeTexture,
+                new SkyBoxObject(sysUtilsWrapper,skyBoxTexture/*skyDomeTexture*/,
                                  glScene);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
@@ -270,10 +276,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onBeforeDrawFrame(long frametime) {
-        AbstractSkyObject skyBox = (AbstractSkyObject) gl3DScene.getObject(SKY_BOX_CUBE_MAP_OBJECT);
-        float angle = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 0 : skyBox.getRotationAngle() + 0.5f * frametime / 250f;
-        skyBox.setRotationAngle(angle > 360f ? 360f - angle : angle);
-        ((TerrainRendererProgram) gl3DScene.getCachedShader(TERRAIN_OBJECT)).setSkyBoxRotationAngle(-angle);
+        luaEngine.get(ON_BEFORE_DRAW_FRAME_EVENT_HANDLER).call(CoerceJavaToLua.coerce(frametime));
 
         /*if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
             gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());*/

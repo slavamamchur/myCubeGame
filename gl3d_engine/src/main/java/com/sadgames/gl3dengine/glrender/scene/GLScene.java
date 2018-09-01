@@ -3,6 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
+import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
@@ -20,6 +21,7 @@ import com.sadgames.gl3dengine.glrender.scene.fbo.DepthBufferFBO;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -427,8 +429,11 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                     && physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts() != oldNumContacts
                     ) {
 
-                    if (gameEventsCallBackListener != null)
-                        gameEventsCallBackListener.onRollingObjectStart(null); //TODO: Get Object ref from Collision example
+                    if (gameEventsCallBackListener != null) {
+                        //TODO: for all object with tag "moving"
+                        Object collisionObject = ((CollisionObject)physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getBody1()).getUserPointer();
+                        gameEventsCallBackListener.onRollingObjectStart((GameItemObject)collisionObject);
+                    }
 
                     oldNumContacts = physicalWorld.getDispatcher().getManifoldByIndexInternal(i).getNumContacts();
                     old_time = currentTime;
@@ -441,14 +446,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
                             gameEventsCallBackListener.onRollingObjectStop(null); //TODO: Get Object ref from Collision example
 
         }
-
-        /** Collision example --------------------------------------------
-         /*const btCollisionObject* obA = contactManifold->getBody0();
-         const btCollisionObject* obB = contactManifold->getBody1();
-
-         //6
-         PNodeObject* pnA = (__bridge PNodeObject*)obA->getUserPointer();
-         PNodeObject* pnB = (__bridge PNodeObject*)obB->getUserPointer();*/
     }
 
     private void calculateFrameTime(long currentTime) {

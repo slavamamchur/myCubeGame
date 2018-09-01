@@ -85,6 +85,11 @@ public class GameConst {
     public static final String EXTRA_CHILD_INDEX = "CHILD_INDEX";
     public static final String EXTRA_DICE_VALUE = "DICE_VALUE";
 
+    public static final String ON_BEFORE_DRAW_FRAME_EVENT_HANDLER = "beforeDrawFrame";
+    public static final String ON_ROLLING_OBJECT_START_EVENT_HANDLER = "onRollingObjectStart";
+    public static final String ON_ROLLING_OBJECT_STOP_EVENT_HANDLER = "onRollingObjectStop";
+
+
     public static final List<String> ACTION_LIST = new ArrayList<String>() {{
         add(ACTION_LOGIN);
         add(ACTION_LOGIN_RESPONSE);
