@@ -1,16 +1,17 @@
--- Arguments are the activity and the view.
 local sysUtilsWrapper, gl3DScene = ...
 
 local ROLLING_DICE_SOUND = 'rolling_dice.mp3'
 local SKY_BOX_CUBE_MAP_OBJECT = 'SKY_BOX_CUBE_MAP_OBJECT';
 local TERRAIN_MESH_OBJECT = 'TERRAIN_MESH_OBJECT';
 local DICE_MESH_OBJECT = 'DICE_MESH_OBJECT_1';
-local javaDiceObjName = luajava.newInstance('java.lang.String', DICE_MESH_OBJECT) --??? factory
+--local javaDiceObjName = luajava.newInstance('java.lang.String', DICE_MESH_OBJECT) --??? factory
 
 onRollingObjectStart = function(gameObject)
-    --if gameObject:getItemName():equals(DICE_MESH_OBJECT) then eq()???
+    local dice = gl3DScene:getObject(DICE_MESH_OBJECT)
+
+    if gameObject == dice then
         sysUtilsWrapper:iPlaySound(ROLLING_DICE_SOUND)
-    --end
+    end
 end
 
 onRollingObjectStop = function(gameObject)
@@ -26,4 +27,3 @@ beforeDrawFrame = function(frametime)
     skyBox:calcRotationAngle(frametime)
     terrainProgram:setSkyBoxRotationAngle(-skyBox:getRotationAngle())
 end
-

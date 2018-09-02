@@ -34,7 +34,6 @@ public class SkyDomeObject extends AbstractSkyObject {
 
     @Override
     protected void createVertexesVBO() {
-        //TODO: check vertices
         float[] vertexes = getVertexesArray();
 
         FloatBuffer vertexData = ByteBuffer
