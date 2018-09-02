@@ -23,9 +23,9 @@ import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
-import com.sadgames.gl3dengine.glrender.scene.objects.SkyBoxObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
@@ -53,7 +53,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_TEXTURE_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
@@ -72,19 +72,22 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     private GameEntity gameEntity = null;
     private GameInstanceEntity gameInstanceEntity = null;
     private List<InstancePlayer> savedPlayers = null;
-    private final Globals luaEngine;
-    private LuaValue luaSysUtilsWrapper;
-    private LuaValue luaGl3DScene;
+    private Globals luaEngine;
 
     public DiceGameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.restApiWrapper = restApiWrapper;
         this.gl3DScene = gl3DScene;
 
+        initScriptEngine();
+    }
+
+    private void initScriptEngine() {
         luaEngine = JsePlatform.standardGlobals();
         luaEngine.finder = this;
-        luaSysUtilsWrapper = CoerceJavaToLua.coerce(sysUtilsWrapper);
-        luaGl3DScene = CoerceJavaToLua.coerce(gl3DScene);
+
+        LuaValue luaSysUtilsWrapper = CoerceJavaToLua.coerce(sysUtilsWrapper);
+        LuaValue luaGl3DScene = CoerceJavaToLua.coerce(gl3DScene);
 
         luaEngine.loadfile("scripts/gameLogic.lua").call(luaSysUtilsWrapper, luaGl3DScene);
     }
@@ -220,11 +223,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
 
         /** Skybox and water reflection map texture */
-        CubeMapTexture skyBoxTexture =
+        /*CubeMapTexture skyBoxTexture =
             new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
         TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
                                                                  skyBoxTexture.getTextureName(),
-                                                                 skyBoxTexture.getTextureSize());
+                                                                 skyBoxTexture.getTextureSize());*/
 
         TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
@@ -253,10 +256,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
         /** sky-box */
-        //AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
+        AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
         AbstractSkyObject skyBoxObject =
-                new SkyBoxObject(sysUtilsWrapper,skyBoxTexture/*skyDomeTexture*/,
-                                 glScene);
+                new SkyDomeObject(sysUtilsWrapper,/*skyBoxTexture*/skyDomeTexture, glScene);
         skyBoxObject.loadObject();
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 

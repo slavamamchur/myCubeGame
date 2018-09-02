@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.GL_UNSIGNED_INT;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
 import static android.opengl.GLES20.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
@@ -51,7 +51,7 @@ public class SkyDomeObject extends AbstractSkyObject {
     @Override
     public void render() {
         glEnableFrontFacesCulling();
-        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
         glEnableBackFacesCulling();
     }
 }
