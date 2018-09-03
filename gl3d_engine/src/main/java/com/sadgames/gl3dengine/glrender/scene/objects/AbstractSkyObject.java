@@ -18,7 +18,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
     public AbstractSkyObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLShaderProgram program) {
         super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT);
 
-        skyPrimitive = createSkyPrimitive(sysUtilsWrapper, LAND_SIZE_IN_WORLD_SPACE / 2f + 0.25f);
+        skyPrimitive = createSkyPrimitive(sysUtilsWrapper, LAND_SIZE_IN_WORLD_SPACE / 2f /*+ 0.25f*/);
 
         setGlTexture(cubeTexture);
         setCastShadow(false);

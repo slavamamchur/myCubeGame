@@ -4,26 +4,19 @@ uniform sampler2D u_TextureUnit;
 
 varying vec3 v_Normal;
 
-const vec4 skyColour = vec4(0.48, 0.62, 0.68, 1.0);
+const vec4 skyColour = vec4(0.0, 0.3, 0.5, 1.0); //180, 194, 197
 const float lowerLimit = 0.0;
 const float upperLimit = 1.0;
 const float PI  = 3.141592653589793;
 
 vec2 RadialCoords(vec3 a_coords)
 {
-						/*
-                    	u = atan2(y, z)
-                        v = acos(x/sqrt(x*x + y*y + z*z))
-                        u /= 2*Pi and v /= Pi
-                        */
+	vec3 a_coords_n = normalize(a_coords);
+	float lon = atan(a_coords_n.z, a_coords_n.x);
+	float lat = acos(a_coords_n.y);
+	vec2 sphereCoords = vec2(lon, lat) * (1.0 / PI);
 
-					vec3 a_coords_n = normalize(a_coords);
-					float lon = atan(a_coords_n.z, a_coords_n.x);
-					float lat = acos(a_coords_n.y);
-					vec2 sphereCoords = vec2(lon, lat) * (1.0 / PI);
-
-					return vec2(sphereCoords.x * 0.5 + 0.5, 1.0 - sphereCoords.y);
-
+	return vec2(sphereCoords.x * 0.5 + 0.5, 1.0 - sphereCoords.y);
 }
 
 void main()
