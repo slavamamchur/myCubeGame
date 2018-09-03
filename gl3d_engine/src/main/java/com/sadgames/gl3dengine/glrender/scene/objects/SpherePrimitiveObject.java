@@ -57,8 +57,6 @@ public class SpherePrimitiveObject extends GameItemObject {
                 points[v++] = y * radius;
                 points[v++] = z * radius;
 
-                //Log.i("Sphere","Added point (" + x +", " + y + ", " +z +")");
-
                 normals[n++] = x;
                 normals[n++] = y;
                 normals[n++] = z;
