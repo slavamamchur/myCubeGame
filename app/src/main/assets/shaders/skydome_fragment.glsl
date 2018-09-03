@@ -4,7 +4,7 @@ uniform sampler2D u_TextureUnit;
 
 varying vec3 v_Normal;
 
-const vec4 skyColour = vec4(0.0, 0.3, 0.5, 1.0); //180, 194, 197
+const vec4 skyColour = vec4(0.68, 0.74, 0.78, 1.0);//vec4(0.0, 0.3, 0.5, 1.0);
 const float lowerLimit = 0.0;
 const float upperLimit = 1.0;
 const float PI  = 3.141592653589793;

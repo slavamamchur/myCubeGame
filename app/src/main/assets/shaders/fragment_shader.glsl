@@ -32,7 +32,7 @@ varying highp vec4 vShadowCoord;
 varying float vdiffuse;
 varying float vspecular;
 
-const vec4 skyColour = vec4(0.48, 0.62, 0.68, 1.0);
+const vec4 skyColour = vec4(0.68, 0.74, 0.78, 1.0);
 const vec4 waterColour = vec4(0, 0.3, 0.5, 1.0);
 const float shineDumper = 40.0;
 const float nmapTiling = 6.0;
@@ -160,6 +160,7 @@ void main()
 
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
+
       /*if (u_isCubeMapF == 1) {
         float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
 
@@ -173,6 +174,7 @@ void main()
 
         gl_FragColor = mix(gl_FragColor, backgroundColour, blendingFactor);
       }*/
+
 
       if (u_is2DModeF != 1) {
         gl_FragColor = mix(skyColour, gl_FragColor, visibility);
