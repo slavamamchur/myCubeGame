@@ -50,6 +50,7 @@ public class SkyDomeObject extends AbstractSkyObject {
 
     @Override
     public void render() {
+        //TODO: check
         glEnableFrontFacesCulling();
         glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
         glEnableBackFacesCulling();
