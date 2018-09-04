@@ -219,16 +219,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
-        //GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+        ///GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
-
-        /** Skybox and water reflection map texture */
-        /*CubeMapTexture skyBoxTexture =
-            new CubeMapTexture(sysUtilsWrapper, gameEntity._getSkyBoxTextureNames(), SKY_BOX_TEXTURE_NAME);
-        TextureCacheManager.getInstance(sysUtilsWrapper).putItem(skyBoxTexture,
-                                                                 skyBoxTexture.getTextureName(),
-                                                                 skyBoxTexture.getTextureSize());*/
-
         TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
@@ -268,7 +261,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
                     glScene.getCachedShader(GUI_OBJECT),
                     new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
-            //miniMapView.setGlTexture(terrain.getGlTexture());
+           //miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
         }*/
 

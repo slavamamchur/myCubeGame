@@ -6,13 +6,16 @@ import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
+import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BACKGROUND_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_SHADOWMAP_SLOT_PARAM_NAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.BACKGROUND_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.CAMERA_POSITION_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
@@ -34,10 +37,10 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         super(sysUtilsWrapper);
     }
 
+    @SuppressWarnings("unused")
     public void setSkyBoxRotationAngle(float skyBoxRotationAngle) {
         this.skyBoxRotationAngle = skyBoxRotationAngle;
     }
-
     @Override
     protected String getVertexShaderResId() {
         return MAIN_RENDERER_VERTEX_SHADER;
@@ -74,12 +77,12 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         GLRenderConsts.GraphicsQuality graphicsQualityLevel =
                 sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
-        //TODO: background texture - > set lower resolution
-        /*AbstractTexture background = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(scene.getBackgroundTextureName());
+        AbstractTexture background = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(scene.getBackgroundTextureName());
         if (background != null) {
             background.bind(BACKGROUND_TEXTURE_SLOT);
             paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);
-        }*/
+        }
+
         paramByName(IS_2D_MODE_PARAM_NAME).setParamValue(sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 1 : 0);
 
         scene.getShadowMapFBO().getFboTexture().bind(FBO_TEXTURE_SLOT);

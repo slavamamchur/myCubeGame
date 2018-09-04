@@ -145,6 +145,7 @@ void main()
           float reflectiveFactor = 1.0 - dot(n_lookvector, vec3(0.0, 1.0, 0.0));
           vec4 refractionColor = texture2D(u_RefractionMapUnit, clamp(v_Texture + totalDistortion, 0.0, 0.9999));
 
+          //TODO: Sky reflection
           /*if (u_hasReflectMap == 1) {
             vec3 reflectedSkyDirection = (u_SkyboxMV_MatrixF * vec4(reflect(-n_lookvector, n_normal), 0.0)).xyz;
             vec4 reflectionColor = mix(textureCube(u_SkyboxMapUnit, reflectedSkyDirection), waterColour, 0.5);
@@ -161,19 +162,12 @@ void main()
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
 
-      /*if (u_isCubeMapF == 1) {
+      if (u_isCubeMapF == 1 && u_is2DModeF == 1) {
         float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
-
-        vec4 backgroundColour;
-        if (u_is2DModeF == 1) {
-            backgroundColour = texture2D(u_BackgroundUnit, v_Texture);
-        }
-        else {
-            backgroundColour = skyColour;
-        }
+        vec4 backgroundColour = texture2D(u_BackgroundUnit, v_Texture);
 
         gl_FragColor = mix(gl_FragColor, backgroundColour, blendingFactor);
-      }*/
+      }
 
 
       if (u_is2DModeF != 1) {
