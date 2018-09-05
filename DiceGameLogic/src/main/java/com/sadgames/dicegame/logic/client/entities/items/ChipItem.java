@@ -22,7 +22,7 @@ public class ChipItem extends Blender3DObject {
         this.initialTranslation = new Vector3f(0f, 0.08f, 0f);
 
         setTwoSidedSurface(false);
-        setCastShadow(false);//TODO: test!!!
+        setCastShadow(true);
         setItemName(CHIP_MESH_OBJECT + "_" + player.getName());
     }
 

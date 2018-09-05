@@ -60,13 +60,13 @@ highp float unpack (highp vec4 packedZValue) {
 float calcShadowRate(vec3 nNormal) {
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
-        highp float bias = 0.001; //calcDynamicBias(0.1, nNormal);//TODO: bias
+        highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal);
         highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/;
 
         highp vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
         highp float distanceFromLight = unpack(packedZValue);
 
-        shadow = float(distanceFromLight > (shadowMapPosition.z /** 255.0*/ - bias)); // + bias ???
+        shadow = float(distanceFromLight > (shadowMapPosition.z /** 255.0*/ - bias));
         shadow = (shadow * (1.0 - u_AmbientRate)) + u_AmbientRate;
       }
 
