@@ -3,6 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
@@ -282,6 +283,13 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
     }
 
+    public void unbindTexture() {
+        if (glTexture != null && glTexture.getTextureId() != 0) {
+            GLES20JniWrapper.glActiveTexture(1);
+            GLES20JniWrapper.glBindTexture2D(0);
+        }
+    }
+
     public void bindMaterial() {
         bindMaterial(program);
     }
@@ -400,6 +408,13 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         }
         else
             return null;
+    }
+
+    public synchronized void reloadTexture () {
+        if (glTexture != null) {
+            unbindTexture();
+            glTexture = TextureCacheManager.getInstance(sysUtilsWrapper).reloadItem(((BitmapTexture)getGlTexture()).getTextureName());
+        }
     }
 
     private void clearVBOPtr(int vboPtr) {

@@ -26,6 +26,10 @@ public abstract class AbstractEntityCacheManager<T> {
             return entity;
         }
 
+        public void setEntity(T entity) {
+            this.entity = entity;
+        }
+
         @SuppressWarnings("all") public int getUsageCounter() {
             return usageCounter;
         }
@@ -81,6 +85,18 @@ public abstract class AbstractEntityCacheManager<T> {
             items.get(key).setImmortal(isImmortal);
     }
 
+    public T reloadItem(String key) {
+        T newItem = null;
+
+        if (items.containsKey(key)) {
+            releaseItem(items.get(key).getEntity());
+            newItem = createItem(key);
+            items.get(key).setEntity(newItem);
+        }
+
+        return newItem;
+    }
+
     /** for load new level with keeping some objects if needed*/
     public void setWeakCacheMode() {
         for(CacheItem item : items.values())
@@ -90,6 +106,12 @@ public abstract class AbstractEntityCacheManager<T> {
     public void clearCache() {
         for(CacheItem item : items.values())
             deleteItem(item);
+    }
+
+    public void deleteByName(String key) {
+        for(CacheItem item : items.values())
+            if (item.getKey().equals(key))
+                deleteItem(item);
     }
 
     private boolean isEnoughSpace(long size) {

@@ -412,6 +412,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         }
 
         gl3DObject.render();
+
+        gl3DObject.unbindTexture();//TODO: unbind shadowmap texture ???
     }
 
     private void simulatePhysics(long currentTime) {

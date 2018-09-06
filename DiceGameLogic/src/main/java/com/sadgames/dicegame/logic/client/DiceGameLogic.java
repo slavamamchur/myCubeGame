@@ -426,10 +426,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         }
     }
 
-    private void rollDice() {
+    private void rollDice() { //TODO: Recreate shadow map buffer ???
         switrchTo2DMode();
 
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
+        dice_1.reloadTexture();
         dice_1.createRigidBody();
         dice_1.generateInitialTransform();
         dice_1.generateForceVector();
