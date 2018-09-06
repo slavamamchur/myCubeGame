@@ -57,7 +57,7 @@ highp float unpack (highp vec4 packedZValue) {
     return packedZValue.z;
 }
 
-float calcShadowRate(vec3 nNormal) {
+float calcShadowRate(vec3 nNormal) { //TODO: draw shadow on terrain only
       highp float shadow = 1.0;
       if (vShadowCoord.w > 0.0) {
         highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal);

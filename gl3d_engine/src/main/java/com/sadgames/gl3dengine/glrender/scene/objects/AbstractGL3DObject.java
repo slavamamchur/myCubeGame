@@ -283,11 +283,9 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
     }
 
-    public void unbindTexture() {
-        if (glTexture != null && glTexture.getTextureId() != 0) {
-            GLES20JniWrapper.glActiveTexture(1);
-            GLES20JniWrapper.glBindTexture2D(0);
-        }
+    public void unbindTexture(int slot) {
+        GLES20JniWrapper.glActiveTexture(slot);
+        GLES20JniWrapper.glBindTexture2D(0);
     }
 
     public void bindMaterial() {
@@ -412,7 +410,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
     public synchronized void reloadTexture () {
         if (glTexture != null) {
-            unbindTexture();
+            unbindTexture(1);
             glTexture = TextureCacheManager.getInstance(sysUtilsWrapper).reloadItem(((BitmapTexture)getGlTexture()).getTextureName());
         }
     }

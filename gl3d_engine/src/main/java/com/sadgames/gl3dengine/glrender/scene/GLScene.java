@@ -400,6 +400,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
             program.bindGlobalParams(this);
         }
 
+        //getShadowMapFBO().getFboTexture().bind();
+
         if (program == null) return;
 
         synchronized (lockObject) { program.bindMVPMatrix(gl3DObject, camera.getViewMatrix(),camera.getProjectionMatrix()); }
@@ -413,7 +415,8 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         gl3DObject.render();
 
-        gl3DObject.unbindTexture();//TODO: unbind shadowmap texture ???
+        //gl3DObject.unbindTexture(1);
+        //gl3DObject.unbindTexture(FBO_TEXTURE_SLOT);
     }
 
     private void simulatePhysics(long currentTime) {
