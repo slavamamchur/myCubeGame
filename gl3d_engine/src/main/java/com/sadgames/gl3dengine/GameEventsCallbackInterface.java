@@ -6,6 +6,8 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 
+import org.luaj.vm2.LuaValue;
+
 public interface GameEventsCallbackInterface {
 
     void onStopMovingObject(PNodeObject gameObject);
@@ -21,5 +23,5 @@ public interface GameEventsCallbackInterface {
 
     void onBeforeDrawFrame(long frametime);
 
-    void onPerformUserAction(String action, Object[] params);
+    void onPerformUserAction(String action, LuaValue[] params);
 }

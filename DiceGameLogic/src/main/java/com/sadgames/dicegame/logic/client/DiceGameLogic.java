@@ -160,13 +160,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     }
 
     @Override
-    public void onPerformUserAction(String action, Object[] params) {
+    public void onPerformUserAction(String action, LuaValue[] params) {
         /*UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(action)];
         switch (actionType) {
             default:
         }*/
 
-        luaEngine.get(action).call();
+        luaEngine.invokemethod(action, params);
     }
 
     @Override

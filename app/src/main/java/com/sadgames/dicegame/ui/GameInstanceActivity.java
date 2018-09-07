@@ -24,6 +24,8 @@ import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.framework.MapFragment;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 
+import org.luaj.vm2.LuaValue;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -265,7 +267,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     //TODO: disable buttons
     private void playTurn() {
         prev_player_index = getItem().getCurrentPlayer();
-        mMapFragment.getGameLogic().onPerformUserAction(ON_PLAY_TURN_EVENT_HANDLER, null);
+        mMapFragment.getGameLogic().onPerformUserAction(ON_PLAY_TURN_EVENT_HANDLER, new LuaValue[]{});
     }
 
     private void showAnimatedText(String text) {
