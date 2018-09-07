@@ -20,6 +20,7 @@ import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
@@ -44,11 +45,13 @@ import java.util.List;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
+import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
@@ -56,6 +59,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJE
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
@@ -256,14 +260,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
 
         /** mini-map gui-box */
-        /*if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
+        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(sysUtilsWrapper,
                     glScene.getCachedShader(GUI_OBJECT),
                     new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
-           //miniMapView.setGlTexture(terrain.getGlTexture());
+            miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
-        }*/
+        }
 
         forceGCandWait();
         restApiWrapper.removeLoadingSplash();
@@ -430,10 +434,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         switrchTo2DMode();
 
         GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
-
-        //dice_1.reloadTexture();
-        //TODO: Recreate shadow map buffer ???
-
         dice_1.createRigidBody();
         dice_1.generateInitialTransform();
         dice_1.generateForceVector();

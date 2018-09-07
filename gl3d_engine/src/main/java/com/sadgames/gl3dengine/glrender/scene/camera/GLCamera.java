@@ -13,8 +13,8 @@ import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTAT
 
 public abstract class GLCamera implements GLAnimation.IAnimatedObject {
 
-    public static final float NEAR_PLANE = 0.1f; //0.1f;
-    public static final float FAR_PLANE = 9f; //9.0f;
+    public static final float NEAR_PLANE = 0.1f;
+    public static final float FAR_PLANE = 9f;
 
     protected float[] transformMatrix = new float[16];
     protected float[] viewMatrix = new float[16];
