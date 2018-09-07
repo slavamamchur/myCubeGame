@@ -37,6 +37,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAY_TURN_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 
@@ -264,7 +265,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     //TODO: disable buttons
     private void playTurn() {
         prev_player_index = getItem().getCurrentPlayer();
-        mMapFragment.getGameLogic().playTurn();
+        mMapFragment.getGameLogic().onPerformUserAction(ON_PLAY_TURN_EVENT_HANDLER, null);
     }
 
     private void showAnimatedText(String text) {

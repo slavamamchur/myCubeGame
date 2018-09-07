@@ -1,5 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.animation;
 
+import org.luaj.vm2.Globals;
+
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLAnimationType;
@@ -11,6 +13,8 @@ public class GLAnimation {
 
     private GLAnimationType animationType;
     private AnimationCallBack delegate = null;
+    private Globals luaEngine = null;
+    private String luaDelegate = null;
 
     private float fromX;
     private float toX;
@@ -56,6 +60,13 @@ public class GLAnimation {
         this.animationDuration = animationDuration;
     }
 
+    public Globals getLuaEngine() {
+        return luaEngine;
+    }
+    public void setLuaEngine(Globals luaEngine) {
+        this.luaEngine = luaEngine;
+    }
+
     public void setRepeatCount(short repeatCount) {
         this.repeatCount = repeatCount;
     }
@@ -91,6 +102,21 @@ public class GLAnimation {
 
     public void startAnimation(IAnimatedObject animatedObject, AnimationCallBack delegate) {
         this.delegate = delegate;
+
+        switch (animationType) {
+            case TRANSLATE_ANIMATION:
+                animatedObject.setPosition(new Vector3f(fromX, fromY, fromZ));
+
+                break;
+        }
+
+        startTime = System.currentTimeMillis();
+        inProgress = true;
+    }
+
+
+    @SuppressWarnings("unused") public void startAnimation(IAnimatedObject animatedObject, String luaDelegate) {
+        this.luaDelegate = luaDelegate;
 
         switch (animationType) {
             case TRANSLATE_ANIMATION:
@@ -142,6 +168,8 @@ public class GLAnimation {
 
                 if (delegate != null)
                     delegate.onAnimationEnd();
+                else if (luaEngine != null && luaDelegate != null)
+                    luaEngine.get(luaDelegate).call();
             }
         }
     }

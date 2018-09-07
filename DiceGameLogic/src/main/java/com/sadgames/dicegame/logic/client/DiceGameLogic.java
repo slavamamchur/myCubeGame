@@ -15,7 +15,6 @@ import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
-import com.sadgames.gl3dengine.glrender.scene.camera.Orthogonal2DCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
@@ -47,7 +46,6 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
@@ -58,16 +56,15 @@ import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STO
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
     private final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
+    private final static String LUA_GAME_LOGIC_SCRIPT = "scripts/gameLogic.lua";
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private RestApiInterface restApiWrapper;
@@ -87,15 +84,19 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     }
 
     private void initScriptEngine() {
-        luaEngine = JsePlatform.standardGlobals();
-        luaEngine.finder = this;
-
         LuaValue luaSysUtilsWrapper = CoerceJavaToLua.coerce(sysUtilsWrapper);
         LuaValue luaGl3DScene = CoerceJavaToLua.coerce(gl3DScene);
 
-        luaEngine.loadfile("scripts/gameLogic.lua").call(luaSysUtilsWrapper, luaGl3DScene);
+        luaEngine = JsePlatform.standardGlobals();
+        luaEngine.finder = this;
+        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(luaSysUtilsWrapper, luaGl3DScene);
+
+        gl3DScene.setLuaEngine(luaEngine);
     }
 
+    @SuppressWarnings("unused") public Globals getLuaEngine() {
+        return luaEngine;
+    }
     @SuppressWarnings("unused") public GameMapEntity getMapEntity() {
         return mapEntity;
     }
@@ -119,12 +120,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     }
     public void setSavedPlayers(List<InstancePlayer> savedPlayers) {
         this.savedPlayers = savedPlayers;
-    }
-
-    @SuppressWarnings("all")
-    public void playTurn() {
-        gl3DScene.setZoomCameraAnimation(new GLAnimation(1 / 2f, CAMERA_ZOOM_ANIMATION_DURATION));
-        gl3DScene.getZoomCameraAnimation().startAnimation(null, () -> rollDice());
     }
 
     public void playerNextMove(GameInstanceEntity gameInstance) {
@@ -166,10 +161,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onPerformUserAction(String action, Object[] params) {
-        UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(action)];
+        /*UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(action)];
         switch (actionType) {
             default:
-        }
+        }*/
+
+        luaEngine.get(action).call();
     }
 
     @Override
@@ -252,12 +249,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
         glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
 
-        /** sky-box */
+        /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
-        AbstractSkyObject skyBoxObject =
-                new SkyDomeObject(sysUtilsWrapper,/*skyBoxTexture*/skyDomeTexture, glScene);
-        skyBoxObject.loadObject();
-        glScene.putChild(skyBoxObject, SKY_BOX_CUBE_MAP_OBJECT);
+        AbstractSkyObject skyDomeObject = new SkyDomeObject(sysUtilsWrapper, skyDomeTexture, glScene);
+        skyDomeObject.setItemName(SKY_BOX_CUBE_MAP_OBJECT);
+        skyDomeObject.loadObject();
+        glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
         /** mini-map gui-box */
         if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
@@ -414,43 +411,16 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         return Math.toRadians((2 * playersCnt - b) * angle);
     }
 
-    private boolean old2D_ModeValue;
-    private void switrchTo2DMode() {
-        synchronized (GLScene.lockObject) {
-            old2D_ModeValue = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode();
-            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(true);
-            gl3DScene.setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
-        }
-    }
-
-    private void restorePrevViewMode() {
-        synchronized (GLScene.lockObject) {
-            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
-            gl3DScene.setCamera(null);
-        }
-    }
-
-    private void rollDice() {
-        switrchTo2DMode();
-
-        GameDiceItem dice_1 = (GameDiceItem)gl3DScene.getObject(DICE_MESH_OBJECT_1);
-        dice_1.createRigidBody();
-        dice_1.generateInitialTransform();
-        dice_1.generateForceVector();
-
-        gl3DScene.getPhysicalWorldObject().addRigidBody(dice_1.get_body());
-    }
-
     private void removeDice(GameDiceItem dice) {
         //toggleActionBarProgress(true);
         if (gameInstanceEntity != null) {
             gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
             restApiWrapper.showTurnInfo(gameInstanceEntity);
 
-            restorePrevViewMode();
+            gl3DScene.restorePrevViewMode();
             dice.setPosition(new Vector3f(100, 0, 0));
 
-            gl3DScene.setZoomCameraAnimation(new GLAnimation(1 * 2f, CAMERA_ZOOM_ANIMATION_DURATION));
+            gl3DScene.setZoomCameraAnimation(gl3DScene.createZoomCameraAnimation(2f));
             gl3DScene.getZoomCameraAnimation().startAnimation(null, () -> playerNextMove(gameInstanceEntity));
 
         }

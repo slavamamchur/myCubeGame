@@ -32,6 +32,8 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.SkyDomeProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import org.luaj.vm2.Globals;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +66,7 @@ import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_
 public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface {
 
     public  final static Object lockObject = new Object();
+    private final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
 
     private boolean isSimulating = false;
     private boolean hasDepthTextureExtension;
@@ -89,6 +92,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private GameEventsCallbackInterface gameEventsCallBackListener = null;
     private GraphicsQuality graphicsQualityLevel;
     private String backgroundTextureName = null;
+    private Globals luaEngine = null;
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
@@ -110,6 +114,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         lightSource.setCamera(this.camera);
     }
 
+    @SuppressWarnings("unused")public Globals getLuaEngine() {
+        return luaEngine;
+    }
+    public void setLuaEngine(Globals luaEngine) {
+        this.luaEngine = luaEngine;
+    }
     public String getBackgroundTextureName() {
         return backgroundTextureName;
     }
@@ -225,6 +235,13 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         }
 
         return program;
+    }
+
+    public GLAnimation createZoomCameraAnimation(float zoomLevel) {
+        GLAnimation animation = new GLAnimation(zoomLevel, CAMERA_ZOOM_ANIMATION_DURATION);
+        animation.setLuaEngine(luaEngine);
+
+        return animation;
     }
 
     private void startSimulation() {
@@ -550,6 +567,23 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         generateShadowMapFBO();
         /** for post effects */
         generateMainRenderFBO();
+    }
+
+    private boolean old2D_ModeValue;
+
+    public void switrchTo2DMode() {
+        synchronized (lockObject) {
+            old2D_ModeValue = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode();
+            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(true);
+            setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
+        }
+    }
+
+    public void restorePrevViewMode() {
+        synchronized (lockObject) {
+            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
+            setCamera(null);
+        }
     }
 
     /** GLRendererInterface implementation -------------------------------------------------------*/

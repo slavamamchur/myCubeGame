@@ -3,10 +3,12 @@ package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bulletphysics.dynamics.DynamicsWorld;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameController;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
@@ -131,14 +133,6 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     public Vector3f _getStartSunColor() {
         return new Vector3f(1.0f, 1.0f, 0.8f);
     }
-    public String[] _getSkyBoxTextureNames() {
-        return new String [] {
-               "skybox_right.pkm",
-               "skybox_left.pkm",
-               "skybox_top.pkm",
-               "skybox_bottom.pkm",
-               "skybox_back.pkm",
-               "skybox_front.pkm"
-        };
-    }
+
+    public void loadSceneObjects(SysUtilsWrapperInterface sysUtilsWrapper, GLScene glScene, DynamicsWorld dynamicsWorldObject) {}
 }
