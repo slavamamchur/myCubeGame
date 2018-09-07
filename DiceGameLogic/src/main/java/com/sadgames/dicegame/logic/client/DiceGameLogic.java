@@ -63,7 +63,6 @@ import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
-    private final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
     private final static String LUA_GAME_LOGIC_SCRIPT = "scripts/gameLogic.lua";
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
@@ -156,23 +155,18 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         savedPlayers.clear();
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
 
-        moveChips(gl3DScene);
+        moveChips();
     }
 
     @Override
     public void onPerformUserAction(String action, LuaValue[] params) {
-        /*UserActionType actionType = UserActionType.values()[ACTION_LIST.indexOf(action)];
-        switch (actionType) {
-            default:
-        }*/
-
         luaEngine.invokemethod(action, params);
     }
 
     @Override
     public void onStopMovingObject(PNodeObject gameObject) {
         if (gameObject instanceof GameDiceItem)
-            removeDice((GameDiceItem) gameObject);
+            removeDice((GameDiceItem) gameObject);//TODO:
     }
 
     @Override
@@ -358,13 +352,13 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         }
     }
 
-    private void moveChips(GLScene mScene) {
+    private void moveChips() {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
 
-            ChipItem chip = (ChipItem) mScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
+            ChipItem chip = (ChipItem) gl3DScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
             chip.setInWorldPosition(getChipPlaceByWayPoint(chip.getParent(), playersOnWayPoints, player, true));
         }
     }

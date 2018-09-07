@@ -32,9 +32,10 @@ beforeDrawFrame = function(frametime)
 end
 
 onPlayTurn = function()
+    local params = {}
     local animation = gl3DScene:createZoomCameraAnimation(0.5);
     gl3DScene:setZoomCameraAnimation(animation)
-    animation:startAnimation(nil, ON_PLAY_TURN_ANIMATION_END)
+    animation:startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, params)
 end
 
 rollDice = function()

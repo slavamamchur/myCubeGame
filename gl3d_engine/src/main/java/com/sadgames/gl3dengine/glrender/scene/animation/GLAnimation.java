@@ -1,6 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.animation;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
 
 import javax.vecmath.Vector3f;
 
@@ -15,6 +16,7 @@ public class GLAnimation {
     private AnimationCallBack delegate = null;
     private Globals luaEngine = null;
     private String luaDelegate = null;
+    private LuaValue[] luaDelegateParams = new LuaValue[]{};
 
     private float fromX;
     private float toX;
@@ -115,8 +117,9 @@ public class GLAnimation {
     }
 
 
-    @SuppressWarnings("unused") public void startAnimation(IAnimatedObject animatedObject, String luaDelegate) {
+    @SuppressWarnings("unused") public void startAnimation(IAnimatedObject animatedObject, String luaDelegate, LuaValue[] params) {
         this.luaDelegate = luaDelegate;
+        this.luaDelegateParams = params;
 
         switch (animationType) {
             case TRANSLATE_ANIMATION:
@@ -169,7 +172,7 @@ public class GLAnimation {
                 if (delegate != null)
                     delegate.onAnimationEnd();
                 else if (luaEngine != null && luaDelegate != null)
-                    luaEngine.get(luaDelegate).call();
+                    luaEngine.invokemethod(luaDelegate, luaDelegateParams);
             }
         }
     }
