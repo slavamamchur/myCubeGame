@@ -292,7 +292,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         bindMaterial(program);
     }
     public void bindMaterial(GLShaderProgram program) {
-        int textureSlotIndex = 1;//0
+        int textureSlotIndex = 0;//1
 
         if (glTexture != null) {
             if (glTexture.getTextureId() == 0)

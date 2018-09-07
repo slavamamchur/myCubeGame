@@ -114,7 +114,7 @@ public  class GLRenderConsts {
     public static final String SKYDOME_VERTEX_SHADER = "shaders/skydome_vertex.glsl";
     public static final String SKYDOME_FRAGMENT_SHADER = "shaders/skydome_fragment.glsl";
 
-    public static final int FBO_TEXTURE_SLOT = 0; //6;
+    public static final int FBO_TEXTURE_SLOT = 6; //0;
     public static final int BACKGROUND_TEXTURE_SLOT = 7;
 
 }

@@ -415,7 +415,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
         gl3DObject.render();
 
-        //gl3DObject.unbindTexture(1);
+        gl3DObject.unbindTexture(0);
         //gl3DObject.unbindTexture(FBO_TEXTURE_SLOT);
     }
 
