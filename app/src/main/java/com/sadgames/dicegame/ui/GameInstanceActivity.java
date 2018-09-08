@@ -25,6 +25,7 @@ import com.sadgames.dicegame.ui.framework.MapFragment;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -39,6 +40,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAYER_NEXT_MOVE__EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAY_TURN_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
@@ -203,7 +205,10 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMapFragment.getGameLogic().playerNextMove(getItem());
+                    mMapFragment.getGameLogic().getLuaEngine().get(ON_PLAYER_NEXT_MOVE__EVENT_HANDLER).call(
+                            CoerceJavaToLua.coerce(getItem()),
+                            CoerceJavaToLua.coerce(mMapFragment.getGameLogic().getRestApiWrapper())
+                    );
                 }
             }, 1000);
         }

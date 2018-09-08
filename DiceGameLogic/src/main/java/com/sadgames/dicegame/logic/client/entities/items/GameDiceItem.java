@@ -100,4 +100,8 @@ public class GameDiceItem extends Blender3DObject {
         Integer value = DICE_FACES_VALUES.get(result);
         return value == null ? 0 : value;
     }
+
+    public void hideDice() {
+        setPosition(new Vector3f(100, 0, 0));
+    }
 }

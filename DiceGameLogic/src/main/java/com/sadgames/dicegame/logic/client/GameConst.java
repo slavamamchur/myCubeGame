@@ -88,7 +88,9 @@ public class GameConst {
     public static final String ON_BEFORE_DRAW_FRAME_EVENT_HANDLER = "beforeDrawFrame";
     public static final String ON_ROLLING_OBJECT_START_EVENT_HANDLER = "onRollingObjectStart";
     public static final String ON_ROLLING_OBJECT_STOP_EVENT_HANDLER = "onRollingObjectStop";
+    public static final String ON_MOVING_OBJECT_STOP_EVENT_HANDLER = "onMovingObjectStop";
     public static final String ON_PLAY_TURN_EVENT_HANDLER = "onPlayTurn";
+    public static final String ON_PLAYER_NEXT_MOVE__EVENT_HANDLER = "playerNextMove";
 
 
     public static final List<String> ACTION_LIST = new ArrayList<String>() {{

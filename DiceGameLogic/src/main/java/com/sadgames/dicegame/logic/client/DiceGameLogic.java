@@ -51,6 +51,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
@@ -93,6 +94,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         gl3DScene.setLuaEngine(luaEngine);
     }
 
+    public RestApiInterface getRestApiWrapper() {
+        return restApiWrapper;
+    }
     @SuppressWarnings("unused") public Globals getLuaEngine() {
         return luaEngine;
     }
@@ -119,10 +123,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     }
     public void setSavedPlayers(List<InstancePlayer> savedPlayers) {
         this.savedPlayers = savedPlayers;
-    }
-
-    public void playerNextMove(GameInstanceEntity gameInstance) {
-        restApiWrapper.moveGameInstance(gameInstance);
     }
 
     public void requestFinishGame() {
@@ -165,8 +165,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onStopMovingObject(PNodeObject gameObject) {
-        if (gameObject instanceof GameDiceItem)
-            removeDice((GameDiceItem) gameObject);//TODO:
+        luaEngine.get(ON_MOVING_OBJECT_STOP_EVENT_HANDLER).call(
+                                                                    CoerceJavaToLua.coerce(gameObject),
+                                                                    CoerceJavaToLua.coerce(gameInstanceEntity),
+                                                                    CoerceJavaToLua.coerce(restApiWrapper)
+                                                                );
     }
 
     @Override
@@ -181,17 +184,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onInitGLCamera(GLCamera camera) {
-        /** for future init from Game Level object */
-        /*camera.directSetPitch(gameEntity._getStartCameraPitch());
-        camera.directSetYaw(gameEntity._getStartCameraYaw());
-        camera.directSetRoll(gameEntity._getStartCameraRoll());
-        camera.setCameraPosition(gameEntity._getStartCameraPosition());
-        camera.setVfov(gameEntity._getStartCameraVFOV());*/
-
         if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
             camera.rotateX(22.5f);
-        //else
-            //camera.setZoomLevel(0.7f);
 
         camera.updateViewMatrix();
 
@@ -403,21 +397,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         } while ( ((playersCnt & part) == 0) && (part != 1) );
 
         return Math.toRadians((2 * playersCnt - b) * angle);
-    }
-
-    private void removeDice(GameDiceItem dice) {
-        //toggleActionBarProgress(true);
-        if (gameInstanceEntity != null) {
-            gameInstanceEntity.setStepsToGo(dice.getTopFaceDiceValue());
-            restApiWrapper.showTurnInfo(gameInstanceEntity);
-
-            gl3DScene.restorePrevViewMode();
-            dice.setPosition(new Vector3f(100, 0, 0));
-
-            gl3DScene.setZoomCameraAnimation(gl3DScene.createZoomCameraAnimation(2f));
-            gl3DScene.getZoomCameraAnimation().startAnimation(null, () -> playerNextMove(gameInstanceEntity));
-
-        }
     }
 
     @Override

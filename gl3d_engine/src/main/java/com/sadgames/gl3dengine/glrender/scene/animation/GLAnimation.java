@@ -1,6 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.animation;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import javax.vecmath.Vector3f;
@@ -117,9 +118,18 @@ public class GLAnimation {
     }
 
 
-    @SuppressWarnings("unused") public void startAnimation(IAnimatedObject animatedObject, String luaDelegate, LuaValue[] params) {
+    private LuaValue[] luaTable2Array(LuaTable table) {
+        LuaValue[] result = new LuaValue[table.length()];
+
+        for (int i = 0; i < table.length(); i++)
+            result[i] = table.get(i + 1);
+
+        return result;
+    }
+
+    @SuppressWarnings("unused") public void startAnimation(IAnimatedObject animatedObject, String luaDelegate, LuaTable params) {
         this.luaDelegate = luaDelegate;
-        this.luaDelegateParams = params;
+        this.luaDelegateParams = luaTable2Array(params);
 
         switch (animationType) {
             case TRANSLATE_ANIMATION:
@@ -171,8 +181,19 @@ public class GLAnimation {
 
                 if (delegate != null)
                     delegate.onAnimationEnd();
-                else if (luaEngine != null && luaDelegate != null)
-                    luaEngine.invokemethod(luaDelegate, luaDelegateParams);
+                else if (luaEngine != null && luaDelegate != null) {
+                    LuaValue handler = luaEngine.get(luaDelegate);
+                    switch (luaDelegateParams.length) {
+                        case 1:
+                            handler.call(luaDelegateParams[0]);
+                            break;
+                        case 2:
+                            handler.call(luaDelegateParams[0], luaDelegateParams[1]);
+                            break;
+                        default:
+                            handler.call();
+                    }
+                }
             }
         }
     }

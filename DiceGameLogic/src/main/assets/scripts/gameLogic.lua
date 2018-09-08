@@ -6,6 +6,7 @@ local TERRAIN_MESH_OBJECT = 'TERRAIN_MESH_OBJECT'
 local DICE_MESH_OBJECT = 'DICE_MESH_OBJECT_1'
 
 local ON_PLAY_TURN_ANIMATION_END = 'rollDice'
+local ON_STOP_MOVING_ANIMATION_END = 'playerNextMove'
 
 --local javaDiceObjName = luajava.newInstance('java.lang.String', DICE_MESH_OBJECT)
 --local objectType = luajava.bindClass('java.lang.String$GLObjectType')
@@ -18,6 +19,21 @@ end
 
 onRollingObjectStop = function(gameObject)
     sysUtilsWrapper:iStopSound()
+end
+
+onMovingObjectStop = function(gameObject, gameInstance, restApi)
+    if not (gameInstance == nil) then
+        gameInstance:setStepsToGo(gameObject:getTopFaceDiceValue())
+        restApi:showTurnInfo(gameInstance)
+
+        gl3DScene:restorePrevViewMode()
+
+        gameObject:hideDice()
+
+
+        gl3DScene:setZoomCameraAnimation(gl3DScene:createZoomCameraAnimation(2.0))
+        gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, {gameInstance, restApi})
+    end
 end
 
 beforeDrawFrame = function(frametime)
@@ -38,8 +54,12 @@ rollDice = function()
     gl3DScene:switrchTo2DMode()
 
     dice:createRigidBody()
-    dice:generateInitialTransform();
-    dice:generateForceVector();
+    dice:generateInitialTransform()
+    dice:generateForceVector()
 
     gl3DScene:getPhysicalWorldObject():addRigidBody(dice:get_body())
+end
+
+playerNextMove = function(gameInstance, restApi)
+    restApi:moveGameInstance(gameInstance);
 end
