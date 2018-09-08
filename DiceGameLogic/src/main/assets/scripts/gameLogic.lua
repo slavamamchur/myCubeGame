@@ -28,7 +28,7 @@ onMovingObjectStop = function(gameObject, gameInstance, restApi)
 
         gl3DScene:restorePrevViewMode()
 
-        gameObject:hideDice()
+        gameObject:hideObject()
 
 
         gl3DScene:setZoomCameraAnimation(gl3DScene:createZoomCameraAnimation(2.0))

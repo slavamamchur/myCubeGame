@@ -261,9 +261,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     @Override
     public void onBeforeDrawFrame(long frametime) {
         luaEngine.get(ON_BEFORE_DRAW_FRAME_EVENT_HANDLER).call(CoerceJavaToLua.coerce(frametime));
-
-        /*if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
-            gl3DScene.getObject(MINI_MAP_OBJECT).setGlTexture(gl3DScene.getShadowMapFBO().getFboTexture());*/
     }
 
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {

@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -65,6 +66,31 @@ public class Blender3DObject extends ImportedObject {
     }
     public void setTwoSidedSurface(boolean twoSidedSurface) {
         this.twoSidedSurface = twoSidedSurface;
+    }
+
+    public float getInitialScale() {
+        return initialScale;
+    }
+    public void setInitialScale(float initialScale) {
+        this.initialScale = initialScale;
+    }
+
+    public Vector3f getInitialTranslation() {
+        return initialTranslation;
+    }
+    public void setInitialTranslation(float dx, float dy, float dz) {
+        this.initialTranslation = new Vector3f(dx, dy, dz);
+    }
+
+    @Override
+    protected void createCollisionShape(float[] vertexes) {
+        switch (collisionShapeType) {
+            case BOX:
+                _shape = new BoxShape(new Vector3f(initialScale, initialScale, initialScale));
+                break;
+            default:
+                super.createCollisionShape(vertexes);
+        }
     }
 
     @Override public Raw3DModel getRaw3DModel() {
@@ -209,5 +235,9 @@ public class Blender3DObject extends ImportedObject {
         glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
 
         if (twoSidedSurface) glEnable(GL_CULL_FACE);
+    }
+
+    @SuppressWarnings("unused") public void hideObject() {
+        setPosition(new Vector3f(1000, 0, 0));
     }
 }

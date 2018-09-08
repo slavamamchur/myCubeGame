@@ -1,6 +1,5 @@
 package com.sadgames.dicegame.logic.client.entities.items;
 
-import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.MathUtils;
@@ -19,6 +18,8 @@ public class GameDiceItem extends Blender3DObject {
 
     public static final float GAME_DICE_HALF_SIZE = 0.15f;
     private static final float DICE_DEFAULT_WEIGHT = 10f;
+    private static final short BOX_SHAPE_TYPE = 1;
+
     private static Map<Integer, Integer> DICE_FACES_VALUES = new HashMap<Integer, Integer>() {
         {
             put(68, 1);
@@ -33,19 +34,14 @@ public class GameDiceItem extends Blender3DObject {
     public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program) {
         super(sysUtilsWrapper, DICE_MESH_OBJECT_1, program, DICE_DEFAULT_WEIGHT, MOVING_OBJECT);
 
-        this.initialScale = GAME_DICE_HALF_SIZE;
-        this.initialTranslation = new Vector3f(0f, 0.08f, 0f);
-
+        setInitialScale(GAME_DICE_HALF_SIZE);
+        setInitialTranslation(0f, 0.08f, 0f);
         setTwoSidedSurface(false);
+        setCollisionShapeType(BOX_SHAPE_TYPE);
         setItemName(DICE_MESH_OBJECT_1);
     }
 
-    @Override
-    protected void createCollisionShape(float[] vertexes) {
-        _shape = new BoxShape(new Vector3f(GAME_DICE_HALF_SIZE, GAME_DICE_HALF_SIZE, GAME_DICE_HALF_SIZE));
-    }
-
-    public void generateInitialTransform() {
+    @SuppressWarnings("unused") public void generateInitialTransform() {
         Random rnd = new Random(System.currentTimeMillis());
         Matrix4f transformer = new Matrix4f();
         Matrix4f transformingObject = new Matrix4f();
@@ -65,11 +61,10 @@ public class GameDiceItem extends Blender3DObject {
         transformer.rotZ((float) Math.toRadians(rnd.nextInt(4) * 90f));
         transformingObject.mul(transformer);
 
-
         setPWorldTransform(transformingObject);
     }
 
-    public void generateForceVector() {
+    @SuppressWarnings("unused") public void generateForceVector() {
         Random rnd = new Random(System.currentTimeMillis());
         float fxz = 3.5f + rnd.nextInt(2) * 1f;
         float fy = fxz * 3f / 4f;
@@ -82,7 +77,7 @@ public class GameDiceItem extends Blender3DObject {
         get_body().setLinearVelocity(force);
     }
 
-    public int getTopFaceDiceValue() {
+    @SuppressWarnings("unused") public int getTopFaceDiceValue() {
         int result = 0;
         float max_y = 0f;
         float[] normals = raw3DModel.getNormals();
@@ -101,7 +96,4 @@ public class GameDiceItem extends Blender3DObject {
         return value == null ? 0 : value;
     }
 
-    public void hideDice() {
-        setPosition(new Vector3f(100, 0, 0));
-    }
 }

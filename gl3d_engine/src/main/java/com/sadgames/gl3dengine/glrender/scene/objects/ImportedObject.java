@@ -16,8 +16,16 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class ImportedObject extends GameItemObject {
 
+    public enum ShapeType {
+        UNKNOWN,
+        BOX,
+        SPHERE,
+        PYRAMID
+    }
+
     protected Raw3DModel raw3DModel = null;
     protected int facesCount = 0;
+    protected ShapeType collisionShapeType = ShapeType.UNKNOWN;
 
     public ImportedObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag) {
         super(sysUtilsWrapper, textureResName, program, mass, tag);
@@ -28,6 +36,16 @@ public abstract class ImportedObject extends GameItemObject {
     }
 
     public abstract Raw3DModel getRaw3DModel();
+
+    public ShapeType getCollisionShapeType() {
+        return collisionShapeType;
+    }
+    public void setCollisionShapeType(ShapeType collisionShapeType) {
+        this.collisionShapeType = collisionShapeType;
+    }
+    public void setCollisionShapeType(short key) {
+        this.collisionShapeType = ShapeType.values()[key];
+    }
 
     @Override
     public void loadFromObject(AbstractGL3DObject src) {
