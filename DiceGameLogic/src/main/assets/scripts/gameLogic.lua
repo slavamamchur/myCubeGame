@@ -7,12 +7,11 @@ local DICE_MESH_OBJECT = 'DICE_MESH_OBJECT_1'
 
 local ON_PLAY_TURN_ANIMATION_END = 'rollDice'
 
---local javaDiceObjName = luajava.newInstance('java.lang.String', DICE_MESH_OBJECT) --??? factory
+--local javaDiceObjName = luajava.newInstance('java.lang.String', DICE_MESH_OBJECT)
+--local objectType = luajava.bindClass('java.lang.String$GLObjectType')
 
 onRollingObjectStart = function(gameObject)
-    local dice = gl3DScene:getObject(DICE_MESH_OBJECT)
-
-    if gameObject == dice then
+    if gameObject == gl3DScene:getObject(DICE_MESH_OBJECT) then
         sysUtilsWrapper:iPlaySound(ROLLING_DICE_SOUND)
     end
 end
@@ -22,20 +21,15 @@ onRollingObjectStop = function(gameObject)
 end
 
 beforeDrawFrame = function(frametime)
-    --local objectType = luajava.bindClass('com.sadgames.gl3dengine.glrender.GLRenderConsts$GLObjectType')
-
     local skyBox = gl3DScene:getObject(SKY_BOX_CUBE_MAP_OBJECT)
-    local terrainProgram = gl3DScene:getObject(TERRAIN_MESH_OBJECT):getProgram()
 
     skyBox:calcRotationAngle(frametime)
-    terrainProgram:setSkyBoxRotationAngle(-skyBox:getRotationAngle())
+    gl3DScene:getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
 end
 
 onPlayTurn = function()
-    local params = {}
-    local animation = gl3DScene:createZoomCameraAnimation(0.5);
-    gl3DScene:setZoomCameraAnimation(animation)
-    animation:startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, params)
+    gl3DScene:setZoomCameraAnimation(gl3DScene:createZoomCameraAnimation(0.5))
+    gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
 rollDice = function()
