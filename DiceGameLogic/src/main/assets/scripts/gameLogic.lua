@@ -1,4 +1,4 @@
-local sysUtilsWrapper, gl3DScene = ...
+local sysUtilsWrapper, gl3DScene, restApi = ...
 
 local ROLLING_DICE_SOUND = 'rolling_dice.mp3'
 local SKY_BOX_CUBE_MAP_OBJECT = 'SKY_BOX_CUBE_MAP_OBJECT'
@@ -21,7 +21,7 @@ onRollingObjectStop = function(gameObject)
     sysUtilsWrapper:iStopSound()
 end
 
-onMovingObjectStop = function(gameObject, gameInstance, restApi)
+onMovingObjectStop = function(gameObject, gameInstance)
     if not (gameInstance == nil) then
         gameInstance:setStepsToGo(gameObject:getTopFaceDiceValue())
         restApi:showTurnInfo(gameInstance)
@@ -30,9 +30,8 @@ onMovingObjectStop = function(gameObject, gameInstance, restApi)
 
         gameObject:hideObject()
 
-
         gl3DScene:setZoomCameraAnimation(gl3DScene:createZoomCameraAnimation(2.0))
-        gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, {gameInstance, restApi})
+        gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, {gameInstance})
     end
 end
 
@@ -60,6 +59,6 @@ rollDice = function()
     gl3DScene:getPhysicalWorldObject():addRigidBody(dice:get_body())
 end
 
-playerNextMove = function(gameInstance, restApi)
+playerNextMove = function(gameInstance)
     restApi:moveGameInstance(gameInstance);
 end

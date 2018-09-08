@@ -28,7 +28,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
-import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
@@ -41,9 +40,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
@@ -59,12 +56,14 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
     private final static String LUA_GAME_LOGIC_SCRIPT = "scripts/gameLogic.lua";
+    private static final float DICE_DEFAULT_WEIGHT = 10f;
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private RestApiInterface restApiWrapper;
@@ -84,12 +83,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     }
 
     private void initScriptEngine() {
-        LuaValue luaSysUtilsWrapper = CoerceJavaToLua.coerce(sysUtilsWrapper);
-        LuaValue luaGl3DScene = CoerceJavaToLua.coerce(gl3DScene);
-
         luaEngine = JsePlatform.standardGlobals();
         luaEngine.finder = this;
-        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(luaSysUtilsWrapper, luaGl3DScene);
+        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(CoerceJavaToLua.coerce(sysUtilsWrapper),
+                                                       CoerceJavaToLua.coerce(gl3DScene),
+                                                       CoerceJavaToLua.coerce(restApiWrapper));
+
 
         gl3DScene.setLuaEngine(luaEngine);
     }
@@ -131,7 +130,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     public void onGameFinished() {
         gameInstanceEntity.setState(GameInstanceEntity.State.FINISHED);
     }
-
     public void requestRestartGame() {
         restApiWrapper.restartGameInstance(gameInstanceEntity);
     }
@@ -167,8 +165,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     public void onStopMovingObject(PNodeObject gameObject) {
         luaEngine.get(ON_MOVING_OBJECT_STOP_EVENT_HANDLER).call(
                                                                     CoerceJavaToLua.coerce(gameObject),
-                                                                    CoerceJavaToLua.coerce(gameInstanceEntity),
-                                                                    CoerceJavaToLua.coerce(restApiWrapper)
+                                                                    CoerceJavaToLua.coerce(gameInstanceEntity)
                                                                 );
     }
 
@@ -229,13 +226,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
             placePlayersChips(terrain, program);
 
         /** gaming dice */
-        GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, program);
+        //TODO: BlenderObj -> from ActiveGameObject
+        GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, DICE_MESH_OBJECT_1, program, DICE_DEFAULT_WEIGHT, MOVING_OBJECT);
         gameDice_1.loadObject();
-        Matrix4f transformMatrix = new Matrix4f();
-        transformMatrix.setIdentity();
-        transformMatrix.setTranslation(new Vector3f(-100f, 0f, 0f));
-        gameDice_1.setModelMatrix(MathUtils.getOpenGlMatrix(transformMatrix));
-        glScene.putChild(gameDice_1, DICE_MESH_OBJECT_1);
+        gameDice_1.hideObject();//TODO: change to "visible" property
+        glScene.putChild(gameDice_1, gameDice_1.getItemName());
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);

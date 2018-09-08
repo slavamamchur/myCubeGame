@@ -12,13 +12,10 @@ import java.util.Random;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
-
 public class GameDiceItem extends Blender3DObject {
 
-    public static final float GAME_DICE_HALF_SIZE = 0.15f;
-    private static final float DICE_DEFAULT_WEIGHT = 10f;
     private static final short BOX_SHAPE_TYPE = 1;
+    private static final float GAME_DICE_HALF_SIZE = 0.15f;
 
     private static Map<Integer, Integer> DICE_FACES_VALUES = new HashMap<Integer, Integer>() {
         {
@@ -31,14 +28,14 @@ public class GameDiceItem extends Blender3DObject {
         }
     };
 
-    public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program) {
-        super(sysUtilsWrapper, DICE_MESH_OBJECT_1, program, DICE_DEFAULT_WEIGHT, MOVING_OBJECT);
+    public GameDiceItem(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
+        super(sysUtilsWrapper, objFileName, program, mass, tag);
 
         setInitialScale(GAME_DICE_HALF_SIZE);
         setInitialTranslation(0f, 0.08f, 0f);
         setTwoSidedSurface(false);
         setCollisionShapeType(BOX_SHAPE_TYPE);
-        setItemName(DICE_MESH_OBJECT_1);
+        setItemName(objFileName);
     }
 
     @SuppressWarnings("unused") public void generateInitialTransform() {

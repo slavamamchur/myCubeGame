@@ -205,10 +205,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMapFragment.getGameLogic().getLuaEngine().get(ON_PLAYER_NEXT_MOVE__EVENT_HANDLER).call(
-                            CoerceJavaToLua.coerce(getItem()),
-                            CoerceJavaToLua.coerce(mMapFragment.getGameLogic().getRestApiWrapper())
-                    );
+                    mMapFragment.getGameLogic().getLuaEngine().get(ON_PLAYER_NEXT_MOVE__EVENT_HANDLER).call(CoerceJavaToLua.coerce(getItem()));
                 }
             }, 1000);
         }
