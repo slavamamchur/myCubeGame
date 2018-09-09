@@ -2,14 +2,11 @@ package com.sadgames.dicegame.logic.client.entities.items;
 
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 public class GameDiceItem extends Blender3DObject {
@@ -36,42 +33,6 @@ public class GameDiceItem extends Blender3DObject {
         setTwoSidedSurface(false);
         setCollisionShapeType(BOX_SHAPE_TYPE);
         setItemName(objFileName);
-    }
-
-    @SuppressWarnings("unused") public void generateInitialTransform() {
-        Random rnd = new Random(System.currentTimeMillis());
-        Matrix4f transformer = new Matrix4f();
-        Matrix4f transformingObject = new Matrix4f();
-
-        transformingObject.setIdentity();
-        transformer.setIdentity();
-
-        transformer.setTranslation(new Vector3f(0f, 0.5f, 2.5f));
-        transformingObject.mul(transformer);
-
-        transformer.rotX((float) Math.toRadians(rnd.nextInt(4) * 90f));
-        transformingObject.mul(transformer);
-
-        transformer.rotY((float) Math.toRadians(rnd.nextInt(4) * 90f));
-        transformingObject.mul(transformer);
-
-        transformer.rotZ((float) Math.toRadians(rnd.nextInt(4) * 90f));
-        transformingObject.mul(transformer);
-
-        setPWorldTransform(transformingObject);
-    }
-
-    @SuppressWarnings("unused") public void generateForceVector() {
-        Random rnd = new Random(System.currentTimeMillis());
-        float fxz = 3.5f + rnd.nextInt(2) * 1f;
-        float fy = fxz * 3f / 4f;
-        float[] fVector = new float[] {0f, fy, -fxz, 1f};
-
-        Matrix4f transform = new Matrix4f();
-        transform.rotY((float) Math.toRadians(45.0 - rnd.nextInt(91) * 1.0));
-
-        Vector3f force = sysUtilsWrapper.mulMV(MathUtils.getOpenGlMatrix(transform), fVector);
-        get_body().setLinearVelocity(force);
     }
 
     @SuppressWarnings("unused") public int getTopFaceDiceValue() {

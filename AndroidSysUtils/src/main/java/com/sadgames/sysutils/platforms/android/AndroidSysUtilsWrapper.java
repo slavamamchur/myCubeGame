@@ -16,14 +16,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
+
+import org.luaj.vm2.LuaTable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
@@ -47,12 +51,37 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
 
     /** Math    sysutils ---------------------------------------------------------------------------*/
     @Override
+    public Matrix4f createTransform() {
+        return new Matrix4f();
+    }
+
+    @Override
+    public Vector3f createVector3f(float vx, float vy, float vz) {
+        return new Vector3f(vx, vy, vz);
+    }
+
+    @Override
+    public Vector3f mulMV(Matrix4f matrix, LuaTable vector) {
+        return mulMV(MathUtils.getOpenGlMatrix(matrix), luaTable2FloatArray(vector));
+    }
+
+    @Override
     public Vector3f mulMV(float[] matrix, float[] vector) {
         float[] result = new float[4];
         Matrix.multiplyMV(result, 0, matrix, 0, vector, 0);
 
         return new Vector3f(result[0], result[1], result[2]);
     }
+
+    private float[] luaTable2FloatArray(LuaTable table) {
+        float[] result = new float[table.length()];
+
+        for (int i = 0; i < table.length(); i++)
+            result[i] = table.get(i + 1).tofloat();
+
+        return result;
+    }
+
     /** ------------------------------------------------------------------------------------------*/
 
     /** Prefs    sysutils ---------------------------------------------------------------------------*/
