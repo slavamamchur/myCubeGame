@@ -238,6 +238,6 @@ public class Blender3DObject extends ImportedObject {
     }
 
     @SuppressWarnings("unused") public void hideObject() {
-        setPosition(new Vector3f(1000, 0, 0));
+        setPosition(new Vector3f(1000, 0, 0)); //TODO: change to "visible" property
     }
 }

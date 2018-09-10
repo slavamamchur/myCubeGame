@@ -3,12 +3,11 @@ package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.bulletphysics.dynamics.DynamicsWorld;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameController;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
-import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
@@ -16,7 +15,11 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
+import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GameEntity extends BasicNamedDbEntity implements Parcelable{
@@ -24,10 +27,14 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     public static String ACTION_NAME =  URL_GAME;
     public static float GAME_DICE_HALF_SIZE = 0.15f;
     public static short BOX_SHAPE_TYPE = 1;
+    private static final float DICE_DEFAULT_WEIGHT = 10f;
+    public static final String ON_DICE_OBJECT_INIT = "onDiceObjectInit";
 
     protected List<AbstractGamePoint> gamePoints;
     public String mapId;
     public long createdDate;
+
+    protected List<InteractiveGameItem> gameItems = null;
 
     public GameEntity() {}
 
@@ -136,5 +143,24 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
         return new Vector3f(1.0f, 1.0f, 0.8f);
     }
 
-    public void loadSceneObjects(SysUtilsWrapperInterface sysUtilsWrapper, GLScene glScene, DynamicsWorld dynamicsWorldObject) {}
+    //TODO: replace with parcelable
+    public List<InteractiveGameItem> getGameItems() {
+        if (gameItems == null) {
+            gameItems = new ArrayList<>();
+            InteractiveGameItem dice = new InteractiveGameItem(DICE_MESH_OBJECT_1,
+                                                               TERRAIN_MESH_OBJECT,
+                                                               new Vector3f(0f, 0.08f, 0f),
+                                                               GAME_DICE_HALF_SIZE,
+                                                               false,
+                                                               BOX_SHAPE_TYPE,
+                                                               DICE_DEFAULT_WEIGHT,
+                                                               MOVING_OBJECT,
+                                                               TERRAIN_OBJECT,
+                                                               ON_DICE_OBJECT_INIT);
+
+            gameItems.add(dice);
+        }
+
+        return gameItems;
+    }
 }

@@ -1,13 +1,15 @@
 package com.sadgames.dicegame.logic.client;
 
+import android.support.annotation.NonNull;
+
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.dicegame.logic.client.entities.DiceGameMap;
 import com.sadgames.dicegame.logic.client.entities.items.ChipItem;
-import com.sadgames.dicegame.logic.client.entities.items.GameDiceItem;
 import com.sadgames.dicegame.logic.server.rest_api.RestApiInterface;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.logic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
@@ -44,7 +46,6 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.DICE_MESH_OBJECT_1;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
@@ -56,7 +57,6 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
@@ -222,15 +222,10 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
         /** players chips */
-        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null)
+        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) //TODO: replace with "generateDynamicItems()" lua script
             placePlayersChips(terrain, program);
 
-        /** gaming dice */
-        //TODO: BlenderObj -> from ActiveGameObject
-        GameDiceItem gameDice_1 = new GameDiceItem(sysUtilsWrapper, DICE_MESH_OBJECT_1, program, DICE_DEFAULT_WEIGHT, MOVING_OBJECT);
-        gameDice_1.loadObject();
-        gameDice_1.hideObject();//TODO: change to "visible" property
-        glScene.putChild(gameDice_1, gameDice_1.getItemName());
+        loadGameItems(glScene);
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
@@ -251,6 +246,26 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
         forceGCandWait();
         restApiWrapper.removeLoadingSplash();
+    }
+
+    private void loadGameItems(GLScene glScene) {
+        Blender3DObject sceneObject;
+        for (InteractiveGameItem item : gameEntity.getGameItems()) {
+            sceneObject = item.createSceneObject(sysUtilsWrapper, glScene);
+            sceneObject.loadObject();
+
+            if (item.onInitEventHandler != null)
+                luaEngine.get(item.onInitEventHandler).call(CoerceJavaToLua.coerce(sceneObject));
+
+            getParentNode(glScene, item).putChild(sceneObject, sceneObject.getItemName());
+        }
+    }
+
+    @NonNull
+    private SceneObjectsTreeItem getParentNode(GLScene glScene, InteractiveGameItem item) {
+        SceneObjectsTreeItem parentObject = glScene.getObject(item.itemParentName != null ? item.itemParentName : "");
+
+        return parentObject != null ? parentObject : glScene;
     }
 
     @Override
