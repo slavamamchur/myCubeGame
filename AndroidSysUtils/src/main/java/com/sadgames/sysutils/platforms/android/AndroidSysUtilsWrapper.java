@@ -66,6 +66,11 @@ public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface
     }
 
     @Override
+    public Vector3f mulMV(float[] matrix, LuaTable vector) {
+        return mulMV(matrix, luaTable2FloatArray(vector));
+    }
+
+    @Override
     public Vector3f mulMV(float[] matrix, float[] vector) {
         float[] result = new float[4];
         Matrix.multiplyMV(result, 0, matrix, 0, vector, 0);

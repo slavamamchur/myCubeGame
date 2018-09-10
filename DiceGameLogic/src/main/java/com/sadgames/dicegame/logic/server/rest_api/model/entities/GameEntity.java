@@ -22,6 +22,8 @@ import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME;
 public class GameEntity extends BasicNamedDbEntity implements Parcelable{
 
     public static String ACTION_NAME =  URL_GAME;
+    public static float GAME_DICE_HALF_SIZE = 0.15f;
+    public static short BOX_SHAPE_TYPE = 1;
 
     protected List<AbstractGamePoint> gamePoints;
     public String mapId;

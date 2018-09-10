@@ -6,8 +6,7 @@ local TERRAIN_MESH_OBJECT = 'TERRAIN_MESH_OBJECT'
 local DICE_MESH_OBJECT = 'DICE_MESH_OBJECT_1'
 --local javaDiceObjName = luajava.newInstance('java.lang.String', DICE_MESH_OBJECT)
 
-local GAME_DICE_HALF_SIZE = 0.15
-local BOX_SHAPE_TYPE = 1
+local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
 local ON_PLAY_TURN_ANIMATION_END = 'rollDice'
 local ON_STOP_MOVING_ANIMATION_END = 'playerNextMove'
@@ -23,8 +22,8 @@ onRollingObjectStop = function(gameObject)
 end
 
 onMovingObjectStop = function(gameObject, gameInstance)
-    if not (gameInstance == nil) then
-        gameInstance:setStepsToGo(gameObject:getTopFaceDiceValue())  --todo: -> getTopFaceDiceValue(gameObject)
+    if not (gameInstance == nil) and (gameObject == gl3DScene:getObject(DICE_MESH_OBJECT)) then
+        gameInstance:setStepsToGo(getTopFaceDiceValue(gameObject))
         restApi:showTurnInfo(gameInstance)
 
         gl3DScene:restorePrevViewMode()
@@ -65,7 +64,38 @@ playerNextMove = function(gameInstance)
 end
 
 function getTopFaceDiceValue(dice)
-    --todo:
+    local result = 0
+    local max_y = 0.0
+    local normals = dice:getRaw3DModel():getNormalsLua()
+
+    for i = 1, #normals / 3 do
+        local normalVector = sysUtilsWrapper:mulMV(dice:getModelMatrix(), {normals[i * 3 - 2], normals[i * 3 - 1], normals[i * 3], 1.0})
+
+        if normalVector.y > max_y then
+            max_y = normalVector.y;
+            result = i - 1;
+        end
+    end
+
+    local key = getKeyForValue(DICE_FACES_VALUES, result)
+    if key == nil then
+        key = 0
+    end
+
+    return key
+end
+
+function getKeyForValue(tbl, value)
+    local result = nil
+
+    for k, v in pairs(tbl) do
+        if v == value then
+            result = k
+            break
+        end
+    end
+
+    return result
 end
 
 function generateForceVector()

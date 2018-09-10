@@ -1,5 +1,8 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+
 public class Raw3DModel {
 
     private float[] vertexes;
@@ -31,6 +34,16 @@ public class Raw3DModel {
     public float[] getNormals() {
         return normals;
     }
+
+    public LuaTable getNormalsLua() {
+        LuaTable result = new LuaTable();
+
+        for (int i = 0; i < normals.length; i++)
+           result.insert(i+1, CoerceJavaToLua.coerce(normals[i]));
+
+        return result;
+    }
+
     public void setNormals(float[] normals) {
         this.normals = normals;
     }
