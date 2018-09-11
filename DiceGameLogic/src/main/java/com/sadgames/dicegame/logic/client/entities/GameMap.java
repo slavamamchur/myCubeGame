@@ -23,11 +23,11 @@ import static com.sadgames.dicegame.logic.client.GameConst.PATH_COLOR;
 import static com.sadgames.dicegame.logic.client.GameConst.SEA_BOTTOM_TEXTURE;
 import static com.sadgames.dicegame.logic.client.GameConst.WAY_POINT_COLOR;
 
-public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
+public class GameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
 
     private GameEntity gameEntity;
 
-    public DiceGameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
+    public GameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
         super(sysUtilsWrapper,
               program,
               gameEntity == null ? null : gameEntity.getMapId());
@@ -67,6 +67,7 @@ public class DiceGameMap extends TopographicMapObject implements LinkedRESTObjec
         return glTexture;
     }
 
+    //TODO: move to lua script
     private void drawPath(BitmapWrapperInterface textureBmp) {
         float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
         ArrayList<Vector2f> way = new ArrayList<>();

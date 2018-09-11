@@ -8,6 +8,7 @@ import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpReques
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameController;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
+import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
@@ -147,20 +148,44 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     public List<InteractiveGameItem> getGameItems() {
         if (gameItems == null) {
             gameItems = new ArrayList<>();
-            InteractiveGameItem dice = new InteractiveGameItem(DICE_MESH_OBJECT_1,
-                                                               TERRAIN_MESH_OBJECT,
-                                                               new Vector3f(0f, 0.08f, 0f),
-                                                               GAME_DICE_HALF_SIZE,
-                                                               false,
-                                                               BOX_SHAPE_TYPE,
-                                                               DICE_DEFAULT_WEIGHT,
-                                                               MOVING_OBJECT,
-                                                               TERRAIN_OBJECT,
-                                                               ON_DICE_OBJECT_INIT);
+
+            InteractiveGameItem dice = createNewItem(DICE_MESH_OBJECT_1,
+                                                     TERRAIN_MESH_OBJECT,
+                                                     new Vector3f(0f, 0.08f, 0f),
+                                                     GAME_DICE_HALF_SIZE,
+                                                     false,
+                                                     BOX_SHAPE_TYPE,
+                                                     DICE_DEFAULT_WEIGHT,
+                                                     MOVING_OBJECT,
+                                                     TERRAIN_OBJECT,
+                                                     ON_DICE_OBJECT_INIT);
 
             gameItems.add(dice);
         }
 
         return gameItems;
+    }
+
+    public InteractiveGameItem createNewItem(String itemName,
+                                             String itemParentName,
+                                             Vector3f pos,
+                                             float initialScale,
+                                             boolean hasTwoSidedSurface,
+                                             short collisionShapeType,
+                                             float mass,
+                                             int tag,
+                                             GLRenderConsts.GLObjectType type,
+                                             String onInitEventHandler) {
+
+        return new InteractiveGameItem(itemName,
+                                       itemParentName,
+                                       pos,
+                                       initialScale,
+                                       hasTwoSidedSurface,
+                                       collisionShapeType,
+                                       mass,
+                                       tag,
+                                       type,
+                                       onInitEventHandler);
     }
 }

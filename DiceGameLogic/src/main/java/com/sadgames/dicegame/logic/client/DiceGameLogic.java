@@ -1,10 +1,7 @@
 package com.sadgames.dicegame.logic.client;
 
-import android.support.annotation.NonNull;
-
 import com.bulletphysics.dynamics.DynamicsWorld;
-import com.sadgames.dicegame.logic.client.entities.DiceGameMap;
-import com.sadgames.dicegame.logic.client.entities.items.ChipItem;
+import com.sadgames.dicegame.logic.client.entities.GameMap;
 import com.sadgames.dicegame.logic.server.rest_api.RestApiInterface;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
@@ -57,13 +54,14 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.COLLISION_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private static final long CHIP_ANIMATION_DURATION = 500;
     private final static String LUA_GAME_LOGIC_SCRIPT = "scripts/gameLogic.lua";
-    private static final float DICE_DEFAULT_WEIGHT = 10f;
+    private static final float CHIP_DEFAULT_WEIGHT = 1.0f;
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private RestApiInterface restApiWrapper;
@@ -214,18 +212,18 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
         /** Terrain map */
-        TopographicMapObject terrain = new DiceGameMap(sysUtilsWrapper, program, gameEntity);
+        TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity);
         //terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.loadObject();
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
+        loadGameItems(glScene);
+
         /** players chips */
         if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) //TODO: replace with "generateDynamicItems()" lua script
             placePlayersChips(terrain, program);
-
-        loadGameItems(glScene);
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
@@ -261,7 +259,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         }
     }
 
-    @NonNull
     private SceneObjectsTreeItem getParentNode(GLScene glScene, InteractiveGameItem item) {
         SceneObjectsTreeItem parentObject = glScene.getObject(item.itemParentName != null ? item.itemParentName : "");
 
@@ -331,13 +328,24 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         move.startAnimation(chip, delegate);
     }
 
+    //TODO: move to lua script
     private void placePlayersChips(SceneObjectsTreeItem parent, GLShaderProgram program) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
 
         GameItemObject prevChip = null;
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-            Blender3DObject chip = new ChipItem(sysUtilsWrapper, program, player);
+
+            Blender3DObject chip = new Blender3DObject( sysUtilsWrapper,
+                                                        CHIP_MESH_OBJECT,
+                                                        program,
+                                                       0xFF000000 | player.getColor(),
+                                                        CHIP_DEFAULT_WEIGHT,
+                                                        COLLISION_OBJECT);
+            chip.setInitialScale(0.2f);
+            chip.setInitialTranslation(0f, 0.08f, 0f);
+            chip.setTwoSidedSurface(false);
+            chip.setItemName(CHIP_MESH_OBJECT + "_" + player.getName());
 
             Vector2f chipPlace = getChipPlaceByWayPoint(parent, playersOnWayPoints, player, true);
             chip.setInWorldPosition(chipPlace);
@@ -359,7 +367,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
             InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
 
-            ChipItem chip = (ChipItem) gl3DScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
+            AbstractGL3DObject chip = gl3DScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
             chip.setInWorldPosition(getChipPlaceByWayPoint(chip.getParent(), playersOnWayPoints, player, true));
         }
     }

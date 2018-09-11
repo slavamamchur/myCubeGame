@@ -133,12 +133,29 @@ public class InteractiveGameItem implements Parcelable {
                                                      mass,
                                                      tag);
 
+        initObject(object);
+
+        return object;
+    }
+
+    public Blender3DObject createSceneObject(SysUtilsWrapperInterface sysUtilsWrapper, GLScene scene, int color) {
+        Blender3DObject object = new Blender3DObject(sysUtilsWrapper,
+                itemName,
+                scene.getCachedShader(type),
+                color,
+                mass,
+                tag);
+
+        initObject(object);
+
+        return object;
+    }
+
+    private void initObject(Blender3DObject object) {
         object.setItemName(itemName);
         object.setInitialScale(initialScale);
         object.setInitialTranslation(xPos, yPos, zPos);
         object.setTwoSidedSurface(hasTwoSidedSurface);
         object.setCollisionShapeType(collisionShapeType);
-
-        return object;
     }
 }
