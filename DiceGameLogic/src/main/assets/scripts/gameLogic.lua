@@ -3,7 +3,13 @@ local sysUtilsWrapper, gl3DScene, restApi = ...
 local ROLLING_DICE_SOUND = 'rolling_dice.mp3'
 local SKY_BOX_CUBE_MAP_OBJECT = 'SKY_BOX_CUBE_MAP_OBJECT'
 local TERRAIN_MESH_OBJECT = 'TERRAIN_MESH_OBJECT'
+local CHIP_MESH_OBJECT = 'CHIP_MESH_OBJECT'
 local DICE_MESH_OBJECT = 'DICE_MESH_OBJECT_1'
+
+local CHIP_DEFAULT_WEIGHT = 1.0
+local COLLISION_OBJECT = 1
+local TERRAIN_MATERIAL = 1
+local DEFAULT_TEXTURE_SIZE = 500
 
 local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
@@ -64,6 +70,87 @@ end
 
 onDiceObjectInit = function(gameObject)
     gameObject:hideObject()
+end
+
+onGameRestarted = function(gameInstanceEntity)
+    --todo
+end
+
+onCreateDynamicItems = function(gameEntity, gameInstance)
+    if (gameInstance == nil) or (gameEntity:getGamePoints() == nil) then
+        return
+    end
+
+    local prevChip = nil
+    local playersOnWayPoints = {}
+
+    for i = 1, gameEntity:getGamePoints():size() do
+        table.insert(playersOnWayPoints, i, 0)
+    end
+
+    for i = 0, gameInstance:getPlayers():size() - 1 do
+        local player = gameInstance:getPlayers():get(i)
+        local chip = gameEntity:createNewItem(CHIP_MESH_OBJECT,
+                                              TERRAIN_MESH_OBJECT,
+                                              CHIP_DEFAULT_WEIGHT,
+                                              COLLISION_OBJECT,
+                                              TERRAIN_MATERIAL)
+        :createSceneObject(sysUtilsWrapper, gl3DScene, player:getColor())
+
+        chip:setInitialScale(0.2)
+        chip:setInitialTranslation(0.0, 0.08, 0.0)
+        chip:setTwoSidedSurface(false);
+        chip:setItemName(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
+
+        local parent = gl3DScene:getObject(TERRAIN_MESH_OBJECT)
+        local currentPointIdx = player:getCurrentPoint() + 1
+        playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
+        chip:setInWorldPosition(getChipPlace(gameEntity:getGamePoints():get(player:getCurrentPoint()),
+                                            playersOnWayPoints[currentPointIdx] - 1,
+                                            true))
+
+        if prevChip == nil then
+            chip:loadObject()
+        else
+            chip:loadFromObject(prevChip)
+        end
+
+        parent:putChild(chip, chip:getItemName())
+        prevChip = chip
+    end
+end
+
+function getChipPlace(point, playersCnt, rotate)
+    local map = gl3DScene:getObject(TERRAIN_MESH_OBJECT)
+    local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
+    local toX2 = point:getxPos() * scaleFactor
+    local toZ2 = point:getyPos() * scaleFactor
+
+    if rotate then
+        local angle = getChipRotationAngle(playersCnt)
+        toX2 = toX2 - 7.5 * scaleFactor * math.sin(angle)
+        toZ2 = toZ2 - 7.5 * scaleFactor * math.cos(angle)
+    end
+
+    return map:map2WorldCoord(toX2, toZ2)
+end
+
+function getChipRotationAngle(playersCnt)
+    if playersCnt == 0 then
+        return 0.0
+    end
+
+    local part = 8
+    local b
+    local angle
+
+    repeat
+        angle = 360.0 / part
+        b = part - 1
+        part = part / 2
+    until not ((math.fmod(playersCnt, part) == 0) and not (part == 1))
+
+    return math.rad((2 * playersCnt - b) * angle)
 end
 
 function getTopFaceDiceValue(dice)

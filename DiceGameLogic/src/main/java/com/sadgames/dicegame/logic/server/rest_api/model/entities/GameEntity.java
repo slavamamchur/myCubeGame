@@ -28,6 +28,7 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     public static String ACTION_NAME =  URL_GAME;
     public static float GAME_DICE_HALF_SIZE = 0.15f;
     public static short BOX_SHAPE_TYPE = 1;
+    public static short UNKNOWN_SHAPE_TYPE = 0;
     private static final float DICE_DEFAULT_WEIGHT = 10f;
     public static final String ON_DICE_OBJECT_INIT = "onDiceObjectInit";
 
@@ -164,6 +165,23 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
         }
 
         return gameItems;
+    }
+
+    public InteractiveGameItem createNewItem(String itemName,
+                                             String itemParentName,
+                                             float mass,
+                                             int tag,
+                                             int materialID) {
+        return createNewItem(itemName,
+                             itemParentName,
+                             new Vector3f(0f, 0f, 0f),
+                             1f,
+                             false,
+                             UNKNOWN_SHAPE_TYPE,
+                             mass,
+                             tag,
+                             GLRenderConsts.GLObjectType.values()[materialID],
+                             null);
     }
 
     public InteractiveGameItem createNewItem(String itemName,

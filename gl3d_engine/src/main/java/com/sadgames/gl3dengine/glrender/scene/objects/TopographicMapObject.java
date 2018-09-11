@@ -162,12 +162,8 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         return ColorUtils.argb(255, R, G, B);
     }
 
-    public Vector2f map2WorldCoord(Vector2f texPoint) {
-        Vector2f result = new Vector2f();
-        result.x = texPoint.x * scaleX  - (LAND_WIDTH / 2);
-        result.y = texPoint.y * scaleZ  - (LAND_HEIGHT / 2);
-
-        return result;
+    public Vector2f map2WorldCoord(float x, float y) {
+        return new Vector2f(x * scaleX  - (LAND_WIDTH / 2), y * scaleZ  - (LAND_HEIGHT / 2));
     }
 
 }

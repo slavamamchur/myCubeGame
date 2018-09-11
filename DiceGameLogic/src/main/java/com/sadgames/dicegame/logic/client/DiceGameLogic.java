@@ -19,7 +19,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.GameItemObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
@@ -46,6 +45,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_CREATE_DYNAMIC_ITEMS_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
@@ -54,7 +54,6 @@ import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.COLLISION_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
@@ -131,6 +130,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     public void requestRestartGame() {
         restApiWrapper.restartGameInstance(gameInstanceEntity);
     }
+
+    //TODO: Move to lua script
     public void onGameRestarted() {
         gameInstanceEntity.setState(GameInstanceEntity.State.WAIT);
         gameInstanceEntity.setCurrentPlayer(0);
@@ -141,17 +142,27 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
             player.setSkipped(false);
         }
 
-        updateMap();
-    }
-
-    private void updateMap() {
         if (mapEntity == null || mapEntity.getId() == null)
             return;
 
         savedPlayers.clear();
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
-
         moveChips();
+    }
+
+    private void moveChips() {
+        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
+
+        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
+            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
+
+            AbstractGL3DObject chip = gl3DScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
+            int currentPointIdx = player.getCurrentPoint();
+            playersOnWayPoints[currentPointIdx]++;
+            chip.setInWorldPosition(getChipPlace(gameEntity.getGamePoints().get(player.getCurrentPoint()),
+                    playersOnWayPoints[currentPointIdx] - 1,
+                    true));
+        }
     }
 
     @Override
@@ -220,10 +231,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
         loadGameItems(glScene);
-
-        /** players chips */
-        if (gameInstanceEntity != null && gameEntity.getGamePoints() != null) //TODO: replace with "generateDynamicItems()" lua script
-            placePlayersChips(terrain, program);
+        luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
@@ -313,7 +321,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         if (endGamePoint == null)
             throw new Exception("Invalid game point.");
 
-        Vector2f chipPlace = getChipPlace(chip.getParent(), endGamePoint, playersCnt,
+        Vector2f chipPlace = getChipPlace(endGamePoint, playersCnt,
                 (gameInstanceEntity.getStepsToGo() == 0) || endGamePoint.getType().equals(PointType.FINISH));
 
         GLAnimation move = new GLAnimation(
@@ -328,73 +336,19 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         move.startAnimation(chip, delegate);
     }
 
-    //TODO: move to lua script
-    private void placePlayersChips(SceneObjectsTreeItem parent, GLShaderProgram program) {
-        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
-
-        GameItemObject prevChip = null;
-        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
-            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-
-            Blender3DObject chip = new Blender3DObject( sysUtilsWrapper,
-                                                        CHIP_MESH_OBJECT,
-                                                        program,
-                                                       0xFF000000 | player.getColor(),
-                                                        CHIP_DEFAULT_WEIGHT,
-                                                        COLLISION_OBJECT);
-            chip.setInitialScale(0.2f);
-            chip.setInitialTranslation(0f, 0.08f, 0f);
-            chip.setTwoSidedSurface(false);
-            chip.setItemName(CHIP_MESH_OBJECT + "_" + player.getName());
-
-            Vector2f chipPlace = getChipPlaceByWayPoint(parent, playersOnWayPoints, player, true);
-            chip.setInWorldPosition(chipPlace);
-
-            if (prevChip == null)
-                chip.loadObject();
-            else
-                chip.loadFromObject(prevChip);
-
-            parent.putChild(chip, chip.getItemName());
-
-            prevChip = chip;
-        }
-    }
-
-    private void moveChips() {
-        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
-
-        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
-            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-
-            AbstractGL3DObject chip = gl3DScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
-            chip.setInWorldPosition(getChipPlaceByWayPoint(chip.getParent(), playersOnWayPoints, player, true));
-        }
-    }
-
-    @SuppressWarnings("all")
-    private Vector2f getChipPlaceByWayPoint(SceneObjectsTreeItem parent, int[] playersOnWayPoints, InstancePlayer player, boolean rotate) {
-        int currentPointIdx = player.getCurrentPoint();
-        playersOnWayPoints[currentPointIdx]++;
-        int playersCnt = playersOnWayPoints[currentPointIdx] - 1;
-        AbstractGamePoint point = gameEntity.getGamePoints().get(currentPointIdx);
-
-        return getChipPlace(parent, point, playersCnt, rotate);
-    }
-
-    private Vector2f getChipPlace(SceneObjectsTreeItem parent, AbstractGamePoint point, int playersCnt, boolean rotate) {
-        TopographicMapObject map = (TopographicMapObject) parent;
+    private Vector2f getChipPlace(AbstractGamePoint point, int playersCnt, boolean rotate) {
+        TopographicMapObject map = (TopographicMapObject) gl3DScene.getObject(TERRAIN_MESH_OBJECT);
         float scaleFactor = map.getGlTexture().getWidth() * 1.0f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
         double toX2 = point.getxPos() * scaleFactor;
         double toZ2 = point.getyPos() * scaleFactor;
 
         if(rotate) {
             double angle = getChipRotationAngle(playersCnt);
-            toX2 = point.getxPos() * scaleFactor - 7.5f * scaleFactor * Math.sin(angle);
-            toZ2 = point.getyPos() * scaleFactor - 7.5f * scaleFactor * Math.cos(angle);
+            toX2 -= 7.5 * scaleFactor * Math.sin(angle);
+            toZ2 -= 7.5 * scaleFactor * Math.cos(angle);
         }
 
-        return map.map2WorldCoord(new Vector2f((float)toX2, (float)toZ2));
+        return map.map2WorldCoord((float)toX2, (float)toZ2);
     }
 
     private static double getChipRotationAngle(int playersCnt) {

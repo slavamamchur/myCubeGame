@@ -72,6 +72,10 @@ public abstract class PNodeObject extends BitmapTexturedObject {
         _body = old_body;
     }
 
+    public CollisionShape get_shape() {
+        return _shape;
+    }
+
     public int getTag() {
         return tag;
     }

@@ -142,7 +142,7 @@ public class InteractiveGameItem implements Parcelable {
         Blender3DObject object = new Blender3DObject(sysUtilsWrapper,
                 itemName,
                 scene.getCachedShader(type),
-                color,
+               0xFF000000 | color,
                 mass,
                 tag);
 

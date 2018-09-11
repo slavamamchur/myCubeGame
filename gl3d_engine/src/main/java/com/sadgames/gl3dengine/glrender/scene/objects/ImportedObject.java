@@ -53,6 +53,7 @@ public abstract class ImportedObject extends GameItemObject {
 
         facesCount = src.getFacesCount();
         raw3DModel = ((ImportedObject)src).getRaw3DModel();
+        _shape = ((ImportedObject)src).get_shape();
     }
 
     @Override
