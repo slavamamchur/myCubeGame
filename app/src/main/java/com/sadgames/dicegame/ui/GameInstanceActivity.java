@@ -175,7 +175,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
                 if (!GameInstanceEntity.State.WAIT.equals(instance.getState())
                         && !GameInstanceEntity.State.FINISHED.equals(instance.getState())
                         )
-                    mMapFragment.getGameLogic().movingChipAnimation(animationListener);
+                    mMapFragment.getGameLogic().onPlayerMakeTurn(animationListener);
 
                 else {
                     //toggleActionBarProgress(false);
@@ -219,7 +219,6 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     private void resetGame() {
         mMapFragment.getGameLogic().onGameRestarted();
-        mMapFragment.getGameLogic().onPerformUserAction(ON_PLAY_TURN_EVENT_HANDLER, new LuaValue[]{});
 
         setItemChanged(true);
 
