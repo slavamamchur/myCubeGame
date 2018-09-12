@@ -253,10 +253,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onPlayerMakeTurn(GLAnimation.AnimationCallBack delegate) {
-        movingChipAnimation(delegate);
+        movingChipAnimation(delegate);//TODO: ON_PLAYER_MAKE_TURN_EVENT_HANDLER(gameInstanceEntity, savedPlayers, delegate)
     }
 
-    //TODO: Move to lua script
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;
@@ -281,12 +280,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
             }
 
         if (movedPlayerIndex >= 0)
-            try {
                 animateChip(delegate, endGamePoint, playersCnt,
                         gl3DScene.getObject( CHIP_MESH_OBJECT + "_" + savedPlayers.get(movedPlayerIndex).getName()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         else
             restApiWrapper.moveGameInstance(gameInstanceEntity);
 
@@ -294,11 +289,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
     }
 
-    private void animateChip(GLAnimation.AnimationCallBack delegate, AbstractGamePoint endGamePoint, int playersCnt, AbstractGL3DObject chip) throws Exception {
+    //TODO: Move to lua script
+    private void animateChip(GLAnimation.AnimationCallBack delegate, AbstractGamePoint endGamePoint, int playersCnt, AbstractGL3DObject chip) {
         playersCnt = playersCnt < 0 ? 0 : playersCnt;
 
         if (endGamePoint == null)
-            throw new Exception("Invalid game point.");
+            return;
 
         Vector2f chipPlace = getChipPlace(endGamePoint, playersCnt,
                 (gameInstanceEntity.getStepsToGo() == 0) || endGamePoint.getType().equals(PointType.FINISH));

@@ -73,8 +73,47 @@ onDiceObjectInit = function(gameObject)
     gameObject:hideObject()
 end
 
-onPlayerMakeTurn = function(callBackEventHandler)
-    --todo:
+onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
+    local playersOnWayPoints = {}
+    for i = 1, gameInstanceEntity:getGame():getGamePoints():size() do
+        table.insert(playersOnWayPoints, i, 0)
+    end
+
+    local movedPlayerIndex = -1
+
+    for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
+        local player = gameInstanceEntity:getPlayers():get(i)
+        playersOnWayPoints[player:getCurrentPoint() + 1] = playersOnWayPoints[player:getCurrentPoint() + 1] + 1
+    end
+
+    local endGamePoint
+    local playersCnt = 0
+
+    if not (savedPlayers == nil) then
+        for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
+            local currentPointIdx = gameInstanceEntity:getPlayers():get(i):getCurrentPoint()
+
+            if not (savedPlayers:get(i):getCurrentPoint() == currentPointIdx) then
+                movedPlayerIndex = i
+                endGamePoint = gameInstanceEntity:getGame():getGamePoints():get(currentPointIdx)
+                playersCnt = playersOnWayPoints[currentPointIdx + 1] - 1
+
+                break
+            end
+        end
+    end
+
+    if movedPlayerIndex >= 0 then
+        animateChip(delegate, endGamePoint, playersCnt,
+                gl3DScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, savedPlayers:get(movedPlayerIndex):getName())))
+    else
+        restApi:moveGameInstance(gameInstanceEntity)
+    end
+
+    if not (savedPlayers == null) then
+        savedPlayers:clear()
+    end
+    savedPlayers = gameInstanceEntity:createPlayersList()
 end
 
 onGameRestarted = function(gameInstanceEntity)
@@ -90,6 +129,10 @@ onGameRestarted = function(gameInstanceEntity)
     end
 
     pcall(moveChips, gameInstanceEntity)
+end
+
+animateChip = function(delegate, endGamePoint, playersCnt, chip)
+    --TODO:
 end
 
 moveChips = function(gameInstanceEntity)
