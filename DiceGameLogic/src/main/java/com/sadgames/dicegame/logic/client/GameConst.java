@@ -90,6 +90,7 @@ public class GameConst {
     public static final String ON_ROLLING_OBJECT_STOP_EVENT_HANDLER = "onRollingObjectStop";
     public static final String ON_MOVING_OBJECT_STOP_EVENT_HANDLER = "onMovingObjectStop";
     public static final String ON_PLAY_TURN_EVENT_HANDLER = "onPlayTurn";
+    public static final String ON_PLAYER_MAKE_TURN_EVENT_HANDLER = "onPlayerMakeTurn";
     public static final String ON_PLAYER_NEXT_MOVE__EVENT_HANDLER = "playerNextMove";
     public static final String ON_CREATE_DYNAMIC_ITEMS_HANDLER = "onCreateDynamicItems";
     public static final String ON_GAME_RESTARTED_EVENT_HANDLER = "onGameRestarted";

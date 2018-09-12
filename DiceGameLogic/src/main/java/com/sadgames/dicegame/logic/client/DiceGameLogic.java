@@ -254,11 +254,10 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     @Override
     public void onPlayerMakeTurn(String callBackEventHandler) {
         //TODO: Move to lua script
-
     }
 
     //TODO: Move to lua script
-    public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
+    public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {//???
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;
 

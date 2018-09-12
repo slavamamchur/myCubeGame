@@ -73,7 +73,9 @@ onDiceObjectInit = function(gameObject)
     gameObject:hideObject()
 end
 
-
+onPlayerMakeTurn = function(callBackEventHandler)
+    --todo:
+end
 
 onGameRestarted = function(gameInstanceEntity)
     gameInstanceEntity:setStateLua(GAME_STATE_WAIT)
