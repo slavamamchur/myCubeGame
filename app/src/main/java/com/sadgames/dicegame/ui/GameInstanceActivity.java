@@ -219,6 +219,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     private void resetGame() {
         mMapFragment.getGameLogic().onGameRestarted();
+        mMapFragment.getGameLogic().onPerformUserAction(ON_PLAY_TURN_EVENT_HANDLER, new LuaValue[]{});
 
         setItemChanged(true);
 

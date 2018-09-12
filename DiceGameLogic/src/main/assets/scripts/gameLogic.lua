@@ -10,6 +10,7 @@ local CHIP_DEFAULT_WEIGHT = 1.0
 local COLLISION_OBJECT = 1
 local TERRAIN_MATERIAL = 1
 local DEFAULT_TEXTURE_SIZE = 500
+local GAME_STATE_WAIT = 0
 
 local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
@@ -72,8 +73,39 @@ onDiceObjectInit = function(gameObject)
     gameObject:hideObject()
 end
 
+
+
 onGameRestarted = function(gameInstanceEntity)
-    --todo
+    gameInstanceEntity:setStateLua(GAME_STATE_WAIT)
+    gameInstanceEntity:setCurrentPlayer(0)
+    gameInstanceEntity:setStepsToGo(0)
+
+    for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
+        local player = gameInstanceEntity:getPlayers():get(i)
+        player:setCurrentPoint(0)
+        player:setFinished(false)
+        player:setSkipped(false)
+    end
+
+    pcall(moveChips, gameInstanceEntity)
+end
+
+moveChips = function(gameInstanceEntity)
+    local playersOnWayPoints = {}
+    for i = 1, gameInstanceEntity:getGame():getGamePoints():size() do
+        table.insert(playersOnWayPoints, i, 0)
+    end
+
+    for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
+        local player = gameInstanceEntity:getPlayers():get(i)
+        local chip = gl3DScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
+        local currentPointIdx = player:getCurrentPoint() + 1
+
+        playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
+        chip:setInWorldPosition(getChipPlace(gameInstanceEntity:getGame():getGamePoints():get(player:getCurrentPoint()),
+                                  playersOnWayPoints[currentPointIdx] - 1,
+                                     true))
+    end
 end
 
 onCreateDynamicItems = function(gameEntity, gameInstance)

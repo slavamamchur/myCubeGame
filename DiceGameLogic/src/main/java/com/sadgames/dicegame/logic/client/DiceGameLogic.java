@@ -46,6 +46,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTUR
 import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_CREATE_DYNAMIC_ITEMS_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
@@ -131,38 +132,11 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         restApiWrapper.restartGameInstance(gameInstanceEntity);
     }
 
-    //TODO: Move to lua script
     public void onGameRestarted() {
-        gameInstanceEntity.setState(GameInstanceEntity.State.WAIT);
-        gameInstanceEntity.setCurrentPlayer(0);
-        gameInstanceEntity.setStepsToGo(0);
-        for (InstancePlayer player : gameInstanceEntity.getPlayers()) {
-            player.setCurrentPoint(0);
-            player.setFinished(false);
-            player.setSkipped(false);
-        }
-
-        if (mapEntity == null || mapEntity.getId() == null)
-            return;
-
         savedPlayers.clear();
-        savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
-        moveChips();
-    }
+        savedPlayers = gameInstanceEntity.createPlayersList();
 
-    private void moveChips() {
-        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
-
-        for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
-            InstancePlayer player = gameInstanceEntity.getPlayers().get(i);
-
-            AbstractGL3DObject chip = gl3DScene.getObject(CHIP_MESH_OBJECT + "_" + player.getName());
-            int currentPointIdx = player.getCurrentPoint();
-            playersOnWayPoints[currentPointIdx]++;
-            chip.setInWorldPosition(getChipPlace(gameEntity.getGamePoints().get(player.getCurrentPoint()),
-                    playersOnWayPoints[currentPointIdx] - 1,
-                    true));
-        }
+        luaEngine.get(ON_GAME_RESTARTED_EVENT_HANDLER).call(CoerceJavaToLua.coerce(gameInstanceEntity));
     }
 
     @Override
@@ -172,10 +146,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onStopMovingObject(PNodeObject gameObject) {
-        luaEngine.get(ON_MOVING_OBJECT_STOP_EVENT_HANDLER).call(
-                                                                    CoerceJavaToLua.coerce(gameObject),
-                                                                    CoerceJavaToLua.coerce(gameInstanceEntity)
-                                                                );
+        luaEngine.get(ON_MOVING_OBJECT_STOP_EVENT_HANDLER).call(CoerceJavaToLua.coerce(gameObject),
+                                                                CoerceJavaToLua.coerce(gameInstanceEntity));
     }
 
     @Override
@@ -278,6 +250,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         luaEngine.get(ON_BEFORE_DRAW_FRAME_EVENT_HANDLER).call(CoerceJavaToLua.coerce(frametime));
     }
 
+
+    @Override
+    public void onPlayerMakeTurn(String callBackEventHandler) {
+        //TODO: Move to lua script
+
+    }
+
+    //TODO: Move to lua script
     public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
         int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
         int movedPlayerIndex = -1;

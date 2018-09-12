@@ -8,6 +8,7 @@ import com.sadgames.dicegame.logic.server.rest_api.controller.GameInstanceContro
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME_INSTANCE;
@@ -69,6 +70,9 @@ public class GameInstanceEntity extends BasicNamedDbEntity {
     public List<InstancePlayer> getPlayers() {
         return players;
     }
+    public List<InstancePlayer> createPlayersList() {
+        return new ArrayList<>(players);
+    }
     public void setPlayers(List<InstancePlayer> players) {
         this.players = players;
     }
@@ -99,6 +103,9 @@ public class GameInstanceEntity extends BasicNamedDbEntity {
     }
     public void setState(State state) {
         this.state = state;
+    }
+    public void setStateLua(int state) {
+        this.state = State.values()[state];
     }
 
     public long getStartedDate() {

@@ -92,6 +92,7 @@ public class GameConst {
     public static final String ON_PLAY_TURN_EVENT_HANDLER = "onPlayTurn";
     public static final String ON_PLAYER_NEXT_MOVE__EVENT_HANDLER = "playerNextMove";
     public static final String ON_CREATE_DYNAMIC_ITEMS_HANDLER = "onCreateDynamicItems";
+    public static final String ON_GAME_RESTARTED_EVENT_HANDLER = "onGameRestarted";
 
 
     public static final List<String> ACTION_LIST = new ArrayList<String>() {{

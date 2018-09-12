@@ -23,5 +23,7 @@ public interface GameEventsCallbackInterface {
 
     void onBeforeDrawFrame(long frametime);
 
+    void onPlayerMakeTurn(String callBackEventHandler);
+
     void onPerformUserAction(String action, LuaValue[] params);
 }
