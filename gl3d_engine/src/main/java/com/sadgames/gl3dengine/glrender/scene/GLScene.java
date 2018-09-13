@@ -244,6 +244,13 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         return animation;
     }
 
+    public GLAnimation createTranslateAnimation(float fromX, float toX, float fromY, float toY, float fromZ, float toZ, long duration) {
+        GLAnimation animation = new GLAnimation(fromX, toX, fromY, toY, fromZ, toZ, duration);
+        animation.setLuaEngine(luaEngine);
+
+        return animation;
+    }
+
     private void startSimulation() {
         isSimulating = true;
     }

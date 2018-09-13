@@ -11,6 +11,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.Abstrac
 import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GameEntity extends BasicNamedDbEntity implements Parcelable{
+public class GameEntity extends BasicNamedDbEntity implements Parcelable {
 
     public static String ACTION_NAME =  URL_GAME;
     public static float GAME_DICE_HALF_SIZE = 0.15f;
@@ -143,6 +144,10 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable{
     }
     public Vector3f _getStartSunColor() {
         return new Vector3f(1.0f, 1.0f, 0.8f);
+    }
+
+    public InputStream getLuaScript(SysUtilsWrapperInterface sysUtilsWrapper, String name) {
+        return sysUtilsWrapper.getResourceStream("scripts/" + name + ".lua");
     }
 
     //TODO: replace with parcelable

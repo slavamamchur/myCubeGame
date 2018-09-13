@@ -11,6 +11,8 @@ local COLLISION_OBJECT = 1
 local TERRAIN_MATERIAL = 1
 local DEFAULT_TEXTURE_SIZE = 500
 local GAME_STATE_WAIT = 0
+local POINT_TYPE_FINISH = 6
+local CHIP_ANIMATION_DURATION = 500
 
 local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
@@ -93,7 +95,7 @@ onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
         for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
             local currentPointIdx = gameInstanceEntity:getPlayers():get(i):getCurrentPoint()
 
-            if not (savedPlayers:get(i):getCurrentPoint() == currentPointIdx) then
+            if not (savedPlayers[i + 1]:getCurrentPoint() == currentPointIdx) then
                 movedPlayerIndex = i
                 endGamePoint = gameInstanceEntity:getGame():getGamePoints():get(currentPointIdx)
                 playersCnt = playersOnWayPoints[currentPointIdx + 1] - 1
@@ -104,16 +106,13 @@ onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
     end
 
     if movedPlayerIndex >= 0 then
-        animateChip(delegate, endGamePoint, playersCnt,
-                gl3DScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, savedPlayers:get(movedPlayerIndex):getName())))
+        animateChip(gameInstanceEntity, delegate, endGamePoint, playersCnt,
+                gl3DScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, savedPlayers[movedPlayerIndex + 1]:getName())))
     else
         restApi:moveGameInstance(gameInstanceEntity)
     end
 
-    if not (savedPlayers == null) then
-        savedPlayers:clear()
-    end
-    savedPlayers = gameInstanceEntity:createPlayersList()
+    --savedPlayers = gameInstanceEntity:createPlayersListLua()
 end
 
 onGameRestarted = function(gameInstanceEntity)
@@ -131,8 +130,21 @@ onGameRestarted = function(gameInstanceEntity)
     pcall(moveChips, gameInstanceEntity)
 end
 
-animateChip = function(delegate, endGamePoint, playersCnt, chip)
-    --TODO:
+animateChip = function(gameInstanceEntity, delegate, endGamePoint, playersCnt, chip)
+    if playersCnt < 0 then
+        playersCnt = 0
+    end
+
+    local chipPlace = getChipPlace(endGamePoint,
+                                   playersCnt,
+                           (gameInstanceEntity:getStepsToGo() == 0) or (endGamePoint:getType():ordinal() == POINT_TYPE_FINISH))
+    local move = gl3DScene:createTranslateAnimation(chip:getPlace().x, chipPlace.x,
+                                                    0.0, 0.0,
+                                                    chip:getPlace().y, chipPlace.y,
+                                                    CHIP_ANIMATION_DURATION)
+    chip:setPlace(chipPlace)
+    chip:setAnimation(move)
+    move:startAnimation(chip, delegate)
 end
 
 moveChips = function(gameInstanceEntity)

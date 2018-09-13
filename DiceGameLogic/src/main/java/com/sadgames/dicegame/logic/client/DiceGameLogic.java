@@ -8,14 +8,11 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEn
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
-import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
@@ -35,19 +32,17 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 
-import static com.sadgames.dicegame.logic.client.GameConst.CHIP_MESH_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_CREATE_DYNAMIC_ITEMS_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAYER_MAKE_TURN_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
@@ -56,12 +51,11 @@ import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
+import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
 
 public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
-    private static final long CHIP_ANIMATION_DURATION = 500;
-    private final static String LUA_GAME_LOGIC_SCRIPT = "scripts/gameLogic.lua";
-    private static final float CHIP_DEFAULT_WEIGHT = 1.0f;
+    private final static String LUA_GAME_LOGIC_SCRIPT = "gameLogic";
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
     private RestApiInterface restApiWrapper;
@@ -76,11 +70,9 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.restApiWrapper = restApiWrapper;
         this.gl3DScene = gl3DScene;
-
-        initScriptEngine();
     }
 
-    private void initScriptEngine() {
+    public void initScriptEngine() {
         luaEngine = JsePlatform.standardGlobals();
         luaEngine.finder = this;
         luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(CoerceJavaToLua.coerce(sysUtilsWrapper),
@@ -226,6 +218,26 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         restApiWrapper.removeLoadingSplash();
     }
 
+    @Override
+    public void onBeforeDrawFrame(long frametime) {
+        luaEngine.get(ON_BEFORE_DRAW_FRAME_EVENT_HANDLER).call(CoerceJavaToLua.coerce(frametime));
+    }
+
+
+    @Override
+    public void onPlayerMakeTurn(GLAnimation.AnimationCallBack delegate) {
+        luaEngine.get(ON_PLAYER_MAKE_TURN_EVENT_HANDLER).call(CoerceJavaToLua.coerce(gameInstanceEntity),
+                                                              javaList2LuaTable(savedPlayers),
+                                                              CoerceJavaToLua.coerce(delegate));
+        savedPlayers.clear();
+        savedPlayers = gameInstanceEntity.createPlayersList();
+    }
+
+    @Override
+    public InputStream findResource(String name) {
+        return getGameEntity().getLuaScript(sysUtilsWrapper, name);
+    }
+
     private void loadGameItems(GLScene glScene) {
         Blender3DObject sceneObject;
         for (InteractiveGameItem item : gameEntity.getGameItems()) {
@@ -243,108 +255,5 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         SceneObjectsTreeItem parentObject = glScene.getObject(item.itemParentName != null ? item.itemParentName : "");
 
         return parentObject != null ? parentObject : glScene;
-    }
-
-    @Override
-    public void onBeforeDrawFrame(long frametime) {
-        luaEngine.get(ON_BEFORE_DRAW_FRAME_EVENT_HANDLER).call(CoerceJavaToLua.coerce(frametime));
-    }
-
-
-    @Override
-    public void onPlayerMakeTurn(GLAnimation.AnimationCallBack delegate) {
-        movingChipAnimation(delegate);//TODO: ON_PLAYER_MAKE_TURN_EVENT_HANDLER(gameInstanceEntity, savedPlayers, delegate)
-    }
-
-    public void movingChipAnimation(GLAnimation.AnimationCallBack delegate) {
-        int[] playersOnWayPoints = new int[gameEntity.getGamePoints().size()];
-        int movedPlayerIndex = -1;
-
-        for (InstancePlayer player : gameInstanceEntity.getPlayers())
-            playersOnWayPoints[player.getCurrentPoint()]++;
-
-        AbstractGamePoint endGamePoint = null;
-        int playersCnt = 0;
-
-        if (savedPlayers != null)
-            for (int i = 0; i < gameInstanceEntity.getPlayers().size(); i++) {
-                int currentPointIdx = gameInstanceEntity.getPlayers().get(i).getCurrentPoint();
-
-                if (savedPlayers.get(i).getCurrentPoint() != currentPointIdx) {
-                    movedPlayerIndex = i;
-                    endGamePoint = gameEntity.getGamePoints().get(currentPointIdx);
-                    playersCnt = playersOnWayPoints[currentPointIdx] - 1;
-
-                    break;
-                }
-            }
-
-        if (movedPlayerIndex >= 0)
-                animateChip(delegate, endGamePoint, playersCnt,
-                        gl3DScene.getObject( CHIP_MESH_OBJECT + "_" + savedPlayers.get(movedPlayerIndex).getName()));
-        else
-            restApiWrapper.moveGameInstance(gameInstanceEntity);
-
-        if (savedPlayers != null) savedPlayers.clear();
-        savedPlayers = new ArrayList<>(gameInstanceEntity.getPlayers());
-    }
-
-    //TODO: Move to lua script
-    private void animateChip(GLAnimation.AnimationCallBack delegate, AbstractGamePoint endGamePoint, int playersCnt, AbstractGL3DObject chip) {
-        playersCnt = playersCnt < 0 ? 0 : playersCnt;
-
-        if (endGamePoint == null)
-            return;
-
-        Vector2f chipPlace = getChipPlace(endGamePoint, playersCnt,
-                (gameInstanceEntity.getStepsToGo() == 0) || endGamePoint.getType().equals(PointType.FINISH));
-
-        GLAnimation move = new GLAnimation(
-                                            chip.getPlace().x, chipPlace.x,
-                                           0f, 0f,
-                                            chip.getPlace().y, chipPlace.y,
-                                            CHIP_ANIMATION_DURATION
-                                           );
-
-        chip.setPlace(chipPlace);
-        chip.setAnimation(move);
-        move.startAnimation(chip, delegate);
-    }
-
-    private Vector2f getChipPlace(AbstractGamePoint point, int playersCnt, boolean rotate) {
-        TopographicMapObject map = (TopographicMapObject) gl3DScene.getObject(TERRAIN_MESH_OBJECT);
-        float scaleFactor = map.getGlTexture().getWidth() * 1.0f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
-        double toX2 = point.getxPos() * scaleFactor;
-        double toZ2 = point.getyPos() * scaleFactor;
-
-        if(rotate) {
-            double angle = getChipRotationAngle(playersCnt);
-            toX2 -= 7.5 * scaleFactor * Math.sin(angle);
-            toZ2 -= 7.5 * scaleFactor * Math.cos(angle);
-        }
-
-        return map.map2WorldCoord((float)toX2, (float)toZ2);
-    }
-
-    private static double getChipRotationAngle(int playersCnt) {
-        if (playersCnt == 0)
-            return  0;
-
-        int part = 8, b;
-        double angle;
-
-        do {
-            angle = 360 / part;
-            b = part - 1;
-
-            part /= 2;
-        } while ( ((playersCnt & part) == 0) && (part != 1) );
-
-        return Math.toRadians((2 * playersCnt - b) * angle);
-    }
-
-    @Override
-    public InputStream findResource(String name) {
-        return sysUtilsWrapper.getResourceStream(name);
     }
 }

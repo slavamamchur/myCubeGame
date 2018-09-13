@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameInstanceController;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
+
+import org.luaj.vm2.LuaTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +75,9 @@ public class GameInstanceEntity extends BasicNamedDbEntity {
     }
     public List<InstancePlayer> createPlayersList() {
         return new ArrayList<>(players);
+    }
+    public LuaTable createPlayersListLua() {
+        return LuaUtils.javaList2LuaTable(new ArrayList<>(players));
     }
     public void setPlayers(List<InstancePlayer> players) {
         this.players = players;

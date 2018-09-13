@@ -81,6 +81,7 @@ public class MapFragment extends Fragment {
             GameMapEntity map = new GameMapEntity();
             map.setId(game.getMapId());
             InitMap(map);
+            gameLogic.initScriptEngine();
         }
     }
 

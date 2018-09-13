@@ -1,5 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.animation;
 
+import com.sadgames.sysutils.common.LuaUtils;
+
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -117,19 +119,9 @@ public class GLAnimation {
         inProgress = true;
     }
 
-
-    private LuaValue[] luaTable2Array(LuaTable table) {
-        LuaValue[] result = new LuaValue[table.length()];
-
-        for (int i = 0; i < table.length(); i++)
-            result[i] = table.get(i + 1);
-
-        return result;
-    }
-
     @SuppressWarnings("unused") public void startAnimation(IAnimatedObject animatedObject, String luaDelegate, LuaTable params) {
         this.luaDelegate = luaDelegate;
-        this.luaDelegateParams = luaTable2Array(params);
+        this.luaDelegateParams = LuaUtils.luaTable2Array(params);
 
         switch (animationType) {
             case TRANSLATE_ANIMATION:
