@@ -55,6 +55,10 @@ onPlayTurn = function()
     gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
+drawPath = function()
+    --todo
+end
+
 rollDice = function()
     local dice = gl3DScene:getObject(DICE_MESH_OBJECT)
 

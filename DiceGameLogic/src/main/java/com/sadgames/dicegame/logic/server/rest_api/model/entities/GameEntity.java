@@ -172,6 +172,7 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable {
         return gameItems;
     }
 
+    @SuppressWarnings("unused")
     public InteractiveGameItem createNewItem(String itemName,
                                              String itemParentName,
                                              float mass,
