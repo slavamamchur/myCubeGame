@@ -111,8 +111,6 @@ onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
     else
         restApi:moveGameInstance(gameInstanceEntity)
     end
-
-    --savedPlayers = gameInstanceEntity:createPlayersListLua()
 end
 
 onGameRestarted = function(gameInstanceEntity)
@@ -296,8 +294,8 @@ function generateDiceInitialTransform()
     local transformer = sysUtilsWrapper:createTransform()
     local transformingObject = sysUtilsWrapper:createTransform()
 
-    transformingObject:setIdentity();
-    transformer:setIdentity();
+    transformingObject:setIdentity()
+    transformer:setIdentity()
 
     transformer:setTranslation(sysUtilsWrapper:createVector3f(0.0, 0.5, 2.5))
     transformingObject:mul(transformer)
