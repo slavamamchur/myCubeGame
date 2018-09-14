@@ -57,8 +57,15 @@ onPlayTurn = function()
     gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
-drawPath = function()
-    --todo
+drawPath = function(textureBmp, gameEntity)
+    local scaleFactor = textureBmp:getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
+    local way = {}
+
+    for i = 0, gameEntity:getGamePoints():size() - 1 do
+        table.insert(way, i + 1, gameEntity:getGamePoints():get(i):asVector2fLua(scaleFactor))
+    end
+
+    textureBmp:drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor)
 end
 
 rollDice = function()

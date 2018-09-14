@@ -86,7 +86,7 @@ public class AbstractGamePoint implements Parcelable{
     public Vector2f asVector2f() {
         return new Vector2f(xPos, yPos);
     }
-    public Vector2f asVector2f(float scaleFactor) {
+    public Vector2f asVector2fLua(float scaleFactor) {
         return new Vector2f(xPos * scaleFactor, yPos * scaleFactor);
     }
 

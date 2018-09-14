@@ -8,7 +8,6 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEn
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
@@ -28,7 +27,6 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ResourceFinder;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
@@ -46,13 +44,12 @@ import static com.sadgames.dicegame.logic.client.GameConst.ON_CREATE_DYNAMIC_ITE
 import static com.sadgames.dicegame.logic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAYER_MAKE_TURN_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
-import static com.sadgames.dicegame.logic.client.GameConst.PATH_COLOR;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.TERRAIN_MESH_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.WAY_POINT_COLOR;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
@@ -88,6 +85,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         gl3DScene.setLuaEngine(luaEngine);
     }
 
+    @SuppressWarnings("unused")
     public RestApiInterface getRestApiWrapper() {
         return restApiWrapper;
     }
@@ -225,18 +223,8 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onPrepareMapTexture(BitmapWrapperInterface textureBmp) {
-        drawPath(textureBmp);
-    }
-
-    //TODO: move to lua script -> ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER(gameEntity, textureBmp)
-    private void drawPath(BitmapWrapperInterface textureBmp) {
-        float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
-        LuaTable way = new LuaTable();
-        for (int i = 0; i < gameEntity.getGamePoints().size(); i++) {
-            AbstractGamePoint point = gameEntity.getGamePoints().get(i);
-            way.insert(i + 1, CoerceJavaToLua.coerce(point.asVector2f(scaleFactor)));
-        }
-        textureBmp.drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor);
+        luaEngine.get(ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER).call(CoerceJavaToLua.coerce(textureBmp),
+                                                                 CoerceJavaToLua.coerce(gameEntity));
     }
 
     @Override

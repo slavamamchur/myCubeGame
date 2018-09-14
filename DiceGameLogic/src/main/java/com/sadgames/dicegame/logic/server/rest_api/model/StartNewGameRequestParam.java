@@ -7,7 +7,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.Instan
 
 import java.util.List;
 
-public class StartNewGameRequestParam implements Parcelable{
+public class StartNewGameRequestParam implements Parcelable{ //TODO: change to Serializable
 
     private String gameId;
     private String name;
