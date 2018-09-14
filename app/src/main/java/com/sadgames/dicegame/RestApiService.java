@@ -250,7 +250,7 @@ public class RestApiService extends IntentService {
                     handleActionMooveGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case START_GAME_INSTANCE:
-                    handleActionStartGameInstance((StartNewGameRequestParam) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    handleActionStartGameInstance((StartNewGameRequestParam) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case RESTART_GAME_INSTANCE:
                     handleActionReStartGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));

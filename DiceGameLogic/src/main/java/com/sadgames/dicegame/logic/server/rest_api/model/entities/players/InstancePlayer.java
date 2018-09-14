@@ -3,7 +3,10 @@ package com.sadgames.dicegame.logic.server.rest_api.model.entities.players;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class InstancePlayer implements Parcelable{
+import java.io.Serializable;
+
+public class InstancePlayer implements Parcelable, Serializable { //TODO: change to Serializable
+    private static final long serialVersionUID = -6815839058727920425L;
 
     public String name;
     public int color;
