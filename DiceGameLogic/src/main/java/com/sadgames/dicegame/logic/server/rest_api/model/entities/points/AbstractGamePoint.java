@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.vecmath.Vector2f;
+
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME_POINT;
 
 /**
@@ -79,6 +81,13 @@ public class AbstractGamePoint implements Parcelable{
     }
     public void setNextPointIndex(int nextPointIndex) {
         this.nextPointIndex = nextPointIndex;
+    }
+
+    public Vector2f asVector2f() {
+        return new Vector2f(xPos, yPos);
+    }
+    public Vector2f asVector2f(float scaleFactor) {
+        return new Vector2f(xPos * scaleFactor, yPos * scaleFactor);
     }
 
     protected void save2Parcel(Parcel dest) {

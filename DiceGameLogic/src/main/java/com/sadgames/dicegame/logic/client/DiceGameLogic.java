@@ -28,16 +28,15 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ResourceFinder;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
@@ -229,6 +228,17 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         drawPath(textureBmp);
     }
 
+    //TODO: move to lua script -> ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER(gameEntity, textureBmp)
+    private void drawPath(BitmapWrapperInterface textureBmp) {
+        float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
+        LuaTable way = new LuaTable();
+        for (int i = 0; i < gameEntity.getGamePoints().size(); i++) {
+            AbstractGamePoint point = gameEntity.getGamePoints().get(i);
+            way.insert(i + 1, CoerceJavaToLua.coerce(point.asVector2f(scaleFactor)));
+        }
+        textureBmp.drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor);
+    }
+
     @Override
     public void onBeforeDrawFrame(long frametime) {
         luaEngine.get(ON_BEFORE_DRAW_FRAME_EVENT_HANDLER).call(CoerceJavaToLua.coerce(frametime));
@@ -266,15 +276,6 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         SceneObjectsTreeItem parentObject = glScene.getObject(item.itemParentName != null ? item.itemParentName : "");
 
         return parentObject != null ? parentObject : glScene;
-    }
-
-    //TODO: move to lua script
-    private void drawPath(BitmapWrapperInterface textureBmp) {
-        float scaleFactor = textureBmp.getWidth() * 1f / TopographicMapObject.DEFAULT_TEXTURE_SIZE;
-        ArrayList<Vector2f> way = new ArrayList<>();
-        for (AbstractGamePoint point : gameEntity.getGamePoints())
-            way.add(new Vector2f(point.xPos * scaleFactor, point.yPos * scaleFactor));
-        textureBmp.drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor);
     }
 
 }

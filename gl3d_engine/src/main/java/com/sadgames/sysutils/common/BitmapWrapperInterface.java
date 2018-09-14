@@ -1,9 +1,8 @@
 package com.sadgames.sysutils.common;
 
-import java.nio.Buffer;
-import java.util.List;
+import org.luaj.vm2.LuaTable;
 
-import javax.vecmath.Vector2f;
+import java.nio.Buffer;
 
 public interface BitmapWrapperInterface {
 
@@ -18,7 +17,7 @@ public interface BitmapWrapperInterface {
     boolean isEmpty();
     boolean isCompressed();
 
-    void    drawPath(List<Vector2f> path, int pathColor, int wayPointColor, float scaleFactor);
+    void    drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor);
 
     void    release();
 

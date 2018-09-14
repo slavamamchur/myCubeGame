@@ -29,5 +29,9 @@ public class LuaUtils {
         return result;
     }
 
+    public static Object getUserData(LuaValue value, Class type) {
+        return value.touserdata(type);
+    }
+
 
 }

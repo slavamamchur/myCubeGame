@@ -9,11 +9,14 @@ import android.opengl.ETC1;
 import android.opengl.ETC1Util;
 
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.LuaUtils;
+
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.List;
 
 import javax.vecmath.Vector2f;
 
@@ -94,18 +97,23 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
-    public void drawPath(List<Vector2f> path, int pathColor, int wayPointColor, float scaleFactor) {
+    public void drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor) {
         if (path == null || isCompressed())
             return;
 
         Canvas canvas = new Canvas(picture);
         Path pathObject = new Path();
         final Paint paint = new Paint();
-
         paint.setPathEffect(new DashPathEffect(new float[]{7.5f * scaleFactor, 3.75f * scaleFactor}, 0));
-        pathObject.moveTo(path.get(0).x, path.get(0).y);
-        for (int i = 1; i < path.size(); i++)
-            pathObject.lineTo(path.get(i).x, path.get(i).y);
+
+        Vector2f point = getPoint(path.get(1));
+        pathObject.moveTo(point.x, point.y);
+
+        for (int i = 2; i <= path.keys().length; i++) {
+            point = getPoint(path.get(i));
+            pathObject.lineTo(point.x, point.y);
+        }
+
         paint.setColor(pathColor);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3.75f * scaleFactor);
@@ -113,8 +121,14 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
         paint.setColor(wayPointColor);
         paint.setStyle(Paint.Style.FILL);
-        for (Vector2f point : path)
+        for (int i = 1; i <= path.keys().length; i++) {
+            point = getPoint(path.get(i));
             canvas.drawCircle(point.x, point.y, 7.5f * scaleFactor, paint);
+        }
+    }
+
+    private Vector2f getPoint(LuaValue value) {
+        return (Vector2f)(LuaUtils.getUserData(value, Vector2f.class));
     }
 
     @Override
