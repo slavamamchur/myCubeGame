@@ -150,7 +150,7 @@ public class GameEntity extends BasicNamedDbEntity implements Parcelable {
         return sysUtilsWrapper.getResourceStream("scripts/" + name + ".lua");
     }
 
-    //TODO: replace with parcelable
+    //TODO: replace with REST object
     public List<InteractiveGameItem> getGameItems() {
         if (gameItems == null) {
             gameItems = new ArrayList<>();

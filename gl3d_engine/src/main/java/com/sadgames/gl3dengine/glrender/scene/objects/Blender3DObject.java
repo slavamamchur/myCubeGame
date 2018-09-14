@@ -237,7 +237,4 @@ public class Blender3DObject extends ImportedObject {
         if (twoSidedSurface) glEnable(GL_CULL_FACE);
     }
 
-    @SuppressWarnings("unused") public void hideObject() {
-        setPosition(new Vector3f(1000, 0, 0)); //TODO: change to "visible" property
-    }
 }

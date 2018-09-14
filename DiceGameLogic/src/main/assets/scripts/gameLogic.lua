@@ -77,6 +77,7 @@ rollDice = function()
     dice:setPWorldTransform(generateDiceInitialTransform())
     dice:get_body():setLinearVelocity(generateForceVector())
 
+    dice:showObject()
     gl3DScene:getPhysicalWorldObject():addRigidBody(dice:get_body())
 end
 

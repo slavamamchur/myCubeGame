@@ -11,6 +11,7 @@ public abstract class SceneObjectsTreeItem {
     protected long itemNumber;
     protected String itemName;
     protected SceneObjectsTreeItem parent;
+    protected boolean visible = true;
     protected Map<String, SceneObjectsTreeItem> childs = new HashMap<>();
 
     public interface ISceneObjectsTreeHandler {
@@ -27,6 +28,17 @@ public abstract class SceneObjectsTreeItem {
     protected SceneObjectsTreeItem() {
         this(-1, null, null);
     }
+
+    public boolean isVisible() {
+        return visible;
+    }
+    @SuppressWarnings("unused") public void hideObject() {
+        visible = false;
+    }
+    @SuppressWarnings("unused") public void showObject() {
+        visible = true;
+    }
+
 
     public long getItemNumber() {
         return itemNumber;
@@ -100,12 +112,15 @@ public abstract class SceneObjectsTreeItem {
     }
 
     public void proceesTreeItems(ISceneObjectsTreeHandler itemHandler) {
+        if (!isVisible()) return;
+
         ArrayList<SceneObjectsTreeItem> sortedItems = new ArrayList<>(childs.values());
         Collections.sort(sortedItems, (i1, i2) -> (int)(i1.itemNumber - i2.itemNumber));
 
-        for (SceneObjectsTreeItem item : sortedItems) {
-            itemHandler.onProcessItem(item);
-            item.proceesTreeItems(itemHandler);
-        }
+        for (SceneObjectsTreeItem item : sortedItems)
+            if (item.isVisible()) {
+                itemHandler.onProcessItem(item);
+                item.proceesTreeItems(itemHandler);
+            }
     }
 }
