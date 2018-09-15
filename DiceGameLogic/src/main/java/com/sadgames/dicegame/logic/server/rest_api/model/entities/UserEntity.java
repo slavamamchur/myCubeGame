@@ -71,7 +71,6 @@ public class UserEntity extends BasicEntity implements Parcelable{
         save2Parcel(dest);
     }
 
-    @Override
     protected void save2Parcel(Parcel dest) {
         dest.writeString(userName);
         dest.writeString(userPass);
@@ -79,7 +78,6 @@ public class UserEntity extends BasicEntity implements Parcelable{
         dest.writeString(language);
     }
 
-    @Override
     protected void loadFromParcel(Parcel in) {
         userName = in.readString();
         userPass = in.readString();

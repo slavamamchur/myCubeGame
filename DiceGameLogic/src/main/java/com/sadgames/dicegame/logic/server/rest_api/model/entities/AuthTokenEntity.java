@@ -48,11 +48,9 @@ public class AuthTokenEntity extends BasicEntity implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         save2Parcel(dest);
     }
-    @Override
     protected void save2Parcel(Parcel dest) {
         dest.writeString(id);
     }
-    @Override
     protected void loadFromParcel(Parcel in) {
         id = in.readString();
     }
