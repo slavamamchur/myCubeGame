@@ -1,7 +1,6 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
@@ -24,7 +23,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GameEntity extends BasicNamedDbEntity implements Parcelable {
+public class GameEntity extends BasicNamedDbEntity {
 
     public static String ACTION_NAME =  URL_GAME;
     public static float GAME_DICE_HALF_SIZE = 0.15f;

@@ -1,7 +1,6 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
@@ -10,7 +9,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME_MAP;
 
-public class GameMapEntity extends BasicNamedDbEntity implements Parcelable{
+public class GameMapEntity extends BasicNamedDbEntity {
     @JsonProperty(required = false)
     public long createdDate;
     public long lastUsedDate;
@@ -21,7 +20,7 @@ public class GameMapEntity extends BasicNamedDbEntity implements Parcelable{
 
     public GameMapEntity() {}
 
-    public GameMapEntity(String id) {
+    @SuppressWarnings("unused") public GameMapEntity(String id) {
         this.id = id;
         this.createdDate = System.currentTimeMillis();
     }
@@ -84,7 +83,6 @@ public class GameMapEntity extends BasicNamedDbEntity implements Parcelable{
         dest.writeLong(createdDate);
         dest.writeLong(lastUsedDate);
         dest.writeByteArray(binaryData);
-        //sourceBitmap.writeToParcel(dest, 0);
     }
 
     @Override
@@ -96,7 +94,6 @@ public class GameMapEntity extends BasicNamedDbEntity implements Parcelable{
 
         try {
             binaryData = in.createByteArray();
-            //destinationBitmap = Bitmap.CREATOR.createFromParcel(in);
         }
         catch(Exception e){
             binaryData = null;

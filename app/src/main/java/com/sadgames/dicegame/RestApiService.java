@@ -291,7 +291,7 @@ public class RestApiService extends IntentService {
         }
 
         Bundle params = new Bundle();
-        params.putParcelable(EXTRA_ERROR_OBJECT, error);
+        params.putSerializable(EXTRA_ERROR_OBJECT, error);
         params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
         sendResponseIntent(ACTION_LOGIN_RESPONSE, params);
     }
@@ -429,7 +429,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
         params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);
 
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
@@ -447,7 +447,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
 
         sendResponseIntent(ACTION_UPLOAD_IMAGE_RESPONSE, params);
     }
@@ -464,7 +464,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
 
         sendResponseIntent(ACTION_DELETE_ENTITY_RESPONSE, params);
     }
@@ -481,7 +481,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else
             params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
 
@@ -500,7 +500,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
 
         sendResponseIntent(ACTION_FINISH_GAME_INSTANCE_RESPONSE, params);
     }
@@ -517,7 +517,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
 
         sendResponseIntent(ACTION_RESTART_GAME_INSTANCE_RESPONSE, params);
     }
@@ -535,7 +535,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else {
             params.putParcelable(EXTRA_ENTITY_OBJECT, result.getInstance());
         }
@@ -556,7 +556,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else {
             params.putParcelable(EXTRA_ENTITY_OBJECT, result);
         }
@@ -576,7 +576,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else
             params.putInt(EXTRA_CHILD_INDEX, childIndex);
 
@@ -595,7 +595,7 @@ public class RestApiService extends IntentService {
 
         Bundle params = new Bundle();
         if(error != null)
-            params.putParcelable(EXTRA_ERROR_OBJECT, error);
+            params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else
             params.putParcelable(EXTRA_ENTITY_OBJECT, childEntity);
 
