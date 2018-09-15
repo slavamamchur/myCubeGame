@@ -2,7 +2,7 @@ package com.sadgames.dicegame.logic.server.rest_api.controller;
 
 import com.sadgames.dicegame.logic.server.rest_api.RestConst;
 import com.sadgames.dicegame.logic.server.rest_api.WebServiceException;
-import com.sadgames.dicegame.logic.server.rest_api.model.StartNewGameRequestParam;
+import com.sadgames.dicegame.logic.server.rest_api.controller.params.StartNewGameRequestParam;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceCollectionResponse;
 import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceResponse;

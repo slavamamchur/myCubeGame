@@ -1,4 +1,4 @@
-package com.sadgames.dicegame.logic.server.rest_api.model;
+package com.sadgames.dicegame.logic.server.rest_api.controller.params;
 
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
 
