@@ -32,14 +32,12 @@ public abstract class BasicDbEntity extends BasicEntity {
         this.tenantId = tenantId;
     }
 
-    @Override
     protected void save2Parcel(Parcel dest) {
         dest.writeString(id);
         dest.writeString(tenantId);
         dest.writeBooleanArray(new boolean[]{deleted});
     }
 
-    @Override
     protected void loadFromParcel(Parcel in) {
         setId(in.readString());
         setTenantId(in.readString());

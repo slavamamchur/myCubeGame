@@ -1,9 +1,3 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
-import android.os.Parcel;
-
-public abstract class BasicEntity{
-
-    protected abstract void save2Parcel(Parcel dest);
-    protected abstract void loadFromParcel(Parcel in);
-}
+public abstract class BasicEntity{}
