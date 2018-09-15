@@ -1,4 +1,4 @@
-local sysUtilsWrapper, gl3DScene, restApi = ...
+local gameLogic = ...
 
 local ROLLING_DICE_SOUND = 'rolling_dice.mp3'
 local SKY_BOX_CUBE_MAP_OBJECT = 'SKY_BOX_CUBE_MAP_OBJECT'
@@ -22,39 +22,39 @@ local ON_PLAY_TURN_ANIMATION_END = 'rollDice'
 local ON_STOP_MOVING_ANIMATION_END = 'playerNextMove'
 
 onRollingObjectStart = function(gameObject)
-    if gameObject == gl3DScene:getObject(DICE_MESH_OBJECT) then
-        sysUtilsWrapper:iPlaySound(ROLLING_DICE_SOUND)
+    if gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT) then
+        gameLogic:getSysUtilsWrapper():iPlaySound(ROLLING_DICE_SOUND)
     end
 end
 
 onRollingObjectStop = function(gameObject)
-    sysUtilsWrapper:iStopSound()
+    gameLogic:getSysUtilsWrapper():iStopSound()
 end
 
 onMovingObjectStop = function(gameObject, gameInstance)
-    if not (gameInstance == nil) and (gameObject == gl3DScene:getObject(DICE_MESH_OBJECT)) then
+    if not (gameInstance == nil) and (gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT)) then
         gameInstance:setStepsToGo(getTopFaceDiceValue(gameObject))
-        restApi:showTurnInfo(gameInstance)
+        gameLogic:getRestApiWrapper():showTurnInfo(gameInstance)
 
-        gl3DScene:restorePrevViewMode()
+        gameLogic:getGl3DScene():restorePrevViewMode()
 
         gameObject:hideObject()
 
-        gl3DScene:setZoomCameraAnimation(gl3DScene:createZoomCameraAnimation(2.0))
-        gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, {gameInstance})
+        gameLogic:getGl3DScene():setZoomCameraAnimation(gameLogic:getGl3DScene():createZoomCameraAnimation(2.0))
+        gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, { gameInstance})
     end
 end
 
 beforeDrawFrame = function(frametime)
-    local skyBox = gl3DScene:getObject(SKY_BOX_CUBE_MAP_OBJECT)
+    local skyBox = gameLogic:getGl3DScene():getObject(SKY_BOX_CUBE_MAP_OBJECT)
 
     skyBox:calcRotationAngle(frametime)
-    gl3DScene:getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
+    gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
 end
 
 onPlayTurn = function()
-    gl3DScene:setZoomCameraAnimation(gl3DScene:createZoomCameraAnimation(0.5))
-    gl3DScene:getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
+    gameLogic:getGl3DScene():setZoomCameraAnimation(gameLogic:getGl3DScene():createZoomCameraAnimation(0.5))
+    gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
 drawPath = function(textureBmp, gameEntity)
@@ -69,20 +69,20 @@ drawPath = function(textureBmp, gameEntity)
 end
 
 rollDice = function()
-    local dice = gl3DScene:getObject(DICE_MESH_OBJECT)
+    local dice = gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT)
 
-    gl3DScene:switrchTo2DMode()
+    gameLogic:getGl3DScene():switrchTo2DMode()
 
     dice:createRigidBody()
     dice:setPWorldTransform(generateDiceInitialTransform())
     dice:get_body():setLinearVelocity(generateForceVector())
 
     dice:showObject()
-    gl3DScene:getPhysicalWorldObject():addRigidBody(dice:get_body())
+    gameLogic:getGl3DScene():getPhysicalWorldObject():addRigidBody(dice:get_body())
 end
 
 playerNextMove = function(gameInstance)
-    restApi:moveGameInstance(gameInstance)
+    gameLogic:getRestApiWrapper():moveGameInstance(gameInstance)
 end
 
 onDiceObjectInit = function(gameObject)
@@ -121,9 +121,12 @@ onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
 
     if movedPlayerIndex >= 0 then
         animateChip(gameInstanceEntity, delegate, endGamePoint, playersCnt,
-                gl3DScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, savedPlayers[movedPlayerIndex + 1]:getName())))
+                    gameLogic:getGl3DScene():getObject(string.format(
+                                                                    '%s_%s',
+                                                                     CHIP_MESH_OBJECT,
+                                                                     savedPlayers[movedPlayerIndex + 1]:getName())))
     else
-        restApi:moveGameInstance(gameInstanceEntity)
+        gameLogic:getRestApiWrapper():moveGameInstance(gameInstanceEntity)
     end
 end
 
@@ -150,10 +153,10 @@ animateChip = function(gameInstanceEntity, delegate, endGamePoint, playersCnt, c
     local chipPlace = getChipPlace(endGamePoint,
                                    playersCnt,
                            (gameInstanceEntity:getStepsToGo() == 0) or (endGamePoint:getType():ordinal() == POINT_TYPE_FINISH))
-    local move = gl3DScene:createTranslateAnimation(chip:getPlace().x, chipPlace.x,
-                                                    0.0, 0.0,
-                                                    chip:getPlace().y, chipPlace.y,
-                                                    CHIP_ANIMATION_DURATION)
+    local move = gameLogic:getGl3DScene():createTranslateAnimation(chip:getPlace().x, chipPlace.x,
+                                                                   0.0, 0.0,
+                                                                   chip:getPlace().y, chipPlace.y,
+                                                                   CHIP_ANIMATION_DURATION)
     chip:setPlace(chipPlace)
     chip:setAnimation(move)
     move:startAnimation(chip, delegate)
@@ -167,7 +170,7 @@ moveChips = function(gameInstanceEntity)
 
     for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
         local player = gameInstanceEntity:getPlayers():get(i)
-        local chip = gl3DScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
+        local chip = gameLogic:getGl3DScene():getObject(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
         local currentPointIdx = player:getCurrentPoint() + 1
 
         playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
@@ -196,14 +199,14 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
                                               CHIP_DEFAULT_WEIGHT,
                                               COLLISION_OBJECT,
                                               TERRAIN_MATERIAL)
-        :createSceneObject(sysUtilsWrapper, gl3DScene, player:getColor())
+        :createSceneObject(gameLogic:getSysUtilsWrapper(), gameLogic:getGl3DScene(), player:getColor())
 
         chip:setInitialScale(0.2)
         chip:setInitialTranslation(0.0, 0.08, 0.0)
         chip:setTwoSidedSurface(false);
         chip:setItemName(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
 
-        local parent = gl3DScene:getObject(TERRAIN_MESH_OBJECT)
+        local parent = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
         local currentPointIdx = player:getCurrentPoint() + 1
         playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
         chip:setInWorldPosition(getChipPlace(gameEntity:getGamePoints():get(player:getCurrentPoint()),
@@ -222,7 +225,7 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
 end
 
 function getChipPlace(point, playersCnt, rotate)
-    local map = gl3DScene:getObject(TERRAIN_MESH_OBJECT)
+    local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
     local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
     local toX2 = point:getxPos() * scaleFactor
     local toZ2 = point:getyPos() * scaleFactor
@@ -260,7 +263,7 @@ function getTopFaceDiceValue(dice)
     local normals = dice:getRaw3DModel():getNormalsLua()
 
     for i = 1, #normals / 3 do
-        local normalVector = sysUtilsWrapper:mulMV(dice:getModelMatrix(), {normals[i * 3 - 2], normals[i * 3 - 1], normals[i * 3], 1.0})
+        local normalVector = gameLogic:getSysUtilsWrapper():mulMV(dice:getModelMatrix(), { normals[i * 3 - 2], normals[i * 3 - 1], normals[i * 3], 1.0})
 
         if normalVector.y > max_y then
             max_y = normalVector.y;
@@ -296,22 +299,22 @@ function generateForceVector()
     local fy = fxz * 3.0 / 4.0
     local fVector = {0.0, fy, -fxz, 1.0}
 
-    local transform = sysUtilsWrapper:createTransform()
+    local transform = gameLogic:getSysUtilsWrapper():createTransform()
     transform:rotY(math.rad(45.0 - math.random(0, 90) * 1.0))
 
-    return sysUtilsWrapper:mulMV(transform, fVector)
+    return gameLogic:getSysUtilsWrapper():mulMV(transform, fVector)
 end
 
 function generateDiceInitialTransform()
     math.randomseed(os.time())
 
-    local transformer = sysUtilsWrapper:createTransform()
-    local transformingObject = sysUtilsWrapper:createTransform()
+    local transformer = gameLogic:getSysUtilsWrapper():createTransform()
+    local transformingObject = gameLogic:getSysUtilsWrapper():createTransform()
 
     transformingObject:setIdentity()
     transformer:setIdentity()
 
-    transformer:setTranslation(sysUtilsWrapper:createVector3f(0.0, 0.5, 2.5))
+    transformer:setTranslation(gameLogic:getSysUtilsWrapper():createVector3f(0.0, 0.5, 2.5))
     transformingObject:mul(transformer)
 
     transformer:rotX(math.rad(math.random(0, 3) * 90.0)) --4

@@ -77,14 +77,17 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     public void initScriptEngine() {
         luaEngine = JsePlatform.standardGlobals();
         luaEngine.finder = this;
-        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(CoerceJavaToLua.coerce(sysUtilsWrapper),
-                                                       CoerceJavaToLua.coerce(gl3DScene),
-                                                       CoerceJavaToLua.coerce(restApiWrapper));
-
+        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(CoerceJavaToLua.coerce(this));
 
         gl3DScene.setLuaEngine(luaEngine);
     }
 
+    public SysUtilsWrapperInterface getSysUtilsWrapper() {
+        return sysUtilsWrapper;
+    }
+    @SuppressWarnings("unused") public GLScene getGl3DScene() {
+        return gl3DScene;
+    }
     @SuppressWarnings("unused")
     public RestApiInterface getRestApiWrapper() {
         return restApiWrapper;
@@ -161,15 +164,14 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
             camera.rotateX(22.5f);
 
         camera.updateViewMatrix();
-
     }
 
     @Override
     public void onInitLightSource(GLLightSource lightSource) {
         lightSource.setLightPosInModelSpace(new float[] {gameEntity._getStartSunPosition().x,
-                gameEntity._getStartSunPosition().y,
-                gameEntity._getStartSunPosition().z,
-                1.0f});
+                                            gameEntity._getStartSunPosition().y,
+                                            gameEntity._getStartSunPosition().z,
+                                            1.0f});
 
         lightSource.setLightColour(gameEntity._getStartSunColor());
     }
