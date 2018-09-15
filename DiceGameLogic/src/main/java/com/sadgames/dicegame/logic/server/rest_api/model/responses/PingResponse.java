@@ -10,10 +10,19 @@ public class PingResponse extends BasicEntity implements Parcelable {
     private String name;
 
     public PingResponse() {}
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
     protected PingResponse(Parcel in) {
         loadFromParcel(in);
     }
-    public static final Creator<PingResponse> CREATOR = new Creator<PingResponse>() {
+    public static final Parcelable.Creator<PingResponse> CREATOR = new Parcelable.Creator<PingResponse>() {
         @Override
         public PingResponse createFromParcel(Parcel in) {
             return new PingResponse(in);
@@ -24,14 +33,6 @@ public class PingResponse extends BasicEntity implements Parcelable {
             return new PingResponse[size];
         }
     };
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     protected void save2Parcel(Parcel dest) {
         dest.writeString(name);
@@ -48,4 +49,5 @@ public class PingResponse extends BasicEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         save2Parcel(dest);
     }
+
 }
