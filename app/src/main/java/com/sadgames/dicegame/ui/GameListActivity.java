@@ -8,7 +8,7 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.logic.server.rest_api.model.StartNewGameRequestParam;
+import com.sadgames.dicegame.logic.server.rest_api.controller.params.StartNewGameRequestParam;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;

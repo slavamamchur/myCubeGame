@@ -72,6 +72,10 @@ public class GLLightSource {
         lightPosInEyeSpace[2] = transformedLightPos.z;
     }
 
+    public void setLightPosInModelSpace(Vector3f lightPos) {
+        setLightPosInModelSpace(new float[] {lightPos.x, lightPos.y, lightPos.z, 1.0f});
+    }
+
     public void setLightPosInModelSpace(float[] lightPosInModelSpace) {
         this.lightPosInModelSpace = lightPosInModelSpace;
         setLightPosInEyeSpace();

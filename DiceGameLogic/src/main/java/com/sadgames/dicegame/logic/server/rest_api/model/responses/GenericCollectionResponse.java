@@ -11,6 +11,7 @@ public class GenericCollectionResponse<T> extends BasicResponse{
     public Collection<T> getCollection() {
         return collection;
     }
+
     public void setCollection(Collection<T> collection) {
         this.collection = collection;
     }

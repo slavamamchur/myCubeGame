@@ -11,7 +11,6 @@ public class GameInstanceResponse extends IdResponse {
     private long lastUsedDate;
     private boolean usersAreFinished;
 
-
     public GameInstanceResponse() {}
 
     public GameInstanceResponse(GameInstanceEntity instance) {

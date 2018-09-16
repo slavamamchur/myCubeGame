@@ -14,7 +14,7 @@ import com.sadgames.dicegame.logic.server.rest_api.controller.GameMapController;
 import com.sadgames.dicegame.logic.server.rest_api.controller.LoginRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.PingRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.RegistrationRequest;
-import com.sadgames.dicegame.logic.server.rest_api.model.StartNewGameRequestParam;
+import com.sadgames.dicegame.logic.server.rest_api.controller.params.StartNewGameRequestParam;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
@@ -213,7 +213,7 @@ public class RestApiService extends IntentService {
                     handleActionRelogin(intent.getStringExtra(EXTRA_USER_NAME), intent.getStringExtra(EXTRA_USER_PASS));
                     break;
                 case REGISTRATION:
-                    final UserEntity params = intent.getParcelableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
+                    final UserEntity params = (UserEntity) intent.getSerializableExtra(EXTRA_REGISTRATION_PARAMS_OBJECT);
                     handleActionRegistration(params);
                     break;
                 case PING:
@@ -282,17 +282,17 @@ public class RestApiService extends IntentService {
             response = new LoginRequest(userName, userPass, sysUtilsWrapper).doLogin();
         }
         catch (WebServiceException e) {
-            response = new AuthTokenEntity((String)null);
+            response = new AuthTokenEntity(null);
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), 404);
         }
         catch (Exception e) {
-            response = new AuthTokenEntity((String)null);
+            response = new AuthTokenEntity(null);
             error = new ErrorEntity(e.getMessage(), 404);
         }
 
         Bundle params = new Bundle();
         params.putSerializable(EXTRA_ERROR_OBJECT, error);
-        params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
+        params.putSerializable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
         sendResponseIntent(ACTION_LOGIN_RESPONSE, params);
     }
 
@@ -305,16 +305,16 @@ public class RestApiService extends IntentService {
         }
         catch (WebServiceException e) {
             //TODO: return error object
-            response = new AuthTokenEntity((String)null);
+            response = new AuthTokenEntity(null);
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
         catch (Exception e) {
-            response = new AuthTokenEntity((String)null);
+            response = new AuthTokenEntity(null);
             message = e.getMessage();
         }
 
         Bundle params = new Bundle();
-        params.putParcelable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
+        params.putSerializable(EXTRA_LOGIN_RESPONSE_OBJECT, response);
         sendResponseIntent(ACTION_RELOGIN_RESPONSE, params);
     }
 

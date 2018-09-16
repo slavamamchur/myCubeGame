@@ -1,9 +1,10 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
-public class UserEntity extends BasicEntity implements Parcelable{
+public class UserEntity extends BasicEntity implements Serializable {
+
+    private static final long serialVersionUID = -360850314355350792L;
 
     private String userName;
     private String userPass;
@@ -12,22 +13,6 @@ public class UserEntity extends BasicEntity implements Parcelable{
 
     @SuppressWarnings("unused")
     public UserEntity() {}
-
-    protected UserEntity(Parcel in) {
-        loadFromParcel(in);
-    }
-
-    public static final Creator<UserEntity> CREATOR = new Creator<UserEntity>() {
-        @Override
-        public UserEntity createFromParcel(Parcel in) {
-            return new UserEntity(in);
-        }
-
-        @Override
-        public UserEntity[] newArray(int size) {
-            return new UserEntity[size];
-        }
-    };
 
     public String getUserName() {
         return userName;
@@ -61,27 +46,4 @@ public class UserEntity extends BasicEntity implements Parcelable{
         this.language = language;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        save2Parcel(dest);
-    }
-
-    protected void save2Parcel(Parcel dest) {
-        dest.writeString(userName);
-        dest.writeString(userPass);
-        dest.writeString(email);
-        dest.writeString(language);
-    }
-
-    protected void loadFromParcel(Parcel in) {
-        userName = in.readString();
-        userPass = in.readString();
-        email = in.readString();
-        language = in.readString();
-    }
 }

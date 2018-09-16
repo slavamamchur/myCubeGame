@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class StartNewGameRequestParam implements Serializable {
+
     private static final long serialVersionUID = 5756812446346174496L;
 
     private String gameId;

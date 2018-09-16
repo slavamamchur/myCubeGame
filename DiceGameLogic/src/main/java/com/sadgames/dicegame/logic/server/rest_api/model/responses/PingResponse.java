@@ -1,11 +1,9 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.responses;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicEntity;
-
-public class PingResponse extends BasicEntity implements Parcelable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PingResponse extends BasicResponse {
 
     private String name;
 
@@ -16,38 +14,6 @@ public class PingResponse extends BasicEntity implements Parcelable {
     }
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    protected PingResponse(Parcel in) {
-        loadFromParcel(in);
-    }
-    public static final Parcelable.Creator<PingResponse> CREATOR = new Parcelable.Creator<PingResponse>() {
-        @Override
-        public PingResponse createFromParcel(Parcel in) {
-            return new PingResponse(in);
-        }
-
-        @Override
-        public PingResponse[] newArray(int size) {
-            return new PingResponse[size];
-        }
-    };
-    @Override
-    protected void save2Parcel(Parcel dest) {
-        dest.writeString(name);
-    }
-    @Override
-    protected void loadFromParcel(Parcel in) {
-        name = in.readString();
-    }
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        save2Parcel(dest);
     }
 
 }

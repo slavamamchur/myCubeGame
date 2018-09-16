@@ -1,7 +1,6 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities.points;
 
 public enum PointType {
-
     START,
     REGULAR,
     MOVE_SKIP,
@@ -9,5 +8,4 @@ public enum PointType {
     FLY_BACK,
     FLY_FORWARD,
     FINISH
-
 }

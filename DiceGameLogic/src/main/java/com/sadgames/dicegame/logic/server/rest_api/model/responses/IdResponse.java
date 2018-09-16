@@ -7,6 +7,7 @@ public class IdResponse extends BasicResponse {
     public IdResponse() {
         // constructor for serializer
     }
+
     public IdResponse(String id) {
         this.id = id;
     }

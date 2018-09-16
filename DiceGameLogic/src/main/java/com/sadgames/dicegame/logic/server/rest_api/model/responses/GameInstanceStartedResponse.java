@@ -8,13 +8,11 @@ import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEn
 public class GameInstanceStartedResponse {
 
     private GameInstanceEntity instance;
-
     private String error;
 
     public GameInstanceStartedResponse() {
         // for serializer
     }
-
 
     public GameInstanceStartedResponse(GameInstanceEntity instance) {
         this.instance = instance;
@@ -24,7 +22,6 @@ public class GameInstanceStartedResponse {
     public GameInstanceEntity getInstance() {
         return instance;
     }
-
     public void setInstance(GameInstanceEntity instance) {
         this.instance = instance;
     }
@@ -32,7 +29,6 @@ public class GameInstanceStartedResponse {
     public String getError() {
         return error;
     }
-
     public void setError(String error) {
         this.error = error;
     }

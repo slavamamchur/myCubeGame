@@ -132,18 +132,18 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_LOGIN_RESPONSE)){
             //TODO: process error object
-            AuthTokenEntity response = intent.getParcelableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
+            AuthTokenEntity response = (AuthTokenEntity) intent.getSerializableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null) {
                 getSysUtilsWrapper().iGetSettingsManager().setAuthToken(response.getId());
                 getSysUtilsWrapper().iGetSettingsManager().setUserName(mEmailView.getText().toString());
                 getSysUtilsWrapper().iGetSettingsManager().setUserPass(mPasswordView.getText().toString());
 
-                Intent mintent = new Intent(getApplicationContext(), /*GameListActivity*/MainActivity.class);
+                Intent mintent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mintent);
 
                 finish();
             } else {
-                    ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+                    ErrorEntity error = (ErrorEntity) intent.getSerializableExtra(EXTRA_ERROR_OBJECT);
                     String message = error != null ? error.getError() : "Invalid password or user name.\nPlease try again.";
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
