@@ -15,9 +15,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
@@ -31,19 +31,19 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.GameState;
-import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAYER_NEXT_MOVE__EVENT_HANDLER;
-import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAY_TURN_EVENT_HANDLER;
-import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_LIST;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_MOOVE_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_RESTART_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_SHOW_TURN_INFO;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_DICE_VALUE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.GameState;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ON_PLAYER_NEXT_MOVE__EVENT_HANDLER;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ON_PLAY_TURN_EVENT_HANDLER;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.UserActionType;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 
 public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> {

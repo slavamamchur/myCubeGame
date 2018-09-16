@@ -16,17 +16,17 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.LoginActivity;
 import com.sadgames.dicegame.ui.SettingsActivity;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_PING_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_RELOGIN_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_BOOLEAN_RESULT;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_RELOGIN_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 

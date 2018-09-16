@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.logic.client.DiceGameLogic;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.gamelogic.client.DiceGameLogic;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;

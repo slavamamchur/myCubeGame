@@ -36,17 +36,17 @@ import android.widget.TextView;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.AuthTokenEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.AuthTokenEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.framework.BaseActivityWithMenu;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LOGIN_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_LOGIN_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
 
 /**
  * A login screen that offers login via email/password.

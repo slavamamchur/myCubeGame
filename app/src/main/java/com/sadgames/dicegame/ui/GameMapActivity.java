@@ -8,12 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.MapFragment;
 import com.sadgames.sysutils.common.DateTimeUtils;
 
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
 
 public class GameMapActivity extends BaseItemDetailsActivity<GameMapEntity> {
 

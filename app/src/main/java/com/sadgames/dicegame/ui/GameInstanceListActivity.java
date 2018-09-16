@@ -7,21 +7,21 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.logic.client.GameConst;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.gamelogic.client.GameConst;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.ui.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_GET_GAME_INSTANCE_LIST;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_LIST_RESPONSE;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_GAME_INSTANCE_LIST;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_FINISH_GAME_INSTANCE_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_GET_GAME_INSTANCE_LIST;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_LIST_RESPONSE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_GAME_INSTANCE_LIST;
 
 public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntity> {
 

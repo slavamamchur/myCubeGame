@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.sadgames.dicegame.logic.server.rest_api.RestApiInterface;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.RestApiInterface;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 
 import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstance;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
-import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO;
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_SHOW_TURN_INFO;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_DICE_VALUE;
 
 public class AndroidRestApiWrapper implements RestApiInterface {
     private static final Object lockObject = new Object();

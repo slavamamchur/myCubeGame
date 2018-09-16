@@ -10,18 +10,18 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.DbPlayerEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.DbPlayerEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.dicegame.ui.framework.BaseActivityWithMenu;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.logic.client.GameConst.GameState.WAIT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.dicegame.gamelogic.client.GameConst.GameState.WAIT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 
 public class NewGameInstanceActivity extends BaseActivityWithMenu {
