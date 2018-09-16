@@ -13,8 +13,8 @@ import com.sadgames.dicegame.RestApiService;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
-import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -9,24 +9,24 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.dicegame.gamelogic.client.GameConst;
-import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.GameEntity;
-import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
 import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.framework.MapFragment;
+import com.sadgames.gl3dengine.gamelogic.client.GameConst;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_LIST;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.EDIT_ENTITY_TAG;
 import static com.sadgames.dicegame.ui.framework.DBTableFragment.DELETE_ENTITY_TAG;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_LIST;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
 
 public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
 

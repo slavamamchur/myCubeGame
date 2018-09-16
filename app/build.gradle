@@ -53,5 +53,4 @@ dependencies {
     implementation 'org.luaj:luaj-jse:3.0.1'
     implementation project(':GLES3DGameEngine')
     implementation project(':AndroidSysUtils')
-    implementation project(':DiceGameLogic')
 }

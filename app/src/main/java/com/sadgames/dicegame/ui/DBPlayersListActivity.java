@@ -9,23 +9,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 
 import com.sadgames.dicegame.R;
-import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.DbPlayerEntity;
-import com.sadgames.dicegame.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.ui.colorpicker.AmbilWarnaDialogFragment;
 import com.sadgames.dicegame.ui.colorpicker.OnAmbilWarnaListener;
 import com.sadgames.dicegame.ui.framework.BaseListActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.DbPlayerEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
 
 import java.util.ArrayList;
 
-import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_GET_PLAYER_LIST;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_LIST_RESPONSE;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.ACTION_SAVE_ENTITY_RESPONSE;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
-import static com.sadgames.dicegame.gamelogic.client.GameConst.EXTRA_PLAYER_LIST;
 import static com.sadgames.dicegame.ui.framework.DBTableFragment.DELETE_ENTITY_TAG;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_GET_PLAYER_LIST;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_LIST_RESPONSE;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_SAVE_ENTITY_RESPONSE;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_PLAYER_LIST;
 
 public class DBPlayersListActivity extends BaseListActivity<DbPlayerEntity> {
 
