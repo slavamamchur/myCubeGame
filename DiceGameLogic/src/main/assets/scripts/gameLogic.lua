@@ -15,11 +15,32 @@ local POINT_TYPE_FINISH = 6
 local CHIP_ANIMATION_DURATION = 500
 local PATH_COLOR = -16711936
 local WAY_POINT_COLOR = -65536
+local LAND_SIZE_IN_WORLD_SPACE = 7.0
+local DEFAULT_CAMERA_X, DEFAULT_CAMERA_Y, DEFAULT_CAMERA_Z = 0.0, 3.0, 3.0
+local DEFAULT_CAMERA_PITCH, DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_ROLL = 45.0, 0.0, 0.0
 
 local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
 local ON_PLAY_TURN_ANIMATION_END = 'rollDice'
 local ON_STOP_MOVING_ANIMATION_END = 'playerNextMove'
+
+onCameraInit  = function(defCam)
+    local camera
+
+    if gameLogic:getSysUtilsWrapper():iGetSettingsManager():isIn_2D_Mode() == true then
+        camera = gameLogic:getGl3DScene():createCam2D(LAND_SIZE_IN_WORLD_SPACE)
+    else
+        camera = gameLogic:getGl3DScene():createCamIsometric(DEFAULT_CAMERA_X,
+                                                             DEFAULT_CAMERA_Y,
+                                                             DEFAULT_CAMERA_Z,
+                                                             DEFAULT_CAMERA_PITCH,
+                                                             DEFAULT_CAMERA_YAW,
+                                                             DEFAULT_CAMERA_ROLL)
+        camera:rotateX(22.5)
+    end
+
+    gameLogic:getGl3DScene():setCamera(camera)
+end
 
 onRollingObjectStart = function(gameObject)
     if gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT) then

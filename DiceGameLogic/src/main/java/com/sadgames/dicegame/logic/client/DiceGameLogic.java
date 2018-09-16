@@ -42,6 +42,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_CREATE_DYNAMIC_ITEMS_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
+import static com.sadgames.dicegame.logic.client.GameConst.ON_INIT_CAMERA_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAYER_MAKE_TURN_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER;
@@ -160,19 +161,12 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
 
     @Override
     public void onInitGLCamera(GLCamera camera) {
-        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
-            camera.rotateX(22.5f);
-
-        camera.updateViewMatrix();
+        luaEngine.get(ON_INIT_CAMERA_EVENT_HANDLER).call(CoerceJavaToLua.coerce(camera));
     }
 
     @Override
     public void onInitLightSource(GLLightSource lightSource) {
-        lightSource.setLightPosInModelSpace(new float[] {gameEntity._getStartSunPosition().x,
-                                            gameEntity._getStartSunPosition().y,
-                                            gameEntity._getStartSunPosition().z,
-                                            1.0f});
-
+        lightSource.setLightPosInModelSpace(gameEntity._getStartSunPosition());
         lightSource.setLightColour(gameEntity._getStartSunColor());
     }
 
