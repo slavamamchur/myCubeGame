@@ -1,8 +1,8 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
-import android.os.Parcel;
+import java.io.Serializable;
 
-public abstract class BasicDbEntity extends BasicEntity {
+public abstract class BasicDbEntity extends BasicEntity implements Serializable {
     protected String id;
     protected String tenantId;
     protected boolean deleted;
@@ -30,19 +30,5 @@ public abstract class BasicDbEntity extends BasicEntity {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
-    }
-
-    protected void save2Parcel(Parcel dest) {
-        dest.writeString(id);
-        dest.writeString(tenantId);
-        dest.writeBooleanArray(new boolean[]{deleted});
-    }
-
-    protected void loadFromParcel(Parcel in) {
-        setId(in.readString());
-        setTenantId(in.readString());
-        boolean[] deleted= new boolean[1];
-        in.readBooleanArray(deleted);
-        setDeleted(deleted[0]);
     }
 }

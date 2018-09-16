@@ -6,10 +6,14 @@ import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import java.io.Serializable;
+
 import javax.vecmath.Vector3f;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InteractiveGameItem {
+public class InteractiveGameItem implements Serializable {
+
+    private static final long serialVersionUID = -1097464295588503975L;
 
     public String itemName;
     public String itemParentName;
@@ -53,6 +57,90 @@ public class InteractiveGameItem {
         this.mass = mass;
         this.tag = tag;
         this.type = type;
+        this.onInitEventHandler = onInitEventHandler;
+    }
+
+    @SuppressWarnings("unused")public String getItemName() {
+        return itemName;
+    }
+    @SuppressWarnings("unused")public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    @SuppressWarnings("unused")public String getItemParentName() {
+        return itemParentName;
+    }
+    @SuppressWarnings("unused")public void setItemParentName(String itemParentName) {
+        this.itemParentName = itemParentName;
+    }
+
+    @SuppressWarnings("unused")public float getxPos() {
+        return xPos;
+    }
+    @SuppressWarnings("unused")public void setxPos(float xPos) {
+        this.xPos = xPos;
+    }
+
+    @SuppressWarnings("unused")public float getyPos() {
+        return yPos;
+    }
+    @SuppressWarnings("unused")public void setyPos(float yPos) {
+        this.yPos = yPos;
+    }
+
+    @SuppressWarnings("unused")public float getzPos() {
+        return zPos;
+    }
+    @SuppressWarnings("unused")public void setzPos(float zPos) {
+        this.zPos = zPos;
+    }
+
+    @SuppressWarnings("unused")public float getInitialScale() {
+        return initialScale;
+    }
+    @SuppressWarnings("unused")public void setInitialScale(float initialScale) {
+        this.initialScale = initialScale;
+    }
+
+    @SuppressWarnings("unused")public boolean isHasTwoSidedSurface() {
+        return hasTwoSidedSurface;
+    }
+    @SuppressWarnings("unused")public void setHasTwoSidedSurface(boolean hasTwoSidedSurface) {
+        this.hasTwoSidedSurface = hasTwoSidedSurface;
+    }
+
+    @SuppressWarnings("unused")public short getCollisionShapeType() {
+        return collisionShapeType;
+    }
+    @SuppressWarnings("unused")public void setCollisionShapeType(short collisionShapeType) {
+        this.collisionShapeType = collisionShapeType;
+    }
+
+    @SuppressWarnings("unused")public float getMass() {
+        return mass;
+    }
+    @SuppressWarnings("unused")public void setMass(float mass) {
+        this.mass = mass;
+    }
+
+    @SuppressWarnings("unused")public int getTag() {
+        return tag;
+    }
+    @SuppressWarnings("unused")public void setTag(int tag) {
+        this.tag = tag;
+    }
+
+    @SuppressWarnings("unused")public GLObjectType getType() {
+        return type;
+    }
+    @SuppressWarnings("unused")public void setType(GLObjectType type) {
+        this.type = type;
+    }
+
+    @SuppressWarnings("unused")public String getOnInitEventHandler() {
+        return onInitEventHandler;
+    }
+    @SuppressWarnings("unused")public void setOnInitEventHandler(String onInitEventHandler) {
         this.onInitEventHandler = onInitEventHandler;
     }
 

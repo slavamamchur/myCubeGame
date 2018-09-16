@@ -28,6 +28,7 @@ import com.sadgames.dicegame.logic.server.rest_api.model.responses.GameInstanceS
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static com.sadgames.dicegame.logic.client.GameConst.ACTION_ADD_CHILD;
@@ -232,28 +233,28 @@ public class RestApiService extends IntentService {
                     handleActionGetPlayerList();
                     break;
                 case GET_MAP_IMAGE:
-                    handleActionGetMapImage((GameMapEntity) intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT));
+                    handleActionGetMapImage((GameMapEntity) intent.getSerializableExtra(EXTRA_GAME_MAP_OBJECT));
                     break;
                 case UPLOAD_MAP_IMAGE:
-                    handleActionUploadMapImage((GameMapEntity) intent.getParcelableExtra(EXTRA_GAME_MAP_OBJECT), intent.getStringExtra(EXTRA_GAME_MAP_FILE));
+                    handleActionUploadMapImage((GameMapEntity) intent.getSerializableExtra(EXTRA_GAME_MAP_OBJECT), intent.getStringExtra(EXTRA_GAME_MAP_FILE));
                     break;
                 case DELETE_ENTITY:
-                    handleActionDeleteEntity((BasicNamedDbEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    handleActionDeleteEntity((BasicNamedDbEntity) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case SAVE_ENTITY:
-                    handleActionSaveEntity((BasicNamedDbEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT), intent.getStringExtra(EXTRA_RESPONSE_ACTION));
+                    handleActionSaveEntity((BasicNamedDbEntity) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT), intent.getStringExtra(EXTRA_RESPONSE_ACTION));
                     break;
                 case FINISH_GAME_INSTANCE:
-                    handleActionFinishGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    handleActionFinishGameInstance((GameInstanceEntity) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case MOOVE_GAME_INSTANCE:
-                    handleActionMooveGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    handleActionMooveGameInstance((GameInstanceEntity) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case START_GAME_INSTANCE:
                     handleActionStartGameInstance((StartNewGameRequestParam) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case RESTART_GAME_INSTANCE:
-                    handleActionReStartGameInstance((GameInstanceEntity) intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                    handleActionReStartGameInstance((GameInstanceEntity) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                     break;
                 case REMOVE_CHILD:
                     handleActionRemoveChild(
@@ -261,7 +262,7 @@ public class RestApiService extends IntentService {
                     break;
                 case ADD_CHILD:
                     handleActionAddChild(
-                            intent.getStringExtra(EXTRA_PARENT_ID), intent.getStringExtra(EXTRA_CHILD_NAME), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                            intent.getStringExtra(EXTRA_PARENT_ID), intent.getStringExtra(EXTRA_CHILD_NAME), intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
             }
 
     }
@@ -361,7 +362,7 @@ public class RestApiService extends IntentService {
         }
 
         Bundle params = new Bundle();
-        params.putParcelableArrayList(EXTRA_GAME_MAP_LIST, mapList);
+        params.putSerializable(EXTRA_GAME_MAP_LIST, mapList);
 
         sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
@@ -378,7 +379,7 @@ public class RestApiService extends IntentService {
         }
 
         Bundle params = new Bundle();
-        params.putParcelableArrayList(EXTRA_GAME_LIST, mapList);
+        params.putSerializable(EXTRA_GAME_LIST, mapList);
 
         sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
@@ -395,7 +396,7 @@ public class RestApiService extends IntentService {
         }
 
         Bundle params = new Bundle();
-        params.putParcelableArrayList(EXTRA_GAME_INSTANCE_LIST, mapList);
+        params.putSerializable(EXTRA_GAME_INSTANCE_LIST, mapList);
 
         sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
@@ -412,7 +413,7 @@ public class RestApiService extends IntentService {
         }
 
         Bundle params = new Bundle();
-        params.putParcelableArrayList(EXTRA_PLAYER_LIST, mapList);
+        params.putSerializable(EXTRA_PLAYER_LIST, mapList);
 
         sendResponseIntent(ACTION_LIST_RESPONSE, params);
     }
@@ -430,7 +431,7 @@ public class RestApiService extends IntentService {
         Bundle params = new Bundle();
         if(error != null)
             params.putSerializable(EXTRA_ERROR_OBJECT, error);
-        params.putParcelable(EXTRA_GAME_MAP_OBJECT, map);
+        params.putSerializable(EXTRA_GAME_MAP_OBJECT, map);
 
         sendResponseIntent(ACTION_MAP_IMAGE_RESPONSE, params);
     }
@@ -483,7 +484,7 @@ public class RestApiService extends IntentService {
         if(error != null)
             params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else
-            params.putParcelable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
+            params.putSerializable(EXTRA_ENTITY_OBJECT, (BasicNamedDbEntity)result);
 
         sendResponseIntent(responseAction, params);
     }
@@ -537,7 +538,7 @@ public class RestApiService extends IntentService {
         if(error != null)
             params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else {
-            params.putParcelable(EXTRA_ENTITY_OBJECT, result.getInstance());
+            params.putSerializable(EXTRA_ENTITY_OBJECT, result.getInstance());
         }
 
         sendResponseIntent(ACTION_START_GAME_INSTANCE_RESPONSE, params);
@@ -558,7 +559,7 @@ public class RestApiService extends IntentService {
         if(error != null)
             params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else {
-            params.putParcelable(EXTRA_ENTITY_OBJECT, result);
+            params.putSerializable(EXTRA_ENTITY_OBJECT, result);
         }
 
         sendResponseIntent(ACTION_MOOVE_GAME_INSTANCE_RESPONSE, params);
@@ -583,7 +584,7 @@ public class RestApiService extends IntentService {
         sendResponseIntent(ACTION_REMOVE_CHILD_RESPONSE, params);
     }
 
-    private void handleActionAddChild(String parentId, String childName, Parcelable childEntity) {
+    private void handleActionAddChild(String parentId, String childName, Serializable childEntity) {
         ErrorEntity error = null;
 
         try {
@@ -597,7 +598,7 @@ public class RestApiService extends IntentService {
         if(error != null)
             params.putSerializable(EXTRA_ERROR_OBJECT, error);
         else
-            params.putParcelable(EXTRA_ENTITY_OBJECT, childEntity);
+            params.putSerializable(EXTRA_ENTITY_OBJECT, childEntity);
 
         sendResponseIntent(ACTION_ADD_CHILD_RESPONSE, params);
     }

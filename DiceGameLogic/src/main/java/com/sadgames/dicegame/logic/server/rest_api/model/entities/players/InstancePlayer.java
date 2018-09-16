@@ -1,11 +1,8 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities.players;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
 
-public class InstancePlayer implements Parcelable, Serializable { //TODO: change to Serializable
+public class InstancePlayer implements Serializable {
     private static final long serialVersionUID = -6815839058727920425L;
 
     public String name;
@@ -15,39 +12,6 @@ public class InstancePlayer implements Parcelable, Serializable { //TODO: change
     public boolean skipped;
 
     public InstancePlayer() {}
-
-    protected InstancePlayer(Parcel in) {
-        name = in.readString();
-        color = in.readInt();
-        currentPoint = in.readInt();
-        finished = in.readByte() != 0;
-        skipped = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeInt(color);
-        dest.writeInt(currentPoint);
-        dest.writeByte((byte) (finished ? 1 : 0));
-        dest.writeByte((byte) (skipped ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-    public static final Creator<InstancePlayer> CREATOR = new Creator<InstancePlayer>() {
-        @Override
-        public InstancePlayer createFromParcel(Parcel in) {
-            return new InstancePlayer(in);
-        }
-
-        @Override
-        public InstancePlayer[] newArray(int size) {
-            return new InstancePlayer[size];
-        }
-    };
 
     public String getName() {
         return name;

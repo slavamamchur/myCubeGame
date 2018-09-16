@@ -1,7 +1,5 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
-import android.os.Parcel;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameController;
@@ -11,6 +9,7 @@ import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,9 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GameEntity extends BasicNamedDbEntity {
+public class GameEntity extends BasicNamedDbEntity implements Serializable {
+
+    private static final long serialVersionUID = -4698835803284111481L;
 
     public static String ACTION_NAME =  URL_GAME;
     public static float GAME_DICE_HALF_SIZE = 0.15f;
@@ -39,29 +40,6 @@ public class GameEntity extends BasicNamedDbEntity {
     protected List<InteractiveGameItem> gameItems = null;
 
     public GameEntity() {}
-
-    protected GameEntity(Parcel in) {
-        loadFromParcel(in);
-    }
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        save2Parcel(dest);
-    }
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-    public static final Creator<GameEntity> CREATOR = new Creator<GameEntity>() {
-        @Override
-        public GameEntity createFromParcel(Parcel in) {
-            return new GameEntity(in);
-        }
-
-        @Override
-        public GameEntity[] newArray(int size) {
-            return new GameEntity[size];
-        }
-    };
 
     public List<AbstractGamePoint> getGamePoints() {
         return gamePoints;
@@ -92,24 +70,6 @@ public class GameEntity extends BasicNamedDbEntity {
     }
     public void setCreatedDate(long createdDate) {
         this.createdDate = createdDate;
-    }
-
-    @Override
-    protected void save2Parcel(Parcel dest) {
-        super.save2Parcel(dest);
-
-        dest.writeTypedList(gamePoints);
-        dest.writeString(mapId);
-        dest.writeLong(createdDate);
-    }
-
-    @Override
-    protected void loadFromParcel(Parcel in) {
-        super.loadFromParcel(in);
-
-        gamePoints = in.createTypedArrayList(AbstractGamePoint.CREATOR);
-        mapId = in.readString();
-        createdDate = in.readLong();
     }
 
     @Override

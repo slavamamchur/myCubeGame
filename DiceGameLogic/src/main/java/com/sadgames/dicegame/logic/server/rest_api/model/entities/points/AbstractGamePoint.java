@@ -1,19 +1,17 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities.points;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.io.Serializable;
 
 import javax.vecmath.Vector2f;
 
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME_POINT;
 
-/**
- * Abstract game point
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AbstractGamePoint implements Parcelable{
+public class AbstractGamePoint implements Serializable {
+
+    private static final long serialVersionUID = 593713937939910727L;
 
     public int xPos;
     public int yPos;
@@ -28,32 +26,6 @@ public class AbstractGamePoint implements Parcelable{
         this.type = other.getType();
         this.nextPointIndex = other.getNextIndex();
     }
-
-    protected AbstractGamePoint(Parcel in) {
-        loadFromParcel(in);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        save2Parcel(dest);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<AbstractGamePoint> CREATOR = new Creator<AbstractGamePoint>() {
-        @Override
-        public AbstractGamePoint createFromParcel(Parcel in) {
-            return new AbstractGamePoint(in);
-        }
-
-        @Override
-        public AbstractGamePoint[] newArray(int size) {
-            return new AbstractGamePoint[size];
-        }
-    };
 
     public int getxPos() {
         return xPos;
@@ -88,20 +60,6 @@ public class AbstractGamePoint implements Parcelable{
     }
     public Vector2f asVector2fLua(float scaleFactor) {
         return new Vector2f(xPos * scaleFactor, yPos * scaleFactor);
-    }
-
-    protected void save2Parcel(Parcel dest) {
-        dest.writeInt(xPos);
-        dest.writeInt(yPos);
-        dest.writeInt(type.ordinal());
-        dest.writeInt(nextPointIndex);
-    }
-
-    protected void loadFromParcel(Parcel in) {
-        xPos = in.readInt();
-        yPos = in.readInt();
-        type = PointType.values()[in.readInt()];
-        nextPointIndex = in.readInt();
     }
 
     public static String urlForActionName(){

@@ -1,7 +1,5 @@
 package com.sadgames.dicegame.logic.server.rest_api.model.entities;
 
-import android.os.Parcel;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.dicegame.logic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.dicegame.logic.server.rest_api.controller.GameInstanceController;
@@ -11,73 +9,31 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.LuaTable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sadgames.dicegame.logic.client.GameConst.GameState;
 import static com.sadgames.dicegame.logic.server.rest_api.RestConst.URL_GAME_INSTANCE;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GameInstanceEntity extends BasicNamedDbEntity {
+public class GameInstanceEntity extends BasicNamedDbEntity implements Serializable {
+
+    private static final long serialVersionUID = -8604963480687767704L;
     public static String ACTION_NAME = URL_GAME_INSTANCE;
 
-    private GameEntity game;  // exactly GameEntity, not GameEntity's Id
+    private GameEntity game;
     public List<InstancePlayer> players;
     protected int currentPlayer;
     protected int stepsToGo;
-    public State state;
+    public GameState state;
     public long startedDate;
     public long lastUsedDate;
 
     public GameInstanceEntity() {}
-    public GameInstanceEntity(Parcel in) {
-        super(in);
-    }
-    public static final Creator<GameInstanceEntity> CREATOR = new Creator<GameInstanceEntity>() {
-        @Override
-        public GameInstanceEntity createFromParcel(Parcel in) {
-            return new GameInstanceEntity(in);
-        }
-
-        @Override
-        public GameInstanceEntity[] newArray(int size) {
-            return new GameInstanceEntity[size];
-        }
-    };
-
-    @Override
-    protected void save2Parcel(Parcel dest) {
-        super.save2Parcel(dest);
-
-        dest.writeParcelable(game, 0);
-        dest.writeTypedList(players);
-        dest.writeInt(currentPlayer);
-        dest.writeInt(stepsToGo);
-        dest.writeInt(state.ordinal());
-        dest.writeLong(startedDate);
-        dest.writeLong(lastUsedDate);
-    }
-
-    @Override
-    protected void loadFromParcel(Parcel in) {
-        super.loadFromParcel(in);
-
-        game = in.readParcelable(GameEntity.class.getClassLoader());
-        players = in.createTypedArrayList(InstancePlayer.CREATOR);
-        currentPlayer = in.readInt();
-        stepsToGo = in.readInt();
-        state = State.values()[in.readInt()];
-        startedDate = in.readLong();
-        lastUsedDate = in.readLong();
-    }
 
     public List<InstancePlayer> getPlayers() {
         return players;
-    }
-    public List<InstancePlayer> createPlayersList() {
-        return new ArrayList<>(players);
-    }
-    public LuaTable createPlayersListLua() {
-        return LuaUtils.javaList2LuaTable(new ArrayList<>(players));
     }
     public void setPlayers(List<InstancePlayer> players) {
         this.players = players;
@@ -93,38 +49,38 @@ public class GameInstanceEntity extends BasicNamedDbEntity {
     public int getCurrentPlayer() {
         return currentPlayer;
     }
-    public void setCurrentPlayer(int currentPlayer) {
+    @SuppressWarnings("unused") public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
     public int getStepsToGo() {
         return stepsToGo;
     }
-    public void setStepsToGo(int stepsToGo) {
+    @SuppressWarnings("unused") public void setStepsToGo(int stepsToGo) {
         this.stepsToGo = stepsToGo;
     }
 
-    public State getState() {
+    public GameState getState() {
         return state;
     }
-    public void setState(State state) {
+    public void setState(GameState state) {
         this.state = state;
     }
-    public void setStateLua(int state) {
-        this.state = State.values()[state];
+    @SuppressWarnings("unused") public void setStateLua(int state) {
+        this.state = GameState.values()[state];
     }
 
-    public long getStartedDate() {
+    @SuppressWarnings("unused") public long getStartedDate() {
         return startedDate;
     }
-    public void setStartedDate(long startedDate) {
+    @SuppressWarnings("unused") public void setStartedDate(long startedDate) {
         this.startedDate = startedDate;
     }
 
     public long getLastUsedDate() {
         return lastUsedDate;
     }
-    public void setLastUsedDate(long lastUsedDate) {
+    @SuppressWarnings("unused") public void setLastUsedDate(long lastUsedDate) {
         this.lastUsedDate = lastUsedDate;
     }
 
@@ -133,6 +89,10 @@ public class GameInstanceEntity extends BasicNamedDbEntity {
         return new GameInstanceController(sysUtilsWrapper);
     }
 
-    public enum State { WAIT, MOVING, FINISHED }
-
+    public List<InstancePlayer> createPlayersList() {
+        return new ArrayList<>(players);
+    }
+    @SuppressWarnings("unused") public LuaTable createPlayersListLua() {
+        return LuaUtils.javaList2LuaTable(new ArrayList<>(players));
+    }
 }

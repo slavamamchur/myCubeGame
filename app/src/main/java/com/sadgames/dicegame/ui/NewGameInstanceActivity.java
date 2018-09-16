@@ -21,7 +21,7 @@ import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import java.util.ArrayList;
 
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
-import static com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity.State.WAIT;
+import static com.sadgames.dicegame.logic.client.GameConst.GameState.WAIT;
 import static com.sadgames.dicegame.ui.framework.BaseListActivity.NAME_FIELD_NAME;
 
 public class NewGameInstanceActivity extends BaseActivityWithMenu {
@@ -48,7 +48,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
 
         setContentView(R.layout.start_instance_layout);
 
-        editName = (EditText) findViewById(R.id.edit_name);
+        editName = findViewById(R.id.edit_name);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -62,7 +62,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        gameEntity = getIntent().getParcelableExtra(EXTRA_ENTITY_OBJECT);
+        gameEntity = (GameEntity) getIntent().getSerializableExtra(EXTRA_ENTITY_OBJECT);
 
         setTitle(getString(R.string.start_new_instance_title) + " (GameEntity ID: " + gameEntity.getId() + ")");
 
@@ -133,7 +133,7 @@ public class NewGameInstanceActivity extends BaseActivityWithMenu {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DBPlayersListActivity.ACTION_DICTIONARY && resultCode == RESULT_OK && data != null) {
-            DbPlayerEntity newPlayer = data.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+            DbPlayerEntity newPlayer = (DbPlayerEntity) data.getSerializableExtra(EXTRA_ENTITY_OBJECT);
 
             if (newPlayer != null) {
                 InstancePlayer iplayer = new InstancePlayer();

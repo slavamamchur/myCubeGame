@@ -37,6 +37,7 @@ import java.util.List;
 
 import javax.vecmath.Vector4f;
 
+import static com.sadgames.dicegame.logic.client.GameConst.GameState;
 import static com.sadgames.dicegame.logic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.dicegame.logic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
@@ -125,7 +126,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
         restApiWrapper.finishGameInstance(gameInstanceEntity);
     }
     public void onGameFinished() {
-        gameInstanceEntity.setState(GameInstanceEntity.State.FINISHED);
+        gameInstanceEntity.setState(GameState.FINISHED);
     }
     public void requestRestartGame() {
         restApiWrapper.restartGameInstance(gameInstanceEntity);

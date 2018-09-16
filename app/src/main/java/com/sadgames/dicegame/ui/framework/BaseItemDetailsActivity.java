@@ -36,7 +36,7 @@ public abstract class BaseItemDetailsActivity<T extends BasicNamedDbEntity> exte
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        item = getIntent().getParcelableExtra(getItemExtra());
+        item = (T) getIntent().getSerializableExtra(getItemExtra());
         setItemChanged(getIntent().getBooleanExtra(EXTRA_ENTITY_CHANGED, false));
 
         setTitle(item.getName() + "(ID: " + item.getId() + ")");

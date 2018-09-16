@@ -7,6 +7,7 @@ import android.view.Menu;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
+import com.sadgames.dicegame.logic.client.GameConst;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
@@ -34,7 +35,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntit
     private static final ArrayList<DBColumnInfo> GAME_INSTANCE_LIST_COLUMN_INFO = new ArrayList<DBColumnInfo>() {{
         try {
             add(new DBColumnInfo("Name", 48, DBColumnInfo.ColumnType.COLUMN_REFERENCE, GameInstanceEntity.class.getField(NAME_FIELD_NAME), EDIT_ENTITY_TAG));
-            add(new DBColumnInfo("State", 8, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(STATE_FIELD_NAME), null));
+            add(new DBColumnInfo("GameState", 8, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(STATE_FIELD_NAME), null));
             add(new DBColumnInfo("# of Players", 11, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(PLAYERS_FIELD_NAME), null));
             add(new DBColumnInfo("Started", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(STARTED_FIELD_NAME), null));
             add(new DBColumnInfo("Last used", 13, DBColumnInfo.ColumnType.COLUMN_TEXT, GameInstanceEntity.class.getDeclaredField(LAST_USED_FIELD_NAME), null));
@@ -85,7 +86,7 @@ public class GameInstanceListActivity extends BaseListActivity<GameInstanceEntit
 
     @Override
     protected boolean isUserButtonEnabled(String tag, BasicNamedDbEntity item) {
-        return !((GameInstanceEntity)item).getState().equals(GameInstanceEntity.State.FINISHED);
+        return !((GameInstanceEntity)item).getState().equals(GameConst.GameState.FINISHED);
     }
 
     @Override

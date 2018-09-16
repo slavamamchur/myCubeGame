@@ -103,7 +103,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(getListResponseAction())){
-            ArrayList<T> lst  = intent.getParcelableArrayListExtra(getListResponseExtra());
+            ArrayList<T> lst  = (ArrayList<T>) intent.getSerializableExtra(getListResponseExtra());
             tableFragment.setItems(lst);
             items = lst;
 

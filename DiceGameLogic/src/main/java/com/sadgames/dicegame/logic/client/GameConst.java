@@ -175,6 +175,6 @@ public class GameConst {
         SHOW_TURN_INFO,
         REMOVE_LOADING_SPLASH
     }
-    
-    
+
+    public enum GameState { WAIT, MOVING, FINISHED }
 }

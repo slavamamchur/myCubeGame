@@ -3,11 +3,13 @@ package com.sadgames.dicegame.logic.server.rest_api.model.responses;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.dicegame.logic.server.rest_api.model.entities.players.InstancePlayer;
 
+import static com.sadgames.dicegame.logic.client.GameConst.GameState;
+
 public class GameInstanceResponse extends IdResponse {
 
     private int currentPlayer;
     private int stepsToGo;
-    private GameInstanceEntity.State state;
+    private GameState state;
     private long lastUsedDate;
     private boolean usersAreFinished;
 
@@ -43,10 +45,10 @@ public class GameInstanceResponse extends IdResponse {
         this.stepsToGo = stepsToGo;
     }
 
-    public GameInstanceEntity.State getState() {
+    public GameState getState() {
         return state;
     }
-    public void setState(GameInstanceEntity.State state) {
+    public void setState(GameState state) {
         this.state = state;
     }
 

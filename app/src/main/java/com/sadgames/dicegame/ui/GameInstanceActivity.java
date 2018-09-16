@@ -40,6 +40,7 @@ import static com.sadgames.dicegame.logic.client.GameConst.ACTION_SHOW_TURN_INFO
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_DICE_VALUE;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.dicegame.logic.client.GameConst.EXTRA_ERROR_OBJECT;
+import static com.sadgames.dicegame.logic.client.GameConst.GameState;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAYER_NEXT_MOVE__EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.ON_PLAY_TURN_EVENT_HANDLER;
 import static com.sadgames.dicegame.logic.client.GameConst.UserActionType;
@@ -94,7 +95,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ")");
+        setTitle(getItem().getName() + "(GameState: " + getItem().getState()  + ")");
 
         fpsCounterTimer = new Timer();
         fpsCounterTimer.schedule(new TimerTask() {
@@ -151,7 +152,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
-        ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+        ErrorEntity error = (ErrorEntity) intent.getSerializableExtra(EXTRA_ERROR_OBJECT);
         if (error != null) {
             showError(error);
             return true;
@@ -169,11 +170,11 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
                 return true;
             case MOOVE_GAME_INSTANCE_RESPONSE: //TODO: enable buttons
-                final GameInstanceEntity instance = intent.getParcelableExtra(EXTRA_ENTITY_OBJECT);
+                final GameInstanceEntity instance = (GameInstanceEntity) intent.getSerializableExtra(EXTRA_ENTITY_OBJECT);
                 updateGame(instance);
 
-                if (!GameInstanceEntity.State.WAIT.equals(instance.getState())
-                        && !GameInstanceEntity.State.FINISHED.equals(instance.getState())
+                if (!GameState.WAIT.equals(instance.getState())
+                        && !GameState.FINISHED.equals(instance.getState())
                         )
                     mMapFragment.getGameLogic().onPlayerMakeTurn(animationListener);
 
@@ -213,7 +214,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     private void updateTitle () {
         long fps = 1000 / mMapFragment.glRenderer.getScene().getFrameTime();
-        setTitle(getItem().getName() + "(State: " + getItem().getState()  + ") FPS: " + fps);
+        setTitle(getItem().getName() + "(GameState: " + getItem().getState()  + ") FPS: " + fps);
         supportInvalidateOptionsMenu();
     }
 
@@ -239,10 +240,10 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_move).setVisible(true);
-        menu.findItem(R.id.action_move).setEnabled(!GameInstanceEntity.State.FINISHED.equals(getItem().getState()));
+        menu.findItem(R.id.action_move).setEnabled(!GameState.FINISHED.equals(getItem().getState()));
 
         menu.findItem(R.id.action_finish).setVisible(true);
-        menu.findItem(R.id.action_finish).setEnabled(!GameInstanceEntity.State.FINISHED.equals(getItem().getState()));
+        menu.findItem(R.id.action_finish).setEnabled(!GameState.FINISHED.equals(getItem().getState()));
 
         menu.findItem(R.id.action_restart).setVisible(true);
 

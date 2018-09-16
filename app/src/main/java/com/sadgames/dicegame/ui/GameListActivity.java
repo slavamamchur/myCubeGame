@@ -101,11 +101,11 @@ public class GameListActivity extends BaseListActivity<GameEntity> {
     @Override
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_START_GAME_INSTANCE_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+            ErrorEntity error = (ErrorEntity) intent.getSerializableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
 
                 Intent mIntent = new Intent(getApplicationContext(), GameInstanceActivity.class);
-                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                mIntent.putExtra(getEntityExtra(), intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                 startActivity(mIntent);
             }
             else {
@@ -128,7 +128,7 @@ public class GameListActivity extends BaseListActivity<GameEntity> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == START_GAME_INSTANCE_ACTION && resultCode == Activity.RESULT_OK && null != data) {
-            GameInstanceEntity instance = data.getParcelableExtra(getEntityExtra());
+            GameInstanceEntity instance = (GameInstanceEntity) data.getSerializableExtra(getEntityExtra());
             if (instance != null)
                 startGameInstance(instance);
         }
