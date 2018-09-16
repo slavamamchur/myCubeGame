@@ -42,12 +42,6 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector4f;
 
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_PITCH;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_ROLL;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_X;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_Y;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_YAW;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_Z;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_GRAVITY_VECTOR;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_COLOUR;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_LIGHT_X;
@@ -491,24 +485,23 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         clearData();
     }
 
+    public GLCamera createCamIsometric(float xPos, float yPos, float zPos, float pitch, float yaw, float roll) {
+        return new FixedIsometricCamera(xPos, yPos, zPos, pitch, yaw,  roll);
+    }
+
+    public GLCamera createCam2D(float landSize) {
+        return new Orthogonal2DCamera(landSize);
+    }
+
     private void initScene() {
-        if (sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode())
-            camera = new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE);
-        else
-            camera = new FixedIsometricCamera(DEFAULT_CAMERA_X,
-                                              DEFAULT_CAMERA_Y,
-                                              DEFAULT_CAMERA_Z,
-                                              DEFAULT_CAMERA_PITCH,
-                                              DEFAULT_CAMERA_YAW,
-                                              DEFAULT_CAMERA_ROLL);
-
-        if (gameEventsCallBackListener != null)
-            gameEventsCallBackListener.onInitGLCamera(camera);
-
+        camera = createCamIsometric(0f,0.1f,3f,0f,0f,0f);
         lightSource = new GLLightSource(new float[] {DEFAULT_LIGHT_X, DEFAULT_LIGHT_Y, DEFAULT_LIGHT_Z, 1.0f},
                                         DEFAULT_LIGHT_COLOUR,
-                                        getCamera(),
+                                        camera,
                                         sysUtilsWrapper);
+
+        if (gameEventsCallBackListener != null) gameEventsCallBackListener.onInitGLCamera(camera);
+        camera.updateViewMatrix();
 
         if (gameEventsCallBackListener != null)
             gameEventsCallBackListener.onInitLightSource(lightSource);
