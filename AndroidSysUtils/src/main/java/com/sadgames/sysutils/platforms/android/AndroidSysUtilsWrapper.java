@@ -15,6 +15,9 @@ import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
@@ -35,19 +38,39 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION
 import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
 import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 
-public abstract class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
+public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
-    protected static final Object lockObject = new Object();
-    protected static MediaPlayer mMediaPlayer;
+    private static final Object lockObject = new Object();
+    private static MediaPlayer mMediaPlayer;
+    protected static SysUtilsWrapperInterface instance = null;
 
     protected Context context;
 
-    @SuppressWarnings("all")
     protected AndroidSysUtilsWrapper(Context context) {
         this.context = context;
     }
 
-    protected abstract void downloadBitmapIfNotCached(String textureResName, boolean isRelief);
+    public static SysUtilsWrapperInterface getInstance(Context context) {
+        synchronized (lockObject) {
+            instance = instance != null ? instance : new AndroidSysUtilsWrapper(context);
+            return instance;
+        }
+    }
+
+    protected void downloadBitmapIfNotCached(String textureResName, boolean isRelief) {
+        GameMapController gmc = new GameMapController(this);
+        GameMapEntity map = gmc.find(textureResName);
+
+        if (map == null || map.getId() == null || map.getId().isEmpty())
+            return;
+
+        try {
+            if (isRelief)
+                gmc.saveMapRelief(map);
+            else
+                gmc.saveMapImage(map);
+        } catch (WebServiceException e) {}
+    }
 
     /** Math    sysutils ---------------------------------------------------------------------------*/
     @Override

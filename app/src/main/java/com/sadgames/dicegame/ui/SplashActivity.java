@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         registerRestApiResponceReceivers();
 
-        sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(getApplicationContext());
+        sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getApplicationContext());
     }
 
     @Override

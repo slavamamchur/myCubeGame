@@ -26,7 +26,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapE
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.UserEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class RestApiService extends IntentService {
 
     public RestApiService() {
         super(RestApiService.class.getSimpleName());
-        sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(this);
+        sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(this);
     }
 
 

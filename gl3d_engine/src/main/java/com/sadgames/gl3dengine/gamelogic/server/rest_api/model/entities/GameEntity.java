@@ -35,6 +35,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     protected List<AbstractGamePoint> gamePoints;
     public String mapId;
     public long createdDate;
+    private boolean drawGamePoints;
 
     protected List<InteractiveGameItem> gameItems = null;
 
@@ -52,6 +53,13 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     }
     public void setMapId(String mapId) {
         this.mapId = mapId;
+    }
+
+    public boolean isDrawGamePoints() {
+        return drawGamePoints;
+    }
+    public void setDrawGamePoints(boolean drawGamePoints) {
+        this.drawGamePoints = drawGamePoints;
     }
 
     public void addPoint(AbstractGamePoint point) {

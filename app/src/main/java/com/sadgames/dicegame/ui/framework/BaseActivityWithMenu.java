@@ -21,7 +21,7 @@ import com.sadgames.dicegame.ui.SettingsActivity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.AuthTokenEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_RELOGIN_RESPONSE;
@@ -157,7 +157,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(getApplicationContext());
+        sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getApplicationContext());
     }
 
     @Override

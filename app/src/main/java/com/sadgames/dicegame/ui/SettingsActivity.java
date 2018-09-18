@@ -20,7 +20,7 @@ import android.view.MenuItem;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.framework.AppCompatPreferenceActivity;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidDiceGameUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             else {
                 preference.setSummary(stringValue);
 
-                final SysUtilsWrapperInterface sysUtilsWrapper = AndroidDiceGameUtilsWrapper.getInstance(preference.getContext());
+                final SysUtilsWrapperInterface sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(preference.getContext());
                 if (preference.getKey().equals(preference.getContext().getString(R.string.pref_key_web_service_url))
                         && !sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
                         ) {
