@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.CubeMapTexture;
@@ -66,7 +67,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     private float ambientRate = 0.4f;
     private float diffuseRate = 1.0f;
     private float specularRate = 0.9f;
-    private boolean isCubeMap = false;
+    private boolean isCubeMap = false; //TODO: set material
 
     protected AbstractTexture glNormalMap = null;
     protected AbstractTexture glCubeMap = null;
@@ -234,6 +235,28 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     }
     public void setCastShadow(boolean castShadow) {
         this.castShadow = castShadow;
+    }
+
+    public void setMaterialProperties(MaterialPropertiesObject material) {
+        if (material == null)
+            return;
+
+        diffuseRate = material.getDiffuseRate();
+        ambientRate = material.getAmbientRate();
+        specularRate = material.getSpecularRate();
+
+        textureResName = material.getDiffuseMapName();
+        if (textureResName != null)
+            glTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
+
+        if (material.getNormalMapName() != null)
+            glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(material.getNormalMapName());
+
+        if (material.getDUDVMapName() != null)
+            glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(material.getDUDVMapName());
+
+        if (material.getNormalMapName() != null)
+            glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(material.getNormalMapName());
     }
 
     private void createVBOParams() {

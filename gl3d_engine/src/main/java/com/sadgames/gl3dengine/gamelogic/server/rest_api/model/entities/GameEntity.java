@@ -8,6 +8,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameControll
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
@@ -105,6 +107,9 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
         if (gameItems == null) {
             gameItems = new ArrayList<>();
 
+            MaterialPropertiesObject material = new MaterialPropertiesObject(0.4f, 1.0f, 0.9f,
+                    GameConst.DICE_MESH_OBJECT_1 + COMPRESSED_TEXTURE_FILE_EXT, null, null, null);
+
             InteractiveGameItem dice = createNewItem(GameConst.DICE_MESH_OBJECT_1,
                                                      GameConst.TERRAIN_MESH_OBJECT,
                                                      new Vector3f(0f, 0.08f, 0f),
@@ -114,7 +119,8 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
                                                      DICE_DEFAULT_WEIGHT,
                                                      MOVING_OBJECT,
                                                      TERRAIN_OBJECT,
-                                                     ON_DICE_OBJECT_INIT);
+                                                     ON_DICE_OBJECT_INIT,
+                                                     material);
 
             gameItems.add(dice);
         }
@@ -137,7 +143,8 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
                              mass,
                              tag,
                              GLRenderConsts.GLObjectType.values()[materialID],
-                             null);
+                             null,
+                                     null);
     }
 
     public InteractiveGameItem createNewItem(String itemName,
@@ -149,7 +156,8 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
                                              float mass,
                                              int tag,
                                              GLRenderConsts.GLObjectType type,
-                                             String onInitEventHandler) {
+                                             String onInitEventHandler,
+                                             MaterialPropertiesObject material) {
 
         return new InteractiveGameItem(itemName,
                                        itemParentName,
@@ -160,6 +168,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
                                        mass,
                                        tag,
                                        type,
-                                       onInitEventHandler);
+                                       onInitEventHandler,
+                                       material);
     }
 }

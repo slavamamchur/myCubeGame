@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.Serializable;
@@ -30,6 +31,8 @@ public class InteractiveGameItem implements Serializable {
 
     public GLObjectType type;
 
+    private MaterialPropertiesObject material = null;
+
     public String onInitEventHandler;
 
     @SuppressWarnings("unused")public InteractiveGameItem() {}
@@ -43,7 +46,8 @@ public class InteractiveGameItem implements Serializable {
                                float mass,
                                int tag,
                                GLObjectType type,
-                               String onInitEventHandler
+                               String onInitEventHandler,
+                               MaterialPropertiesObject material
                                )
     {
         this.itemName = itemName;
@@ -58,6 +62,7 @@ public class InteractiveGameItem implements Serializable {
         this.tag = tag;
         this.type = type;
         this.onInitEventHandler = onInitEventHandler;
+        this.material = material;
     }
 
     @SuppressWarnings("unused")public String getItemName() {
@@ -144,6 +149,13 @@ public class InteractiveGameItem implements Serializable {
         this.onInitEventHandler = onInitEventHandler;
     }
 
+    public MaterialPropertiesObject getMaterial() {
+        return material;
+    }
+    public void setMaterial(MaterialPropertiesObject material) {
+        this.material = material;
+    }
+
     public Blender3DObject createSceneObject(SysUtilsWrapperInterface sysUtilsWrapper, GLScene scene) {
         Blender3DObject object = new Blender3DObject(sysUtilsWrapper,
                                                      itemName,
@@ -176,5 +188,6 @@ public class InteractiveGameItem implements Serializable {
         object.setInitialTranslation(xPos, yPos, zPos);
         object.setTwoSidedSurface(hasTwoSidedSurface);
         object.setCollisionShapeType(collisionShapeType);
+        object.setMaterialProperties(material);
     }
 }
