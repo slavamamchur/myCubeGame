@@ -20,7 +20,7 @@ import javax.vecmath.Vector3f;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true) //todo: add gameLogicScript field, read textures via getImage()
 public class GameEntity extends BasicNamedDbEntity implements Serializable {
 
     private static final long serialVersionUID = -4698835803284111481L;
@@ -87,22 +87,6 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     /** for game init script from web api object -------------------------------------------------*/
     public Vector3f _getGravity() {
         return new Vector3f(0f, -9.8f, 0f);
-    }
-
-    public Vector3f _getStartCameraPosition() {
-        return new Vector3f(0f, 3f, 3f);
-    }
-    public float    _getStartCameraPitch() {
-        return 45f;
-    }
-    public float    _getStartCameraYaw() {
-        return 0f;
-    }
-    public float    _getStartCameraRoll() {
-        return 0f;
-    }
-    public float    _getStartCameraVFOV() {
-        return 35.0f;
     }
 
     public Vector3f _getStartSunPosition() {

@@ -57,7 +57,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
 
-public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinder {
+public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private final static String LUA_GAME_LOGIC_SCRIPT = "gameLogic";
 
@@ -70,7 +70,7 @@ public class DiceGameLogic implements GameEventsCallbackInterface, ResourceFinde
     private List<InstancePlayer> savedPlayers = null;
     private Globals luaEngine;
 
-    public DiceGameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
+    public GameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
         this.sysUtilsWrapper = sysUtilsWrapper;
         this.restApiWrapper = restApiWrapper;
         this.gl3DScene = gl3DScene;

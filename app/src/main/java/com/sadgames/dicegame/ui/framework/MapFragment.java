@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
-import com.sadgames.gl3dengine.gamelogic.client.DiceGameLogic;
+import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
 
-    private DiceGameLogic gameLogic;
+    private GameLogic gameLogic;
 
     public GLSurfaceView glMapSurfaceView;
     public AndroidGLES20Renderer glRenderer;
@@ -39,7 +39,7 @@ public class MapFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         SysUtilsWrapperInterface sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getContext());
         glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper);
-        gameLogic = new DiceGameLogic(sysUtilsWrapper, AndroidRestApiWrapper.getInstance(getContext()), glRenderer.getScene());
+        gameLogic = new GameLogic(sysUtilsWrapper, AndroidRestApiWrapper.getInstance(getContext()), glRenderer.getScene());
         glRenderer.getScene().setGameEventsCallBackListener(gameLogic);
 
         glMapSurfaceView = new MapGLSurfaceView(getContext());
@@ -108,7 +108,7 @@ public class MapFragment extends Fragment {
         }
     }
 
-    public DiceGameLogic getGameLogic() {
+    public GameLogic getGameLogic() {
         return gameLogic;
     }
 

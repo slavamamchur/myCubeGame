@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.gamelogic.client.entities;
 
-import com.sadgames.gl3dengine.gamelogic.client.DiceGameLogic;
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
+import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.LinkedRESTObjectInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
@@ -16,9 +16,9 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 public class GameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
 
     private GameEntity gameEntity;
-    private DiceGameLogic gameLogic;
+    private GameLogic gameLogic;
 
-    public GameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity, DiceGameLogic gameLogic) {
+    public GameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity, GameLogic gameLogic) {
         super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
 
         //castShadow = true;
