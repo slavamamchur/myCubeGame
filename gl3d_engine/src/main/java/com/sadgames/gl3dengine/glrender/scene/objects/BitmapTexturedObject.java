@@ -18,7 +18,7 @@ public abstract class BitmapTexturedObject extends AbstractGL3DObject {
     public BitmapTexturedObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, GLShaderProgram program, int textureColor) {
         super(sysUtilsWrapper, type, program);
 
-        this.textureColor = textureColor;
+        this.textureResName = String.valueOf(textureColor);
     }
 
     protected abstract int getDimension(BitmapWrapperInterface bmp);

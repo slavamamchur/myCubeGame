@@ -75,7 +75,6 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     protected CubeMapTexture waterReflectionMap = null;
 
     protected String textureResName = "";
-    protected int textureColor = 0;
 
     protected boolean castShadow = true;
 
@@ -400,9 +399,6 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     public AbstractTexture loadTexture() {
         if (textureResName != null && !textureResName.isEmpty()) {
             return TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
-        }
-        else if (textureColor != 0) {
-            return TextureCacheManager.getInstance(sysUtilsWrapper).getItem(String.valueOf(textureColor));
         }
         else
             return null;
