@@ -15,6 +15,7 @@ import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
@@ -460,4 +461,8 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return AndroidSettingsManager.getInstance(context);
     }
 
+    @Override
+    public EntityControllerInterface iGetEntityController() {
+        return null;
+    }
 }
