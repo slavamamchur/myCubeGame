@@ -463,6 +463,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     @Override
     public EntityControllerInterface iGetEntityController() {
-        return null;
+        return AndroidRESTControllerFabric.getInstance(this);
     }
 }

@@ -1,7 +1,6 @@
-package com.sadgames.sysutils.platforms.android;
+package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractHttpRequest;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -18,19 +17,27 @@ import java.util.Map;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LIST;
 
-public class BaseController<T extends BasicNamedDbEntity> extends AbstractHttpRequest<T> {
+public class BaseController<T extends BasicNamedDbEntity, C extends GenericCollectionResponse>
+       extends AbstractHttpRequest<T> {
 
-    private Class<GenericCollectionResponse<T>> listType;
+    private Class<C> listType;
     private Map<String, String> params;
 
     public BaseController(String action,
                           Class<T> responseType,
-                          Class<GenericCollectionResponse<T>> listType,
+                          Class<C> listType,
                           Map<String, String> params,
                           SysUtilsWrapperInterface sysUtilsWrapper) {
         super(action, responseType, HttpMethod.GET, sysUtilsWrapper);
 
         this.listType = listType;
+        this.params = params;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+    public void setParams(Map<String, String> params) {
         this.params = params;
     }
 
@@ -41,13 +48,19 @@ public class BaseController<T extends BasicNamedDbEntity> extends AbstractHttpRe
 
         params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
 
+        //params.put(PAGE_OFFSET_HEADER, "1");
+        //params.put(PAGE_LIMIT_HEADER, "2");
+        //params.put(FILTER_BY_NAME, "test_");
+        //params.put(PAGE_SORT_BY_HEADER, "lastUsedDate");
+        //params.put(PAGE_SORT_HEADER, "asc");
+
         return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
 
     @Override
     public Collection getResponseList() throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
-        ResponseEntity<GenericCollectionResponse<T>> responseEntity =
+        ResponseEntity<C> responseEntity =
                 restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), listType);
 
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
