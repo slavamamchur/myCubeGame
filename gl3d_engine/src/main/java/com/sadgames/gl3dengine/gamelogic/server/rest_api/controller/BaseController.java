@@ -8,6 +8,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collection;
@@ -19,6 +20,8 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LI
 
 public class BaseController<T extends BasicNamedDbEntity, C extends GenericCollectionResponse>
        extends AbstractHttpRequest<T> {
+
+    protected static final int HTTP_STATUS_NOT_FOUND = 27;
 
     private Class<C> listType;
     private Map<String, String> params;
@@ -76,5 +79,9 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
 
     public BasicEntity getResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args) {
         return getResponseWithParams(action, HttpMethod.POST, entity, responseType, args);
+    }
+
+    public void throwWebServiceException(int HTTPStatus, String errorMessage) {
+        throw new WebServiceException(HttpStatus.values()[HTTPStatus], errorMessage);
     }
 }
