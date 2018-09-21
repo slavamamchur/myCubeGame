@@ -10,12 +10,13 @@ import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
 
 public class GameMapController extends BaseController<GameMapEntity, GameMapCollectionResponse> {
 
     public GameMapController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(GameMapEntity.ACTION_NAME, GameMapEntity.class, GameMapCollectionResponse.class, null, sysUtilsWrapper);
+        super(URL_GAME_MAP, GameMapEntity.class, GameMapCollectionResponse.class, null, sysUtilsWrapper);
     }
 
     public void saveMapImage(GameMapEntity map) throws WebServiceException {

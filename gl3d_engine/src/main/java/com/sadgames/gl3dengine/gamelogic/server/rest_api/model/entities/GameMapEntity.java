@@ -52,7 +52,10 @@ public class GameMapEntity extends BasicNamedDbEntity implements Serializable {
         this.lastUsedDate = lastUsedDate;
     }
 
-    public static String ACTION_NAME =  RestConst.URL_GAME_MAP;
+    @Override
+    public String getActionURL() {
+        return RestConst.URL_GAME_MAP;
+    }
 
     @Override
     public AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper) {

@@ -92,7 +92,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
         }
         mRenderer.getScene().cleanUp();*/
 
-        //TextureCacheManager.getInstance(AndroidDiceGameUtilsWrapper.getInstance(getContext())).clearCache();
+        //TextureCacheManager.createInstance(AndroidDiceGameUtilsWrapper.createInstance(getContext())).clearCache();
 
         super.surfaceDestroyed(holder);
     }

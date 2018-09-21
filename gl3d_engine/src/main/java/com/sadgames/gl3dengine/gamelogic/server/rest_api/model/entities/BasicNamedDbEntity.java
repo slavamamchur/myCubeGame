@@ -6,7 +6,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.Serializable;
 
-public class BasicNamedDbEntity extends BasicDbEntity implements Serializable {
+public abstract class BasicNamedDbEntity extends BasicDbEntity implements Serializable {
 
     @JsonProperty(required = true)
     public String name;
@@ -20,12 +20,6 @@ public class BasicNamedDbEntity extends BasicDbEntity implements Serializable {
         this.name = name;
     }
 
-    public static String ACTION_NAME = "";
-    public String urlForActionName(){
-        return ACTION_NAME;
-    }
-
-    public AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper){
-        return null;
-    }
+    public abstract String getActionURL();
+    public abstract AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper);
 }

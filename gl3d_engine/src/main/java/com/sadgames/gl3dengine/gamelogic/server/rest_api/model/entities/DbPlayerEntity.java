@@ -12,7 +12,6 @@ public class DbPlayerEntity extends BasicNamedDbEntity implements Serializable {
     private static final long serialVersionUID = 1709751985689672630L;
 
     public int color;
-    public static String ACTION_NAME =  RestConst.URL_PLAYER;
 
     public DbPlayerEntity() {}
 
@@ -21,6 +20,11 @@ public class DbPlayerEntity extends BasicNamedDbEntity implements Serializable {
     }
     public void setColor(int color) {
         this.color = color;
+    }
+
+    @Override
+    public String getActionURL() {
+        return RestConst.URL_PLAYER;
     }
 
     @Override

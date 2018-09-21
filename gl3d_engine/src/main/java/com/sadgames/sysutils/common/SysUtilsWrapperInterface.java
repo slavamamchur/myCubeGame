@@ -33,7 +33,7 @@ public interface SysUtilsWrapperInterface {
     Vector3f               mulMV(float[] matrix, LuaTable vector);
 
     SettingsManagerInterface iGetSettingsManager();
-    EntityControllerInterface iGetEntityController();
+    EntityControllerInterface iGetEntityController(String action);
 
     //TODO: use java SE common lib for pictures  - > PNGDecoder
 }

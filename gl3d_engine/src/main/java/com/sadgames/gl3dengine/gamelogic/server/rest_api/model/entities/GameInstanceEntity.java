@@ -19,7 +19,6 @@ import java.util.List;
 public class GameInstanceEntity extends BasicNamedDbEntity implements Serializable {
 
     private static final long serialVersionUID = -8604963480687767704L;
-    public static String ACTION_NAME = RestConst.URL_GAME_INSTANCE;
 
     private GameEntity game;
     public List<InstancePlayer> players;
@@ -81,6 +80,11 @@ public class GameInstanceEntity extends BasicNamedDbEntity implements Serializab
     }
     @SuppressWarnings("unused") public void setLastUsedDate(long lastUsedDate) {
         this.lastUsedDate = lastUsedDate;
+    }
+
+    @Override
+    public String getActionURL() {
+        return RestConst.URL_GAME_INSTANCE;
     }
 
     @Override

@@ -13,13 +13,15 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE;
+
 public class GameInstanceController extends BaseController<GameInstanceEntity, GameInstanceCollectionResponse>{
 
     public GameInstanceController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(GameInstanceEntity.ACTION_NAME, GameInstanceEntity.class, GameInstanceCollectionResponse.class, null, sysUtilsWrapper);
+        super(URL_GAME_INSTANCE, GameInstanceEntity.class, GameInstanceCollectionResponse.class, null, sysUtilsWrapper);
     }
 
-    //TODO: add getRequest and postRequest to the controller interface
+    //TODO: getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)
     public GameInstanceResponse finishInstance(GameInstanceEntity instance) throws WebServiceException {
 
         RestTemplate restTemplate = getRestTemplate();

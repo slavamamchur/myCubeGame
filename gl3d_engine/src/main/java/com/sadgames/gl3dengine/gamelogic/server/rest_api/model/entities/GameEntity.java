@@ -27,7 +27,6 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
 
     private static final long serialVersionUID = -4698835803284111481L;
 
-    public static String ACTION_NAME =  RestConst.URL_GAME;
     public static float GAME_DICE_HALF_SIZE = 0.15f;
     public static short BOX_SHAPE_TYPE = 1;
     public static short UNKNOWN_SHAPE_TYPE = 0;
@@ -79,6 +78,11 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     }
     public void setCreatedDate(long createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Override
+    public String getActionURL() {
+        return RestConst.URL_GAME;
     }
 
     @Override

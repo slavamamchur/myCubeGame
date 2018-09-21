@@ -2,13 +2,13 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.BasicResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,7 +46,8 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
         if (params == null)
             params = new HashMap<>();
 
-        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+        if (!params.containsKey(PARAM_HEADER_AUTH_TOKEN))
+            params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
 
         //params.put(PAGE_OFFSET_HEADER, "1");
         //params.put(PAGE_LIMIT_HEADER, "2");
@@ -59,10 +60,13 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
 
     @Override
     public Collection getResponseList() throws WebServiceException {
-        RestTemplate restTemplate = getRestTemplate();
         ResponseEntity<C> responseEntity =
-                restTemplate.exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), listType);
+                getRestTemplate().exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), listType);
 
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
+    }
+
+    public BasicResponse getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)  throws WebServiceException {
+        return (BasicResponse) getRestTemplate().exchange(getmUrl() + action, method, getHttpEntity(entity), responseType, args).getBody();
     }
 }

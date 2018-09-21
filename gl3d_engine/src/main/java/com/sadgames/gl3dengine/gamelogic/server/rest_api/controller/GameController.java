@@ -6,10 +6,12 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.N
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME;
+
 public class GameController extends BaseController<GameEntity, GameCollectionResponse>{
 
     public GameController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(GameEntity.ACTION_NAME, GameEntity.class, GameCollectionResponse.class, null,sysUtilsWrapper);
+        super(URL_GAME, GameEntity.class, GameCollectionResponse.class, null, sysUtilsWrapper);
     }
 
     public void removePoint(GameEntity game, int index){

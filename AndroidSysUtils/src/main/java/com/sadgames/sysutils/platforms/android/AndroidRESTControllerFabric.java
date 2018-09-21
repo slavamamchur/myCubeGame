@@ -1,39 +1,41 @@
 package com.sadgames.sysutils.platforms.android;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.BaseController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.BasicResponse;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
+
+import org.springframework.http.HttpMethod;
 
 import java.util.Collection;
 
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE;
+
 public class AndroidRESTControllerFabric implements EntityControllerInterface {
 
-    private static final Object lockObject = new Object();
-    private static AndroidRESTControllerFabric instance = null;
-
     private SysUtilsWrapperInterface sysUtilsWrapper;
+    private BaseController<?, ?> controller;
 
-    public AndroidRESTControllerFabric(SysUtilsWrapperInterface sysUtilsWrapper) {
+    public AndroidRESTControllerFabric(SysUtilsWrapperInterface sysUtilsWrapper, String action) {
         this.sysUtilsWrapper = sysUtilsWrapper;
+
+        if (action.equals(RestConst.URL_GAME_INSTANCE))
+            controller = new BaseController<>
+                    (URL_GAME_INSTANCE, GameInstanceEntity.class, GameInstanceCollectionResponse.class, null, sysUtilsWrapper);
     }
 
-    //TODO: change via cache -> iGetController
-    public static AndroidRESTControllerFabric getInstance(SysUtilsWrapperInterface sysUtilsWrapper) {
-        synchronized (lockObject) {
-            instance = instance != null ? instance : new AndroidRESTControllerFabric(sysUtilsWrapper);
-            return instance;
-        }
-    }
-
-    @Override
-    public EntityControllerInterface iGetController(String action) {
-        return null;
+    public static AndroidRESTControllerFabric createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String action) {
+        return new AndroidRESTControllerFabric(sysUtilsWrapper, action);
     }
 
     @Override
     public BasicEntity iGetEntity(String id) {
-        return null;
+        return controller.find(id);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
 
     @Override
     public Collection iGetEntityList() {
-        return null;
+        return controller.getResponseList();
     }
 
     @Override
@@ -79,5 +81,10 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
     @Override
     public void iRemoveChild(String id, String childName, int index) {
 
+    }
+
+    @Override
+    public BasicResponse getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object... args) {
+        return null;
     }
 }
