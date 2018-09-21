@@ -1,8 +1,8 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.BasicResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -66,7 +66,7 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    public BasicResponse getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)  throws WebServiceException {
-        return (BasicResponse) getRestTemplate().exchange(getmUrl() + action, method, getHttpEntity(entity), responseType, args).getBody();
+    public BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)  throws WebServiceException {
+        return (BasicEntity) getRestTemplate().exchange(getmUrl() + action, method, getHttpEntity(entity), responseType, args).getBody();
     }
 }

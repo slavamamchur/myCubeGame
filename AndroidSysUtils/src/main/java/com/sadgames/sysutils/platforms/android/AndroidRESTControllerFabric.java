@@ -6,7 +6,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.BaseControll
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.BasicResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -84,7 +83,7 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
     }
 
     @Override
-    public BasicResponse getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object... args) {
+    public BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object... args) {
         return null;
     }
 }

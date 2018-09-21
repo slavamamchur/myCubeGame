@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.params.StartNewGameRequestParam;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
@@ -11,9 +10,12 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.IdRespo
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.web.client.RestTemplate;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE;
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_FINISH;
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_MOVE;
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_RESTART;
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_START;
 
 public class GameInstanceController extends BaseController<GameInstanceEntity, GameInstanceCollectionResponse>{
 
@@ -21,37 +23,29 @@ public class GameInstanceController extends BaseController<GameInstanceEntity, G
         super(URL_GAME_INSTANCE, GameInstanceEntity.class, GameInstanceCollectionResponse.class, null, sysUtilsWrapper);
     }
 
-    //TODO: getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)
+    //TODO: getResponseWithPostParams, getResponseWithGetParams
     public GameInstanceResponse finishInstance(GameInstanceEntity instance) throws WebServiceException {
 
-        RestTemplate restTemplate = getRestTemplate();
-
-        return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_FINISH,
-                HttpMethod.GET, getHttpEntity(null), GameInstanceResponse.class, instance.getId()).getBody();
+        return (GameInstanceResponse) getResponseWithParams(URL_GAME_INSTANCE_FINISH,
+                HttpMethod.GET, null, GameInstanceResponse.class, instance.getId());
     }
 
     public IdResponse restartInstance(GameInstanceEntity instance) throws WebServiceException {
 
-        RestTemplate restTemplate = getRestTemplate();
-
-        return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_RESTART,
-                HttpMethod.GET, getHttpEntity(null), IdResponse.class, instance.getId()).getBody();
+        return (IdResponse) getResponseWithParams(URL_GAME_INSTANCE_RESTART,
+                HttpMethod.GET, null, IdResponse.class, instance.getId());
     }
 
     public GameInstanceStartedResponse startNewInstance(StartNewGameRequestParam request) throws WebServiceException {
 
-        RestTemplate restTemplate = getRestTemplate();
-
-        return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_START,
-                HttpMethod.POST, getHttpEntity(request), GameInstanceStartedResponse.class).getBody();
+        return (GameInstanceStartedResponse) getResponseWithParams(URL_GAME_INSTANCE_START,
+                HttpMethod.POST, request, GameInstanceStartedResponse.class);
     }
 
     public GameInstanceEntity makeTurn(GameInstanceEntity instance) throws WebServiceException {
 
-        RestTemplate restTemplate = getRestTemplate();
-
-        return restTemplate.exchange(getmUrl() + RestConst.URL_GAME_INSTANCE_MOVE,
-                HttpMethod.GET, getHttpEntity(null), GameInstanceEntity.class, instance.getId(), instance.getStepsToGo()).getBody();
+        return (GameInstanceEntity) getResponseWithParams(URL_GAME_INSTANCE_MOVE,
+                HttpMethod.GET, null, GameInstanceEntity.class, instance.getId(), instance.getStepsToGo());
     }
 
 }
