@@ -86,4 +86,14 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
     public BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object... args) {
         return null;
     }
+
+    @Override
+    public BasicEntity getResponseWithGetParams(String action, Object entity, Class<?> responseType, Object... args) {
+        return null;
+    }
+
+    @Override
+    public BasicEntity getResponseWithPostParams(String action, Object entity, Class<?> responseType, Object... args) {
+        return null;
+    }
 }

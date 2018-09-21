@@ -69,4 +69,12 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
     public BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)  throws WebServiceException {
         return (BasicEntity) getRestTemplate().exchange(getmUrl() + action, method, getHttpEntity(entity), responseType, args).getBody();
     }
+
+    public BasicEntity getResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args) {
+        return getResponseWithParams(action, HttpMethod.GET, entity, responseType, args);
+    }
+
+    public BasicEntity getResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args) {
+        return getResponseWithParams(action, HttpMethod.POST, entity, responseType, args);
+    }
 }

@@ -21,4 +21,6 @@ public interface EntityControllerInterface {
     void iAddChild(String id, String childName, Object child);
     void iRemoveChild(String id, String childName, int index);
     BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args);
+    BasicEntity getResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args);
+    BasicEntity getResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args);
 }
