@@ -37,7 +37,8 @@ public interface SysUtilsWrapperInterface {
     SettingsManagerInterface iGetSettingsManager();
     EntityControllerInterface iGetEntityController(String action,
                                                    Class<? extends BasicNamedDbEntity> entityType,
-                                                   Class<? extends GenericCollectionResponse> listType);
+                                                   Class<? extends GenericCollectionResponse> listType,
+                                                   int method);
 
     //TODO: use java SE common lib for pictures  - > PNGDecoder
 }

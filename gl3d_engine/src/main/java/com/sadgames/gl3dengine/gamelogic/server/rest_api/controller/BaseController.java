@@ -36,6 +36,18 @@ public class BaseController<T extends BasicEntity, C extends GenericCollectionRe
         this.params = params;
     }
 
+    public BaseController(String action,
+                          Class<T> responseType,
+                          Class<C> listType,
+                          Map<String, String> params,
+                          int method,
+                          SysUtilsWrapperInterface sysUtilsWrapper) {
+        super(action, responseType, HttpMethod.values()[method], sysUtilsWrapper);
+
+        this.listType = listType;
+        this.params = params;
+    }
+
     public Map<String, String> getParams() {
         return params;
     }

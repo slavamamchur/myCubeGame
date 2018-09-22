@@ -466,7 +466,8 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public EntityControllerInterface iGetEntityController(String action,
                                                           Class<? extends BasicNamedDbEntity> entityType,
-                                                          Class<? extends GenericCollectionResponse> listType) {
-        return AndroidRESTControllerFabric.createInstance(this, action, entityType, listType);
+                                                          Class<? extends GenericCollectionResponse> listType,
+                                                          int method) {
+        return AndroidRESTControllerFabric.createInstance(this, action, entityType, listType, method);
     }
 }
