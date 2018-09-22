@@ -1,29 +1,15 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.PingResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_PING;
 
-public class PingRequest extends AbstractHttpRequest<PingResponse> {
+public class PingRequest extends BaseController<PingResponse, GenericCollectionResponse> {
 
     public PingRequest(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_PING, PingResponse.class, HttpMethod.GET, sysUtilsWrapper);
-    }
-
-    @Override
-    protected HttpEntity<?> getHttpEntity(Object entity) {
-        Map<String, String> params = new HashMap<>();
-        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
-
-        return getHeaderAndObjectParamsHttpEntity(params);
+        super(URL_PING, PingResponse.class, GenericCollectionResponse.class, null, sysUtilsWrapper);
     }
 
     public boolean doPing(){
