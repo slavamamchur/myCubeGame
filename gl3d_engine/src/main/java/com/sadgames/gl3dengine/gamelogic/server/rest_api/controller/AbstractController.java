@@ -2,6 +2,7 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -23,5 +24,11 @@ public abstract class AbstractController {
         return  controller.iGetEntityList();
     }
 
+    public void delete(BasicNamedDbEntity entity) {
+        controller.iDeleteEntity(entity);
+    }
 
+    public BasicEntity update(BasicNamedDbEntity entity) {
+        return controller.iUpdateEntity(entity);
+    }
 }
