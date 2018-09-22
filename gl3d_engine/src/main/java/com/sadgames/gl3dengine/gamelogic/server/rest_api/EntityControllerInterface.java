@@ -5,7 +5,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNam
 
 import java.util.Collection;
 
-
 public interface EntityControllerInterface {
 
     BasicEntity iGetEntity(String id);
