@@ -10,6 +10,9 @@ import java.util.Collection;
 
 public abstract class AbstractController {
 
+    protected static final int HTTP_METHOD_GET = 0;
+    protected static final int HTTP_METHOD_POST = 1;
+
     protected EntityControllerInterface controller;
 
     protected AbstractController(String action,
