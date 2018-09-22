@@ -18,7 +18,7 @@ import android.support.annotation.Nullable;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
@@ -465,7 +465,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     @Override
     public EntityControllerInterface iGetEntityController(String action,
-                                                          Class<? extends BasicNamedDbEntity> entityType,
+                                                          Class<? extends BasicEntity> entityType,
                                                           Class<? extends GenericCollectionResponse> listType,
                                                           int method) {
         return AndroidRESTControllerFabric.createInstance(this, action, entityType, listType, method);

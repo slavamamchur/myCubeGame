@@ -36,7 +36,7 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_FI
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LIST;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_NEW;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_UPDATE;
-//TODO - move to android-client and mare wrapper interface
+
 public abstract class AbstractHttpRequest<T extends BasicEntity>{
 
     private String mUrl;

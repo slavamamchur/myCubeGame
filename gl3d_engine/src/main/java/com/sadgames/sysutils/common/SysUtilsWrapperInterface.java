@@ -1,7 +1,7 @@
 package com.sadgames.sysutils.common;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 
 import org.luaj.vm2.LuaTable;
@@ -36,7 +36,7 @@ public interface SysUtilsWrapperInterface {
 
     SettingsManagerInterface iGetSettingsManager();
     EntityControllerInterface iGetEntityController(String action,
-                                                   Class<? extends BasicNamedDbEntity> entityType,
+                                                   Class<? extends BasicEntity> entityType,
                                                    Class<? extends GenericCollectionResponse> listType,
                                                    int method);
 

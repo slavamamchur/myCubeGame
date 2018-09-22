@@ -16,14 +16,14 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
     private BaseController<?, ?> controller;
 
     private AndroidRESTControllerFabric(SysUtilsWrapperInterface sysUtilsWrapper, String action,
-                                        Class<? extends BasicNamedDbEntity> entityType,
+                                        Class<? extends BasicEntity> entityType,
                                         Class<? extends GenericCollectionResponse> listType,
                                         int method) {
         controller = new BaseController<>(action, entityType, listType, null, method, sysUtilsWrapper);
     }
 
     public static EntityControllerInterface createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String action,
-                                                             Class<? extends BasicNamedDbEntity> entityType,
+                                                             Class<? extends BasicEntity> entityType,
                                                              Class<? extends GenericCollectionResponse> listType,
                                                              int method) {
         return new AndroidRESTControllerFabric(sysUtilsWrapper, action, entityType, listType, method);
