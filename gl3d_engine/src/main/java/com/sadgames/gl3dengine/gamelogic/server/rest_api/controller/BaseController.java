@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -18,7 +17,7 @@ import java.util.Map;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LIST;
 
-public class BaseController<T extends BasicNamedDbEntity, C extends GenericCollectionResponse>
+public class BaseController<T extends BasicEntity, C extends GenericCollectionResponse>
        extends AbstractHttpRequest<T> {
 
     protected static final int HTTP_STATUS_NOT_FOUND = HttpStatus.NOT_FOUND.ordinal();
@@ -44,13 +43,18 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
         this.params = params;
     }
 
+    protected HttpEntity<?> getHttpEntity(Object entity, Map<String, String> params) {
+        this.params = params;
+
+        return getHttpEntity(entity);
+    }
+
     @Override
     protected HttpEntity<?> getHttpEntity(Object entity) {
-        if (params == null)
+        if (params == null) {
             params = new HashMap<>();
-
-        if (!params.containsKey(PARAM_HEADER_AUTH_TOKEN))
             params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+        }
 
         //params.put(PAGE_OFFSET_HEADER, "1");
         //params.put(PAGE_LIMIT_HEADER, "2");
