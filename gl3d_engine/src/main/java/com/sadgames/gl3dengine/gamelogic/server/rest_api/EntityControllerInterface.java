@@ -3,8 +3,6 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 
-import org.springframework.http.HttpMethod;
-
 import java.util.Collection;
 
 
@@ -20,7 +18,7 @@ public interface EntityControllerInterface {
     String iUploadFile(BasicNamedDbEntity entity, String keyParamName, String uploadActionNAme, String fileName);
     void iAddChild(String id, String childName, Object child);
     void iRemoveChild(String id, String childName, int index);
-    BasicEntity iGetResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args);
+    BasicEntity iGetResponseWithParams(String action, int method, Object entity, Class<?> responseType, Object ... args);
     BasicEntity iGetResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args);
     BasicEntity iGetResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args);
 }

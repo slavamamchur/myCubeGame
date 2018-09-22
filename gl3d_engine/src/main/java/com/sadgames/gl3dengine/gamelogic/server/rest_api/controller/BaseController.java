@@ -69,6 +69,9 @@ public class BaseController<T extends BasicNamedDbEntity, C extends GenericColle
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
+    public BasicEntity getResponseWithParams(String action, int method, Object entity, Class<?> responseType, Object ... args)  throws WebServiceException {
+        return getResponseWithParams(action, HttpMethod.values()[method], entity, responseType, args);
+    }
     public BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args)  throws WebServiceException {
         return (BasicEntity) getRestTemplate().exchange(getmUrl() + action, method, getHttpEntity(entity), responseType, args).getBody();
     }

@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+
+        versionCode 0
+        versionName "1.0"
+        versionNameSuffix '0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:support-v4:28.0.0-rc02'
+    implementation 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+    implementation 'cz.advel.jbullet:jbullet:20101010-1'
+    implementation 'org.luaj:luaj-jse:3.0.1'
+    implementation project(':GLES3DGameEngine')
+}
