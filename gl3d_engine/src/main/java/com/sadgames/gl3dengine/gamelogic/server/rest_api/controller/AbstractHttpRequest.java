@@ -88,11 +88,11 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         sendRequestWithParams(action, mHttpMethod, entity);
     }
 
-    protected void sendPostRequest(String action, Object entity)  throws WebServiceException {
+    public void sendPostRequest(String action, Object entity)  throws WebServiceException {
         sendRequestWithParams(action, HttpMethod.POST, entity);
     }
 
-    protected T getResponse(String action, Object ... args)  throws WebServiceException {
+    public T getResponse(String action, Object... args)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
 
         ResponseEntity<T> responseEntity = restTemplate.exchange(mUrl + action, mHttpMethod, getHttpEntity(), mResponseType, args);
@@ -130,7 +130,7 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }
 
-    public byte[] getBinaryData(BasicNamedDbEntity entity, String dataUrl)  throws WebServiceException {
+    public byte[] getBinaryData(BasicNamedDbEntity entity, String dataUrl, String mediaType)  throws WebServiceException {
         RestTemplate restTemplate = getRestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
@@ -138,11 +138,15 @@ public abstract class AbstractHttpRequest<T extends BasicEntity>{
         params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
 
         HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.IMAGE_JPEG);
+        requestHeaders.setContentType(MediaType.valueOf(mediaType));
         requestHeaders.setUserAgent("ANDROID");
         requestHeaders.setAll(params);
 
         return restTemplate.exchange(mUrl + dataUrl, HttpMethod.GET, new HttpEntity<>(requestHeaders), byte[].class, entity.getId()).getBody();
+    }
+
+    public byte[] getBinaryData(BasicNamedDbEntity entity, String dataUrl)  throws WebServiceException {
+        return getBinaryData(entity, dataUrl, MediaType.IMAGE_JPEG_VALUE);
     }
 
     public String uploadFile(BasicNamedDbEntity entity, String keyParamName, String uploadActionNAme, String fileName) throws WebServiceException {

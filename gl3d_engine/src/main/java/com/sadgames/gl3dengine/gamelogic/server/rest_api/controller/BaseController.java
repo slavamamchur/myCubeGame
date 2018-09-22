@@ -21,7 +21,7 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LI
 public class BaseController<T extends BasicNamedDbEntity, C extends GenericCollectionResponse>
        extends AbstractHttpRequest<T> {
 
-    protected static final int HTTP_STATUS_NOT_FOUND = 27;
+    protected static final int HTTP_STATUS_NOT_FOUND = HttpStatus.NOT_FOUND.ordinal();
 
     private Class<C> listType;
     private Map<String, String> params;

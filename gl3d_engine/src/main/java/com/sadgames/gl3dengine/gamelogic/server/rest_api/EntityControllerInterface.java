@@ -11,16 +11,16 @@ import java.util.Collection;
 public interface EntityControllerInterface {
 
     BasicEntity iGetEntity(String id);
-    void sendPOSTRequest(String action, Object entity);
-    BasicEntity getResponse(String action, Object ... args);
+    void iSendPOSTRequest(String action, Object entity);
+    BasicEntity iGetResponse(String action, Object ... args);
     BasicEntity iUpdateEntity(BasicNamedDbEntity entity);
     void iDeleteEntity(BasicNamedDbEntity entity);
     Collection iGetEntityList();
-    byte[] iGetBinaryData(BasicNamedDbEntity entity, String dataUrl);
+    byte[] iGetBinaryData(BasicNamedDbEntity entity, String dataUrl, String mediaType);
     String iUploadFile(BasicNamedDbEntity entity, String keyParamName, String uploadActionNAme, String fileName);
     void iAddChild(String id, String childName, Object child);
     void iRemoveChild(String id, String childName, int index);
-    BasicEntity getResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args);
-    BasicEntity getResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args);
-    BasicEntity getResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args);
+    BasicEntity iGetResponseWithParams(String action, HttpMethod method, Object entity, Class<?> responseType, Object ... args);
+    BasicEntity iGetResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args);
+    BasicEntity iGetResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args);
 }

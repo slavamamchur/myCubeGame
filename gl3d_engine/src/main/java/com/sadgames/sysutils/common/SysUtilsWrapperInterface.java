@@ -1,6 +1,8 @@
 package com.sadgames.sysutils.common;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 
 import org.luaj.vm2.LuaTable;
 
@@ -33,7 +35,9 @@ public interface SysUtilsWrapperInterface {
     Vector3f               mulMV(float[] matrix, LuaTable vector);
 
     SettingsManagerInterface iGetSettingsManager();
-    EntityControllerInterface iGetEntityController(String action);
+    EntityControllerInterface iGetEntityController(String action,
+                                                   Class<? extends BasicNamedDbEntity> entityType,
+                                                   Class<? extends GenericCollectionResponse> listType);
 
     //TODO: use java SE common lib for pictures  - > PNGDecoder
 }
