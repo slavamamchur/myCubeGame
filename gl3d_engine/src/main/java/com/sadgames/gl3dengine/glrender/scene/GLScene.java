@@ -491,7 +491,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         return new FixedIsometricCamera(xPos, yPos, zPos, pitch, yaw,  roll);
     }
 
-    public GLCamera createCam2D(float landSize) {
+    @SuppressWarnings("unused") public GLCamera createCam2D(float landSize) {
         return new Orthogonal2DCamera(landSize);
     }
 
