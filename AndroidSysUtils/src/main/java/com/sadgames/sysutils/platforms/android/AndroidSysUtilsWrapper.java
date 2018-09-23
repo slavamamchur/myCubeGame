@@ -104,6 +104,16 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new Vector3f(result[0], result[1], result[2]);
     }
 
+    @Override
+    public void mulMM(float[] result, int resultOffset, float[] lhs, int lhsOffset, float[] rhs, int rhsOffset) {
+        Matrix.multiplyMM(result, resultOffset, lhs, lhsOffset, rhs, rhsOffset);
+    }
+
+    @Override
+    public void rotateM(float[] m, int mOffset, float a, float x, float y, float z) {
+        Matrix.rotateM(m, mOffset, a, x, y, z);
+    }
+
     private float[] luaTable2FloatArray(LuaTable table) {
         float[] result = new float[table.length()];
 
