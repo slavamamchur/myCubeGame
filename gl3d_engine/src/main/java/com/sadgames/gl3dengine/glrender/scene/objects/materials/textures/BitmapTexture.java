@@ -71,13 +71,13 @@ public class BitmapTexture extends AbstractTexture {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();
                 Buffer data;
-                if (isETC1Supported()) {
+                //if (isETC1Supported()) {
                     data = bitmap.getRawData();
                     int imageSize = data.remaining();
                     glCompressedTexImage2D(target, 0, ETC1_RGB8_OES, width, height, 0, imageSize, data);
-                } else {
-                    glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());
-                }
+                //} else {
+                    //glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());
+                //}
             }
 
             //glGenerateMipmap(target);//TODO: manually
