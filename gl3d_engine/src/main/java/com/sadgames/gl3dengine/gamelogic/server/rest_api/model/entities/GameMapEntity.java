@@ -53,7 +53,7 @@ public class GameMapEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     @Override
-    public String getActionURL() {
+    public String actionURL() {
         return RestConst.URL_GAME_MAP;
     }
 

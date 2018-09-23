@@ -20,6 +20,6 @@ public abstract class BasicNamedDbEntity extends BasicDbEntity implements Serial
         this.name = name;
     }
 
-    public abstract String getActionURL();
+    public abstract String actionURL();
     public abstract AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper);
 }

@@ -81,7 +81,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     @Override
-    public String getActionURL() {
+    public String actionURL() {
         return RestConst.URL_GAME;
     }
 
