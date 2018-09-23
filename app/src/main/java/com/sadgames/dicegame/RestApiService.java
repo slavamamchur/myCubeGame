@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.DBPlayerController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameInstanceController;
@@ -27,6 +26,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.UserEnti
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
+import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

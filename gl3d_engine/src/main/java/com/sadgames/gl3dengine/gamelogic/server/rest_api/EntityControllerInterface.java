@@ -4,6 +4,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEnt
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface EntityControllerInterface {
 
@@ -20,4 +21,6 @@ public interface EntityControllerInterface {
     BasicEntity iGetResponseWithParams(String action, int method, Object entity, Class<?> responseType, Object ... args);
     BasicEntity iGetResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args);
     BasicEntity iGetResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args);
+    void iThrowWebServiceException(int HTTPStatus, String errorMessage);
+    void iSetParams(Map<String, String> params);
 }

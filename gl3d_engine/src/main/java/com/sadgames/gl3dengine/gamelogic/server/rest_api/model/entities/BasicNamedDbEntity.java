@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractHttpRequest;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.Serializable;
@@ -21,5 +21,5 @@ public abstract class BasicNamedDbEntity extends BasicDbEntity implements Serial
     }
 
     public abstract String getActionURL();
-    public abstract AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper);
+    public abstract AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper);
 }

@@ -1,6 +1,5 @@
-package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
+package com.sadgames.sysutils.platforms.android.restapi;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -92,15 +91,4 @@ public class BaseController<T extends BasicEntity, C extends GenericCollectionRe
         return (BasicEntity) getRestTemplate().exchange(getmUrl() + action, method, getHttpEntity(entity), responseType, args).getBody();
     }
 
-    public BasicEntity getResponseWithGetParams(String action, Object entity, Class<?> responseType, Object ... args) {
-        return getResponseWithParams(action, HttpMethod.GET, entity, responseType, args);
-    }
-
-    public BasicEntity getResponseWithPostParams(String action, Object entity, Class<?> responseType, Object ... args) {
-        return getResponseWithParams(action, HttpMethod.POST, entity, responseType, args);
-    }
-
-    public void throwWebServiceException(int HTTPStatus, String errorMessage) {
-        throw new WebServiceException(HttpStatus.values()[HTTPStatus], errorMessage);
-    }
 }

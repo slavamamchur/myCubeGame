@@ -150,11 +150,13 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     public float getMoveFactor() {
         return moveFactor;
     }
+
     public boolean isSceneLoaded() {
         synchronized (lockObject) {
             return isSceneLoaded;
         }
     }
+
     public void setSceneLoaded(boolean sceneLoaded) {
         synchronized (lockObject) {
             isSceneLoaded = sceneLoaded;

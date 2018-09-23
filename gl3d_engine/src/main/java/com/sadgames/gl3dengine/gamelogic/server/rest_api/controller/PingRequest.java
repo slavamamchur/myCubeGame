@@ -6,17 +6,18 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_PING;
 
-public class PingRequest extends BaseController<PingResponse, GenericCollectionResponse> {
+public class PingRequest extends AbstractController {
 
     public PingRequest(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_PING, PingResponse.class, GenericCollectionResponse.class, null, sysUtilsWrapper);
+        super(URL_PING, PingResponse.class, GenericCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
     }
 
     public boolean doPing(){
         boolean result;
 
         try{
-            result = !(getResponse() == null || getResponse().getName() == null || getResponse().getName().isEmpty());
+            PingResponse response = (PingResponse) controller.iGetResponse("");
+            result = !(response == null || response.getName() == null || response.getName().isEmpty());
         }
         catch (Exception e){
             result = false;

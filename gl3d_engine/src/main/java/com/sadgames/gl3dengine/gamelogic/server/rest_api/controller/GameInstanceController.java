@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.params.StartNewGameRequestParam;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceCollectionResponse;
@@ -15,30 +14,46 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GA
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_RESTART;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_START;
 
-public class GameInstanceController extends BaseController<GameInstanceEntity, GameInstanceCollectionResponse>{
+public class GameInstanceController extends AbstractController {
 
     public GameInstanceController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_GAME_INSTANCE, GameInstanceEntity.class, GameInstanceCollectionResponse.class, null, sysUtilsWrapper);
+        super(  URL_GAME_INSTANCE,
+                GameInstanceEntity.class,
+                GameInstanceCollectionResponse.class,
+                HTTP_METHOD_GET,
+                sysUtilsWrapper);
     }
 
-    public GameInstanceResponse finishInstance(GameInstanceEntity instance) throws WebServiceException {
-
-        return (GameInstanceResponse) getResponseWithGetParams(URL_GAME_INSTANCE_FINISH, null, GameInstanceResponse.class, instance.getId());
+    public GameInstanceResponse finishInstance(GameInstanceEntity instance) {
+        return (GameInstanceResponse) controller.iGetResponseWithGetParams(
+                URL_GAME_INSTANCE_FINISH,
+                null,
+                GameInstanceResponse.class,
+                instance.getId());
     }
 
-    public IdResponse restartInstance(GameInstanceEntity instance) throws WebServiceException {
-
-        return (IdResponse) getResponseWithGetParams(URL_GAME_INSTANCE_RESTART, null, IdResponse.class, instance.getId());
+    public IdResponse restartInstance(GameInstanceEntity instance) {
+        return (IdResponse) controller.iGetResponseWithGetParams(
+                URL_GAME_INSTANCE_RESTART,
+                null,
+                IdResponse.class,
+                instance.getId());
     }
 
-    public GameInstanceStartedResponse startNewInstance(StartNewGameRequestParam request) throws WebServiceException {
-
-        return (GameInstanceStartedResponse) getResponseWithPostParams(URL_GAME_INSTANCE_START, request, GameInstanceStartedResponse.class);
+    public GameInstanceStartedResponse startNewInstance(StartNewGameRequestParam request) {
+        return (GameInstanceStartedResponse) controller.iGetResponseWithPostParams(
+                URL_GAME_INSTANCE_START,
+                request,
+                GameInstanceStartedResponse.class);
     }
 
-    public GameInstanceEntity makeTurn(GameInstanceEntity instance) throws WebServiceException {
-
-        return (GameInstanceEntity) getResponseWithGetParams(URL_GAME_INSTANCE_MOVE, null, GameInstanceEntity.class, instance.getId(), instance.getStepsToGo());
+    public GameInstanceEntity makeTurn(GameInstanceEntity instance) {
+        return (GameInstanceEntity) controller.iGetResponseWithGetParams(
+                URL_GAME_INSTANCE_MOVE,
+                null,
+                GameInstanceEntity.class,
+                instance.getId(),
+                instance.getStepsToGo());
     }
 
 }

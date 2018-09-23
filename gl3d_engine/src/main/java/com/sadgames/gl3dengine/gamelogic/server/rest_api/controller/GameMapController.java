@@ -10,10 +10,13 @@ import java.io.IOException;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
 
-public class GameMapController extends BaseController<GameMapEntity, GameMapCollectionResponse> {
+public class GameMapController extends AbstractController {
+
+    private static final int HTTP_STATUS_NOT_FOUND = 27;
+    public final static String MEDIA_TYPE_IMAGE_JPEG = "image/jpeg";
 
     public GameMapController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_GAME_MAP, GameMapEntity.class, GameMapCollectionResponse.class, null, sysUtilsWrapper);
+        super(URL_GAME_MAP, GameMapEntity.class, GameMapCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
     }
 
     public void saveMapImage(GameMapEntity map) {
@@ -25,21 +28,21 @@ public class GameMapController extends BaseController<GameMapEntity, GameMapColl
     }
 
     private void internalSavePicture(GameMapEntity map, String url, String namePrefix, String errorMessage) {
-        if (getSysUtilsWrapper().iIsBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
+        if (sysUtilsWrapper.iIsBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
             return;
 
-        byte[] mapArray = getBinaryData(map, url);
+        byte[] mapArray = controller.iGetBinaryData(map, url, MEDIA_TYPE_IMAGE_JPEG);
 
         if (mapArray == null)
-            throwWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
+            controller.iThrowWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
         else try {
-            getSysUtilsWrapper().iSaveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
+            sysUtilsWrapper.iSaveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
         } catch (IOException e) {
-            throwWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
+            controller.iThrowWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
         }
     }
 
     public String uploadMapImage(GameMapEntity map, String fileName) {
-        return uploadFile(map, "mapid", URL_GAME_MAP_IMAGE_SIMPLE, fileName);
+        return controller.iUploadFile(map, "mapid", URL_GAME_MAP_IMAGE_SIMPLE, fileName);
     }
 }

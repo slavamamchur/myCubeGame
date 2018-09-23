@@ -3,7 +3,7 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractHttpRequest;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameInstanceController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.sysutils.common.LuaUtils;
@@ -88,7 +88,7 @@ public class GameInstanceEntity extends BasicNamedDbEntity implements Serializab
     }
 
     @Override
-    public AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper) {
+    public AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper) {
         return new GameInstanceController(sysUtilsWrapper);
     }
 

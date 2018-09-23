@@ -1,7 +1,5 @@
-package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
+package com.sadgames.sysutils.platforms.android.restapi;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.CustomResponseErrorHandler;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
@@ -37,7 +35,7 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LI
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_NEW;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_UPDATE;
 
-public abstract class AbstractHttpRequest<T extends BasicEntity>{
+public abstract class AbstractHttpRequest<T extends BasicEntity> {
 
     private String mUrl;
     protected Class<T> mResponseType;

@@ -3,7 +3,7 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractHttpRequest;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.AbstractGamePoint;
@@ -86,7 +86,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     @Override
-    public AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper) {
+    public AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper) {
         return new GameController(sysUtilsWrapper);
     }
 

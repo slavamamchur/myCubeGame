@@ -2,7 +2,7 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractHttpRequest;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -58,7 +58,7 @@ public class GameMapEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     @Override
-    public AbstractHttpRequest getController(SysUtilsWrapperInterface sysUtilsWrapper) {
+    public AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper) {
         return new GameMapController(sysUtilsWrapper);
     }
 }

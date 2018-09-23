@@ -14,6 +14,7 @@ public abstract class AbstractController {
     protected static final int HTTP_METHOD_POST = 1;
 
     protected EntityControllerInterface controller;
+    protected SysUtilsWrapperInterface sysUtilsWrapper;
 
     protected AbstractController(String action,
                                  Class<? extends BasicEntity> responseType,
@@ -21,6 +22,7 @@ public abstract class AbstractController {
                                  int method,
                                  SysUtilsWrapperInterface sysUtilsWrapper) {
         controller = sysUtilsWrapper.iGetEntityController(action, responseType, listType, method);
+        this.sysUtilsWrapper = sysUtilsWrapper;
     }
 
     public Collection getResponseList() {
@@ -33,5 +35,9 @@ public abstract class AbstractController {
 
     public BasicEntity update(BasicNamedDbEntity entity) {
         return controller.iUpdateEntity(entity);
+    }
+
+    public BasicEntity find(String id) {
+        return controller.iGetEntity(id);
     }
 }

@@ -71,7 +71,6 @@ public class GLAnimation {
     public void setLuaEngine(Globals luaEngine) {
         this.luaEngine = luaEngine;
     }
-
     public void setRepeatCount(short repeatCount) {
         this.repeatCount = repeatCount;
     }

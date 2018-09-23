@@ -1,15 +1,18 @@
 package com.sadgames.sysutils.platforms.android;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.BaseController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.platforms.android.restapi.BaseController;
+import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class AndroidRESTControllerFabric implements EntityControllerInterface {
 
@@ -92,5 +95,15 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
     @Override
     public BasicEntity iGetResponseWithPostParams(String action, Object entity, Class<?> responseType, Object... args) {
         return iGetResponseWithParams(action, HttpMethod.POST.ordinal(), entity, responseType, args);
+    }
+
+    @Override
+    public void iThrowWebServiceException(int HTTPStatus, String errorMessage) {
+        throw new WebServiceException(HttpStatus.values()[HTTPStatus], errorMessage);
+    }
+
+    @Override
+    public void iSetParams(Map<String, String> params) {
+        controller.setParams(params);
     }
 }

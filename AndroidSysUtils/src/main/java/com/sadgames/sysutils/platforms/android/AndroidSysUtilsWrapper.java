@@ -16,7 +16,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
@@ -25,6 +24,7 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
+import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
 import org.luaj.vm2.LuaTable;
 
@@ -62,7 +62,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     protected void downloadBitmapIfNotCached(String textureResName, boolean isRelief) {
         GameMapController gmc = new GameMapController(this);
-        GameMapEntity map = gmc.find(textureResName);
+        GameMapEntity map = (GameMapEntity) gmc.find(textureResName);
 
         if (map == null || map.getId() == null || map.getId().isEmpty())
             return;

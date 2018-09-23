@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.WebServiceException;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.AuthTokenEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -12,18 +11,18 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PARAM_
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PARAM_LOGIN_USER_PASS;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LOGIN;
 
-public class LoginRequest extends BaseController<AuthTokenEntity, GenericCollectionResponse> {
+public class LoginRequest extends AbstractController {
 
     public LoginRequest(String userName, String userPass, SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_LOGIN, AuthTokenEntity.class, GenericCollectionResponse.class, null, sysUtilsWrapper);
+        super(URL_LOGIN, AuthTokenEntity.class, GenericCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
 
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_LOGIN_USER_NAME, userName);
         params.put(PARAM_LOGIN_USER_PASS, userPass);
-        setParams(params);
+        controller.iSetParams(params);
     }
 
-    public AuthTokenEntity doLogin() throws WebServiceException {
-        return getResponse();
+    public AuthTokenEntity doLogin() {
+        return (AuthTokenEntity) controller.iGetResponse("");
     }
 }

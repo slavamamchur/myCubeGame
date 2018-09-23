@@ -1,4 +1,4 @@
-package com.sadgames.gl3dengine.gamelogic.server.rest_api;
+package com.sadgames.sysutils.platforms.android.restapi;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
 
