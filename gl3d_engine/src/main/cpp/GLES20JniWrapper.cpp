@@ -84,6 +84,14 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
     env->ReleasePrimitiveArrayCritical(framebuffers, buffer, JNI_ABORT);
 }
 
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteBuffers
+        (JNIEnv *env, jclass, jintArray buffers) {
+    jboolean isCopy;
+    jint* buffer = (jint*) env->GetPrimitiveArrayCritical(buffers, &isCopy);
+    glDeleteBuffers(1, (GLuint *) buffer);
+    env->ReleasePrimitiveArrayCritical(buffers, buffer, JNI_ABORT);
+}
+
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenRenderBuffers
         (JNIEnv *env, jclass, jintArray renderbuffers) {
     jboolean isCopy;
@@ -229,6 +237,13 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
 
 }
 
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1UNSIGNED_1SHORT_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_UNSIGNED_SHORT;
+
+}
+
 JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1LINEAR_1value
         (JNIEnv *, jclass) {
 
@@ -269,6 +284,25 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
 
     return (jint) GL_ETC1_RGB8_OES;
 
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1ELEMENT_1ARRAY_1BUFFER_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_ELEMENT_ARRAY_BUFFER;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TRIANGLES_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TRIANGLES;
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TRIANGLE_1STRIP_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TRIANGLE_STRIP;
 }
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
@@ -340,5 +374,29 @@ JNIEXPORT void JNICALL
 Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glEnable(JNIEnv *, jclass, jint cap) {
 
     glEnable(static_cast<GLenum>(cap));
+
+}extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindBuffer(JNIEnv *, jclass, jint target, jint buffer) {
+
+    glBindBuffer(static_cast<GLenum>(target), static_cast<GLuint>(buffer));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDrawArrays(JNIEnv *, jclass , jint mode, jint first, jint count) {
+
+    glDrawArrays(static_cast<GLenum>(mode), first, count);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDrawElements(JNIEnv *, jclass,
+                                                                      jint mode, jint count,
+                                                                      jint type) {
+
+    glDrawElements(static_cast<GLenum>(mode), count, static_cast<GLenum>(type), NULL);
 
 }

@@ -127,6 +127,9 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteFrameBuffers
   (JNIEnv *, jclass, jintArray);
 
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteBuffers
+        (JNIEnv *, jclass, jintArray);
+
 /*
  * Class:     com_sadgames_gl3dengine_glrender_GLES20JniWrapper
  * Method:    glGenRenderBuffers
@@ -243,6 +246,9 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
 JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1UNSIGNED_1BYTE_1value
         (JNIEnv *, jclass);
 
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1UNSIGNED_1SHORT_1value
+        (JNIEnv *, jclass);
+
 JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1LINEAR_1value
         (JNIEnv *, jclass);
 
@@ -259,6 +265,15 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
         (JNIEnv *, jclass);
 
 JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1ETC1_1RGB8_1OES_1value
+        (JNIEnv *, jclass);
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1ELEMENT_1ARRAY_1BUFFER_1value
+        (JNIEnv *, jclass);
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TRIANGLES_1value
+        (JNIEnv *, jclass);
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TRIANGLE_1STRIP_1value
         (JNIEnv *, jclass);
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
