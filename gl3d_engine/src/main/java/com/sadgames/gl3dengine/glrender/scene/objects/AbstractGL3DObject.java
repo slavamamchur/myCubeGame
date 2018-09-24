@@ -1,9 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
-import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
@@ -13,6 +11,7 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParamVBO;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
+import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ShortBuffer;
@@ -20,13 +19,16 @@ import java.nio.ShortBuffer;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glDrawElements;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_ELEMENT_ARRAY_BUFFER_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_SHORT_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glActiveTexture;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindBuffer;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindTexture2D;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDeleteBuffers;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
@@ -86,7 +88,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         this.objectType = type;
         this.program = program;
 
-        Matrix.setIdentityM(modelMatrix, 0);
+        MathUtils.setIdentityM(modelMatrix, 0);
 
         createVBOParams();
     }
@@ -302,12 +304,12 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         program.linkVBOData(this);
 
         if (facesIBOPtr > 0)
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
+            glBindBuffer(get_GL_ELEMENT_ARRAY_BUFFER_value(), facesIBOPtr);
     }
 
     public void unbindTexture(int slot) {
-        GLES20JniWrapper.glActiveTexture(slot);
-        GLES20JniWrapper.glBindTexture2D(0);
+        glActiveTexture(slot);
+        glBindTexture2D(0);
     }
 
     public void bindMaterial() {
@@ -409,9 +411,9 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     public void render() {
         /** USING VBO BUFFER */
         if (facesIBOPtr == 0)
-            GLES20.glDrawArrays(GL_TRIANGLES, 0, getFacesCount());
+            glDrawArrays(get_GL_TRIANGLES_value(), 0, getFacesCount());
         else {
-            glDrawElements(GL_TRIANGLE_STRIP, getFacesCount(), GL_UNSIGNED_SHORT, 0);
+            glDrawElements(get_GL_TRIANGLE_STRIP_value(), getFacesCount(), get_GL_UNSIGNED_SHORT_value());
         }
 
         /** USING RAM BUFFER */
@@ -436,7 +438,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
     private void clearVBOPtr(int vboPtr) {
         if (vboPtr != 0) {
-            glDeleteBuffers(1, new int[]{vboPtr}, 0);
+            glDeleteBuffers(new int[]{vboPtr});
         }
     }
 
