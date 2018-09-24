@@ -23,6 +23,20 @@ public class GLES20JniWrapper {
     public static native void glEnableFacesCulling();
     public static native void glEnableDepthTest();
 
+    public static native void glBindBuffer(int target, int buffer);
+    public static native void glDeleteBuffers(int[] buffers);
+
+    public static native void glDrawArrays(
+            int mode,
+            int first,
+            int count
+    );
+
+    public static native void glDrawElements(
+            int mode,
+            int count,
+            int type
+    );
 
     public static native void glBindFramebuffer(int id);
     public static native boolean glCheckFramebufferStatus();
@@ -80,8 +94,12 @@ public class GLES20JniWrapper {
     public static native int get_GL_CLAMP_TO_EDGE_value();
     public static native int get_GL_RGBA_value();
     public static native int get_GL_UNSIGNED_BYTE_value();
+    public static native int get_GL_UNSIGNED_SHORT_value();
     public static native int get_GL_SRC_ALPHA_value();
     public static native int get_GL_ONE_MINUS_SRC_ALPHA_value();
+    public static native int get_GL_ELEMENT_ARRAY_BUFFER_value();
+    public static native int get_GL_TRIANGLES_value();
+    public static native int get_GL_TRIANGLE_STRIP_value();
 
     public static native int get_ETC1_RGB8_OES_value();
 
