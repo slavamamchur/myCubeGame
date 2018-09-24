@@ -1,7 +1,7 @@
 #include "com_sadgames_gl3dengine_glrender_GLES20JniWrapper.h"
 
 #include <GLES2/gl2.h>
-//#include <GLES2/gl2ext.h>
+#include <GLES2/gl2ext.h>
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glClear
         (JNIEnv *, jclass) {
@@ -144,4 +144,201 @@ JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_gl
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBindTextureCube
         (JNIEnv *, jclass, jint id) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint) id);
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexImageDepth
+        (JNIEnv *, jclass, jint width, jint height) {
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_12D_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_2D;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_1CUBE_1MAP_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_CUBE_MAP;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_1CUBE_1MAP_1POSITIVE_1X_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_1MIN_1FILTER_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_MIN_FILTER;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_1MAG_1FILTER_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_MAG_FILTER;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_1WRAP_1S_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_WRAP_S;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1TEXTURE_1WRAP_1T_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_TEXTURE_WRAP_T;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1NEAREST_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_NEAREST;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1CLAMP_1TO_1EDGE_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_CLAMP_TO_EDGE;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1RGBA_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_RGBA;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1UNSIGNED_1BYTE_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_UNSIGNED_BYTE;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1LINEAR_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_LINEAR;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1BLEND_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_BLEND;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1REPEAT_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_REPEAT;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1SRC_1ALPHA_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_SRC_ALPHA;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1ONE_1MINUS_1SRC_1ALPHA_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_ONE_MINUS_SRC_ALPHA;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1ETC1_1RGB8_1OES_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_ETC1_RGB8_OES;
+
+}
+
+JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
+        (JNIEnv *, jclass, jint target, jint pname, jint param) {
+
+    glTexParameteri(static_cast<GLenum>(target), static_cast<GLenum>(pname), param);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexImage2D(JNIEnv *env, jclass,
+                                                                    jint target, jint level,
+                                                                    jint internalformat, jint width,
+                                                                    jint height, jint border,
+                                                                    jint format, jint type,
+                                                                    jbyteArray pixels_) {
+
+    jbyte *pixels = pixels_ != NULL ? env->GetByteArrayElements(pixels_, NULL) : NULL;
+
+    glTexImage2D(static_cast<GLenum>(target),
+                 level,
+                 internalformat,
+                 width,
+                 height,
+                 border,
+                 static_cast<GLenum>(format),
+                 static_cast<GLenum>(type),
+                 pixels);
+
+    if (pixels != NULL)
+        env->ReleaseByteArrayElements(pixels_, pixels, 0);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glCompressedTexImage2D(JNIEnv *env,
+                                                                              jclass,
+                                                                              jint target,
+                                                                              jint level,
+                                                                              jint internalformat,
+                                                                              jint width,
+                                                                              jint height,
+                                                                              jint border,
+                                                                              jint imageSize,
+                                                                              jobject data) {
+    glCompressedTexImage2D(
+            static_cast<GLenum>(target),
+            level,
+            static_cast<GLenum>(internalformat),
+            width,
+            height,
+            border,
+            imageSize,
+            env->GetDirectBufferAddress(data));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBlendFunc(JNIEnv *, jclass, jint sfactor, jint dfactor) {
+
+    glBlendFunc(static_cast<GLenum>(sfactor), static_cast<GLenum>(dfactor));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glEnable(JNIEnv *, jclass, jint cap) {
+
+    glEnable(static_cast<GLenum>(cap));
+
 }
