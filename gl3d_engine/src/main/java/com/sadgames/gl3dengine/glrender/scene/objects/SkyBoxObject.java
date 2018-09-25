@@ -8,7 +8,6 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_B
 
 public class SkyBoxObject extends AbstractSkyObject {
 
-
     public SkyBoxObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLScene glScene) {
         super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_BOX_OBJECT));
     }

@@ -34,4 +34,5 @@ public class WaterObject extends ProceduralSurfaceObject {
     protected int getDimension(BitmapWrapperInterface bmp) {
         return FLAT_MAP_DEFAULT_DIMENSION;//250
     }
+
 }

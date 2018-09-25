@@ -4,26 +4,27 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
-import static android.opengl.ETC1.ETC1_RGB8_OES;
-import static android.opengl.GLES20.GL_BLEND;
-import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
-import static android.opengl.GLES20.GL_LINEAR;
-import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
-import static android.opengl.GLES20.GL_RGBA;
-import static android.opengl.GLES20.GL_SRC_ALPHA;
-import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP;
-import static android.opengl.GLES20.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-import static android.opengl.GLES20.GL_TEXTURE_MAG_FILTER;
-import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
-import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
-import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
-import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
-import static android.opengl.GLES20.glBlendFunc;
-import static android.opengl.GLES20.glCompressedTexImage2D;
-import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glTexImage2D;
-import static android.opengl.GLES20.glTexParameteri;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_ETC1_RGB8_OES_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_BLEND_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_CLAMP_TO_EDGE_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_LINEAR_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_ONE_MINUS_SRC_ALPHA_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_RGBA_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_SRC_ALPHA_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TEXTURE_CUBE_MAP_POSITIVE_X_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TEXTURE_CUBE_MAP_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TEXTURE_MAG_FILTER_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TEXTURE_MIN_FILTER_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TEXTURE_WRAP_S_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TEXTURE_WRAP_T_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_BYTE_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBlendFunc;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCompressedTexImage2D;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
 
 public class CubeMapTexture extends AbstractTexture {
 
@@ -47,18 +48,18 @@ public class CubeMapTexture extends AbstractTexture {
 
     @Override
     protected int getTextureType() {
-        return GL_TEXTURE_CUBE_MAP;
+        return get_GL_TEXTURE_CUBE_MAP_value();
     }
 
     @Override
     protected void setTextureParams() {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_BLEND);
+        glBlendFunc(get_GL_SRC_ALPHA_value(), get_GL_ONE_MINUS_SRC_ALPHA_value());
+        glEnable(get_GL_BLEND_value());
 
-        glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(getTextureType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(getTextureType(), get_GL_TEXTURE_MIN_FILTER_value(), get_GL_LINEAR_value()/*GL_LINEAR_MIPMAP_LINEAR*/);
+        glTexParameteri(getTextureType(), get_GL_TEXTURE_MAG_FILTER_value(), get_GL_LINEAR_value());
+        glTexParameteri(getTextureType(), get_GL_TEXTURE_WRAP_S_value(), get_GL_CLAMP_TO_EDGE_value());
+        glTexParameteri(getTextureType(), get_GL_TEXTURE_WRAP_T_value(), get_GL_CLAMP_TO_EDGE_value());
     }
 
     @Override
@@ -68,7 +69,7 @@ public class CubeMapTexture extends AbstractTexture {
         for (int i =0; i < faces.length; i++)
             try {
                 bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]);
-                loadTextureInternal(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, bitmap);
+                loadTextureInternal(get_GL_TEXTURE_CUBE_MAP_POSITIVE_X_value() + i, bitmap);
                 textureSize += bitmap.getImageSizeBytes();
                 bitmap.release();
             }
@@ -80,8 +81,10 @@ public class CubeMapTexture extends AbstractTexture {
     @SuppressWarnings("all")
     protected void loadTextureInternal(int target, BitmapWrapperInterface bitmap) {
         try {
-            if (!bitmap.isCompressed())
-                glTexImage2D(target, 0, GL_RGBA, getWidth(), getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getRawData());
+            if (!bitmap.isCompressed()) {
+                byte[] pixels = ((ByteBuffer) bitmap.getRawData()).array();
+                glTexImage2D(target, 0, get_GL_RGBA_value(), getWidth(), getHeight(), 0, get_GL_RGBA_value(), get_GL_UNSIGNED_BYTE_value(), pixels);
+            }
             else {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();
@@ -89,7 +92,7 @@ public class CubeMapTexture extends AbstractTexture {
                 //if (isETC1Supported()) {
                     data = bitmap.getRawData();
                     int imageSize = data.remaining();
-                    glCompressedTexImage2D(target, 0, ETC1_RGB8_OES, width, height, 0, imageSize, data);
+                glCompressedTexImage2D(target, 0, get_ETC1_RGB8_OES_value(), width, height, 0, imageSize, data);
                 //} else {
                     //glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());
                 //}

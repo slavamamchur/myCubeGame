@@ -6,8 +6,8 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.glDrawArrays;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
 
 public class CubePrimitiveObject extends GameItemObject {
 
@@ -125,6 +125,6 @@ public class CubePrimitiveObject extends GameItemObject {
 
     @Override
     public void render() {
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, getFacesCount());
+        glDrawArrays(get_GL_TRIANGLE_STRIP_value(), 0, getFacesCount());
     }
 }

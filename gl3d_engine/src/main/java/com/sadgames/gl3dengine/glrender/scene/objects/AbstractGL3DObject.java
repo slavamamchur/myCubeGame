@@ -1,7 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
-import android.opengl.Matrix;
-
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
@@ -505,15 +503,15 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     }
 
     private void updateTransform() {
-        Matrix.setIdentityM(modelMatrix, 0);
+        MathUtils.setIdentityM(modelMatrix, 0);
 
-        Matrix.translateM(modelMatrix, 0, place.x, 0, place.y);
+        MathUtils.translateM(modelMatrix, 0, place.x, 0, place.y);
 
-        Matrix.rotateM(modelMatrix, 0, rotationX, 1, 0, 0);
-        Matrix.rotateM(modelMatrix, 0, rotationY, 0, 1, 0);
-        Matrix.rotateM(modelMatrix, 0, rotationZ, 0, 0, 1);
+        float[] transformer = new float[16];
+        MathUtils.rotateM(transformer, rotationX, rotationY, rotationZ);
+        sysUtilsWrapper.mulMM(modelMatrix, 0, modelMatrix, 0, transformer, 0);
 
-        Matrix.scaleM(modelMatrix, 0, scaleFactor, scaleFactor, scaleFactor);
+        MathUtils.scaleM(modelMatrix, 0, scaleFactor, scaleFactor, scaleFactor);
     }
 
     public abstract int getFacesCount();

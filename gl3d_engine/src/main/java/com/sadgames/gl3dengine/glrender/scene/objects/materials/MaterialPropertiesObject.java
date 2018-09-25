@@ -78,5 +78,4 @@ public class MaterialPropertiesObject implements Serializable {
     public void setSpecularMapName(String specularMapName) {
         this.specularMapName = specularMapName;
     }
-
 }

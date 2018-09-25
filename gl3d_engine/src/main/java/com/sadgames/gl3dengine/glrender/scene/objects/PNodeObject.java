@@ -54,11 +54,9 @@ public abstract class PNodeObject extends BitmapTexturedObject {
     public RigidBody get_body() {
         return _body;
     }
-
     public RigidBody getOld_body() {
         return old_body;
     }
-
     public void set_body(RigidBody _body) {
         this._body = _body;
     }

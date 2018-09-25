@@ -7,7 +7,7 @@ import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 public abstract class BitmapTexturedObject extends AbstractGL3DObject {
 
-    public static final int DEFAULT_TEXTURE_SIZE = 500;
+    //public static final int DEFAULT_TEXTURE_SIZE = 500;
 
     public BitmapTexturedObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, String textureResName, GLShaderProgram program) {
         super(sysUtilsWrapper, type, program);

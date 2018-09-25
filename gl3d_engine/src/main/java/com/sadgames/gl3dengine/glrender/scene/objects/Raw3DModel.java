@@ -54,5 +54,4 @@ public class Raw3DModel {
     public void setFaces(short[] faces) {
         this.faces = faces;
     }
-
 }

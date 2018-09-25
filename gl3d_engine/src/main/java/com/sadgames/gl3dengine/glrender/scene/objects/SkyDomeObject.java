@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
-
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
@@ -10,9 +9,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.glDrawElements;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_SHORT_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SKY_DOME_OBJECT;
@@ -51,7 +50,7 @@ public class SkyDomeObject extends AbstractSkyObject {
     @Override
     public void render() {
         glEnableFrontFacesCulling();
-        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
+        glDrawElements(get_GL_TRIANGLES_value(), getFacesCount(), get_GL_UNSIGNED_SHORT_value());
         glEnableBackFacesCulling();
     }
 }

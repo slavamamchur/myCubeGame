@@ -55,7 +55,6 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
 
     protected static final boolean[] INVERT_LIGHT_FACTOR = {true, true, false, true, true, false};
 
-
     protected float scaleX;
     protected float scaleZ;
 

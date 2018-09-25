@@ -97,5 +97,4 @@ public class PyramidPrimitiveObject extends GameItemObject {
     protected short[] getFacesArray() {
         return new short[]{ 0, 2, 1, 3, 5, 4, 6, 8, 7, 9, 11, 10};
     }
-
 }

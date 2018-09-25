@@ -32,6 +32,7 @@ public abstract class SceneObjectsTreeItem {
     public boolean isVisible() {
         return visible;
     }
+
     @SuppressWarnings("unused") public void hideObject() {
         visible = false;
     }

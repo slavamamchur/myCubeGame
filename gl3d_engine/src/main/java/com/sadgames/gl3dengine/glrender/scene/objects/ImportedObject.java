@@ -37,10 +37,10 @@ public abstract class ImportedObject extends GameItemObject {
 
     public abstract Raw3DModel getRaw3DModel();
 
-    public ShapeType getCollisionShapeType() {
+    @SuppressWarnings("unused") public ShapeType getCollisionShapeType() {
         return collisionShapeType;
     }
-    public void setCollisionShapeType(ShapeType collisionShapeType) {
+    @SuppressWarnings("unused") public void setCollisionShapeType(ShapeType collisionShapeType) {
         this.collisionShapeType = collisionShapeType;
     }
     public void setCollisionShapeType(short key) {

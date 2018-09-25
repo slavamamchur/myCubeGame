@@ -13,14 +13,14 @@ import java.util.List;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.glDisable;
-import static android.opengl.GLES20.glDrawElements;
-import static android.opengl.GLES20.glEnable;
 import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
 import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_CULL_FACE_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_SHORT_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDisable;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawElements;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 
 public class Blender3DObject extends ImportedObject {
     private static final String BLENDER_FILE_EXT = ".mdl";
@@ -64,6 +64,7 @@ public class Blender3DObject extends ImportedObject {
     public void setHasInvertedNormals(boolean hasInvertedNormals) {
         this.hasInvertedNormals = hasInvertedNormals;
     }
+
     public void setTwoSidedSurface(boolean twoSidedSurface) {
         this.twoSidedSurface = twoSidedSurface;
     }
@@ -230,11 +231,11 @@ public class Blender3DObject extends ImportedObject {
 
     @Override
     public void render() {
-        if (twoSidedSurface) glDisable(GL_CULL_FACE);
+        if (twoSidedSurface) glDisable(get_GL_CULL_FACE_value());
 
-        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT, 0);
+        glDrawElements(get_GL_TRIANGLES_value(), getFacesCount(), get_GL_UNSIGNED_SHORT_value());
 
-        if (twoSidedSurface) glEnable(GL_CULL_FACE);
+        if (twoSidedSurface) glEnable(get_GL_CULL_FACE_value());
     }
 
 }

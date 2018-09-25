@@ -3,11 +3,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 
-import static android.opengl.ETC1.ETC1_RGB8_OES;
-import static android.opengl.GLES20.GL_COMPRESSED_TEXTURE_FORMATS;
-import static android.opengl.GLES20.GL_NUM_COMPRESSED_TEXTURE_FORMATS;
-import static android.opengl.GLES20.glGetIntegerv;
-
 public abstract class AbstractTexture {
 
     private     int width;
@@ -82,7 +77,7 @@ public abstract class AbstractTexture {
         textureId = 0;
     }
 
-    public static boolean isETC1Supported() {
+    /*public static boolean isETC1Supported() {
         int[] results = new int[20];
         glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, results, 0);
         int numFormats = results[0];
@@ -96,7 +91,7 @@ public abstract class AbstractTexture {
             }
         }
         return false;
-    }
+    }*/
 
     protected abstract int getTextureType();
     protected abstract void setTextureParams();

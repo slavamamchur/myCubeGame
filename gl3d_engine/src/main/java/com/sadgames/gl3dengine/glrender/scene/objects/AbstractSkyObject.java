@@ -4,8 +4,8 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.glDrawArrays;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
@@ -41,7 +41,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
     @Override
     public void render() {
         glEnableFrontFacesCulling();
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, getFacesCount());
+        glDrawArrays(get_GL_TRIANGLE_STRIP_value(), 0, getFacesCount());
         glEnableBackFacesCulling();
     }
 

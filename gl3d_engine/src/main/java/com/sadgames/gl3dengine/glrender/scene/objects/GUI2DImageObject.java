@@ -9,8 +9,8 @@ import java.nio.FloatBuffer;
 
 import javax.vecmath.Vector4f;
 
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.glDrawArrays;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXEL_UV_SIZE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
@@ -63,7 +63,7 @@ public class GUI2DImageObject extends AbstractGL3DObject {
 
     @Override
     public void render() {
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, getFacesCount());
+        glDrawArrays(get_GL_TRIANGLE_STRIP_value(), 0, getFacesCount());
     }
 
     @Override

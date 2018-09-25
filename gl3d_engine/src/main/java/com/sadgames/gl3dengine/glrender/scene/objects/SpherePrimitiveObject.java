@@ -8,9 +8,6 @@ import java.util.List;
 
 public class SpherePrimitiveObject extends GameItemObject {
 
-    private final static float PI = 3.1415926535f;
-    private final static float PI_2 = 1.57079632679f;
-
     protected float halfSize;
     protected int mRefineLevel;
     protected float _mPosX;
@@ -21,7 +18,6 @@ public class SpherePrimitiveObject extends GameItemObject {
     protected int _mCountVertex;
     protected int _mCountIndex;
     protected int _mCountTriangle;
-
 
     public SpherePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag, float halfSize) {
         super(sysUtilsWrapper, textureResName, program, mass, tag);
@@ -34,7 +30,7 @@ public class SpherePrimitiveObject extends GameItemObject {
 
     }
 
-    public SpherePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag, float halfSize) {
+    @SuppressWarnings("unused") public SpherePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag, float halfSize) {
         super(sysUtilsWrapper, program, color, mass, tag);
 
         this.halfSize = halfSize;
