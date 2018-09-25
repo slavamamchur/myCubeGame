@@ -64,6 +64,16 @@ public class MathUtils {
         }
     }
 
+    public static void scaleM(float[] m, int mOffset,
+                              float x, float y, float z) {
+        for (int i=0 ; i<4 ; i++) {
+            int mi = mOffset + i;
+            m[     mi] *= x;
+            m[ 4 + mi] *= y;
+            m[ 8 + mi] *= z;
+        }
+    }
+
     public static void perspectiveM(float[] m, int offset,
                                     float fovy, float aspect, float zNear, float zFar) {
         float f = 1.0f / (float) Math.tan(fovy * (Math.PI / 360.0));
