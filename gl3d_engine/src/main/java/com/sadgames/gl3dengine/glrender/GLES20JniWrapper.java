@@ -26,6 +26,16 @@ public class GLES20JniWrapper {
 
     public static native void glBindBuffer(int target, int buffer);
     public static native void glDeleteBuffers(int[] buffers);
+    public static native void glGenBuffers(
+            int n,
+            int[] buffers
+    );
+    public static native void glBufferData(
+            int target,
+            int size,
+            java.nio.Buffer data,
+            int usage
+    );
 
     public static native void glDrawArrays(
             int mode,
@@ -102,6 +112,7 @@ public class GLES20JniWrapper {
     public static native int get_GL_TRIANGLES_value();
     public static native int get_GL_TRIANGLE_STRIP_value();
     public static native int get_GL_CULL_FACE_value();
+    public static native int get_GL_STATIC_DRAW_value();
 
     public static native int get_ETC1_RGB8_OES_value();
 

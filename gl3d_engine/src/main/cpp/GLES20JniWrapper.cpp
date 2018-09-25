@@ -311,6 +311,12 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
     return (jint) GL_CULL_FACE;
 }
 
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1STATIC_1DRAW_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_STATIC_DRAW;
+}
+
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
         (JNIEnv *, jclass, jint target, jint pname, jint param) {
 
@@ -415,3 +421,25 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDisable(JNIEnv *, jclas
 
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGenBuffers(JNIEnv *env, jclass,
+                                                                    jint n, jintArray buffers_) {
+    jint *buffers = env->GetIntArrayElements(buffers_, NULL);
+
+    glGenBuffers(n, reinterpret_cast<GLuint *>(buffers));
+
+    env->ReleaseIntArrayElements(buffers_, buffers, 0);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBufferData(JNIEnv *env, jclass,
+                                                                    jint target, jint size,
+                                                                    jobject data, jint usage) {
+
+    glBufferData(static_cast<GLenum>(target),
+                 size,
+                 env->GetDirectBufferAddress(data),
+                 static_cast<GLenum>(usage));
+}
