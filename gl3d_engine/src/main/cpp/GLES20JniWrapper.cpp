@@ -305,6 +305,12 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
     return (jint) GL_TRIANGLE_STRIP;
 }
 
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1CULL_1FACE_1value
+        (JNIEnv *, jclass) {
+
+    return (jint) GL_CULL_FACE;
+}
+
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
         (JNIEnv *, jclass, jint target, jint pname, jint param) {
 
@@ -400,3 +406,12 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDrawElements(JNIEnv *, 
     glDrawElements(static_cast<GLenum>(mode), count, static_cast<GLenum>(type), NULL);
 
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDisable(JNIEnv *, jclass, jint cap) {
+
+    glDisable(static_cast<GLenum>(cap));
+
+}
+

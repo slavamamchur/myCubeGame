@@ -13,6 +13,7 @@ public class GLES20JniWrapper {
     public static native void glViewport(int width, int height);
     public static native void glBlendFunc(int sfactor, int dfactor);
     public static native void glEnable(int cap);
+    public static native void glDisable(int cap);
 
     public static native String glExtensions();
 
@@ -100,6 +101,7 @@ public class GLES20JniWrapper {
     public static native int get_GL_ELEMENT_ARRAY_BUFFER_value();
     public static native int get_GL_TRIANGLES_value();
     public static native int get_GL_TRIANGLE_STRIP_value();
+    public static native int get_GL_CULL_FACE_value();
 
     public static native int get_ETC1_RGB8_OES_value();
 
