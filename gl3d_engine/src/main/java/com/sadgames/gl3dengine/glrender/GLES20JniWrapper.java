@@ -18,6 +18,17 @@ public class GLES20JniWrapper {
     public static native String glExtensions();
 
     public static native void glUseProgram(int id);
+    public static native void glAttachShader(int program, int shader);
+    public static native void glCompileShader(int shader);
+    public static native  int glCreateProgram();
+    public static native  int glCreateShader(int type);
+    public static native void glDeleteProgram(int program);
+    public static native void glDeleteShader(int shader);
+    public static native void glDetachShader(int program, int shader);
+    public static native void glGetProgramiv(int program, int pname, int[] params);
+    public static native void glGetShaderiv(int shader, int pname, int[] params);
+    public static native void glLinkProgram(int program);
+    public static native void glShaderSource(int shader, String string);
 
     public static native void glEnableFrontFacesCulling();
     public static native void glEnableBackFacesCulling();
@@ -104,10 +115,13 @@ public class GLES20JniWrapper {
     public static native int get_GL_REPEAT_value();
     public static native int get_GL_CLAMP_TO_EDGE_value();
     public static native int get_GL_RGBA_value();
+
     public static native int get_GL_UNSIGNED_BYTE_value();
     public static native int get_GL_UNSIGNED_SHORT_value();
+
     public static native int get_GL_SRC_ALPHA_value();
     public static native int get_GL_ONE_MINUS_SRC_ALPHA_value();
+
     public static native int get_GL_ELEMENT_ARRAY_BUFFER_value();
     public static native int get_GL_TRIANGLES_value();
     public static native int get_GL_TRIANGLE_STRIP_value();
@@ -115,5 +129,11 @@ public class GLES20JniWrapper {
     public static native int get_GL_STATIC_DRAW_value();
 
     public static native int get_ETC1_RGB8_OES_value();
+
+    public static native int get_GL_COMPILE_STATUS_value();
+    public static native int get_GL_LINK_STATUS_value();
+    public static native int get_GL_VERTEX_SHADER_value();
+    public static native int get_GL_FRAGMENT_SHADER_value();
+
 
 }

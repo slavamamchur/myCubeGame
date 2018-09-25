@@ -1,7 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
-import android.opengl.Matrix;
-
 import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
@@ -9,6 +7,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
+import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
@@ -108,8 +107,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
                                                         scene.getMoveFactor());
 
         float[] mMatrix = new float[16];
-        Matrix.setIdentityM(mMatrix, 0);
-        Matrix.rotateM(mMatrix, 0, skyBoxRotationAngle, 0, 1, 0);
+        MathUtils.rotateM(mMatrix, 0f, skyBoxRotationAngle, 0f);
         GLShaderParam param = paramByName(SKY_BOX_MV_MATRIXF_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0)
             param.setParamValue(mMatrix);

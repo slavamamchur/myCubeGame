@@ -16,6 +16,7 @@ public class GUIRendererProgram extends ShadowMapProgram {
     protected String getVertexShaderResId() {
         return GUI_VERTEX_SHADER;
     }
+
     @Override
     protected String getFragmentShaderResId() {
         return GUI_FRAGMENT_SHADER;

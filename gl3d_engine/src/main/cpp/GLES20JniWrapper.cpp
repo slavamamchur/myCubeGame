@@ -317,6 +317,26 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
     return (jint) GL_STATIC_DRAW;
 }
 
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1COMPILE_1STATUS_1value
+        (JNIEnv *, jclass) {
+    return (jint) GL_COMPILE_STATUS;
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1LINK_1STATUS_1value
+        (JNIEnv *, jclass) {
+    return (jint) GL_LINK_STATUS;
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1VERTEX_1SHADER_1value
+        (JNIEnv *, jclass) {
+    return (jint) GL_VERTEX_SHADER;
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1FRAGMENT_1SHADER_1value
+        (JNIEnv *, jclass) {
+    return (jint) GL_FRAGMENT_SHADER;
+}
+
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
         (JNIEnv *, jclass, jint target, jint pname, jint param) {
 
@@ -442,4 +462,111 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glBufferData(JNIEnv *env,
                  size,
                  env->GetDirectBufferAddress(data),
                  static_cast<GLenum>(usage));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glAttachShader(JNIEnv *, jclass,
+                                                                      jint program, jint shader) {
+
+    glAttachShader(static_cast<GLuint>(program), static_cast<GLuint>(shader));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glCompileShader(JNIEnv *, jclass,
+                                                                       jint shader) {
+
+    glCompileShader(static_cast<GLuint>(shader));
+
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glCreateProgram(JNIEnv *, jclass) {
+
+    return (jint) glCreateProgram();
+
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glCreateShader(JNIEnv *, jclass,
+                                                                      jint type) {
+
+    return (jint) glCreateShader(static_cast<GLenum>(type));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteProgram(JNIEnv *, jclass,
+                                                                       jint program) {
+
+    glDeleteProgram(static_cast<GLuint>(program));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDeleteShader(JNIEnv *, jclass,
+                                                                      jint shader) {
+
+    glDeleteShader(static_cast<GLuint>(shader));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glDetachShader(JNIEnv *, jclass,
+                                                                      jint program, jint shader) {
+
+    glDetachShader(static_cast<GLuint>(program), static_cast<GLuint>(shader));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGetProgramiv(JNIEnv *env, jclass,
+                                                                      jint program, jint pname,
+                                                                      jintArray params_) {
+    jint *params = env->GetIntArrayElements(params_, NULL);
+
+    glGetProgramiv(static_cast<GLuint>(program), static_cast<GLenum>(pname), params);
+
+    env->ReleaseIntArrayElements(params_, params, 0);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGetShaderiv(JNIEnv *env, jclass,
+                                                                     jint shader, jint pname,
+                                                                     jintArray params_) {
+    jint *params = env->GetIntArrayElements(params_, NULL);
+
+    glGetShaderiv(static_cast<GLuint>(shader), static_cast<GLenum>(pname), params);
+
+    env->ReleaseIntArrayElements(params_, params, 0);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glLinkProgram(JNIEnv *, jclass,
+                                                                     jint program) {
+
+    glLinkProgram(static_cast<GLuint>(program));
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glShaderSource(JNIEnv *env, jclass,
+                                                                      jint shader,
+                                                                      jstring string_) {
+    const char *source = env->GetStringUTFChars(string_, 0);
+
+    glShaderSource(shader, 1, &source, NULL);
+
+    env->ReleaseStringUTFChars(string_, source);
 }

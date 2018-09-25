@@ -8,7 +8,6 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYDOME_VERTEX_SHA
 
 public class SkyDomeProgram extends SkyBoxProgram {
 
-
     public SkyDomeProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
         super(sysUtilsWrapper);
     }

@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
-import android.opengl.Matrix;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
@@ -12,21 +11,21 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.opengl.GLES20.GL_COMPILE_STATUS;
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.GL_LINK_STATUS;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
-import static android.opengl.GLES20.glAttachShader;
-import static android.opengl.GLES20.glCompileShader;
-import static android.opengl.GLES20.glCreateProgram;
-import static android.opengl.GLES20.glCreateShader;
-import static android.opengl.GLES20.glDeleteProgram;
-import static android.opengl.GLES20.glDeleteShader;
-import static android.opengl.GLES20.glDetachShader;
-import static android.opengl.GLES20.glGetProgramiv;
-import static android.opengl.GLES20.glGetShaderiv;
-import static android.opengl.GLES20.glLinkProgram;
-import static android.opengl.GLES20.glShaderSource;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_COMPILE_STATUS_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_FRAGMENT_SHADER_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_LINK_STATUS_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_VERTEX_SHADER_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glAttachShader;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCompileShader;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCreateProgram;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCreateShader;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDeleteProgram;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDeleteShader;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDetachShader;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glGetProgramiv;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glGetShaderiv;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glLinkProgram;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glShaderSource;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_DUDVMAP_SLOT_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.ACTIVE_NORMALMAP_SLOT_PARAM_NAME;
@@ -79,8 +78,8 @@ public abstract class GLShaderProgram {
 
         this.sysUtilsWrapper = sysUtilsWrapper;
 
-        vertexShaderID = createShader(sysUtilsWrapper, GL_VERTEX_SHADER, getVertexShaderResId());
-        fragmentShaderID = createShader(sysUtilsWrapper, GL_FRAGMENT_SHADER, getFragmentShaderResId());
+        vertexShaderID = createShader(sysUtilsWrapper, get_GL_VERTEX_SHADER_value(), getVertexShaderResId());
+        fragmentShaderID = createShader(sysUtilsWrapper, get_GL_FRAGMENT_SHADER_value(), getFragmentShaderResId());
         programId = createProgram(vertexShaderID, fragmentShaderID);
 
         createParams();
@@ -283,10 +282,10 @@ public abstract class GLShaderProgram {
     public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
         float[] mMatrix = new float[16];
 
-        Matrix.multiplyMM(mMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        sysUtilsWrapper.mulMM(mMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
         setMVMatrixData(mMatrix);
 
-        Matrix.multiplyMM(mMatrix, 0, projectionMatrix, 0, mMatrix, 0);
+        sysUtilsWrapper.mulMM(mMatrix, 0, projectionMatrix, 0, mMatrix, 0);
         setMVPMatrixData(mMatrix);
     }
 
@@ -307,9 +306,9 @@ public abstract class GLShaderProgram {
     protected void bindLightSourceMVP (AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
         float [] lightMVP = new float[16];
 
-        Matrix.multiplyMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
-        Matrix.multiplyMM(lightMVP, 0, projectionMatrix, 0, viewMatrix, 0);
-        Matrix.multiplyMM(lightMVP, 0, BIAS, 0, lightMVP, 0);
+        sysUtilsWrapper.mulMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        sysUtilsWrapper.mulMM(lightMVP, 0, projectionMatrix, 0, viewMatrix, 0);
+        sysUtilsWrapper.mulMM(lightMVP, 0, BIAS, 0, lightMVP, 0);
 
         paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);
     }
@@ -326,7 +325,7 @@ public abstract class GLShaderProgram {
 
         glLinkProgram(programId);
         final int[] linkStatus = new int[1];
-        glGetProgramiv(programId, GL_LINK_STATUS, linkStatus, 0);
+        glGetProgramiv(programId, get_GL_LINK_STATUS_value(), linkStatus);
         if (linkStatus[0] == 0) {
             glDeleteProgram(programId);
             return 0;
@@ -348,7 +347,7 @@ public abstract class GLShaderProgram {
         glShaderSource(shaderId, shaderText);
         glCompileShader(shaderId);
         final int[] compileStatus = new int[1];
-        glGetShaderiv(shaderId, GL_COMPILE_STATUS, compileStatus, 0);
+        glGetShaderiv(shaderId, get_GL_COMPILE_STATUS_value(), compileStatus);
         if (compileStatus[0] == 0) {
             glDeleteShader(shaderId);
             return 0;
