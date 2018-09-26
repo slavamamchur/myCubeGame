@@ -14,6 +14,12 @@ android {
         versionNameSuffix '3'
 
         vectorDrawables.useSupportLibrary = true
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
     }
 
     buildTypes {
@@ -38,6 +44,11 @@ android {
     }
 
     productFlavors {}
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+        }
+    }
 
 }
 

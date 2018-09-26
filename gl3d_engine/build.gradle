@@ -12,24 +12,12 @@ android {
         versionCode 0
         versionName "1.0"
         versionNameSuffix '0'
-
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-            }
-        }
     }
 
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path 'CMakeLists.txt'
         }
     }
 
