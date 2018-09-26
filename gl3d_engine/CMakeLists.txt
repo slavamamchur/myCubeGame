@@ -8,6 +8,6 @@ add_library(gleswrapper SHARED src/main/cpp/GLES20JniWrapper.cpp)
 find_path(GLES2_INCLUDE_DIR GLES2/gl2.h HINTS ${ANDROID_NDK})
 find_library(GLES2_LIBRARY libGLESv2.so HINTS ${GLES2_INCLUDE_DIR}/../lib)
 target_include_directories(gleswrapper PUBLIC ${GLES2_INCLUDE_DIR})
-find_library(log-lib log)
+# find_library(log-lib log)
 
-target_link_libraries(gleswrapper ${log-lib} ${GLES2_LIBRARY})
+target_link_libraries(gleswrapper ${GLES2_LIBRARY})
