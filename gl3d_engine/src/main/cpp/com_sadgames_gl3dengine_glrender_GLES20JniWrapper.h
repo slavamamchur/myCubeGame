@@ -4,6 +4,11 @@
 
 #ifndef _Included_com_sadgames_gl3dengine_glrender_GLES20JniWrapper
 #define _Included_com_sadgames_gl3dengine_glrender_GLES20JniWrapper
+
+#ifndef BUFFER_OFFSET
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -292,6 +297,12 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
         (JNIEnv *, jclass);
 
 JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1FRAGMENT_1SHADER_1value
+        (JNIEnv *, jclass);
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1FLOAT_1value
+        (JNIEnv *, jclass);
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1ARRAY_1BUFFER_1value
         (JNIEnv *, jclass);
 
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri

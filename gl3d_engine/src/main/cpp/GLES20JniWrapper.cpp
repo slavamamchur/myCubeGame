@@ -337,6 +337,16 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
     return (jint) GL_FRAGMENT_SHADER;
 }
 
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1FLOAT_1value
+        (JNIEnv *, jclass) {
+    return (jint) GL_FLOAT;
+}
+
+JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1ARRAY_1BUFFER_1value
+        (JNIEnv *, jclass) {
+    return (jint) GL_ARRAY_BUFFER;
+}
+
 JNIEXPORT void JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexParameteri
         (JNIEnv *, jclass, jint target, jint pname, jint param) {
 
@@ -570,3 +580,33 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glShaderSource(JNIEnv *en
 
     env->ReleaseStringUTFChars(string_, source);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glEnableVertexAttribArray(JNIEnv *,
+                                                                                 jclass,
+                                                                                 jint index) {
+
+    glEnableVertexAttribArray(index);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glVertexAttribPointer(JNIEnv *,
+                                                                             jclass,
+                                                                             jint indx, jint size,
+                                                                             jint type,
+                                                                             jboolean normalized,
+                                                                             jint stride,
+                                                                             jint offset) {
+
+    glVertexAttribPointer(static_cast<GLuint>(indx),
+                          size,
+                          static_cast<GLenum>(type),
+                          normalized,
+                          stride,
+                          BUFFER_OFFSET(offset));
+
+}
+

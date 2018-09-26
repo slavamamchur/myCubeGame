@@ -34,6 +34,15 @@ public class GLES20JniWrapper {
     public static native void glEnableBackFacesCulling();
     public static native void glEnableFacesCulling();
     public static native void glEnableDepthTest();
+    public static native void glEnableVertexAttribArray(int index);
+    public static native void glVertexAttribPointer(
+            int indx,
+            int size,
+            int type,
+            boolean normalized,
+            int stride,
+            int offset
+    );
 
     public static native void glBindBuffer(int target, int buffer);
     public static native void glDeleteBuffers(int[] buffers);
@@ -118,11 +127,13 @@ public class GLES20JniWrapper {
 
     public static native int get_GL_UNSIGNED_BYTE_value();
     public static native int get_GL_UNSIGNED_SHORT_value();
+    public static native int get_GL_FLOAT_value();
 
     public static native int get_GL_SRC_ALPHA_value();
     public static native int get_GL_ONE_MINUS_SRC_ALPHA_value();
 
     public static native int get_GL_ELEMENT_ARRAY_BUFFER_value();
+    public static native int get_GL_ARRAY_BUFFER_value();
     public static native int get_GL_TRIANGLES_value();
     public static native int get_GL_TRIANGLE_STRIP_value();
     public static native int get_GL_CULL_FACE_value();

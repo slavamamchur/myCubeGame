@@ -2,15 +2,15 @@ package com.sadgames.gl3dengine.glrender.scene.shaders.params;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_STATIC_DRAW;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBufferData;
-import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGenBuffers;
-import static android.opengl.GLES20.glVertexAttribPointer;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_ARRAY_BUFFER_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_FLOAT_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_STATIC_DRAW_value;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindBuffer;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBufferData;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDeleteBuffers;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableVertexAttribArray;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glGenBuffers;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glVertexAttribPointer;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
 
 public class GLShaderParamVBO extends GLShaderParam {
@@ -29,7 +29,7 @@ public class GLShaderParamVBO extends GLShaderParam {
 
     private void initVBO() {
         final int buffers[] = new int[1];
-        glGenBuffers(1, buffers, 0);
+        glGenBuffers(1, buffers);
         vboPtr = buffers[0];
     }
 
@@ -40,9 +40,9 @@ public class GLShaderParamVBO extends GLShaderParam {
         if (vboPtr == 0)
             initVBO();
 
-        glBindBuffer(GL_ARRAY_BUFFER, vboPtr);
-        glBufferData(GL_ARRAY_BUFFER, data.capacity() * Float.SIZE / 8, data, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(get_GL_ARRAY_BUFFER_value(), vboPtr);
+        glBufferData(get_GL_ARRAY_BUFFER_value(), data.capacity() * Float.SIZE / 8, data, get_GL_STATIC_DRAW_value());
+        glBindBuffer(get_GL_ARRAY_BUFFER_value(), 0);
     }
 
     @Override
@@ -65,17 +65,17 @@ public class GLShaderParamVBO extends GLShaderParam {
 
     @Override
     protected void internalLinkParamValue() {
-        glBindBuffer(GL_ARRAY_BUFFER, vboPtr);
-        glVertexAttribPointer(paramReference, size, GL_FLOAT, false, stride, pos);
+        glBindBuffer(get_GL_ARRAY_BUFFER_value(), vboPtr);
+        glVertexAttribPointer(paramReference, size, get_GL_FLOAT_value(), false, stride, pos);
         glEnableVertexAttribArray(paramReference);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(get_GL_ARRAY_BUFFER_value(), 0);
     }
 
     public void clearParamDataVBO() {
         clearParamData();
 
         if (vboPtr != 0) {
-            glDeleteBuffers(1, new int[]{vboPtr}, 0);
+            glDeleteBuffers(new int[]{vboPtr});
             vboPtr = 0;
         }
     }
