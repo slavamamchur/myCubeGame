@@ -110,7 +110,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             return true;
         }
         else if (intent.getAction().equals(ACTION_DELETE_ENTITY_RESPONSE)){
-            ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
+            ErrorEntity error = (ErrorEntity) intent.getSerializableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 showProgress();
                 getData();
@@ -125,7 +125,7 @@ public abstract class BaseListActivity<T extends BasicNamedDbEntity> extends Bas
             ErrorEntity error = intent.getParcelableExtra(EXTRA_ERROR_OBJECT);
             if (error == null){
                 Intent mIntent = new Intent(getApplicationContext(), getDetailsActivityClass());
-                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                mIntent.putExtra(getEntityExtra(), intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                 mIntent.putExtra(BaseItemDetailsActivity.EXTRA_ENTITY_CHANGED, true);
                 startActivityForResult(mIntent, BaseItemDetailsActivity.EDITOR_REQUEST);
             }

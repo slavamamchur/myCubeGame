@@ -93,7 +93,7 @@ public class GameMapsListActivity extends BaseListActivity<GameMapEntity> {
             if (error == null){
 
                 Intent mIntent = new Intent(getApplicationContext(), GameActivity.class);
-                mIntent.putExtra(getEntityExtra(), intent.getParcelableExtra(EXTRA_ENTITY_OBJECT));
+                mIntent.putExtra(getEntityExtra(), intent.getSerializableExtra(EXTRA_ENTITY_OBJECT));
                 startActivity(mIntent);
             }
             else {
