@@ -1,16 +1,10 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders.params;
 
+import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
+
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glUniform1f;
-import static android.opengl.GLES20.glUniform1i;
-import static android.opengl.GLES20.glUniform3fv;
-import static android.opengl.GLES20.glUniformMatrix4fv;
-import static android.opengl.GLES20.glVertexAttribPointer;
+import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_FLOAT_value;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
@@ -56,9 +50,9 @@ public class GLShaderParam {
 
     public int getParamReference () {
         if (paramType.equals(FLOAT_ATTRIB_ARRAY_PARAM))
-            return glGetAttribLocation(programId, paramName);
+            return GLES20JniWrapper.glGetAttribLocation(programId, paramName);
         else
-            return glGetUniformLocation(programId, paramName);
+            return GLES20JniWrapper.glGetUniformLocation(programId, paramName);
 
     }
 
@@ -93,29 +87,29 @@ public class GLShaderParam {
     }
 
     protected void internalLinkParamValue() {
-        glVertexAttribPointer(paramReference, size, GL_FLOAT, false, stride, data);
-        glEnableVertexAttribArray(paramReference);
+        GLES20JniWrapper.glVertexAttribPointer(paramReference, size, get_GL_FLOAT_value(), false, stride, data);
+        GLES20JniWrapper.glEnableVertexAttribArray(paramReference);
     }
 
     public void setParamValue(float[] data) {
         if (paramType.equals(FLOAT_UNIFORM_VECTOR_PARAM) && (data.length == 4 || data.length == 3))
-            glUniform3fv(paramReference, 1, data, 0);
+            GLES20JniWrapper.glUniform3fv(paramReference, 1, data);
         else if (paramType.equals(FLOAT_UNIFORM_MATRIX_PARAM) && (data.length == 16))
-            glUniformMatrix4fv(paramReference, 1, false, data, 0);
+            GLES20JniWrapper.glUniformMatrix4fv(paramReference, 1, false, data);
         else
             throw new IllegalArgumentException();
     }
 
     public void setParamValue(int data) {
         if (paramType.equals(INTEGER_UNIFORM_PARAM))
-            glUniform1i(paramReference, data);
+            GLES20JniWrapper.glUniform1i(paramReference, data);
         else
             throw new IllegalArgumentException();
     }
 
     public void setParamValue(float data) {
         if (paramType.equals(FLOAT_UNIFORM_PARAM))
-            glUniform1f(paramReference, data);
+            GLES20JniWrapper.glUniform1f(paramReference, data);
         else
             throw new IllegalArgumentException();
     }

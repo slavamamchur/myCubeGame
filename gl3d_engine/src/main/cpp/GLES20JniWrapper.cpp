@@ -610,3 +610,91 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glVertexAttribPointer(JNI
 
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glVertexAttribPointerBounds(JNIEnv *env,
+                                                                                   jclass,
+                                                                                   jint indx,
+                                                                                   jint size,
+                                                                                   jint type,
+                                                                                   jboolean normalized,
+                                                                                   jint stride,
+                                                                                   jobject ptr,
+                                                                                   jint remaining) {
+
+    glVertexAttribPointer(static_cast<GLuint>(indx),
+                          size,
+                          static_cast<GLenum>(type),
+                          normalized,
+                          stride,
+                          env->GetDirectBufferAddress(ptr));
+
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGetAttribLocation(JNIEnv *env, jclass,
+                                                                           jint program,
+                                                                           jstring name_) {
+    const char *name = env->GetStringUTFChars(name_, 0);
+    jint result =  (jint) glGetAttribLocation(static_cast<GLuint>(program), name);
+    env->ReleaseStringUTFChars(name_, name);
+
+    return  result;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glGetUniformLocation(JNIEnv *env,
+                                                                            jclass,
+                                                                            jint program,
+                                                                            jstring name_) {
+    const char *name = env->GetStringUTFChars(name_, 0);
+    jint result =  (jint) glGetUniformLocation(static_cast<GLuint>(program), name);
+    env->ReleaseStringUTFChars(name_, name);
+
+    return  result;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glUniform3fv(JNIEnv *env, jclass,
+                                                                    jint location, jint count,
+                                                                    jfloatArray v_) {
+    jfloat *v = env->GetFloatArrayElements(v_, NULL);
+
+    glUniform3fv(location, count, v);
+
+    env->ReleaseFloatArrayElements(v_, v, 0);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glUniformMatrix4fv(JNIEnv *env, jclass,
+                                                                          jint location, jint count,
+                                                                          jboolean transpose,
+                                                                          jfloatArray value_) {
+    jfloat *value = env->GetFloatArrayElements(value_, NULL);
+
+    glUniformMatrix4fv(location, count, transpose, value);
+
+    env->ReleaseFloatArrayElements(value_, value, 0);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glUniform1i(JNIEnv *, jclass,
+                                                                   jint location, jint x) {
+
+    glUniform1i(location, x);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glUniform1f(JNIEnv *, jclass,
+                                                                   jint location, jfloat x) {
+
+    glUniform1f(location, x);
+
+}

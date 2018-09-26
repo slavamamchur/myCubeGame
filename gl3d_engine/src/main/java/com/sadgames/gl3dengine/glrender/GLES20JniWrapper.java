@@ -43,6 +43,59 @@ public class GLES20JniWrapper {
             int stride,
             int offset
     );
+    private static native void glVertexAttribPointerBounds(
+            int indx,
+            int size,
+            int type,
+            boolean normalized,
+            int stride,
+            java.nio.Buffer ptr,
+            int remaining
+    );
+
+    public static void glVertexAttribPointer(
+            int indx,
+            int size,
+            int type,
+            boolean normalized,
+            int stride,
+            java.nio.Buffer ptr
+    ) {
+        glVertexAttribPointerBounds(
+                indx,
+                size,
+                type,
+                normalized,
+                stride,
+                ptr,
+                ptr.remaining()
+        );
+    }
+    public static native int glGetAttribLocation(
+            int program,
+            String name
+    );
+    public static native int glGetUniformLocation(
+            int program,
+            String name
+    );
+    public static native void glUniform3fv(
+            int location,
+            int count,
+            float[] v);
+    public static native void glUniformMatrix4fv(
+            int location,
+            int count,
+            boolean transpose,
+            float[] value);
+    public static native void glUniform1i(
+            int location,
+            int x
+    );
+    public static native void glUniform1f(
+            int location,
+            float x
+    );
 
     public static native void glBindBuffer(int target, int buffer);
     public static native void glDeleteBuffers(int[] buffers);
