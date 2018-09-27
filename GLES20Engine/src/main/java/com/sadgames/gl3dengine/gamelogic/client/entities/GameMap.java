@@ -14,6 +14,7 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
+import static com.sadgames.sysutils.common.CommonUtils.packToETC1;
 
 public class GameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
 
@@ -52,7 +53,7 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
 
         gameLogic.onPrepareMapTexture(textureBmp);
 
-        textureBmp = getSysUtilsWrapper().packToETC1(textureBmp);
+        textureBmp = packToETC1(getSysUtilsWrapper(), textureBmp);
         AbstractTexture glTexture = BitmapTexture.createInstance(textureBmp);
         TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
         textureCache.putItem(glTexture, textureResName, textureCache.getItemSize(glTexture) );

@@ -234,36 +234,15 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(bmp);
     }
 
-    public int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
+    /*public int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
         bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, y, bmp.getWidth(), 1);
 
         return rowPixels;
-    }
+    }*/
 
     /** ------------------------------------------------------------------------------------------*/
 
     /** DB sysutils ---------------------------------------------------------------------------------*/
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        /** Raw height and width of image*/
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            /** Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.*/
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
 
     private static void saveChunk2DB(SQLiteDatabase db, String map_id, int chunkNumber, Long updatedDate, byte[] chunkData) {
         ContentValues cv = new ContentValues();
@@ -280,8 +259,9 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         final BitmapFactory.Options options = getiBitmapOptions();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-        options.inSampleSize =
-                calculateInSampleSize(options,
+        options.inSampleSize = CommonUtils.calculateInSampleSize(
+                        options.outWidth,
+                        options.outHeight,
                         options.outWidth / scaleFactor,
                         options.outHeight / scaleFactor);
         options.inJustDecodeBounds = false;
@@ -394,32 +374,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return result;
     }
     /** ------------------------------------------------------------------------------------------*/
-
-    @Override
-    public BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3);
-
-        for (int y = 0; y < height; y += 1) {
-            for (int x = 0; x < width; x += 1) {
-                int value = bitmap.getPixelColor(x, y);
-                bb.put((byte) (value >> 16));
-                bb.put((byte) (value >> 8));
-                bb.put((byte) value);
-            }
-        }
-        bb.rewind();
-
-        bitmap.release();
-        bitmap = null;
-
-        BitmapWrapperInterface texture = iCompressTexture(bb, width, height, 3, 3 * width);
-
-        bb.limit(0);
-
-        return texture;
-    }
 
     @Override
     public String iReadTextFromFile(String fileName) {
