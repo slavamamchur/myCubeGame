@@ -3,6 +3,7 @@ package com.sadgames.sysutils.common;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.Scanner;
 
@@ -40,5 +41,32 @@ public class CommonUtils {
             else
                 gmc.saveMapImage(map);
         } catch (Exception e) {}
+    }
+
+    public static BitmapWrapperInterface getBitmapFromFile(SysUtilsWrapperInterface sysUtilsWrapper,
+                                                           String file,
+                                                           boolean isRelief) {
+        BitmapWrapperInterface result;
+
+        try {
+            InputStream source = sysUtilsWrapper.iGetResourceStream("textures/" + file);
+
+            if (file.endsWith("pkm"))
+                result = sysUtilsWrapper.iCreateETC1Texture(source);
+            else {
+                result = sysUtilsWrapper.iCreateBitmap(source);
+            }
+        }
+        catch (Exception exception) { result = null; }
+
+        result = result != null ? result : sysUtilsWrapper.iLoadBitmapFromDB(file, isRelief);
+
+        if (result == null)
+            try {
+                result = sysUtilsWrapper.iCreateColorBitmap(Integer.parseInt(file));
+            }
+            catch (Exception exception) { result = null; }
+
+        return result;
     }
 }

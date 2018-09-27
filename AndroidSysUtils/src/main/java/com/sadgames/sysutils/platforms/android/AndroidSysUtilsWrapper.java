@@ -10,16 +10,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
-import android.opengl.ETC1Util;
+import android.opengl.ETC1;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
+import com.sadgames.sysutils.common.ETC1Utils;
+import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -28,7 +29,9 @@ import org.luaj.vm2.LuaTable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import javax.vecmath.Matrix4f;
@@ -36,7 +39,6 @@ import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
-import static com.sadgames.sysutils.common.CommonUtils.convertStreamToString;
 import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
@@ -71,12 +73,12 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     @Override
     public Vector3f mulMV(Matrix4f matrix, LuaTable vector) {
-        return mulMV(MathUtils.getOpenGlMatrix(matrix), luaTable2FloatArray(vector));
+        return mulMV(MathUtils.getOpenGlMatrix(matrix), LuaUtils.luaTable2FloatArray(vector));
     }
 
     @Override
     public Vector3f mulMV(float[] matrix, LuaTable vector) {
-        return mulMV(matrix, luaTable2FloatArray(vector));
+        return mulMV(matrix, LuaUtils.luaTable2FloatArray(vector));
     }
 
     @Override
@@ -97,15 +99,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         Matrix.rotateM(m, mOffset, a, x, y, z);
     }
 
-    private float[] luaTable2FloatArray(LuaTable table) {
-        float[] result = new float[table.length()];
-
-        for (int i = 0; i < table.length(); i++)
-            result[i] = table.get(i + 1).tofloat();
-
-        return result;
-    }
-
     /** ------------------------------------------------------------------------------------------*/
 
     /** Prefs    sysutils ---------------------------------------------------------------------------*/
@@ -116,6 +109,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     /** ------------------------------------------------------------------------------------------*/
 
     /** Sound    sysutils ---------------------------------------------------------------------------*/
+    //TODO: Replace with OpenAL api
     private static void stopSound() {
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
@@ -152,7 +146,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     /** ------------------------------------------------------------------------------------------*/
 
     @Override
-    public InputStream getResourceStream(String fileName) {
+    public InputStream iGetResourceStream(String fileName) {
         try {
             return context.getAssets().open(fileName);
         } catch (IOException e) {
@@ -165,7 +159,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     private String readTextFromAssets(String filename) {
         try {
-            return convertStreamToString(getResourceStream((filename)));
+            return CommonUtils.convertStreamToString(iGetResourceStream((filename)));
         } catch (Exception e) {
             return "";
         }
@@ -182,46 +176,64 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return options;
     }
 
-    private AndroidBitmapWrapper getBitmapFromFile(String file, boolean isRelief) {
-        AndroidBitmapWrapper result;
-        Bitmap bitmap;
-
-        try {
-            InputStream source = getResourceStream("textures/" + file);
-
-            if (file.endsWith("pkm")) {
-                ETC1Util.ETC1Texture compressedBitmap = ETC1Util.createTexture(source);
-                result = compressedBitmap == null ? null : new AndroidBitmapWrapper(compressedBitmap);
+    public static BitmapWrapperInterface createETC1Texture(InputStream input) throws IOException {
+        int width;
+        int height;
+        byte[] ioBuffer = new byte[4096];
+        {
+            if (input.read(ioBuffer, 0, ETC1.ETC_PKM_HEADER_SIZE) != ETC1.ETC_PKM_HEADER_SIZE) {
+                throw new IOException("Unable to read PKM file header.");
             }
-            else {
-                final BitmapFactory.Options options = getiBitmapOptions();
-                bitmap = BitmapFactory.decodeStream(source, null, options);
-                result = bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
+            ByteBuffer headerBuffer = ByteBuffer.allocateDirect(ETC1.ETC_PKM_HEADER_SIZE)
+                    .order(ByteOrder.nativeOrder());
+            headerBuffer.put(ioBuffer, 0, ETC1.ETC_PKM_HEADER_SIZE).position(0);
+            if (!ETC1.isValid(headerBuffer)) {
+                throw new IOException("Not a PKM file.");
             }
+            width = ETC1.getWidth(headerBuffer);
+            height = ETC1.getHeight(headerBuffer);
         }
-        catch (Exception exception) { result = null; }
-
-        result = result != null ? result : loadBitmapFromDB(file, isRelief);
-
-        if (result == null)
-            try {
-                result = new AndroidBitmapWrapper(createColorBitmap(Integer.parseInt(file)));
+        int encodedSize = ETC1.getEncodedDataSize(width, height);
+        ByteBuffer dataBuffer = ByteBuffer.allocateDirect(encodedSize).order(ByteOrder.nativeOrder());
+        for (int i = 0; i < encodedSize; ) {
+            int chunkSize = Math.min(ioBuffer.length, encodedSize - i);
+            if (input.read(ioBuffer, 0, chunkSize) != chunkSize) {
+                throw new IOException("Unable to read PKM file data.");
             }
-            catch (Exception exception) { result = null; }
+            dataBuffer.put(ioBuffer, 0, chunkSize);
+            i += chunkSize;
+        }
+        dataBuffer.position(0);
 
+        return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, dataBuffer));
+    }
+
+    public static BitmapWrapperInterface compressTexture(Buffer input, int width, int height, int pixelSize, int stride){
+        int encodedImageSize = ETC1.getEncodedDataSize(width, height);
+        ByteBuffer compressedImage = ByteBuffer.allocateDirect(encodedImageSize).
+                order(ByteOrder.nativeOrder());
+        ETC1.encodeImage(input, width, height, pixelSize, stride, compressedImage);
+
+        return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
+    }
+
+    private BitmapWrapperInterface createBitmap(InputStream source) {
+        Bitmap bitmap;
+        BitmapWrapperInterface result;
+        final BitmapFactory.Options options = getiBitmapOptions();
+        bitmap = BitmapFactory.decodeStream(source, null, options);
+        result = bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
         return result;
     }
 
-    @NonNull
-    private Bitmap createColorBitmap(int color) {
+    private BitmapWrapperInterface createColorBitmap(int color) {
         Bitmap bmp = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
         canvas.drawColor(color);
 
-        return bmp;
+        return new AndroidBitmapWrapper(bmp);
     }
 
-    @SuppressWarnings("unused")
     public int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
         bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, y, bmp.getWidth(), 1);
 
@@ -231,8 +243,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     /** ------------------------------------------------------------------------------------------*/
 
     /** DB sysutils ---------------------------------------------------------------------------------*/
-    private static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         /** Raw height and width of image*/
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -298,9 +309,8 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         dbHelper.close();
     }
 
-    @Nullable
-    private AndroidBitmapWrapper loadBitmapFromDB(String textureResName, boolean isRelief) {
-        AndroidBitmapWrapper bitmap = null;
+    private BitmapWrapperInterface loadBitmapFromDB(String textureResName, boolean isRelief) {
+        AndroidBitmapWrapper bitmap;
         byte[] bitmapArray = null;
         Cursor imageData = null;
         AndroidSQLiteDBHelper dbHelper = null;
@@ -404,11 +414,11 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         bitmap.release();
         bitmap = null;
 
-        ETC1Util.ETC1Texture texture = ETC1Util.compressTexture(bb, width, height, 3, 3 * width);
+        BitmapWrapperInterface texture = iCompressTexture(bb, width, height, 3, 3 * width);
 
         bb.limit(0);
 
-        return new AndroidBitmapWrapper(texture);
+        return texture;
     }
 
     @Override
@@ -417,18 +427,23 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
 
     @Override
-    public BitmapWrapperInterface iGetBitmapFromFile(String file) {
-        return getBitmapFromFile(file, false);
-    }
-
-    @Override
-    public BitmapWrapperInterface iGetReliefFromFile(String file) {
-        return getBitmapFromFile(file, true);
-    }
-
-    @Override
     public BitmapWrapperInterface iCreateColorBitmap(int color) {
-        return new AndroidBitmapWrapper(createColorBitmap(color));
+        return createColorBitmap(color);
+    }
+
+    @Override
+    public BitmapWrapperInterface iCreateBitmap(InputStream source) {
+        return createBitmap(source);
+    }
+
+    @Override
+    public BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride) {
+        return compressTexture(input, width, height, pixelSize, stride);
+    }
+
+    @Override
+    public BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException {
+        return createETC1Texture(input);
     }
 
     @Override
@@ -439,6 +454,11 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public void iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
         saveBitmap2DB(bitmapArray, map_id, updatedDate);
+    }
+
+    @Override
+    public BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief) {
+        return loadBitmapFromDB(textureResName, isRelief);
     }
 
     @Override

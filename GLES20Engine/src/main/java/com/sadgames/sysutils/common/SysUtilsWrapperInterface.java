@@ -8,6 +8,7 @@ import org.luaj.vm2.LuaTable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -15,15 +16,18 @@ import javax.vecmath.Vector3f;
 public interface SysUtilsWrapperInterface {
 
     String                 iReadTextFromFile(String fileName);
-    InputStream            getResourceStream(String fileName);
+    InputStream            iGetResourceStream(String fileName);
 
-    BitmapWrapperInterface iGetBitmapFromFile(String file);
-    BitmapWrapperInterface iGetReliefFromFile(String file);
     BitmapWrapperInterface iCreateColorBitmap(int color);
+    BitmapWrapperInterface iCreateBitmap(InputStream source);
+    BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride);
+    BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
+
     BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap);
 
     boolean                iIsBitmapCached(String map_id, Long updatedDate);
     void                   iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
+    BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief);
 
     void                   iPlaySound(String file);
     void                   iStopSound();

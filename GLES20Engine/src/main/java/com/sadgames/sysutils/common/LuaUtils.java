@@ -17,6 +17,15 @@ public class LuaUtils {
         return result;
     }
 
+    public static float[] luaTable2FloatArray(LuaTable table) {
+        float[] result = new float[table.length()];
+
+        for (int i = 0; i < table.length(); i++)
+            result[i] = table.get(i + 1).tofloat();
+
+        return result;
+    }
+
     public static LuaTable javaList2LuaTable(List list) {
         LuaTable result = new LuaTable();
 

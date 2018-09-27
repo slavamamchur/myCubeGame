@@ -25,6 +25,7 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCompressedTexI
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
+import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
 
 public class CubeMapTexture extends AbstractTexture {
 
@@ -68,7 +69,7 @@ public class CubeMapTexture extends AbstractTexture {
 
         for (int i =0; i < faces.length; i++)
             try {
-                bitmap = sysUtilsWrapper.iGetBitmapFromFile(faces[i]);
+                bitmap = getBitmapFromFile(sysUtilsWrapper, faces[i], false);
                 loadTextureInternal(get_GL_TEXTURE_CUBE_MAP_POSITIVE_X_value() + i, bitmap);
                 textureSize += bitmap.getImageSizeBytes();
                 bitmap.release();

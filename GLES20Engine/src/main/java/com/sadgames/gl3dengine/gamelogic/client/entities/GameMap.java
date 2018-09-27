@@ -13,6 +13,8 @@ import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
+import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
+
 public class GameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
 
     private GameEntity gameEntity;
@@ -39,12 +41,12 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
 
     @Override
     protected BitmapWrapperInterface getReliefMap() {
-        return textureResName != null ? getSysUtilsWrapper().iGetReliefFromFile(textureResName) : null;
+        return textureResName != null ? getBitmapFromFile(getSysUtilsWrapper(), textureResName, true) : null;
     }
 
     @Override
     public AbstractTexture loadTexture() {
-        BitmapWrapperInterface textureBmp = getSysUtilsWrapper().iGetBitmapFromFile(textureResName);
+        BitmapWrapperInterface textureBmp = getBitmapFromFile(getSysUtilsWrapper(), textureResName, false);
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
         scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
 

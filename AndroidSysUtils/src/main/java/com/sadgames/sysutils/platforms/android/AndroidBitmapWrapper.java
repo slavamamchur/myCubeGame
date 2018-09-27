@@ -6,9 +6,9 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.opengl.ETC1;
-import android.opengl.ETC1Util;
 
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.ETC1Utils;
 import com.sadgames.sysutils.common.LuaUtils;
 
 import org.luaj.vm2.LuaTable;
@@ -23,13 +23,13 @@ import javax.vecmath.Vector2f;
 public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     private Bitmap picture = null;
-    private ETC1Util.ETC1Texture compressedPicture = null;
+    private ETC1Utils.ETC1Texture compressedPicture = null;
 
     public AndroidBitmapWrapper(Bitmap picture) {
         this.picture = picture;
     }
 
-    public AndroidBitmapWrapper(ETC1Util.ETC1Texture compressedPicture) {
+    public AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
         this.compressedPicture = compressedPicture;
     }
 

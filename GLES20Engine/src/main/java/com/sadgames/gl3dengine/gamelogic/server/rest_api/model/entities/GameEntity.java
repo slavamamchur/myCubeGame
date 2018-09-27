@@ -103,7 +103,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     public InputStream getLuaScript(SysUtilsWrapperInterface sysUtilsWrapper, String name) {
-        return sysUtilsWrapper.getResourceStream("scripts/" + name + ".lua");
+        return sysUtilsWrapper.iGetResourceStream("scripts/" + name + ".lua");
     }
 
     //TODO: replace with REST object

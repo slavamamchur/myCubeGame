@@ -24,6 +24,7 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCompressedTexI
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
+import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
 
 public class BitmapTexture extends AbstractTexture {
 
@@ -34,7 +35,7 @@ public class BitmapTexture extends AbstractTexture {
     }
 
     private BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String textureName) {
-        this(sysUtilsWrapper.iGetBitmapFromFile(textureName));
+        this(getBitmapFromFile(sysUtilsWrapper, textureName, false));
         this.textureName = textureName;
     }
 
