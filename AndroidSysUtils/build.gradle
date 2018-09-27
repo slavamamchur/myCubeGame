@@ -28,5 +28,5 @@ dependencies {
     implementation 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     implementation 'cz.advel.jbullet:jbullet:20101010-1'
     implementation 'org.luaj:luaj-jse:3.0.1'
-    implementation project(':GLES3DGameEngine')
+    implementation project(':GLES20Engine')
 }

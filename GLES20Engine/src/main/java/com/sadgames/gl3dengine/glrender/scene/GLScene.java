@@ -37,8 +37,6 @@ import org.luaj.vm2.Globals;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector4f;
 
@@ -605,17 +603,17 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    public void onSurfaceCreated() {
         scenePrepare();
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
+    public void onSurfaceChanged(int width, int height) {
         updateViewPorts(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 gl) {
+    public void onDrawFrame() {
         drawScene();
     }
     /** ------------------------------------------------------------------------------------------*/

@@ -23,17 +23,17 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        glInternalRenderer.onSurfaceCreated(gl, config);
+        glInternalRenderer.onSurfaceCreated();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        glInternalRenderer.onSurfaceChanged(gl, width, height);
+        glInternalRenderer.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        glInternalRenderer.onDrawFrame(gl);
+        glInternalRenderer.onDrawFrame();
     }
 
 }

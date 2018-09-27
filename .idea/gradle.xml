@@ -10,8 +10,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AndroidSysUtils" />
+            <option value="$PROJECT_DIR$/GLES20Engine" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/gl3d_engine" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

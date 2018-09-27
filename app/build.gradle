@@ -62,6 +62,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     implementation 'cz.advel.jbullet:jbullet:20101010-1'
     implementation 'org.luaj:luaj-jse:3.0.1'
-    implementation project(':GLES3DGameEngine')
+    implementation project(':GLES20Engine')
     implementation project(':AndroidSysUtils')
 }

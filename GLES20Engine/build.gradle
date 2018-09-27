@@ -1,0 +1,12 @@
+apply plugin: 'java-library'
+apply plugin: 'me.tatarka.retrolambda'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'cz.advel.jbullet:jbullet:20101010-1'
+    implementation 'org.luaj:luaj-jse:3.0.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
