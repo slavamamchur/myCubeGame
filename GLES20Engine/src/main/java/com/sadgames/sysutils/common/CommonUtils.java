@@ -31,8 +31,8 @@ public class CommonUtils {
                                           String textureResName,
                                           boolean isRelief) {
         GameMapController gmc = new GameMapController(sysUtilsWrapper);
-        GameMapEntity map = (GameMapEntity) gmc.find(textureResName);
 
+        GameMapEntity map = (GameMapEntity) gmc.find(textureResName);
         if (map == null || map.getId() == null || map.getId().isEmpty())
             return;
 

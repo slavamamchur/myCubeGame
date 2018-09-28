@@ -31,6 +31,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
         this.rotationAngle = rotationAngle;
     }
 
+    @SuppressWarnings("unused")
     public void calcRotationAngle(long frametime) {
         float angle = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 0 : getRotationAngle() + 0.5f * frametime / 250f;
         setRotationAngle(angle > 360f ? 360f - angle : angle);
