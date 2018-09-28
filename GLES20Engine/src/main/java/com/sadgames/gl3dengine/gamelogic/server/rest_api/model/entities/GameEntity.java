@@ -18,7 +18,6 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 
@@ -112,7 +111,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
             gameItems = new ArrayList<>();
 
             MaterialPropertiesObject material = new MaterialPropertiesObject(0.4f, 1.0f, 0.9f,
-                    GameConst.DICE_MESH_OBJECT_1 + COMPRESSED_TEXTURE_FILE_EXT, null, null, null);
+                    GameConst.DICE_MESH_OBJECT_1 /*+ COMPRESSED_TEXTURE_FILE_EXT*/, null, null, null);
 
             InteractiveGameItem dice = createNewItem(GameConst.DICE_MESH_OBJECT_1,
                                                      GameConst.TERRAIN_MESH_OBJECT,

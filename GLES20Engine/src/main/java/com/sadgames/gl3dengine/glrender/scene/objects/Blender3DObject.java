@@ -13,7 +13,6 @@ import java.util.List;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.GLEngineConsts.COMPRESSED_TEXTURE_FILE_EXT;
 import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_CULL_FACE_value;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
@@ -45,7 +44,7 @@ public class Blender3DObject extends ImportedObject {
     protected Vector3f initialTranslation;
 
     public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
-        super(sysUtilsWrapper, objFileName + COMPRESSED_TEXTURE_FILE_EXT, program, mass, tag);
+        super(sysUtilsWrapper, objFileName /*+ COMPRESSED_TEXTURE_FILE_EXT*/, program, mass, tag);
         init(objFileName);
     }
 

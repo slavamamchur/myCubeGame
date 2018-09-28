@@ -7,20 +7,20 @@ import java.util.List;
 
 public class GameConst {
 
-    public static final String SEA_BOTTOM_TEXTURE     = "sea_bottom.pkm";
-    public static final String NORMALMAP_TEXTURE      = "normalmap.pkm";
-    public static final String DUDVMAP_TEXTURE        = "dudvmap.pkm";
-    public static final String BLENDING_MAP_TEXTURE   = "blending_map.pkm";
+    public static final String SEA_BOTTOM_TEXTURE     = "5bae5d26f2675fb54e7cb7dc";
+    public static final String NORMALMAP_TEXTURE      = "5bae5be1f2675fb54e7cb7da";
+    public static final String DUDVMAP_TEXTURE        = "5bae5df2f2675fb54e7cb7df";
+    public static final String BLENDING_MAP_TEXTURE   = "5bae5e6df2675fb54e7cb7e3";
     public static final String SKY_BOX_TEXTURE_NAME   = "SKY_BOX_CUBE_MAP_TEXTURE";
-    public static final String SKY_DOME_TEXTURE_NAME   = "dayfair_skydome_1.pkm";
-    public static final String MAP_BACKGROUND_TEXTURE_NAME = "old_map_wallpaper.pkm";
+    public static final String SKY_DOME_TEXTURE_NAME   = "5bae5eb9f2675fb54e7cb7e8";
+    public static final String MAP_BACKGROUND_TEXTURE_NAME = "5bae5f0cf2675fb54e7cb7ee";
 
     public static final String ROLLING_DICE_SOUND     = "rolling_dice.mp3";
 
     public static final String TERRAIN_MESH_OBJECT = "TERRAIN_MESH_OBJECT";
     public static final String WATER_MESH_OBJECT = "WATER_MESH_OBJECT";
     public static final String CHIP_MESH_OBJECT = "CHIP_MESH_OBJECT";
-    public static final String DICE_MESH_OBJECT_1 = "DICE_MESH_OBJECT_1";
+    public static final String DICE_MESH_OBJECT_1 = "5bae5fc2f2675fb54e7cb7f5";
     public static final String SKY_BOX_CUBE_MAP_OBJECT = "SKY_BOX_CUBE_MAP_OBJECT";
     public static final String MINI_MAP_OBJECT = "MINI_MAP_OBJECT";
 

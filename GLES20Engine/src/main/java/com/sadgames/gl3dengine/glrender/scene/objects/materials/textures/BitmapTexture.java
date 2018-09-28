@@ -25,7 +25,6 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
 import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
-import static com.sadgames.sysutils.common.CommonUtils.packToETC1;
 
 public class BitmapTexture extends AbstractTexture {
 
@@ -66,8 +65,8 @@ public class BitmapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
-        if (!bitmap.isCompressed() && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3) && sysUtilsWrapper != null)
-            bitmap = packToETC1(sysUtilsWrapper, bitmap);
+        /*if (!bitmap.isCompressed() && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3) && sysUtilsWrapper != null)
+            bitmap = packToETC1(sysUtilsWrapper, bitmap);*/
 
         loadTextureInternal(getTextureType(), bitmap);
         bitmap.release();
