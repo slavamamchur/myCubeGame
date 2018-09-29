@@ -8,6 +8,7 @@ public interface BitmapWrapperInterface {
 
     Buffer  getRawData();
     Buffer  getDecodedRawData();
+    int[]   asIntArray();
     int     getPixelColor(int x, int y);
 
     int     getWidth();

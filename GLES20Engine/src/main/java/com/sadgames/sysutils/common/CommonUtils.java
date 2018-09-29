@@ -96,20 +96,20 @@ public class CommonUtils {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3);
+        int[] rawImage = bitmap.asIntArray();
 
-        for (int y = 0; y < height; y += 1) {
-            for (int x = 0; x < width; x += 1) {
-                int value = bitmap.getPixelColor(x, y);
+        for (int i = 0; i < height * width; i ++) {
+                int value = rawImage[i];
                 bb.put((byte) (value >> 16));
                 bb.put((byte) (value >> 8));
                 bb.put((byte) value);
-            }
         }
-        bb.rewind();
 
         bitmap.release();
         bitmap = null;
+        rawImage = null;
 
+        bb.rewind();
         BitmapWrapperInterface texture = sysUtilsWrapper.iCompressTexture(bb, width, height, 3, 3 * width);
 
         bb.limit(0);

@@ -4,7 +4,6 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
 
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_ETC1_RGB8_OES_value;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_BLEND_value;
@@ -25,6 +24,7 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
 import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
+import static com.sadgames.sysutils.common.CommonUtils.packToETC1;
 
 public class BitmapTexture extends AbstractTexture {
 
@@ -65,8 +65,8 @@ public class BitmapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
-        /*if (!bitmap.isCompressed() && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3) && sysUtilsWrapper != null)
-            bitmap = packToETC1(sysUtilsWrapper, bitmap);*/
+        if (!bitmap.isCompressed() && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3) && sysUtilsWrapper != null)
+            bitmap = packToETC1(sysUtilsWrapper, bitmap);
 
         loadTextureInternal(getTextureType(), bitmap);
         bitmap.release();
@@ -75,10 +75,16 @@ public class BitmapTexture extends AbstractTexture {
     @SuppressWarnings("all")
     protected void loadTextureInternal(int target, BitmapWrapperInterface bitmap) {
         try {
-            if (!bitmap.isCompressed()) {
-                byte[] pixels = ((ByteBuffer)bitmap.getRawData()).array();
-                glTexImage2D(target, 0, get_GL_RGBA_value(), getWidth(), getHeight(), 0, get_GL_RGBA_value(), get_GL_UNSIGNED_BYTE_value(), pixels);
-            }
+            if (!bitmap.isCompressed())
+                glTexImage2D(target,
+                        0,
+                        get_GL_RGBA_value(),
+                        getWidth(),
+                        getHeight(),
+                        0,
+                        get_GL_RGBA_value(),
+                        get_GL_UNSIGNED_BYTE_value(),
+                        bitmap.getRawData());
             else {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();

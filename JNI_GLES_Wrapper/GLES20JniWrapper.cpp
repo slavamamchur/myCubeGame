@@ -361,9 +361,7 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexImage2D(JNIEnv *env,
                                                                     jint internalformat, jint width,
                                                                     jint height, jint border,
                                                                     jint format, jint type,
-                                                                    jbyteArray pixels_) {
-
-    jbyte *pixels = pixels_ != NULL ? env->GetByteArrayElements(pixels_, NULL) : NULL;
+                                                                    jobject data) {
 
     glTexImage2D(static_cast<GLenum>(target),
                  level,
@@ -373,10 +371,8 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexImage2D(JNIEnv *env,
                  border,
                  static_cast<GLenum>(format),
                  static_cast<GLenum>(type),
-                 pixels);
+                 data != NULL ? env->GetDirectBufferAddress(data) : NULL);
 
-    if (pixels != NULL)
-        env->ReleaseByteArrayElements(pixels_, pixels, 0);
 }
 
 extern "C"

@@ -57,6 +57,18 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
+    public int[] asIntArray() {
+        int[] result = null;
+
+        if (!isCompressed()) {
+            result = new int[picture.getWidth() * picture.getHeight()];
+            picture.getPixels(result, 0, picture.getWidth(), 0, 0, picture.getWidth(), picture.getHeight());
+        }
+
+        return result;
+    }
+
+    @Override
     public Buffer getDecodedRawData() {
         if (isCompressed()) {
             int width = compressedPicture.getWidth();
