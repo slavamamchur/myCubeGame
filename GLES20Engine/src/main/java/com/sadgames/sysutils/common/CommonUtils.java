@@ -98,15 +98,15 @@ public class CommonUtils {
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3);
         int[] rawImage = bitmap.asIntArray();
 
-        for (int i = 0; i < height * width; i ++) {
+        bitmap.release();
+        bitmap = null;
+
+        for (int i = 0; i < height * width; i++) {
                 int value = rawImage[i];
-                bb.put((byte) (value >> 16));
-                bb.put((byte) (value >> 8));
+                bb.putShort((short) (value >> 8));
                 bb.put((byte) value);
         }
 
-        bitmap.release();
-        bitmap = null;
         rawImage = null;
 
         bb.rewind();
