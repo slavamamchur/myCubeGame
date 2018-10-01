@@ -63,6 +63,9 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         if (!isCompressed()) {
             result = new int[picture.getWidth() * picture.getHeight()];
             picture.getPixels(result, 0, picture.getWidth(), 0, 0, picture.getWidth(), picture.getHeight());
+
+            //IntBuffer buf = IntBuffer.wrap(result);
+            //result = buf.array();
         }
 
         return result;
@@ -108,7 +111,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         return compressedPicture != null;
     }
 
-    @Override
+    @Override //TODO: draw via blending map
     public void drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor) {
         if (path == null || isCompressed())
             return;

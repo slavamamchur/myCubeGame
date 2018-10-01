@@ -21,7 +21,7 @@ public class WaterObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv, int[] imgData) {
         return 0.0f;
     }
 

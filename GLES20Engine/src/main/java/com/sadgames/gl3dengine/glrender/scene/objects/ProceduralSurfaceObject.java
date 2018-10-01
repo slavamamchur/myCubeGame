@@ -61,7 +61,7 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
     }
 
     protected abstract float calculateLandScale(float landSize);
-    protected abstract float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv);
+    protected abstract float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv, int[] imgData);
     protected abstract BitmapWrapperInterface getReliefMap();
 
     @Override
@@ -71,7 +71,7 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
 
     @Override
     protected void createVertexesVBO() {
-        BitmapWrapperInterface bmp = /*sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? null :*/ getReliefMap();
+        BitmapWrapperInterface bmp = getReliefMap();
 
         dimension = (bmp == null) || bmp.isEmpty() ? FLAT_MAP_DEFAULT_DIMENSION : getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
@@ -83,6 +83,7 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
         float x0 = -LAND_WIDTH / 2f;
         float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
+        int[] imgData = (bmp == null) || bmp.isEmpty() ? null : bmp.asIntArray();
 
         for (int j = 0; j <= dimension; j++){
             for (int i = 0; i <= dimension; i++){
@@ -94,12 +95,13 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
 
                 vertexes[k + 1] = (bmp == null) || bmp.isEmpty() ?
                         FLAT_MAP_DEFAULT_HEIGHT :
-                        getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension); /** y*/
+                        getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension, imgData); /** y*/
 
                 k += 5;
             }
         }
 
+        imgData = null;
         if ((bmp != null) && !bmp.isEmpty()) {
             bmp.release();
         }

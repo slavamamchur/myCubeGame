@@ -73,20 +73,21 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv) {
+    protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv, int[] imgData) {
         int xCoord = Math.round((map.getWidth() - 1) * tu);
-        int yCoord = Math.round((map.getHeight() - 1) * tv);
+        int zCoord = Math.round((map.getHeight() - 1) * tv);
         xCoord = xCoord > dimension ? dimension : xCoord;
-        yCoord = yCoord > dimension ? dimension : yCoord;
+        zCoord = zCoord > dimension ? dimension : zCoord;
+        int vColor = imgData[zCoord * map.getWidth() + xCoord];
 
-        return getYValueInternal(map, xCoord, yCoord, map.getPixelColor(xCoord, yCoord));
+        return getYValueInternal(imgData, xCoord, zCoord, map.getWidth(), vColor);
     }
 
-    protected float getYValueInternal(BitmapWrapperInterface map, int xCoord, int yCoord, int vColor) {
+    protected float getYValueInternal(int[] imgData, int xCoord, int yCoord, int width, int vColor) {
         ColorType cType = CheckColorType(vColor);
 
         if (cType.equals(ColorType.UNKNOWN)) {
-            vColor = interpolateUnknownColorValue(map, xCoord, yCoord);
+            vColor = interpolateUnknownColorValue(imgData, xCoord, yCoord, width);
             cType = CheckColorType(vColor);
         }
 
@@ -112,18 +113,16 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
 
         if ((G <= B) && (R < G))
             return G <= 0.5 * B ? ColorType.BLUE : ColorType.CYAN; //B <= 231 ? BLUE : CYAN;//
-        else if ((R < G) && (B < G))
+        else if ((R < G)/* && (B < G)*/)
             return ColorType.GREEN;
-        else if ((G <= R) && (B < G))
+        else if (/*(G <= R) && */(B < G))
             return G <= 0.7 * R ? ColorType.BROWN : ColorType.YELLOW;
         else if ((R > G) && (R > B))
             return ColorType.BROWN;
         else if ((G == R) && (B == G) && (R >= 180))
             return ColorType.WHITE;
-        else {
-            int RR = R;
+        else
             return ColorType.UNKNOWN;
-        }
     }
 
     @Override
@@ -136,7 +135,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         return landSize / LAND_SIZE_IN_KM;
     }
 
-    protected int interpolateUnknownColorValue(BitmapWrapperInterface map, int xCoord, int yCoord) {
+    protected int interpolateUnknownColorValue(int[] imgData, int xCoord, int yCoord, int width) {
         int count = 0, R = 0, G = 0, B = 0;
 
         for (int j = yCoord - 1; j <= yCoord + 1; j++)
@@ -145,7 +144,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
                     if ( !((i == xCoord) && (j == yCoord)) && (i <= dimension)
                          && (j <= dimension)
                         ) {
-                        int color = map.getPixelColor(i, j);
+                        int color = imgData[j * width + i];
                         R += ColorUtils.red(color);
                         G += ColorUtils.green(color);
                         B += ColorUtils.blue(color);
