@@ -4,6 +4,7 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;
+import java.nio.IntBuffer;
 
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_ETC1_RGB8_OES_value;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_BLEND_value;
@@ -84,14 +85,14 @@ public class BitmapTexture extends AbstractTexture {
                         0,
                         get_GL_RGBA_value(),
                         get_GL_UNSIGNED_BYTE_value(),
-                        bitmap.getRawData());
+                        ((IntBuffer)bitmap.getRawData()).array());
             else {
                 int width = bitmap.getWidth();
                 int height = bitmap.getHeight();
                 Buffer data;
                 //if (isETC1Supported()) {
                     data = bitmap.getRawData();
-                    int imageSize = data.remaining();
+                    int imageSize = data.remaining() /* * Integer.BYTES*/; //TODO:
                     glCompressedTexImage2D(target, 0, get_ETC1_RGB8_OES_value(), width, height, 0, imageSize, data);
                 //} else {
                     //glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.getDecodedRawData());

@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 
 public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
-    protected ByteBuffer pixels;
+    protected Buffer pixels;
     protected int width;
     protected int height;
     protected boolean compressed;
@@ -38,11 +38,7 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
-    public int[] asIntArray() {
-        ByteBuffer data = compressed ? (ByteBuffer) getDecodedRawData() : pixels;
-
-        return data.asIntBuffer().array();
-    }
+    public abstract int[] asIntArray();
 
     @Override
     public int getPixelColor(int x, int y) {
@@ -60,9 +56,7 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
-    public int getImageSizeBytes() {
-        return compressed ? getEncodedDataSize(width, height) : pixels.capacity();
-    }
+    public abstract int getImageSizeBytes();
 
     @Override
     public boolean isEmpty() {

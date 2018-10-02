@@ -17,6 +17,7 @@ import org.luaj.vm2.LuaValue;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 import javax.vecmath.Vector2f;
 
@@ -43,13 +44,14 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public Buffer getRawData() {
-        ByteBuffer imageBuffer;
+        Buffer imageBuffer;
 
         if (isCompressed())
             imageBuffer = compressedPicture.getData();
         else {
-            imageBuffer = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
+            imageBuffer = IntBuffer.allocate(picture.getWidth() * picture.getHeight());
             picture.copyPixelsToBuffer(imageBuffer);
+
             imageBuffer.position(0);
         }
 
