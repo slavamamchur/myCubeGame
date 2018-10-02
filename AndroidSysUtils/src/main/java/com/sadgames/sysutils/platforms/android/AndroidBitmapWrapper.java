@@ -27,6 +27,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     private int sizeInBytes;
     private int mWidth;
     private int mHeight;
+    private boolean mCompressed;
 
     AndroidBitmapWrapper(Bitmap picture) {
         /*ByteBuffer rawData = ByteBuffer.allocateDirect(sizeInBytes).order(ByteOrder.nativeOrder());
@@ -37,6 +38,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         mWidth = picture.getWidth();
         mHeight = picture.getHeight();
         sizeInBytes = picture.getByteCount();
+        mCompressed = false;
     }
 
     AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
@@ -44,6 +46,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         mWidth = compressedPicture.getWidth();
         mHeight = compressedPicture.getHeight();
         sizeInBytes = ETC1.getEncodedDataSize(mWidth, mHeight);
+        mCompressed = true;
     }
 
     private Bitmap getBitmap(Buffer data) {
@@ -63,7 +66,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     public Buffer getRawData() {
         Buffer rawData;
 
-        if (isCompressed())
+        if (mCompressed)
             rawData = compressedPicture.getData();
         else {
             rawData = ByteBuffer.allocateDirect(sizeInBytes).order(ByteOrder.nativeOrder());
@@ -79,7 +82,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     public int[] asIntArray() {
         int[] result = null;
 
-        if (!isCompressed()) {
+        if (!mCompressed) {
             result = new int[mWidth * mHeight];
             picture.getPixels(result, 0, mWidth, 0, 0, mWidth, mHeight);
         }
@@ -89,7 +92,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public Buffer getDecodedRawData() {
-        if (isCompressed()) {
+        if (mCompressed) {
             int stride = 3 * mWidth;
             ByteBuffer decodedData = ByteBuffer.allocateDirect(stride * mHeight).order(ByteOrder.nativeOrder());
             ETC1.decodeImage(compressedPicture.getData(), decodedData, mWidth, mHeight, 3, stride);
@@ -102,7 +105,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public int getPixelColor(int x, int y) {
-        return isCompressed() ? 0 : picture.getPixel(x, y);
+        return mCompressed ? 0 : picture.getPixel(x, y);
     }
 
     @Override
@@ -122,12 +125,12 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public boolean isCompressed() {
-        return compressedPicture != null;
+        return mCompressed;
     }
 
     @Override //TODO: draw via blending map
     public void drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor) {
-        if (path == null || isCompressed())
+        if (path == null || mCompressed)
             return;
 
         Canvas canvas = new Canvas(picture);
