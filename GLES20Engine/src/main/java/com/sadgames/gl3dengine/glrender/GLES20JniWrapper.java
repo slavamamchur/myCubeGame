@@ -151,7 +151,7 @@ public class GLES20JniWrapper {
             int border,
             int format,
             int type,
-            int[] data
+            java.nio.Buffer data
     );
     public static native void glCompressedTexImage2D(
             int target,

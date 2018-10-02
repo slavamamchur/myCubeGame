@@ -237,13 +237,6 @@ JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_ge
 
 }
 
-JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1UNSIGNED_1INT_1value
-        (JNIEnv *, jclass) {
-
-    return (jint) GL_UNSIGNED_INT;
-
-}
-
 JNIEXPORT jint JNICALL Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_get_1GL_1UNSIGNED_1SHORT_1value
         (JNIEnv *, jclass) {
 
@@ -368,10 +361,7 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexImage2D(JNIEnv *env,
                                                                     jint internalformat, jint width,
                                                                     jint height, jint border,
                                                                     jint format, jint type,
-                                                                    jintArray data) {
-
-    jboolean isCopy;
-    jint* buffer = data == NULL ? NULL : (jint*) env->GetPrimitiveArrayCritical(data, &isCopy);
+                                                                    jobject data) {
 
     glTexImage2D(static_cast<GLenum>(target),
                  level,
@@ -381,10 +371,7 @@ Java_com_sadgames_gl3dengine_glrender_GLES20JniWrapper_glTexImage2D(JNIEnv *env,
                  border,
                  static_cast<GLenum>(format),
                  static_cast<GLenum>(type),
-                 buffer);
-
-    if (buffer != NULL)
-        env->ReleasePrimitiveArrayCritical(data, buffer, JNI_ABORT);
+                 data != NULL ? env->GetDirectBufferAddress(data) : NULL);
 
 }
 
