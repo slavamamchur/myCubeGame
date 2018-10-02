@@ -6,7 +6,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapE
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.Scanner;
 
 public class CommonUtils {
@@ -97,17 +96,18 @@ public class CommonUtils {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3);
-        int[] rawImage = ((IntBuffer)bitmap.getRawData()).array(); //bitmap.asIntArray();
+        int[] rawImage = /*((IntBuffer)bitmap.getRawData()).array();*/ bitmap.asIntArray();
 
         bitmap.release();
         bitmap = null;
 
         for (int i = 0; i < height * width; i++) {
                 int value = rawImage[i];
-                //bb.putShort((short) (value >> 8));
+                bb.putShort((short) (value >> 8));
                 bb.put((byte) value);
-                bb.put((byte) (value >> 8));
-                bb.put((byte) (value >> 16));
+
+                //bb.put((byte) (value >> 8));
+                //bb.put((byte) (value >> 16));
         }
 
         rawImage = null;

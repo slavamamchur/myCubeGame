@@ -25,37 +25,43 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     private Bitmap picture = null;
     private ETC1Utils.ETC1Texture compressedPicture = null;
+    private int sizeInBytes;
+    private int mWidth;
+    private int mHeight;
 
-    public AndroidBitmapWrapper(Bitmap picture) {
+    AndroidBitmapWrapper(Bitmap picture) {
         this.picture = picture;
+        mWidth = picture.getWidth();
+        mHeight = picture.getHeight();
+        sizeInBytes = picture.getByteCount();
     }
 
-    public AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
+    AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
         this.compressedPicture = compressedPicture;
+        mWidth = compressedPicture.getWidth();
+        mHeight = compressedPicture.getHeight();
+        sizeInBytes = ETC1.getEncodedDataSize(mWidth, mHeight);
     }
 
     @Override
     public int getImageSizeBytes() {
-        return isCompressed() ?
-                              ETC1.getEncodedDataSize(compressedPicture.getWidth(), compressedPicture.getHeight())
-                              :
-                              picture.getByteCount();
+        return sizeInBytes;
     }
 
     @Override
     public Buffer getRawData() {
-        Buffer imageBuffer;
+        Buffer rawData;
 
         if (isCompressed())
-            imageBuffer = compressedPicture.getData();
+            rawData = compressedPicture.getData();
         else {
-            imageBuffer = IntBuffer.allocate(picture.getWidth() * picture.getHeight());
-            picture.copyPixelsToBuffer(imageBuffer);
+            rawData = IntBuffer.allocate(mWidth * mHeight);
+            picture.copyPixelsToBuffer(rawData);
 
-            imageBuffer.position(0);
+            rawData.position(0);
         }
 
-        return imageBuffer;
+        return rawData;
     }
 
     @Override
@@ -63,11 +69,8 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         int[] result = null;
 
         if (!isCompressed()) {
-            result = new int[picture.getWidth() * picture.getHeight()];
-            picture.getPixels(result, 0, picture.getWidth(), 0, 0, picture.getWidth(), picture.getHeight());
-
-            //IntBuffer buf = IntBuffer.wrap(result);
-            //result = buf.array();
+            result = new int[mWidth * mHeight];
+            picture.getPixels(result, 0, mWidth, 0, 0, mWidth, mHeight);
         }
 
         return result;
@@ -76,11 +79,9 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     @Override
     public Buffer getDecodedRawData() {
         if (isCompressed()) {
-            int width = compressedPicture.getWidth();
-            int height = compressedPicture.getHeight();
-            int stride = 3 * width;
-            ByteBuffer decodedData = ByteBuffer.allocateDirect(stride * height).order(ByteOrder.nativeOrder());
-            ETC1.decodeImage(compressedPicture.getData(), decodedData, width, height, 3, stride);
+            int stride = 3 * mWidth;
+            ByteBuffer decodedData = ByteBuffer.allocateDirect(stride * mHeight).order(ByteOrder.nativeOrder());
+            ETC1.decodeImage(compressedPicture.getData(), decodedData, mWidth, mHeight, 3, stride);
 
             return decodedData;
         }
@@ -95,12 +96,12 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public int getWidth() {
-        return isCompressed() ? compressedPicture.getWidth() : picture != null ? picture.getWidth() : 0;
+        return mWidth;
     }
 
     @Override
     public int getHeight() {
-        return isCompressed() ? compressedPicture.getHeight() : picture != null ? picture.getHeight() : 0;
+        return mHeight;
     }
 
     @Override
@@ -153,6 +154,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         if (picture != null)
             picture.recycle();
 
-        compressedPicture = null;
+        if (compressedPicture != null)
+            compressedPicture.getData().limit(0);
     }
 }
