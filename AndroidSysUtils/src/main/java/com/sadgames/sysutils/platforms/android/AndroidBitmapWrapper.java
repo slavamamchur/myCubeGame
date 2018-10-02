@@ -29,6 +29,10 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     private int mHeight;
 
     AndroidBitmapWrapper(Bitmap picture) {
+        /*ByteBuffer rawData = ByteBuffer.allocateDirect(sizeInBytes).order(ByteOrder.nativeOrder());
+        picture.copyPixelsToBuffer(rawData);
+        picture.recycle();*/
+
         this.picture = picture;
         mWidth = picture.getWidth();
         mHeight = picture.getHeight();
@@ -40,6 +44,14 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         mWidth = compressedPicture.getWidth();
         mHeight = compressedPicture.getHeight();
         sizeInBytes = ETC1.getEncodedDataSize(mWidth, mHeight);
+    }
+
+    private Bitmap getBitmap(Buffer data) {
+        Bitmap result = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+        data.rewind();
+        result.copyPixelsFromBuffer(data);
+
+        return result;
     }
 
     @Override
