@@ -1,10 +1,13 @@
 package com.sadgames.sysutils.common;
 
 import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import javax.vecmath.Vector2f;
 
 public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
@@ -22,7 +25,7 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
         this.mCompressed = compressed;
     }
 
-    public BitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
+    protected BitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
         this(compressedPicture.getData(),
              compressedPicture.getWidth(),
              compressedPicture.getHeight(),
@@ -91,6 +94,10 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
             data.limit(0);
             data = null;
         }
+    }
+
+    protected Vector2f getPoint(LuaValue value) {
+        return (Vector2f)(LuaUtils.getUserData(value, Vector2f.class));
     }
 
     protected abstract void decodeImage(Buffer in, Buffer out);
