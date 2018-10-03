@@ -22,15 +22,14 @@ import javax.vecmath.Vector2f;
 
 public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
-    private Bitmap picture = null;
-    private ETC1Utils.ETC1Texture compressedPicture = null;
+    protected Buffer data;
     protected int sizeInBytes;
     protected int mWidth;
     protected int mHeight;
     protected boolean mCompressed;
 
     AndroidBitmapWrapper(Bitmap picture) {
-        this.picture = picture;
+        data = getRawDataFromBitmap(picture);
         mWidth = picture.getWidth();
         mHeight = picture.getHeight();
         sizeInBytes = picture.getByteCount();
@@ -38,10 +37,10 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
     }
 
     AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
-        this.compressedPicture = compressedPicture;
+        data = compressedPicture.getData();
         mWidth = compressedPicture.getWidth();
         mHeight = compressedPicture.getHeight();
-        sizeInBytes = ETC1.getEncodedDataSize(mWidth, mHeight);
+        sizeInBytes = compressedPicture.getData().capacity();
         mCompressed = true;
     }
 
@@ -67,18 +66,10 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public Buffer getRawData() {
-        Buffer rawData;
+        if (data != null)
+            data.rewind();
 
-        if (mCompressed)
-            rawData = compressedPicture.getData();
-        else {
-            rawData = ByteBuffer.allocateDirect(sizeInBytes).order(ByteOrder.nativeOrder());
-            picture.copyPixelsToBuffer(rawData);
-
-            rawData.position(0);
-        }
-
-        return rawData;
+        return data;
     }
 
     @Override
@@ -87,7 +78,10 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
         if (!mCompressed) {
             result = new int[mWidth * mHeight];
+            Bitmap picture = getBitmap(data);
+
             picture.getPixels(result, 0, mWidth, 0, 0, mWidth, mHeight);
+            picture.recycle();
         }
 
         return result;
@@ -98,7 +92,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         if (mCompressed) {
             int stride = 3 * mWidth;
             ByteBuffer decodedData = ByteBuffer.allocateDirect(stride * mHeight).order(ByteOrder.nativeOrder());
-            ETC1.decodeImage(compressedPicture.getData(), decodedData, mWidth, mHeight, 3, stride);
+            ETC1.decodeImage(data, decodedData, mWidth, mHeight, 3, stride);
 
             return decodedData;
         }
@@ -108,7 +102,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public int getPixelColor(int x, int y) {
-        return mCompressed ? 0 : picture.getPixel(x, y);
+        return mCompressed ? 0 : asIntArray()[y * mWidth + x];
     }
 
     @Override
@@ -123,7 +117,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public boolean isEmpty() {
-        return picture == null && compressedPicture == null;
+        return data == null;
     }
 
     @Override
@@ -136,6 +130,7 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         if (path == null || mCompressed)
             return;
 
+        Bitmap picture = getBitmap(data);
         Canvas canvas = new Canvas(picture);
         Path pathObject = new Path();
         final Paint paint = new Paint();
@@ -160,6 +155,9 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
             point = getPoint(path.get(i));
             canvas.drawCircle(point.x, point.y, 7.5f * scaleFactor, paint);
         }
+
+        data = getRawDataFromBitmap(picture);
+        picture.recycle();
     }
 
     private Vector2f getPoint(LuaValue value) {
@@ -168,10 +166,9 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public void release() {
-        if (picture != null)
-            picture.recycle();
-
-        if (compressedPicture != null)
-            compressedPicture.getData().limit(0);
+        if (data != null) {
+            data.limit(0);
+            data = null;
+        }
     }
 }
