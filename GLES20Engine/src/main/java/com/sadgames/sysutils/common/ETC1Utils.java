@@ -15,14 +15,14 @@ public class ETC1Utils {
         }
 
         /**
-         * Get the width of the texture in pixels.
-         * @return the width of the texture in pixels.
+         * Get the width of the texture in data.
+         * @return the width of the texture in data.
          */
         public int getWidth() { return mWidth; }
 
         /**
-         * Get the height of the texture in pixels.
-         * @return the width of the texture in pixels.
+         * Get the height of the texture in data.
+         * @return the width of the texture in data.
          */
         public int getHeight() { return mHeight; }
 

@@ -8,28 +8,30 @@ import java.nio.ByteOrder;
 
 public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
-    protected Buffer pixels;
-    protected int width;
-    protected int height;
-    protected boolean compressed;
+    protected Buffer data;
+    protected int sizeInBytes;
+    protected int mWidth;
+    protected int mHeight;
+    protected boolean mCompressed;
 
-    protected BitmapWrapper(ByteBuffer pixels, int width, int height, boolean compressed) {
-        this.pixels = pixels;
-        this.width = width;
-        this.height = height;
-        this.compressed = compressed;
+    protected BitmapWrapper(ByteBuffer data, int width, int height, boolean compressed) {
+        this.data = data;
+        this.sizeInBytes = data.capacity();
+        this.mWidth = width;
+        this.mHeight = height;
+        this.mCompressed = compressed;
     }
 
     @Override
     public Buffer getRawData() {
-        return pixels;
+        return data;
     }
 
     @Override
     public Buffer getDecodedRawData() {
-        if (compressed) {
-            ByteBuffer decodedData = ByteBuffer.allocateDirect(3 * width * height).order(ByteOrder.nativeOrder());
-            decodeImage(pixels, decodedData);
+        if (mCompressed) {
+            ByteBuffer decodedData = ByteBuffer.allocateDirect(3 * mWidth * mHeight).order(ByteOrder.nativeOrder());
+            decodeImage(data, decodedData);
 
             return decodedData;
         }
@@ -42,30 +44,32 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public int getPixelColor(int x, int y) {
-        return asIntArray()[y * width + x];
+        return asIntArray()[y * mWidth + x];
     }
 
     @Override
     public int getWidth() {
-        return width;
+        return mWidth;
     }
 
     @Override
     public int getHeight() {
-        return height;
+        return mHeight;
     }
 
     @Override
-    public abstract int getImageSizeBytes();
+    public int getImageSizeBytes() {
+        return sizeInBytes;
+    }
 
     @Override
     public boolean isEmpty() {
-        return pixels == null;
+        return data == null;
     }
 
     @Override
     public boolean isCompressed() {
-        return compressed;
+        return mCompressed;
     }
 
     @Override
@@ -73,13 +77,12 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public void release() {
-        if (pixels != null) {
-            pixels.limit(0);
-            pixels = null;
+        if (data != null) {
+            data.limit(0);
+            data = null;
         }
     }
 
     protected abstract void decodeImage(Buffer in, Buffer out);
-    protected abstract int getEncodedDataSize(int width, int height);
 
 }

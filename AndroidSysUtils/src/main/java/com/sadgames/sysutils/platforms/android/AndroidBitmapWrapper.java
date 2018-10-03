@@ -24,16 +24,12 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
 
     private Bitmap picture = null;
     private ETC1Utils.ETC1Texture compressedPicture = null;
-    private int sizeInBytes;
-    private int mWidth;
-    private int mHeight;
-    private boolean mCompressed;
+    protected int sizeInBytes;
+    protected int mWidth;
+    protected int mHeight;
+    protected boolean mCompressed;
 
     AndroidBitmapWrapper(Bitmap picture) {
-        /*ByteBuffer rawData = ByteBuffer.allocateDirect(sizeInBytes).order(ByteOrder.nativeOrder());
-        picture.copyPixelsToBuffer(rawData);
-        picture.recycle();*/
-
         this.picture = picture;
         mWidth = picture.getWidth();
         mHeight = picture.getHeight();
@@ -55,6 +51,13 @@ public class AndroidBitmapWrapper implements BitmapWrapperInterface {
         result.copyPixelsFromBuffer(data);
 
         return result;
+    }
+
+    private Buffer getRawDataFromBitmap(Bitmap picture) {
+        Buffer rawData = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
+        picture.copyPixelsToBuffer(rawData);
+
+        return rawData;
     }
 
     @Override
