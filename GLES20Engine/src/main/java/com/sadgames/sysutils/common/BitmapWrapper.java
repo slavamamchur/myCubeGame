@@ -22,8 +22,18 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
         this.mCompressed = compressed;
     }
 
+    protected BitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
+        this(compressedPicture.getData(),
+             compressedPicture.getWidth(),
+             compressedPicture.getHeight(),
+             true);
+    }
+
     @Override
     public Buffer getRawData() {
+        if (data != null)
+            data.rewind();
+
         return data;
     }
 
