@@ -203,7 +203,12 @@ moveChips = function(gameInstanceEntity)
     end
 end
 
-onCreateDynamicItems = function(gameEntity, gameInstance)
+onCreateDynamicItems = function(gameEntity, gameInstance) --todo: generate way points
+    --local rotate = gameLogic:getGl3DScene():createRotateAnimation(360.0, 2, 4000)
+    --rotate:setRepeatCount(-1)
+    --gameObject:setAnimation(rotate)
+    --rotate:startAnimation(gameObject, nil)
+
     if (gameInstance == nil) or (gameEntity:getGamePoints() == nil) then
         return
     end

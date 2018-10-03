@@ -46,4 +46,5 @@ public interface SysUtilsWrapperInterface {
                                                    int method);
 
     //TODO: use java SE common lib for pictures  - > PNGDecoder
+    //TODO: getJDBCConnection()
 }

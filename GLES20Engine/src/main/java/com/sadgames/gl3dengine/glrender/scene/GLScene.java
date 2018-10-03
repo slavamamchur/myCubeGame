@@ -231,15 +231,24 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         return program;
     }
 
-    public GLAnimation createZoomCameraAnimation(float zoomLevel) {
+    @SuppressWarnings("unused") public GLAnimation createZoomCameraAnimation(float zoomLevel) {
         GLAnimation animation = new GLAnimation(zoomLevel, CAMERA_ZOOM_ANIMATION_DURATION);
         animation.setLuaEngine(luaEngine);
 
         return animation;
     }
 
+    @SuppressWarnings("unused")
     public GLAnimation createTranslateAnimation(float fromX, float toX, float fromY, float toY, float fromZ, float toZ, long duration) {
         GLAnimation animation = new GLAnimation(fromX, toX, fromY, toY, fromZ, toZ, duration);
+        animation.setLuaEngine(luaEngine);
+
+        return animation;
+    }
+
+    @SuppressWarnings("unused")
+    public GLAnimation createRotateAnimation(float rotationAngle, short rotationAxesMask, long animationDuration) {
+        GLAnimation animation = new GLAnimation(rotationAngle, rotationAxesMask, animationDuration);
         animation.setLuaEngine(luaEngine);
 
         return animation;

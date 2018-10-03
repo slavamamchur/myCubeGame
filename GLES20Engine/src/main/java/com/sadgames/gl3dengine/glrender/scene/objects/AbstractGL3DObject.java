@@ -509,7 +509,8 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
         float[] transformer = new float[16];
         MathUtils.rotateM(transformer, rotationX, rotationY, rotationZ);
-        sysUtilsWrapper.mulMM(modelMatrix, 0, modelMatrix, 0, transformer, 0);
+
+        sysUtilsWrapper.mulMM(modelMatrix, 0, transformer, 0, modelMatrix, 0);
 
         MathUtils.scaleM(modelMatrix, 0, scaleFactor, scaleFactor, scaleFactor);
     }
@@ -532,9 +533,9 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
     @Override
     public void setRotation(float angle, short rotationAxesMask) {
-        if ((rotationAxesMask & ROTATE_BY_X) != 0) rotationX += angle;
-        if ((rotationAxesMask & ROTATE_BY_Y) != 0) rotationY += angle;
-        if ((rotationAxesMask & ROTATE_BY_Z) != 0) rotationZ += angle;
+        if ((rotationAxesMask & ROTATE_BY_X) != 0) rotationX = (angle) % 360;
+        if ((rotationAxesMask & ROTATE_BY_Y) != 0) rotationY = (angle) % 360;
+        if ((rotationAxesMask & ROTATE_BY_Z) != 0) rotationZ = (angle) % 360;
 
         updateTransform();
     }

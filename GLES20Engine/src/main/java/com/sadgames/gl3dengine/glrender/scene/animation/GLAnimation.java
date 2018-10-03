@@ -33,7 +33,7 @@ public class GLAnimation {
     private long animationDuration;
     private long startTime;
     private boolean inProgress = false;
-    private short repeatCount = 0;
+    private short repeatCount = 1;
     private short repeatStep = 0;
 
     public GLAnimation(float fromX, float toX, float fromY, float toY, float fromZ, float toZ, long animationDuration) {
@@ -133,6 +133,8 @@ public class GLAnimation {
         inProgress = true;
     }
 
+    public void stopAnimation() {inProgress = false;}
+
     public void animate(IAnimatedObject animatedObject) {
         float currentPos = getCurrentProgress();
         currentPos = currentPos > 1.0f ? 1.0f : currentPos;
@@ -162,7 +164,7 @@ public class GLAnimation {
         if (!inProgress) {
             repeatCount--;
 
-            if (repeatCount >= 0) {
+            if (repeatCount != 0) {
                 repeatStep++;
                 startTime = System.currentTimeMillis();
                 inProgress = true;
