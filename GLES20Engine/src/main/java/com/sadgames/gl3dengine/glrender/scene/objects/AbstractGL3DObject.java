@@ -201,6 +201,14 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     public void setAnimation(GLAnimation animation) {
         this.animation = animation;
     }
+    public void animationStart() {
+        if (animation != null && !animation.isInProgress())
+            animation.startAnimation(this, null);
+    }
+    public void animationStop() {
+        if (animation != null && animation.isInProgress())
+            animation.stopAnimation();
+    }
 
     public float getAmbientRate() {
         return ambientRate;

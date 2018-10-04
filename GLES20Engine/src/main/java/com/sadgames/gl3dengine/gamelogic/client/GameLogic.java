@@ -54,6 +54,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_DOME_TEXTUR
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
+import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Y;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
 
@@ -193,6 +194,26 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
+
+        /** WP Test --------------------------------------------------------------------------------------------- */
+        Blender3DObject wings = new Blender3DObject(sysUtilsWrapper,
+                "5bb64b8718e775d89e163320",
+                program,
+                /*0xFFFFFFFF,*/
+                1.0f,
+                1);
+        wings.setInitialScale(0.5f);
+        wings.setInitialTranslation(0f, 0.33f, 0f);
+
+        wings.loadObject();
+        //wings.setRotationX(-90f);
+
+        GLAnimation spin = glScene.createRotateAnimation(360f, ROTATE_BY_Y, 4000);
+        spin.setRepeatCount((short) 0);
+        wings.setAnimation(spin);
+        terrain.putChild(wings, "WP_WINGS");
+        wings.animationStart();
+        /** ------------------------------------------------------------------------------------------------------ */
 
         loadGameItems(glScene);
         luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));

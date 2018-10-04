@@ -5,6 +5,8 @@ local SKY_BOX_CUBE_MAP_OBJECT = 'SKY_BOX_CUBE_MAP_OBJECT'
 local TERRAIN_MESH_OBJECT = 'TERRAIN_MESH_OBJECT'
 local CHIP_MESH_OBJECT = 'CHIP_MESH_OBJECT'
 local DICE_MESH_OBJECT = '5bae5fc2f2675fb54e7cb7f5'
+local WINGS_MESH_OBJECT = 'WP_FLY_FORWARD'
+local EXIT_MESH_OBJECT = '5bb64b8718e775d89e163320'
 
 local CHIP_DEFAULT_WEIGHT = 1.0
 local COLLISION_OBJECT = 1
@@ -18,6 +20,9 @@ local WAY_POINT_COLOR = -65536
 local LAND_SIZE_IN_WORLD_SPACE = 7.0
 local DEFAULT_CAMERA_X, DEFAULT_CAMERA_Y, DEFAULT_CAMERA_Z = 0.0, 3.0, 3.0
 local DEFAULT_CAMERA_PITCH, DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_ROLL = 45.0, 0.0, 0.0
+local ROTATE_BY_X = 1;
+local ROTATE_BY_Y = 2;
+local ROTATE_BY_Z = 4;
 
 local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
@@ -203,11 +208,47 @@ moveChips = function(gameInstanceEntity)
     end
 end
 
+function createSpinAnimation(rotationAxe)
+    local spin = gameLogic:getGl3DScene():createRotateAnimation(360, rotationAxe, 4000)
+    spin:setRepeatCount(0)
+
+    return spin
+end
+
+function createWPFlyForward(gameEntity)
+    local wp = gameEntity:createNewItem(WINGS_MESH_OBJECT,
+            TERRAIN_MESH_OBJECT,
+            CHIP_DEFAULT_WEIGHT,
+            COLLISION_OBJECT,
+            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+                                                gameLogic:getGl3DScene(),
+                                                0xFFFFFFFF)
+    wp:setInitialScale(0.015625)
+    wp:setInitialTranslation(0.0, 0.0, 0.25)
+    wp:loadObject()
+    wp:setRotationX(-90)
+    wp:setAnimation(createSpinAnimation(ROTATE_BY_Z));
+
+    return wp
+end
+
+function createWPFinish(gameEntity)
+    local wp = gameEntity:createNewItem(EXIT_MESH_OBJECT,
+            TERRAIN_MESH_OBJECT,
+            CHIP_DEFAULT_WEIGHT,
+            COLLISION_OBJECT,
+            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+            gameLogic:getGl3DScene())
+
+    wp:setInitialScale(0.5)
+    wp:setInitialTranslation(0.0, 0.33, 0.0)
+    wp:loadObject()
+    wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+
+    return wp
+end
+
 onCreateDynamicItems = function(gameEntity, gameInstance) --todo: generate way points
-    --local rotate = gameLogic:getGl3DScene():createRotateAnimation(360.0, 2, 4000)
-    --rotate:setRepeatCount(-1)
-    --gameObject:setAnimation(rotate)
-    --rotate:startAnimation(gameObject, nil)
 
     if (gameInstance == nil) or (gameEntity:getGamePoints() == nil) then
         return

@@ -114,6 +114,7 @@ public class Blender3DObject extends ImportedObject {
             BufferedReader model = new BufferedReader(new StringReader(sysUtilsWrapper.iReadTextFromFile(modelFileName)));
 
             while (!((readedLine = model.readLine()) == null) && !readedLine.startsWith("f ")) {
+                readedLine = readedLine.replaceAll("  ", " ");
                 String[] parsedValues = readedLine.split(" ");
 
                 if (readedLine.startsWith("v ")) {
@@ -131,6 +132,7 @@ public class Blender3DObject extends ImportedObject {
             normalsArray = new float[verticesList.size() * 3];
 
             while (readedLine != null) {
+                readedLine = readedLine.replaceAll("  ", " ");
                 if (readedLine.startsWith("f ")) {
                     String[] parsedValues = readedLine.split(" ");
                     for (short i = 1; i < parsedValues.length; i++) {
