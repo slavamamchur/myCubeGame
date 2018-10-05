@@ -23,9 +23,15 @@ local WAY_POINT_COLOR = -65536
 local LAND_SIZE_IN_WORLD_SPACE = 7.0
 local DEFAULT_CAMERA_X, DEFAULT_CAMERA_Y, DEFAULT_CAMERA_Z = 0.0, 3.0, 3.0
 local DEFAULT_CAMERA_PITCH, DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_ROLL = 45.0, 0.0, 0.0
-local ROTATE_BY_X = 1;
-local ROTATE_BY_Y = 2;
-local ROTATE_BY_Z = 4;
+local ROTATE_BY_X = 1
+local ROTATE_BY_Y = 2
+local ROTATE_BY_Z = 4
+
+local MOVE_SKIP = 2
+local MOVE_MORE = 3
+local FLY_BACK = 4
+local FLY_FORWARD = 5
+local FINISH = 6
 
 local DICE_FACES_VALUES = {68, 85, 17, 0, 51, 34}
 
@@ -298,11 +304,17 @@ function createWPMoveMore(gameEntity)
     return wp
 end
 
-function createSpecialPoint(type, number, place)
+function createSpecialPoint(type, number, place, gameEntity)
     local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
     local coords = map:map2WorldCoord(place.x, place.y)
 
     --todo: 1. do not draw in 2D, 2. rotate sky aground Z ...
+    local switch = {
+        [MOVE_SKIP] = function () createWPMoveSkip(gameEntity) end,
+        [MOVE_MORE] = function () createWPMoveMore(gameEntity) end
+    }
+
+
 
 end
 
@@ -324,7 +336,8 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
             wayPointsCounter[pType + 1] = wayPointsCounter[pType + 1] + 1
             createSpecialPoint(pType,
                                wayPointsCounter[pType + 1],
-                               gameEntity:getGamePoints():get(i-1):asVector2fLua())
+                               gameEntity:getGamePoints():get(i-1):asVector2fLua(),
+                               gameEntity)
         end
     end
 
