@@ -314,7 +314,7 @@ function createSpecialPoint(type, number, place, gameEntity)
         [MOVE_MORE] = function () createWPMoveMore(gameEntity) end
     }
 
-
+    --switch[type]()
 
 end
 
