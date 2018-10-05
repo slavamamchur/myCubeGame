@@ -281,7 +281,11 @@ function createWPMoveSkip(gameEntity)
     return wp
 end
 
-onCreateDynamicItems = function(gameEntity, gameInstance) --todo: generate way points
+function createSpecialPoint(type, number, place)
+    --todo:
+end
+
+onCreateDynamicItems = function(gameEntity, gameInstance)
 
     if (gameInstance == nil) or (gameEntity:getGamePoints() == nil) then
         return
@@ -289,9 +293,18 @@ onCreateDynamicItems = function(gameEntity, gameInstance) --todo: generate way p
 
     local prevChip = nil
     local playersOnWayPoints = {}
+    local wayPointsCounter = {0, 0, 0, 0, 0, 0, 0}
 
     for i = 1, gameEntity:getGamePoints():size() do
         table.insert(playersOnWayPoints, i, 0)
+
+        local pType = gameEntity:getGamePoints():get(i-1):getType():ordinal()
+        if pType > 1 then
+            wayPointsCounter[pType + 1] = wayPointsCounter[pType + 1] + 1
+            createSpecialPoint(pType,
+                               wayPointsCounter[pType + 1],
+                               gameEntity:getGamePoints():get(i-1):asVector2fLua())
+        end
     end
 
     for i = 0, gameInstance:getPlayers():size() - 1 do
