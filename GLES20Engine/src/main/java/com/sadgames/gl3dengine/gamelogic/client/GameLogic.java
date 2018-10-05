@@ -54,7 +54,6 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_DOME_TEXTUR
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
-import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTATE_BY_Y;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
 
@@ -196,14 +195,13 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
         /** WP Test --------------------------------------------------------------------------------------------- */
-        Blender3DObject wings = new Blender3DObject(sysUtilsWrapper,
-                "5bb7042244dd519c21662955",
+        /*Blender3DObject wings = new Blender3DObject(sysUtilsWrapper,
+                "5bb7785f44dd519c21662956",
                 program,
-                /*0xFFFFFFFF,*/
                 1.0f,
                 1);
-        wings.setInitialScale(0.16667f);
-        //wings.setInitialTranslation(0f, 0.33f, 0f);
+        wings.setInitialScale(0.00125f);
+        wings.setInitialTranslation(0f, 0.125f / 2f, 0f);
         //wings.setTwoSidedSurface(true);
 
         wings.loadObject();
@@ -213,7 +211,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         spin.setRepeatCount((short) 0);
         wings.setAnimation(spin);
         terrain.putChild(wings, "WP_WINGS");
-        wings.animationStart();
+        wings.animationStart();*/
         /** ------------------------------------------------------------------------------------------------------ */
 
         loadGameItems(glScene);

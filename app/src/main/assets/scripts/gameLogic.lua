@@ -9,6 +9,7 @@ local WINGS_MESH_OBJECT = 'WP_FLY_FORWARD'
 local EXIT_MESH_OBJECT = '5bb64b8718e775d89e163320'
 local BACK_MESH_OBJECT = '5bb6671fea957bd2affb428c'
 local SKIP_MESH_OBJECT = '5bb7042244dd519c21662955'
+local MORE_MESH_OBJECT = '5bb7785f44dd519c21662956'
 
 local CHIP_DEFAULT_WEIGHT = 1.0
 local COLLISION_OBJECT = 1
@@ -281,10 +282,27 @@ function createWPMoveSkip(gameEntity)
     return wp
 end
 
+function createWPMoveMore(gameEntity)
+    local wp = gameEntity:createNewItem(MORE_MESH_OBJECT,
+            TERRAIN_MESH_OBJECT,
+            CHIP_DEFAULT_WEIGHT,
+            COLLISION_OBJECT,
+            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+            gameLogic:getGl3DScene())
+
+    wp:setInitialScale(0.00125)
+    wp:setInitialTranslation(0.0, 0.0625, 0.0)
+    wp:loadObject()
+    wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+
+    return wp
+end
+
 function createSpecialPoint(type, number, place)
-    --todo:
     local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
     local coords = map:map2WorldCoord(place.x, place.y)
+
+    --todo: 1. do not draw in 2D, 2. rotate sky aground Z ...
 
 end
 
