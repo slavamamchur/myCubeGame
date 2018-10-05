@@ -197,13 +197,14 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         /** WP Test --------------------------------------------------------------------------------------------- */
         Blender3DObject wings = new Blender3DObject(sysUtilsWrapper,
-                "5bb6671fea957bd2affb428c",
+                "5bb7042244dd519c21662955",
                 program,
                 /*0xFFFFFFFF,*/
                 1.0f,
                 1);
-        wings.setInitialScale(0.1f);
-        wings.setInitialTranslation(0f, 0.33f, 0f);
+        wings.setInitialScale(0.16667f);
+        //wings.setInitialTranslation(0f, 0.33f, 0f);
+        //wings.setTwoSidedSurface(true);
 
         wings.loadObject();
         //wings.setRotationX(-90f);

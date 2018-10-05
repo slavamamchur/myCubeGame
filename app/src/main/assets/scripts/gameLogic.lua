@@ -8,6 +8,7 @@ local DICE_MESH_OBJECT = '5bae5fc2f2675fb54e7cb7f5'
 local WINGS_MESH_OBJECT = 'WP_FLY_FORWARD'
 local EXIT_MESH_OBJECT = '5bb64b8718e775d89e163320'
 local BACK_MESH_OBJECT = '5bb6671fea957bd2affb428c'
+local SKIP_MESH_OBJECT = '5bb7042244dd519c21662955'
 
 local CHIP_DEFAULT_WEIGHT = 1.0
 local COLLISION_OBJECT = 1
@@ -259,6 +260,21 @@ function createWPFlyBack(gameEntity)
 
     wp:setInitialScale(0.1)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
+    wp:loadObject()
+    wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+
+    return wp
+end
+
+function createWPMoveSkip(gameEntity)
+    local wp = gameEntity:createNewItem(SKIP_MESH_OBJECT,
+            TERRAIN_MESH_OBJECT,
+            CHIP_DEFAULT_WEIGHT,
+            COLLISION_OBJECT,
+            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+            gameLogic:getGl3DScene())
+
+    wp:setInitialScale(0.16667)
     wp:loadObject()
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
 
