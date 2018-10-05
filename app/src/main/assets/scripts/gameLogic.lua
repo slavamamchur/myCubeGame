@@ -211,7 +211,7 @@ moveChips = function(gameInstanceEntity)
 end
 
 function createSpinAnimation(rotationAxe)
-    local spin = gameLogic:getGl3DScene():createRotateAnimation(360, rotationAxe, 4000)
+    local spin = gameLogic:getGl3DScene():createRotateAnimation(-360.0, rotationAxe, 4000)
     spin:setRepeatCount(0)
 
     return spin

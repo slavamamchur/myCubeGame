@@ -209,7 +209,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         wings.loadObject();
         //wings.setRotationX(-90f);
 
-        GLAnimation spin = glScene.createRotateAnimation(360f, ROTATE_BY_Y, 4000);
+        GLAnimation spin = glScene.createRotateAnimation(-360f, ROTATE_BY_Y, 4000);
         spin.setRepeatCount((short) 0);
         wings.setAnimation(spin);
         terrain.putChild(wings, "WP_WINGS");
