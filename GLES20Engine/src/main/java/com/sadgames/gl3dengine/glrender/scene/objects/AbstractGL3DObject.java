@@ -510,15 +510,14 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         updateTransform();
     }
 
-    private void updateTransform() { //TODO: change order
+    private void updateTransform() {
         MathUtils.setIdentityM(modelMatrix, 0);
-
-        MathUtils.translateM(modelMatrix, 0, place.x, 0, place.y);
 
         float[] transformer = new float[16];
         MathUtils.rotateM(transformer, rotationX, rotationY, rotationZ);
-
         sysUtilsWrapper.mulMM(modelMatrix, 0, transformer, 0, modelMatrix, 0);
+
+        MathUtils.translateM(modelMatrix, 0, place.x, 0, place.y);
 
         MathUtils.scaleM(modelMatrix, 0, scaleFactor, scaleFactor, scaleFactor);
     }
