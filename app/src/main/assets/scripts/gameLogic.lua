@@ -283,6 +283,9 @@ end
 
 function createSpecialPoint(type, number, place)
     --todo:
+    local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
+    local coords = map:map2WorldCoord(place.x, place.y)
+
 end
 
 onCreateDynamicItems = function(gameEntity, gameInstance)
