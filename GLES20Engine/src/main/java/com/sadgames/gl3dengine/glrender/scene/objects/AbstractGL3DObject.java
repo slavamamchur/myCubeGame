@@ -464,14 +464,6 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         glTexture = null;
     }
 
-    /*public void setModelMatrix() {
-        *//** В переменной angle угол будет меняться  от 0 до 360 каждые 10 секунд.*//*
-        float angle = -(float)(SystemClock.uptimeMillis() % LAND_ANIMATION_DELAY_MS) / LAND_ANIMATION_DELAY_MS * 360;
-
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.rotateM(modelMatrix, 0, angle, 0, 1, 0);
-    }*/
-
     public void setInWorldPosition(Vector2f newPlace) {
         setPlace(newPlace);
         updateTransform();
@@ -517,7 +509,9 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         MathUtils.rotateM(transformer, rotationX, rotationY, rotationZ);
         sysUtilsWrapper.mulMM(modelMatrix, 0, transformer, 0, modelMatrix, 0);
 
-        MathUtils.translateM(modelMatrix, 0, place.x, 0, place.y);
+        //MathUtils.translateM(modelMatrix, 0, place.x, 0, place.y);
+        modelMatrix[12] += place.x;
+        modelMatrix[14] += place.y;
 
         MathUtils.scaleM(modelMatrix, 0, scaleFactor, scaleFactor, scaleFactor);
     }
