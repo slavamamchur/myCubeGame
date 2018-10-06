@@ -66,6 +66,21 @@ onRollingObjectStop = function(gameObject)
     gameLogic:getSysUtilsWrapper():iStopSound()
 end
 
+function chnageWayPointsVisibility()
+    --todo:
+    local visible = not gameLogic:getSysUtilsWrapper():iGetSettingsManager():isIn_2D_Mode()
+    local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
+
+    while list:hasNext() do
+        local item = list:next()
+
+        local i, j = string.find(item:getItemName(), 'WP_')
+        if i == 1 then
+            item:setVisible(visible)
+        end
+    end
+end
+
 onMovingObjectStop = function(gameObject, gameInstance)
     if not (gameInstance == nil) and (gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT)) then
         gameInstance:setStepsToGo(getTopFaceDiceValue(gameObject))
@@ -74,6 +89,7 @@ onMovingObjectStop = function(gameObject, gameInstance)
         gameLogic:getGl3DScene():restorePrevViewMode()
 
         gameObject:hideObject()
+        chnageWayPointsVisibility()
 
         gameLogic:getGl3DScene():setZoomCameraAnimation(gameLogic:getGl3DScene():createZoomCameraAnimation(2.0))
         gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, { gameInstance})
@@ -109,6 +125,7 @@ rollDice = function()
     local dice = gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT)
 
     gameLogic:getGl3DScene():switrchTo2DMode()
+    chnageWayPointsVisibility()
 
     dice:createRigidBody()
     dice:setPWorldTransform(generateDiceInitialTransform())

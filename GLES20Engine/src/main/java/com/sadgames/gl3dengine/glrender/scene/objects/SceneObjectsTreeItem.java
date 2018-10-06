@@ -39,7 +39,9 @@ public abstract class SceneObjectsTreeItem {
     @SuppressWarnings("unused") public void showObject() {
         visible = true;
     }
-
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
     public long getItemNumber() {
         return itemNumber;
@@ -58,6 +60,10 @@ public abstract class SceneObjectsTreeItem {
     }
     public void setParent(SceneObjectsTreeItem parent) {
         this.parent = parent;
+    }
+
+    public Map<String, SceneObjectsTreeItem> getChilds() {
+        return childs;
     }
 
     public String getItemName() {
