@@ -113,7 +113,7 @@ onMovingObjectStop = function(gameObject, gameInstance)
     end
 end
 
-beforeDrawFrame = function(frametime) --todo: rotate sky aground Z ...
+beforeDrawFrame = function(frametime)
     local skyBox = gameLogic:getGl3DScene():getObject(SKY_BOX_CUBE_MAP_OBJECT)
 
     skyBox:calcRotationAngle(frametime)

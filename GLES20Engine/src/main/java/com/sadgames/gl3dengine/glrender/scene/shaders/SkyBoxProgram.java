@@ -29,6 +29,7 @@ public class SkyBoxProgram extends ShadowMapProgram {
     public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
         float[] mMatrix = Arrays.copyOf(viewMatrix, viewMatrix.length);
 
+        //todo: rotate sky aground Z ...
         sysUtilsWrapper.rotateM(mMatrix, 0, ((AbstractSkyObject)object).getRotationAngle(), 0, 1, 0);
 
         /** remove camera translation -> skybox should stay on the fixed position */
