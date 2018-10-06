@@ -67,7 +67,6 @@ onRollingObjectStop = function(gameObject)
 end
 
 function chnageWayPointsVisibility()
-    --todo:
     local visible = not gameLogic:getSysUtilsWrapper():iGetSettingsManager():isIn_2D_Mode()
     local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
 
@@ -96,7 +95,7 @@ onMovingObjectStop = function(gameObject, gameInstance)
     end
 end
 
-beforeDrawFrame = function(frametime)
+beforeDrawFrame = function(frametime) --todo: rotate sky aground Z ...
     local skyBox = gameLogic:getGl3DScene():getObject(SKY_BOX_CUBE_MAP_OBJECT)
 
     skyBox:calcRotationAngle(frametime)
@@ -319,7 +318,7 @@ function createWPMoveMore(gameEntity)
 
     wp:setInitialScale(0.00125)
     wp:setInitialTranslation(0.0, 0.0625, 0.0)
-    wp:loadObject() --todo:cache same model objects
+    wp:loadObject() --todo:cache same model objects if childs.name.startsWith(WP_NAME)
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
     wp:setItemName('WP_MOVE_MORE_')
 
@@ -331,7 +330,7 @@ function createSpecialPoint(type, number, place, gameEntity)
     local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
     local coords = map:map2WorldCoord(place.x * scaleFactor, place.y * scaleFactor)
 
-    --todo: 1. do not draw in 2D, 2. rotate sky aground Z ...
+    --todo: test all WP
     local switch = {
         [MOVE_SKIP] = function () return createWPMoveSkip(gameEntity) end,
         [MOVE_MORE] = function () return createWPMoveMore(gameEntity) end,
