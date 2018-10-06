@@ -66,6 +66,25 @@ onRollingObjectStop = function(gameObject)
     gameLogic:getSysUtilsWrapper():iStopSound()
 end
 
+function startWith(item, pattern)
+    local i, j = string.find(item:getItemName(), pattern)
+    return i == 1
+end
+
+function findFirst(pattern)
+    local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
+
+    while list:hasNext() do
+        local item = list:next()
+
+        if startWith(item, pattern) then
+            return item
+        end
+    end
+
+    return nil
+end
+
 function chnageWayPointsVisibility()
     local visible = not gameLogic:getSysUtilsWrapper():iGetSettingsManager():isIn_2D_Mode()
     local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
@@ -73,8 +92,7 @@ function chnageWayPointsVisibility()
     while list:hasNext() do
         local item = list:next()
 
-        local i, j = string.find(item:getItemName(), 'WP_')
-        if i == 1 then
+        if startWith(item, 'WP_') then
             item:setVisible(visible)
         end
     end
@@ -240,17 +258,27 @@ function createSpinAnimation(rotationAxe)
     return spin
 end
 
+function loadObject(object, pattern)
+    local prev = findFirst(pattern)
+
+    if prev == nil then
+        object:loadObject()
+    else
+        object:loadFromObject(prev)
+    end
+end
+
 function createWPFlyForward(gameEntity)
     local wp = gameEntity:createNewItem(WINGS_MESH_OBJECT,
             TERRAIN_MESH_OBJECT,
             CHIP_DEFAULT_WEIGHT,
             COLLISION_OBJECT,
             TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-                                                gameLogic:getGl3DScene(),
-                                                0xFFFFFFFF)
+            gameLogic:getGl3DScene(),
+            0xFFFFFFFF)
     wp:setInitialScale(0.015625)
     wp:setInitialTranslation(0.0, 0.0, 0.25)
-    wp:loadObject()
+    loadObject(wp, 'WP_FLY_FORWARD_')
     wp:setRotationX(-90)
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Z));
     wp:setItemName('WP_FLY_FORWARD_')
@@ -260,15 +288,15 @@ end
 
 function createWPFinish(gameEntity)
     local wp = gameEntity:createNewItem(EXIT_MESH_OBJECT,
-            TERRAIN_MESH_OBJECT,
-            CHIP_DEFAULT_WEIGHT,
-            COLLISION_OBJECT,
-            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-            gameLogic:getGl3DScene())
+    TERRAIN_MESH_OBJECT,
+    CHIP_DEFAULT_WEIGHT,
+    COLLISION_OBJECT,
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+    gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.5)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
-    wp:loadObject()
+    loadObject(wp, 'WP_FINISH_')
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
     wp:setItemName('WP_FINISH_')
 
@@ -277,15 +305,15 @@ end
 
 function createWPFlyBack(gameEntity)
     local wp = gameEntity:createNewItem(BACK_MESH_OBJECT,
-            TERRAIN_MESH_OBJECT,
-            CHIP_DEFAULT_WEIGHT,
-            COLLISION_OBJECT,
-            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-            gameLogic:getGl3DScene())
+    TERRAIN_MESH_OBJECT,
+    CHIP_DEFAULT_WEIGHT,
+    COLLISION_OBJECT,
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+    gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.1)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
-    wp:loadObject()
+    loadObject(wp, 'WP_FLY_BACK_')
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
     wp:setItemName('WP_FLY_BACK_')
 
@@ -294,14 +322,14 @@ end
 
 function createWPMoveSkip(gameEntity)
     local wp = gameEntity:createNewItem(SKIP_MESH_OBJECT,
-            TERRAIN_MESH_OBJECT,
-            CHIP_DEFAULT_WEIGHT,
-            COLLISION_OBJECT,
-            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-            gameLogic:getGl3DScene())
+    TERRAIN_MESH_OBJECT,
+    CHIP_DEFAULT_WEIGHT,
+    COLLISION_OBJECT,
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+    gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.16667)
-    wp:loadObject()
+    loadObject(wp, 'WP_MOVE_SKIP_')
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
     wp:setItemName('WP_MOVE_SKIP_')
 
@@ -310,15 +338,15 @@ end
 
 function createWPMoveMore(gameEntity)
     local wp = gameEntity:createNewItem(MORE_MESH_OBJECT,
-            TERRAIN_MESH_OBJECT,
-            CHIP_DEFAULT_WEIGHT,
-            COLLISION_OBJECT,
-            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-            gameLogic:getGl3DScene())
+    TERRAIN_MESH_OBJECT,
+    CHIP_DEFAULT_WEIGHT,
+    COLLISION_OBJECT,
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
+    gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.00125)
     wp:setInitialTranslation(0.0, 0.0625, 0.0)
-    wp:loadObject() --todo:cache same model objects if childs.name.startsWith(WP_NAME)
+    loadObject(wp, 'WP_MOVE_MORE_')
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
     wp:setItemName('WP_MOVE_MORE_')
 
@@ -332,11 +360,11 @@ function createSpecialPoint(type, number, place, gameEntity)
 
     --todo: test all WP
     local switch = {
-        [MOVE_SKIP] = function () return createWPMoveSkip(gameEntity) end,
-        [MOVE_MORE] = function () return createWPMoveMore(gameEntity) end,
-        [FLY_BACK] = function () return createWPFlyBack(gameEntity) end,
-        [FLY_FORWARD] = function () return createWPFlyForward(gameEntity) end,
-        [FINISH] = function () return createWPFinish(gameEntity) end
+    [MOVE_SKIP] = function () return createWPMoveSkip(gameEntity) end,
+    [MOVE_MORE] = function () return createWPMoveMore(gameEntity) end,
+    [FLY_BACK] = function () return createWPFlyBack(gameEntity) end,
+    [FLY_FORWARD] = function () return createWPFlyForward(gameEntity) end,
+    [FINISH] = function () return createWPFinish(gameEntity) end
     }
 
     local wp = switch[type]()
@@ -364,19 +392,19 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
         if pType > 1 then
             wayPointsCounter[pType + 1] = wayPointsCounter[pType + 1] + 1
             createSpecialPoint(pType,
-                               wayPointsCounter[pType + 1],
-                               gameEntity:getGamePoints():get(i-1):asVector2f(),
-                               gameEntity)
+            wayPointsCounter[pType + 1],
+            gameEntity:getGamePoints():get(i-1):asVector2f(),
+            gameEntity)
         end
     end
 
     for i = 0, gameInstance:getPlayers():size() - 1 do
         local player = gameInstance:getPlayers():get(i)
         local chip = gameEntity:createNewItem(CHIP_MESH_OBJECT,
-                                              TERRAIN_MESH_OBJECT,
-                                              CHIP_DEFAULT_WEIGHT,
-                                              COLLISION_OBJECT,
-                                              TERRAIN_MATERIAL)
+        TERRAIN_MESH_OBJECT,
+        CHIP_DEFAULT_WEIGHT,
+        COLLISION_OBJECT,
+        TERRAIN_MATERIAL)
         :createSceneObject(gameLogic:getSysUtilsWrapper(), gameLogic:getGl3DScene(), player:getColor())
 
         chip:setInitialScale(0.2)
@@ -388,8 +416,8 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
         local currentPointIdx = player:getCurrentPoint() + 1
         playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
         chip:setInWorldPosition(getChipPlace(gameEntity:getGamePoints():get(player:getCurrentPoint()),
-                                            playersOnWayPoints[currentPointIdx] - 1,
-                                            true))
+        playersOnWayPoints[currentPointIdx] - 1,
+        true))
 
         if prevChip == nil then
             chip:loadObject()
@@ -399,7 +427,7 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
 
         parent:putChild(chip, chip:getItemName())
         prevChip = chip
-    end
+        end
 end
 
 function getChipPlace(point, playersCnt, rotate)
