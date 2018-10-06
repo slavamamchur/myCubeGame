@@ -237,6 +237,7 @@ function createWPFlyForward(gameEntity)
     wp:loadObject()
     wp:setRotationX(-90)
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Z));
+    wp:setItemName('WP_FLY_FORWARD_')
 
     return wp
 end
@@ -253,6 +254,7 @@ function createWPFinish(gameEntity)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
     wp:loadObject()
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+    wp:setItemName('WP_FINISH_')
 
     return wp
 end
@@ -269,6 +271,7 @@ function createWPFlyBack(gameEntity)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
     wp:loadObject()
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+    wp:setItemName('WP_FLY_BACK_')
 
     return wp
 end
@@ -284,6 +287,7 @@ function createWPMoveSkip(gameEntity)
     wp:setInitialScale(0.16667)
     wp:loadObject()
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+    wp:setItemName('WP_MOVE_SKIP_')
 
     return wp
 end
@@ -298,24 +302,33 @@ function createWPMoveMore(gameEntity)
 
     wp:setInitialScale(0.00125)
     wp:setInitialTranslation(0.0, 0.0625, 0.0)
-    wp:loadObject()
+    wp:loadObject() --todo:cache same model objects
     wp:setAnimation(createSpinAnimation(ROTATE_BY_Y));
+    wp:setItemName('WP_MOVE_MORE_')
 
     return wp
 end
 
 function createSpecialPoint(type, number, place, gameEntity)
     local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
-    local coords = map:map2WorldCoord(place.x, place.y)
+    local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
+    local coords = map:map2WorldCoord(place.x * scaleFactor, place.y * scaleFactor)
 
     --todo: 1. do not draw in 2D, 2. rotate sky aground Z ...
     local switch = {
-        [MOVE_SKIP] = function () createWPMoveSkip(gameEntity) end,
-        [MOVE_MORE] = function () createWPMoveMore(gameEntity) end
+        [MOVE_SKIP] = function () return createWPMoveSkip(gameEntity) end,
+        [MOVE_MORE] = function () return createWPMoveMore(gameEntity) end,
+        [FLY_BACK] = function () return createWPFlyBack(gameEntity) end,
+        [FLY_FORWARD] = function () return createWPFlyForward(gameEntity) end,
+        [FINISH] = function () return createWPFinish(gameEntity) end
     }
 
-    --switch[type]()
+    local wp = switch[type]()
+    wp:setInWorldPosition(coords)
+    wp:setItemName(string.format('%s%d', wp:getItemName(), number))
+    wp:animationStart()
 
+    map:putChild(wp, wp:getItemName())
 end
 
 onCreateDynamicItems = function(gameEntity, gameInstance)
@@ -336,7 +349,7 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
             wayPointsCounter[pType + 1] = wayPointsCounter[pType + 1] + 1
             createSpecialPoint(pType,
                                wayPointsCounter[pType + 1],
-                               gameEntity:getGamePoints():get(i-1):asVector2fLua(),
+                               gameEntity:getGamePoints():get(i-1):asVector2f(),
                                gameEntity)
         end
     end
