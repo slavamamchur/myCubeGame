@@ -372,37 +372,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return bitmap;
     }
 
-    private boolean isBitmapCached(String map_id, Long updatedDate) {//TODO: rewrite via JDBC api
-        Cursor imageData = null;
-        AndroidSQLiteDBHelper dbHelper = null;
-        SQLiteDatabase db = null;
-        boolean result = false;
-
-        try {
-            dbHelper = new AndroidSQLiteDBHelper(context, AndroidSQLiteDBHelper.DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
-            db = dbHelper.getReadableDatabase();
-
-            imageData = db.rawQuery("select count(" + AndroidSQLiteDBHelper.MAP_ID_FIELD + ") as CNT" +
-                            " from " + AndroidSQLiteDBHelper.TABLE_NAME +
-                            " where " + AndroidSQLiteDBHelper.MAP_ID_FIELD + " = ?"
-                            + " and " + AndroidSQLiteDBHelper.MAP_UPDATED_DATE + " = ?",
-                    new String[] { map_id, String.valueOf(updatedDate) });
-
-            result = (imageData != null) && imageData.moveToFirst() && (imageData.getInt(0) > 0);
-
-            imageData.close();
-            db.close();
-            dbHelper.close();
-
-        }
-        finally {
-            if (imageData != null) imageData.close();
-            if (db != null) db.close();
-            if (dbHelper != null) dbHelper.close();
-        }
-
-        return result;
-    }
     /** ------------------------------------------------------------------------------------------*/
 
     @Override
@@ -433,11 +402,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public Connection iGetDBConnection(String dbName) {
         return getDBConnection(dbName);
-    }
-
-    @Override
-    public boolean iIsBitmapCached(String map_id, Long updatedDate) {
-        return isBitmapCached(map_id, updatedDate);
     }
 
     @Override

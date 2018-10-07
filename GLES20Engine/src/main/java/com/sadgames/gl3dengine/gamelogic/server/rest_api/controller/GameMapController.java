@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
+import static com.sadgames.sysutils.common.DBUtils.isBitmapCached;
 
 public class GameMapController extends AbstractController {
 
@@ -28,7 +29,7 @@ public class GameMapController extends AbstractController {
     }
 
     private void internalSavePicture(GameMapEntity map, String url, String namePrefix, String errorMessage) {
-        if (sysUtilsWrapper.iIsBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
+        if (isBitmapCached(sysUtilsWrapper, namePrefix + map.getId(), map.getLastUsedDate()))
             return;
 
         byte[] mapArray = controller.iGetBinaryData(map, url, MEDIA_TYPE_IMAGE_JPEG);
