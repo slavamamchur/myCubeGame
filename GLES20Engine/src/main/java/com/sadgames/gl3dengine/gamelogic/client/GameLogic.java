@@ -194,26 +194,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
-        /** WP Test --------------------------------------------------------------------------------------------- */
-        /*Blender3DObject wings = new Blender3DObject(sysUtilsWrapper,
-                "5bb7785f44dd519c21662956",
-                program,
-                1.0f,
-                1);
-        wings.setInitialScale(0.00125f);
-        wings.setInitialTranslation(0f, 0.125f / 2f, 0f);
-        //wings.setTwoSidedSurface(true);
-
-        wings.loadObject();
-        //wings.setRotationX(-90f);
-
-        GLAnimation spin = glScene.createRotateAnimation(-360f, ROTATE_BY_Y, 4000);
-        spin.setRepeatCount((short) 0);
-        wings.setAnimation(spin);
-        terrain.putChild(wings, "WP_WINGS");
-        wings.animationStart();*/
-        /** ------------------------------------------------------------------------------------------------------ */
-
         loadGameItems(glScene);
         luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));
 

@@ -33,6 +33,9 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import javax.vecmath.Matrix4f;
@@ -270,6 +273,31 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
     }
 
+    private Connection getDBConnection(String dbName) {
+        try {
+            AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, dbName, null, AndroidSQLiteDBHelper.DB_VERSION);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.close();
+            dbHelper.close();
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to create DataBase.");
+        }
+
+        try {
+            DriverManager.registerDriver((Driver) Class.forName("org.sqldroid.SQLDroidDriver").newInstance());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to register SQLDroidDriver");
+        }
+
+        String jdbcUrl = "jdbc:sqldroid:" + context.getDatabasePath(dbName).getPath();
+        try {
+            return DriverManager.getConnection(jdbcUrl);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void saveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
         AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, AndroidSQLiteDBHelper.DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -344,7 +372,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return bitmap;
     }
 
-    private boolean isBitmapCached(String map_id, Long updatedDate) {
+    private boolean isBitmapCached(String map_id, Long updatedDate) {//TODO: rewrite via JDBC api
         Cursor imageData = null;
         AndroidSQLiteDBHelper dbHelper = null;
         SQLiteDatabase db = null;
@@ -404,7 +432,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     @Override
     public Connection iGetDBConnection(String dbName) {
-        return null; //TODO:
+        return getDBConnection(dbName);
     }
 
     @Override
