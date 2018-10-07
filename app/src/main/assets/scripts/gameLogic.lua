@@ -358,7 +358,6 @@ function createSpecialPoint(type, number, place, gameEntity)
     local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
     local coords = map:map2WorldCoord(place.x * scaleFactor, place.y * scaleFactor)
 
-    --todo: test all WP
     local switch = {
     [MOVE_SKIP] = function () return createWPMoveSkip(gameEntity) end,
     [MOVE_MORE] = function () return createWPMoveMore(gameEntity) end,

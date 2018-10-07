@@ -24,6 +24,7 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
 
     //TODO: getDataBaseConnection -> JDBC
+
     boolean                iIsBitmapCached(String map_id, Long updatedDate);
     void                   iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
     BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief);
