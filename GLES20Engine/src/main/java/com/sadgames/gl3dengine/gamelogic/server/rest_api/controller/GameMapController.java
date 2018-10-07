@@ -5,11 +5,10 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapE
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameMapCollectionResponse;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import java.io.IOException;
-
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
 import static com.sadgames.sysutils.common.DBUtils.isBitmapCached;
+import static com.sadgames.sysutils.common.DBUtils.saveBitmap2DB;
 
 public class GameMapController extends AbstractController {
 
@@ -37,8 +36,8 @@ public class GameMapController extends AbstractController {
         if (mapArray == null)
             controller.iThrowWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
         else try {
-            sysUtilsWrapper.iSaveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
-        } catch (IOException e) {
+            saveBitmap2DB(sysUtilsWrapper, mapArray, namePrefix + map.getId(), map.getLastUsedDate());
+        } catch (Exception e) {
             controller.iThrowWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
         }
     }

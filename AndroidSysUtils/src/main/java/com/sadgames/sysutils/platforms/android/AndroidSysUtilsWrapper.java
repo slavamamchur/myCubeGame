@@ -1,6 +1,5 @@
 package com.sadgames.sysutils.platforms.android;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
@@ -36,7 +35,6 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -239,26 +237,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(bmp);
     }
 
-    /*public int[] getRowPixels(Bitmap bmp, int[] rowPixels, int y) {
-        bmp.getPixels(rowPixels, 0, bmp.getWidth(), 0, y, bmp.getWidth(), 1);
-
-        return rowPixels;
-    }*/
-
-    /** ------------------------------------------------------------------------------------------*/
-
-    /** DB sysutils ---------------------------------------------------------------------------------*/
-
-    private static void saveChunk2DB(SQLiteDatabase db, String map_id, int chunkNumber, Long updatedDate, byte[] chunkData) {
-        ContentValues cv = new ContentValues();
-        cv.put(AndroidSQLiteDBHelper.MAP_ID_FIELD, map_id);
-        cv.put(AndroidSQLiteDBHelper.CHUNK_NUMBER_FIELD, chunkNumber);
-        cv.put(AndroidSQLiteDBHelper.MAP_UPDATED_DATE, updatedDate);
-        cv.put(AndroidSQLiteDBHelper.MAP_IMAGE_FIELD, chunkData);
-
-        db.replaceOrThrow(AndroidSQLiteDBHelper.TABLE_NAME, null, cv);
-    }
-
     private AndroidBitmapWrapper decodeImage(byte[] bitmapArray) {
         int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
         final BitmapFactory.Options options = getiBitmapOptions();
@@ -272,7 +250,9 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         options.inJustDecodeBounds = false;
         return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
     }
+    /** ------------------------------------------------------------------------------------------*/
 
+    /** DB sysutils ---------------------------------------------------------------------------------*/
     private Connection getDBConnection(String dbName) {
         try {
             AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, dbName, null, AndroidSQLiteDBHelper.DB_VERSION);
@@ -296,27 +276,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void saveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
-        AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, AndroidSQLiteDBHelper.DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        db.execSQL("delete from " + AndroidSQLiteDBHelper.TABLE_NAME + " where " + AndroidSQLiteDBHelper.MAP_ID_FIELD + " = \"" + map_id + "\"");
-
-        int chunkCount = bitmapArray.length / (BYTES_IN_MB * 2);
-        final int lastChunkSize = bitmapArray.length % (BYTES_IN_MB * 2);
-        chunkCount = lastChunkSize > 0 ? chunkCount + 1 : chunkCount;
-
-        for (int i = 0; i < chunkCount; i++) {
-            int chunkSize = (i == (chunkCount - 1)) && (lastChunkSize > 0) ? lastChunkSize : (BYTES_IN_MB * 2);
-            byte[] chunkData = Arrays.copyOfRange(bitmapArray, i * chunkSize, (i + 1) * chunkSize);
-
-            saveChunk2DB(db, map_id, i, updatedDate, chunkData);
-        }
-
-        db.close();
-        dbHelper.close();
     }
 
     private BitmapWrapperInterface loadBitmapFromDB(String textureResName, boolean isRelief) {
@@ -402,11 +361,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public Connection iGetDBConnection(String dbName) {
         return getDBConnection(dbName);
-    }
-
-    @Override
-    public void iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException {
-        saveBitmap2DB(bitmapArray, map_id, updatedDate);
     }
 
     @Override
