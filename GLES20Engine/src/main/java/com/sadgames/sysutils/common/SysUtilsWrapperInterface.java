@@ -9,6 +9,7 @@ import org.luaj.vm2.LuaTable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
+import java.sql.Connection;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -23,8 +24,7 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride);
     BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
 
-    //TODO: getDataBaseConnection -> JDBC
-
+    Connection             iGetDBConnection(String dbName);
     boolean                iIsBitmapCached(String map_id, Long updatedDate);
     void                   iSaveBitmap2DB(byte[] bitmapArray, String map_id, Long updatedDate) throws IOException;
     BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief);

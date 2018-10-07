@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.sql.Connection;
 import java.util.Arrays;
 
 import javax.vecmath.Matrix4f;
@@ -399,6 +400,11 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException {
         return createETC1Texture(input);
+    }
+
+    @Override
+    public Connection iGetDBConnection(String dbName) {
+        return null; //TODO:
     }
 
     @Override
