@@ -64,16 +64,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     /** Math    sysutils ---------------------------------------------------------------------------*/
     @Override
-    public Matrix4f createTransform() {
-        return new Matrix4f();
-    }
-
-    @Override
-    public Vector3f createVector3f(float vx, float vy, float vz) {
-        return new Vector3f(vx, vy, vz);
-    }
-
-    @Override
     public Vector3f mulMV(Matrix4f matrix, LuaTable vector) {
         return mulMV(MathUtils.getOpenGlMatrix(matrix), LuaUtils.luaTable2FloatArray(vector));
     }

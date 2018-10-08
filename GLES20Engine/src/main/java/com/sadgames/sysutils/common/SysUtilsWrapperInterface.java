@@ -29,8 +29,6 @@ public interface SysUtilsWrapperInterface {
     void                   iPlaySound(String file);
     void                   iStopSound();
 
-    Matrix4f               createTransform();
-    Vector3f               createVector3f(float vx, float vy, float vz);
     Vector3f               mulMV(float[] matrix, float[] vector);
     Vector3f               mulMV(Matrix4f matrix, LuaTable vector);
     Vector3f               mulMV(float[] matrix, LuaTable vector);

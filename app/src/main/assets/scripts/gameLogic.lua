@@ -504,7 +504,7 @@ function generateForceVector()
     local fy = fxz * 3.0 / 4.0
     local fVector = {0.0, fy, -fxz, 1.0}
 
-    local transform = gameLogic:getSysUtilsWrapper():createTransform()
+    local transform = gameLogic:getGl3DScene():createTransform()
     transform:rotY(math.rad(45.0 - math.random(0, 90) * 1.0))
 
     return gameLogic:getSysUtilsWrapper():mulMV(transform, fVector)
@@ -513,13 +513,13 @@ end
 function generateDiceInitialTransform()
     math.randomseed(os.time())
 
-    local transformer = gameLogic:getSysUtilsWrapper():createTransform()
-    local transformingObject = gameLogic:getSysUtilsWrapper():createTransform()
+    local transformer = gameLogic:getGl3DScene():createTransform()
+    local transformingObject = gameLogic:getGl3DScene():createTransform()
 
     transformingObject:setIdentity()
     transformer:setIdentity()
 
-    transformer:setTranslation(gameLogic:getSysUtilsWrapper():createVector3f(0.0, 0.5, 2.5))
+    transformer:setTranslation(gameLogic:getGl3DScene():createVector3f(0.0, 0.5, 2.5))
     transformingObject:mul(transformer)
 
     transformer:rotX(math.rad(math.random(0, 3) * 90.0)) --4

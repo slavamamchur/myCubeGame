@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.vecmath.Color4f;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_GRAVITY_VECTOR;
@@ -252,6 +254,14 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         animation.setLuaEngine(luaEngine);
 
         return animation;
+    }
+
+    @SuppressWarnings("unused") public Matrix4f createTransform() {
+        return new Matrix4f();
+    }
+
+    @SuppressWarnings("unused") public Vector3f createVector3f(float vx, float vy, float vz) {
+        return new Vector3f(vx, vy, vz);
     }
 
     private void startSimulation() {
