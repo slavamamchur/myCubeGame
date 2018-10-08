@@ -220,13 +220,11 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
     }
 
-    private BitmapWrapperInterface createBitmap(InputStream source) {
-        Bitmap bitmap;
-        BitmapWrapperInterface result;
-        final BitmapFactory.Options options = getiBitmapOptions();
-        bitmap = BitmapFactory.decodeStream(source, null, options);
-        result = bitmap == null ? null : new AndroidBitmapWrapper(bitmap);
-        return result;
+    private BitmapWrapperInterface createBitmap(InputStream source) throws IOException {
+        byte[] data = new byte[source.available()];
+        source.read(data);
+
+        return decodeImage(data, false);
     }
 
     private BitmapWrapperInterface createColorBitmap(int color) {
@@ -327,7 +325,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             db.close();
             dbHelper.close();
 
-            bitmap = decodeImage(bitmapArray, isRelief);
+            bitmap = iDecodeImage(bitmapArray, isRelief);
         }
         finally {
             if (imageData != null) imageData.close();
@@ -351,8 +349,13 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
 
     @Override
-    public BitmapWrapperInterface iCreateBitmap(InputStream source) {
+    public BitmapWrapperInterface iCreateBitmap(InputStream source) throws IOException {
         return createBitmap(source);
+    }
+
+    @Override
+    public BitmapWrapperInterface iDecodeImage(byte[] bitmapArray, boolean isRelief) {
+        return decodeImage(bitmapArray, isRelief);
     }
 
     @Override
