@@ -21,8 +21,13 @@ import javax.vecmath.Vector2f;
 public class AndroidBitmapWrapper extends BitmapWrapper {
 
     AndroidBitmapWrapper(Bitmap picture) {
-        super(getRawDataFromBitmap(picture), picture.getWidth(), picture.getHeight(), false);
-        picture.recycle();
+        super(getRawDataFromBitmap(picture),
+              picture != null ? picture.getWidth() : 0,
+              picture != null ? picture.getHeight() : 0,
+             false);
+
+        if (picture != null)
+            picture.recycle();
     }
 
     AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
@@ -38,8 +43,12 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
     }
 
     private static ByteBuffer getRawDataFromBitmap(Bitmap picture) {
-        ByteBuffer rawData = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
-        picture.copyPixelsToBuffer(rawData);
+        ByteBuffer rawData = null;
+
+        if (picture != null) {
+            rawData = ByteBuffer.allocateDirect(picture.getByteCount()).order(ByteOrder.nativeOrder());
+            picture.copyPixelsToBuffer(rawData);
+        }
 
         return rawData;
     }

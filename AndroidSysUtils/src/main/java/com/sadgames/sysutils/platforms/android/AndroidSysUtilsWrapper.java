@@ -237,18 +237,25 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(bmp);
     }
 
-    private AndroidBitmapWrapper decodeImage(byte[] bitmapArray) {
-        int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
-        final BitmapFactory.Options options = getiBitmapOptions();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
-        options.inSampleSize = CommonUtils.calculateInSampleSize(
-                        options.outWidth,
-                        options.outHeight,
-                        options.outWidth / scaleFactor,
-                        options.outHeight / scaleFactor);
-        options.inJustDecodeBounds = false;
-        return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
+    private BitmapWrapperInterface decodeImage(byte[] bitmapArray, boolean isRelief) {
+        if (bitmapArray != null) {
+            int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
+            final BitmapFactory.Options options = getiBitmapOptions();
+            options.inJustDecodeBounds = true;
+
+            BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options);
+
+            options.inSampleSize = CommonUtils.calculateInSampleSize(
+                    options.outWidth,
+                    options.outHeight,
+                    options.outWidth / scaleFactor,
+                    options.outHeight / scaleFactor);
+            options.inJustDecodeBounds = false;
+
+            return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
+        }
+        else
+            return isRelief ? new AndroidBitmapWrapper((Bitmap) null) : null;
     }
     /** ------------------------------------------------------------------------------------------*/
 
@@ -279,7 +286,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
 
     private BitmapWrapperInterface loadBitmapFromDB(String textureResName, boolean isRelief) {
-        AndroidBitmapWrapper bitmap;
+        BitmapWrapperInterface bitmap;
         byte[] bitmapArray = null;
         Cursor imageData = null;
         AndroidSQLiteDBHelper dbHelper = null;
@@ -320,7 +327,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             db.close();
             dbHelper.close();
 
-            bitmap = bitmapArray != null ? decodeImage(bitmapArray) : isRelief ? new AndroidBitmapWrapper((Bitmap) null) : null;
+            bitmap = decodeImage(bitmapArray, isRelief);
         }
         finally {
             if (imageData != null) imageData.close();

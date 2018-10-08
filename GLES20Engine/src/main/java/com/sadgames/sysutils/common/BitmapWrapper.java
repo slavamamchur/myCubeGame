@@ -19,7 +19,7 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
     protected BitmapWrapper(ByteBuffer data, int width, int height, boolean compressed) {
         this.data = data;
-        this.sizeInBytes = data.capacity();
+        this.sizeInBytes = data != null ? data.capacity() : 0;
         this.mWidth = width;
         this.mHeight = height;
         this.mCompressed = compressed;

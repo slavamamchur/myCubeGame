@@ -27,6 +27,7 @@ public interface SysUtilsWrapperInterface {
     Connection             iGetDBConnection(String dbName);
     BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief);
 
+    @SuppressWarnings("unused")
     void                   iPlaySound(String file);
     void                   iStopSound();
 
@@ -46,5 +47,4 @@ public interface SysUtilsWrapperInterface {
                                                    int method);
 
     //TODO: use java SE common lib for pictures  - > PNGDecoder
-    //TODO: getJDBCConnection()
 }
