@@ -20,6 +20,7 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDisable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
+import static com.sadgames.sysutils.common.CommonUtils.readTextFromFile;
 
 public class Blender3DObject extends ImportedObject {
     private static final String BLENDER_FILE_EXT = ".mdl";
@@ -111,7 +112,7 @@ public class Blender3DObject extends ImportedObject {
         short[] indicesArray = null;
 
         try {
-            BufferedReader model = new BufferedReader(new StringReader(sysUtilsWrapper.iReadTextFromFile(modelFileName)));
+            BufferedReader model = new BufferedReader(new StringReader(readTextFromFile(sysUtilsWrapper, modelFileName)));
 
             while (!((readedLine = model.readLine()) == null) && !readedLine.startsWith("f ")) {
                 readedLine = readedLine.replaceAll("  ", " ");

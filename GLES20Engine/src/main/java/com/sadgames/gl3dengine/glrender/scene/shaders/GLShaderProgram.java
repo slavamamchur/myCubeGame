@@ -59,6 +59,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.UX_PIXEL_OFFSET_PA
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.UY_PIXEL_OFFSET_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEXES_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
+import static com.sadgames.sysutils.common.CommonUtils.readTextFromFile;
 
 public abstract class GLShaderProgram {
 
@@ -335,7 +336,7 @@ public abstract class GLShaderProgram {
 
     @SuppressWarnings("all")
     protected int createShader(SysUtilsWrapperInterface sysUtilsWrapper, int type, String shaderRawId) {
-        return createShader(type, sysUtilsWrapper.iReadTextFromFile(shaderRawId));
+        return createShader(type, readTextFromFile(sysUtilsWrapper, shaderRawId));
     }
 
     @SuppressWarnings("all")

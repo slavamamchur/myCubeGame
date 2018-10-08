@@ -16,7 +16,6 @@ import javax.vecmath.Vector3f;
 
 public interface SysUtilsWrapperInterface {
 
-    String                 iReadTextFromFile(String fileName);
     InputStream            iGetResourceStream(String fileName);
 
     BitmapWrapperInterface iCreateColorBitmap(int color);

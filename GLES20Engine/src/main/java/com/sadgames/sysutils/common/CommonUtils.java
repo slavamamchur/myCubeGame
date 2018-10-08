@@ -19,6 +19,14 @@ public class CommonUtils {
         return s.hasNext() ? s.next() : "";
     }
 
+    public static String readTextFromFile(SysUtilsWrapperInterface sysUtils, String fileName) {
+        try {
+            return convertStreamToString(sysUtils.iGetResourceStream((fileName)));
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     public static void forceGCandWait() {
         Object obj = new Object();
         WeakReference ref = new WeakReference<>(obj);

@@ -135,8 +135,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopSound();
+                public void onCompletion(MediaPlayer mediaPlayer) {stopSound();
                 }
             });
             mMediaPlayer.prepare();
@@ -147,6 +146,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
     /** ------------------------------------------------------------------------------------------*/
 
+    /** Resource utils ---------------------------------------------------------------------------*/
     @Override
     public InputStream iGetResourceStream(String fileName) {
         try {
@@ -156,8 +156,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             return null;
         }
     }
-
-    /** Resource sysutils ---------------------------------------------------------------------------*/
 
     /** ------------------------------------------------------------------------------------------*/
 
@@ -170,7 +168,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return options;
     }
 
-    //TODO: Load all textures from server and save compressed to DB (draw path by OGL)
+    //TODO: save compressed to DB (draw path by OGL)
     public static BitmapWrapperInterface createETC1Texture(InputStream input) throws IOException {
         int width;
         int height;
@@ -262,15 +260,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         }
     }
     /** ------------------------------------------------------------------------------------------*/
-
-    @Override
-    public String iReadTextFromFile(String fileName) {
-        try {
-            return CommonUtils.convertStreamToString(iGetResourceStream((fileName)));
-        } catch (Exception e) {
-            return "";
-        }
-    }
 
     @Override
     public BitmapWrapperInterface iCreateColorBitmap(int color) {
