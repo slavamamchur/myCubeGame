@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Scanner;
 
+import static com.sadgames.sysutils.common.DBUtils.loadBitmapFromDB;
+
 public class CommonUtils {
 
     public static String convertStreamToString(java.io.InputStream is) {
@@ -61,7 +63,11 @@ public class CommonUtils {
         }
         catch (Exception exception) { result = null; }
 
-        result = result != null ? result : sysUtilsWrapper.iLoadBitmapFromDB(file, isRelief);
+        if (result == null)
+            try {
+                result = loadBitmapFromDB(sysUtilsWrapper, file, isRelief);
+            }
+            catch (Exception exception) { result = null; }
 
         if (result == null)
             try {

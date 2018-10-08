@@ -3,7 +3,6 @@ package com.sadgames.sysutils.platforms.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,7 +40,6 @@ import javax.vecmath.Vector3f;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
-import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 import static com.sadgames.sysutils.platforms.android.AndroidSQLiteDBHelper.DB_NAME;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
@@ -287,60 +285,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             throw new RuntimeException("Failed to register SQLDroidDriver");
         }
     }
-
-    private BitmapWrapperInterface loadBitmapFromDB(String textureResName, boolean isRelief) {
-        BitmapWrapperInterface bitmap;
-        byte[] bitmapArray = null;
-        Cursor imageData = null;
-        AndroidSQLiteDBHelper dbHelper = null;
-        SQLiteDatabase db = null;
-
-        try {
-            CommonUtils.downloadBitmapIfNotCached(this, textureResName, isRelief);
-
-            dbHelper = new AndroidSQLiteDBHelper(context, DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
-            db = dbHelper.getReadableDatabase();
-
-            imageData = db.rawQuery("select " + AndroidSQLiteDBHelper.MAP_IMAGE_FIELD +
-                            " from " + AndroidSQLiteDBHelper.TABLE_NAME +
-                            " where " + AndroidSQLiteDBHelper.MAP_ID_FIELD + " = ?" +
-                            " order by " + AndroidSQLiteDBHelper.CHUNK_NUMBER_FIELD,
-                    new String[] { (isRelief ? "rel_" : "") + textureResName });
-
-            if (imageData != null && imageData.moveToFirst()) {
-                int dataPtr = 0;
-                int chunkCount = imageData.getCount();
-                int imageSize = chunkCount * (BYTES_IN_MB * 2);
-
-                imageData.moveToLast();
-                byte[] lastChunk = imageData.getBlob(imageData.getColumnIndex(AndroidSQLiteDBHelper.MAP_IMAGE_FIELD));
-                imageSize = lastChunk.length < (BYTES_IN_MB * 2) ? imageSize - (BYTES_IN_MB * 2) + lastChunk.length : imageSize;
-                bitmapArray = new byte[imageSize];
-                imageData.moveToFirst();
-
-                do {
-                    byte[] chunkData = imageData.getBlob(imageData.getColumnIndex(AndroidSQLiteDBHelper.MAP_IMAGE_FIELD));
-                    System.arraycopy(chunkData, 0, bitmapArray, dataPtr, chunkData.length);
-
-                    dataPtr += chunkData.length;
-                } while (imageData.moveToNext());
-            }
-
-            imageData.close();
-            db.close();
-            dbHelper.close();
-
-            bitmap = iDecodeImage(bitmapArray, isRelief);
-        }
-        finally {
-            if (imageData != null) imageData.close();
-            if (db != null) db.close();
-            if (dbHelper != null) dbHelper.close();
-        }
-
-        return bitmap;
-    }
-
     /** ------------------------------------------------------------------------------------------*/
 
     @Override
@@ -376,11 +320,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public Connection iGetDBConnection(String dbName) {
         return getDBConnection(dbName);
-    }
-
-    @Override
-    public BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief) {
-        return loadBitmapFromDB(textureResName, isRelief);
     }
 
     @Override

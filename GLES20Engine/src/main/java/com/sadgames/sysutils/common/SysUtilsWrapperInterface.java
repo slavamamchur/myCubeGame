@@ -26,7 +26,6 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
 
     Connection             iGetDBConnection(String dbName);
-    BitmapWrapperInterface iLoadBitmapFromDB(String textureResName, boolean isRelief);
 
     @SuppressWarnings("unused")
     void                   iPlaySound(String file);

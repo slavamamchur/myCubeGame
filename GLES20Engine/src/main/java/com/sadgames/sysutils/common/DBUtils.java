@@ -1,6 +1,7 @@
 package com.sadgames.sysutils.common;
 
 import java.io.ByteArrayInputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -64,7 +65,6 @@ public class DBUtils {
         boolean result = false;
 
         try (Connection conn = sysUtils.iGetDBConnection(DB_NAME)) {
-
                 try (PreparedStatement stmt = conn.prepareStatement(
                         "select count(" + MAP_ID_DB_FIELD + ") as CNT" +
                                 " from " + DB_TABLE_NAME +
@@ -84,5 +84,46 @@ public class DBUtils {
         return result;
     }
 
+    public static BitmapWrapperInterface loadBitmapFromDB(SysUtilsWrapperInterface sysUtils,
+                                                    String textureResName, boolean isRelief) throws SQLException {
+        byte[] bitmapArray = null;
+
+        CommonUtils.downloadBitmapIfNotCached(sysUtils, textureResName, isRelief);
+
+        try (Connection conn = sysUtils.iGetDBConnection(DB_NAME)) {
+            try (PreparedStatement stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +
+                            " from " + DB_TABLE_NAME +
+                            " where " + MAP_ID_DB_FIELD + " = ?" +
+                            " order by " + CHUNK_NUMBER_DB_FIELD)) {
+                stmt.setString(1, (isRelief ? "rel_" : "") + textureResName);
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs != null && rs.first()) {
+                        int dataPtr = 0;
+                        int chunkCount = 1;
+                        while (rs.next()) chunkCount++;
+                        int imageSize = chunkCount * (BYTES_IN_MB * 2);
+
+                        rs.last();
+                        Blob blob = rs.getBlob(1);
+                        byte[] lastChunk = blob.getBytes(0, (int) blob.length());
+                        imageSize = lastChunk.length < (BYTES_IN_MB * 2) ? imageSize - (BYTES_IN_MB * 2) + lastChunk.length : imageSize;
+                        bitmapArray = new byte[imageSize];
+                        rs.first();
+
+                        do {
+                            blob = rs.getBlob(1);
+                            byte[] chunkData = blob.getBytes(0, (int) blob.length());
+                            System.arraycopy(chunkData, 0, bitmapArray, dataPtr, chunkData.length);
+
+                            dataPtr += chunkData.length;
+                        } while (rs.next());
+                    }
+                }
+            }
+        }
+
+        return sysUtils.iDecodeImage(bitmapArray, isRelief);
+    }
 
 }
