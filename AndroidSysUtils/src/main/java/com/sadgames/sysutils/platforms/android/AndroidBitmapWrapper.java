@@ -20,6 +20,14 @@ import javax.vecmath.Vector2f;
 
 public class AndroidBitmapWrapper extends BitmapWrapper {
 
+    private static Bitmap createColourBitmap(int color) {
+        Bitmap bmp = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
+        canvas.drawColor(color);
+
+        return bmp;
+    }
+
     AndroidBitmapWrapper(Bitmap picture) {
         super(getRawDataFromBitmap(picture),
               picture != null ? picture.getWidth() : 0,
@@ -28,6 +36,10 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
 
         if (picture != null)
             picture.recycle();
+    }
+
+    AndroidBitmapWrapper(int color) {
+        this(createColourBitmap(color));
     }
 
     AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {

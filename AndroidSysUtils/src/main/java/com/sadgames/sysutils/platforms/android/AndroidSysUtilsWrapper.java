@@ -6,7 +6,6 @@ import android.content.res.AssetFileDescriptor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.opengl.ETC1;
 import android.opengl.Matrix;
@@ -160,14 +159,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     /** Resource sysutils ---------------------------------------------------------------------------*/
 
-    private String readTextFromAssets(String filename) {
-        try {
-            return CommonUtils.convertStreamToString(iGetResourceStream((filename)));
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
     /** ------------------------------------------------------------------------------------------*/
 
     /** Bitmap sysutils ----------------------------------------------------------------------------*/
@@ -219,14 +210,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         ETC1.encodeImage(input, width, height, pixelSize, stride, compressedImage);
 
         return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
-    }
-
-    private BitmapWrapperInterface createColorBitmap(int color) {
-        Bitmap bmp = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bmp);
-        canvas.drawColor(color);
-
-        return new AndroidBitmapWrapper(bmp);
     }
 
     private BitmapWrapperInterface decodeImage(byte[] bitmapArray, boolean isRelief) {
@@ -282,12 +265,16 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     @Override
     public String iReadTextFromFile(String fileName) {
-        return readTextFromAssets(fileName);
+        try {
+            return CommonUtils.convertStreamToString(iGetResourceStream((fileName)));
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @Override
     public BitmapWrapperInterface iCreateColorBitmap(int color) {
-        return createColorBitmap(color);
+        return new AndroidBitmapWrapper(color);
     }
 
     @Override
