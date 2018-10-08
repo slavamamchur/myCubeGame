@@ -221,13 +221,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
     }
 
-    private BitmapWrapperInterface createBitmap(InputStream source) throws IOException {
-        byte[] data = new byte[source.available()];
-        source.read(data);
-
-        return decodeImage(data, false);
-    }
-
     private BitmapWrapperInterface createColorBitmap(int color) {
         Bitmap bmp = Bitmap.createBitmap(2, 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
@@ -295,11 +288,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public BitmapWrapperInterface iCreateColorBitmap(int color) {
         return createColorBitmap(color);
-    }
-
-    @Override
-    public BitmapWrapperInterface iCreateBitmap(InputStream source) throws IOException {
-        return createBitmap(source);
     }
 
     @Override

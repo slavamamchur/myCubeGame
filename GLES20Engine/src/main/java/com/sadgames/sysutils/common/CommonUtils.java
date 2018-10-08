@@ -58,7 +58,10 @@ public class CommonUtils {
             if (file.endsWith("pkm"))
                 result = sysUtilsWrapper.iCreateETC1Texture(source);
             else {
-                result = sysUtilsWrapper.iCreateBitmap(source);
+                byte[] data = new byte[source.available()];
+                source.read(data);
+
+                result = sysUtilsWrapper.iDecodeImage(data, isRelief);
             }
         }
         catch (Exception exception) { result = null; }
