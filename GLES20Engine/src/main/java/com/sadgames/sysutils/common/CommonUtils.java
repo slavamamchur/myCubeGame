@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static com.sadgames.sysutils.common.DBUtils.loadBitmapFromDB;
@@ -52,8 +53,7 @@ public class CommonUtils {
                                                            boolean isRelief) {
         BitmapWrapperInterface result;
 
-        try {
-            InputStream source = sysUtilsWrapper.iGetResourceStream("textures/" + file);
+        try (InputStream source = sysUtilsWrapper.iGetResourceStream("textures/" + file)) {
 
             if (file.endsWith("pkm"))
                 result = sysUtilsWrapper.iCreateETC1Texture(source);
@@ -67,7 +67,7 @@ public class CommonUtils {
             try {
                 result = loadBitmapFromDB(sysUtilsWrapper, file, isRelief);
             }
-            catch (Exception exception) { result = null; }
+            catch (SQLException exception) { result = null; }
 
         if (result == null)
             try {
