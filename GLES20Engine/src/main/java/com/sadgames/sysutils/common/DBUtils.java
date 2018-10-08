@@ -62,29 +62,24 @@ public class DBUtils {
 
     public static boolean isBitmapCached(SysUtilsWrapperInterface sysUtils, String id, Long updatedDate) {
         boolean result = false;
-        Connection conn = null;
 
-        try {
-            conn = sysUtils.iGetDBConnection(DB_NAME);
+        try (Connection conn = sysUtils.iGetDBConnection(DB_NAME)) {
 
-            try (PreparedStatement stmt = conn.prepareStatement(
-                    "select count(" + MAP_ID_DB_FIELD + ") as CNT" +
-                            " from " + DB_TABLE_NAME +
-                            " where " + MAP_ID_DB_FIELD + " = ?" +
-                            " and " + MAP_UPDATED_DATE_DB_FIELD + " = ?")) {
-                stmt.setString(1, id);
-                stmt.setString(2, String.valueOf(updatedDate));
+                try (PreparedStatement stmt = conn.prepareStatement(
+                        "select count(" + MAP_ID_DB_FIELD + ") as CNT" +
+                                " from " + DB_TABLE_NAME +
+                                " where " + MAP_ID_DB_FIELD + " = ?" +
+                                " and " + MAP_UPDATED_DATE_DB_FIELD + " = ?")) {
+                    stmt.setString(1, id);
+                    stmt.setString(2, String.valueOf(updatedDate));
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    rs.next();
-                    result = rs.getInt(1) > 0;
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        rs.next();
+                        result = rs.getInt(1) > 0;
+                    }
                 }
-            }
         }
         catch (SQLException ignored) {}
-        finally {
-            if (conn != null) try {conn.close();} catch (SQLException ignored) {}
-        }
 
         return result;
     }
