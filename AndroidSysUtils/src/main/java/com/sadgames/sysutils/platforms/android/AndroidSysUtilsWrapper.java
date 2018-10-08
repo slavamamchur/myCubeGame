@@ -42,6 +42,7 @@ import javax.vecmath.Vector3f;
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
+import static com.sadgames.sysutils.platforms.android.AndroidSQLiteDBHelper.DB_NAME;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
@@ -53,6 +54,8 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     protected AndroidSysUtilsWrapper(Context context) {
         this.context = context;
+
+        initDataBase(DB_NAME);
     }
 
     public static SysUtilsWrapperInterface getInstance(Context context) {
@@ -259,6 +262,15 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     /** DB sysutils ---------------------------------------------------------------------------------*/
     private Connection getDBConnection(String dbName) {
+        String jdbcUrl = "jdbc:sqldroid:" + context.getDatabasePath(dbName).getPath();
+        try {
+            return DriverManager.getConnection(jdbcUrl);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initDataBase(String dbName) {
         try {
             AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, dbName, null, AndroidSQLiteDBHelper.DB_VERSION);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -274,13 +286,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         } catch (Exception e) {
             throw new RuntimeException("Failed to register SQLDroidDriver");
         }
-
-        String jdbcUrl = "jdbc:sqldroid:" + context.getDatabasePath(dbName).getPath();
-        try {
-            return DriverManager.getConnection(jdbcUrl);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private BitmapWrapperInterface loadBitmapFromDB(String textureResName, boolean isRelief) {
@@ -293,7 +298,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         try {
             CommonUtils.downloadBitmapIfNotCached(this, textureResName, isRelief);
 
-            dbHelper = new AndroidSQLiteDBHelper(context, AndroidSQLiteDBHelper.DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
+            dbHelper = new AndroidSQLiteDBHelper(context, DB_NAME, null, AndroidSQLiteDBHelper.DB_VERSION);
             db = dbHelper.getReadableDatabase();
 
             imageData = db.rawQuery("select " + AndroidSQLiteDBHelper.MAP_IMAGE_FIELD +
