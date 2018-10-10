@@ -159,10 +159,10 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
 
     //TODO: save compressed to DB (draw path by OGL)
-    public static BitmapWrapperInterface createETC1Texture(InputStream input) throws IOException {
+    private static BitmapWrapperInterface createETC1Texture(InputStream input) throws IOException {
         int width;
         int height;
-        byte[] ioBuffer = new byte[4096];
+        byte[] ioBuffer = new byte[32768];
         {
             if (input.read(ioBuffer, 0, ETC1.ETC_PKM_HEADER_SIZE) != ETC1.ETC_PKM_HEADER_SIZE) {
                 throw new IOException("Unable to read PKM file header.");
@@ -191,7 +191,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, dataBuffer));
     }
 
-    public static BitmapWrapperInterface compressTexture(Buffer input, int width, int height, int pixelSize, int stride){
+    private static BitmapWrapperInterface compressTexture(Buffer input, int width, int height, int pixelSize, int stride){
         int encodedImageSize = ETC1.getEncodedDataSize(width, height);
         ByteBuffer compressedImage = ByteBuffer.allocateDirect(encodedImageSize).
                 order(ByteOrder.nativeOrder());
