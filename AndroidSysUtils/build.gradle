@@ -25,9 +25,13 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:support-v4:28.0.0'
+
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+
     implementation 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     implementation 'cz.advel.jbullet:jbullet:20101010-1'
     implementation 'org.luaj:luaj-jse:3.0.1'
     implementation 'org.sqldroid:sqldroid:1.0.3'
+
     implementation project(':GLES20Engine')
 }
