@@ -136,19 +136,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
     /** ------------------------------------------------------------------------------------------*/
 
-    /** Resource utils ---------------------------------------------------------------------------*/
-    @Override
-    public InputStream iGetResourceStream(String fileName) {
-        try {
-            return context.getAssets().open(fileName);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /** ------------------------------------------------------------------------------------------*/
-
     /** Bitmap sysutils ----------------------------------------------------------------------------*/
     @NonNull
     private static BitmapFactory.Options getiBitmapOptions() {

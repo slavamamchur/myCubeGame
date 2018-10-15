@@ -17,17 +17,26 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.sadgames.dicegame.R;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    static {
+        GdxNativesLoader.load();
+    }
+
     Gallery gallery;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 
         setContentView(R.layout.activity_main);
 

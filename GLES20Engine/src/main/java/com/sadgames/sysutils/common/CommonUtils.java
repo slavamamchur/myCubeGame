@@ -1,5 +1,6 @@
 package com.sadgames.sysutils.common;
 
+import com.badlogic.gdx.Gdx;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 
@@ -19,9 +20,9 @@ public class CommonUtils {
         return s.hasNext() ? s.next() : "";
     }
 
-    public static String readTextFromFile(SysUtilsWrapperInterface sysUtils, String fileName) {
+    public static String readTextFromFile(String fileName) {
         try {
-            return convertStreamToString(sysUtils.iGetResourceStream((fileName)));
+            return Gdx.files == null ? "" : Gdx.files.internal(fileName).readString();
         } catch (Exception e) {
             return "";
         }
@@ -56,12 +57,20 @@ public class CommonUtils {
         } catch (Exception e) {}
     }
 
+    public static InputStream getResourceStream(String fileName) {
+        try {
+            return Gdx.files == null ? null : Gdx.files.internal(fileName).read();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static BitmapWrapperInterface getBitmapFromFile(SysUtilsWrapperInterface sysUtilsWrapper,
                                                            String file,
                                                            boolean isRelief) {
         BitmapWrapperInterface result;
 
-        try (InputStream source = sysUtilsWrapper.iGetResourceStream("textures/" + file)) {
+        try (InputStream source = getResourceStream("textures/" + file)) {
 
             if (file.endsWith("pkm"))
                 result = sysUtilsWrapper.iCreateETC1Texture(source);

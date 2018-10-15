@@ -79,8 +79,8 @@ public abstract class GLShaderProgram {
 
         this.sysUtilsWrapper = sysUtilsWrapper;
 
-        vertexShaderID = createShader(sysUtilsWrapper, get_GL_VERTEX_SHADER_value(), getVertexShaderResId());
-        fragmentShaderID = createShader(sysUtilsWrapper, get_GL_FRAGMENT_SHADER_value(), getFragmentShaderResId());
+        vertexShaderID = createShaderFromResource(get_GL_VERTEX_SHADER_value(), getVertexShaderResId());
+        fragmentShaderID = createShaderFromResource(get_GL_FRAGMENT_SHADER_value(), getFragmentShaderResId());
         programId = createProgram(vertexShaderID, fragmentShaderID);
 
         createParams();
@@ -335,8 +335,8 @@ public abstract class GLShaderProgram {
     }
 
     @SuppressWarnings("all")
-    protected int createShader(SysUtilsWrapperInterface sysUtilsWrapper, int type, String shaderRawId) {
-        return createShader(type, readTextFromFile(sysUtilsWrapper, shaderRawId));
+    protected int createShaderFromResource(int type, String shaderRawId) {
+        return createShader(type, readTextFromFile(shaderRawId));
     }
 
     @SuppressWarnings("all")

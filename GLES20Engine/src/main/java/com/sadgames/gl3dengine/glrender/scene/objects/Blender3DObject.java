@@ -112,7 +112,7 @@ public class Blender3DObject extends ImportedObject {
         short[] indicesArray = null;
 
         try {
-            BufferedReader model = new BufferedReader(new StringReader(readTextFromFile(sysUtilsWrapper, modelFileName)));
+            BufferedReader model = new BufferedReader(new StringReader(readTextFromFile(modelFileName)));
 
             while (!((readedLine = model.readLine()) == null) && !readedLine.startsWith("f ")) {
                 readedLine = readedLine.replaceAll("  ", " ");

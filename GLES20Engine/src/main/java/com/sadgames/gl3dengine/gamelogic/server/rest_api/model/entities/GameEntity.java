@@ -20,6 +20,7 @@ import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
+import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
 
 @JsonIgnoreProperties(ignoreUnknown = true) //todo: add gameLogicScript field, read textures via getImage()
 public class GameEntity extends BasicNamedDbEntity implements Serializable {
@@ -101,8 +102,8 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
         return new Vector3f(1.0f, 1.0f, 0.8f);
     }
 
-    public InputStream getLuaScript(SysUtilsWrapperInterface sysUtilsWrapper, String name) {
-        return sysUtilsWrapper.iGetResourceStream("scripts/" + name + ".lua");
+    public InputStream getLuaScript(String name) {
+        return getResourceStream("scripts/" + name + ".lua");
     }
 
     //TODO: replace with REST object

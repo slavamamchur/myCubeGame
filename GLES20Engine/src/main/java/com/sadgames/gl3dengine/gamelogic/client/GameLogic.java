@@ -241,7 +241,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     @Override
     public InputStream findResource(String name) {
-        return getGameEntity().getLuaScript(sysUtilsWrapper, name);
+        return getGameEntity().getLuaScript(name);
     }
 
     private void loadGameItems(GLScene glScene) {
