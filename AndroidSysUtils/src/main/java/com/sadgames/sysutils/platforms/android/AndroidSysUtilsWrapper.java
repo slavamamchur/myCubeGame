@@ -1,7 +1,6 @@
 package com.sadgames.sysutils.platforms.android;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -11,12 +10,15 @@ import android.opengl.ETC1;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.android.AndroidPreferences;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
+import com.sadgames.sysutils.common.GDXSettingsManager;
 import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
@@ -37,7 +39,6 @@ import java.sql.SQLException;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.platforms.android.AndroidSQLiteDBHelper.DB_NAME;
 
@@ -94,9 +95,9 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     /** ------------------------------------------------------------------------------------------*/
 
     /** Prefs    sysutils ---------------------------------------------------------------------------*/
-    @SuppressWarnings("all")
-    public static SharedPreferences getDefaultSharedPrefs(Context ctx) {
-        return getDefaultSharedPreferences(ctx);
+    private Preferences getDefaultSharedPrefs() {
+        return new AndroidPreferences(context.getSharedPreferences(context.getPackageName() + "_preferences",
+                                                                    Context.MODE_PRIVATE));
     }
     /** ------------------------------------------------------------------------------------------*/
 
@@ -273,9 +274,15 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         stopSound();
     }
 
+
+    @Override
+    public Preferences iGetDefaultSharedPrefs() {
+        return getDefaultSharedPrefs();
+    }
+
     @Override
     public SettingsManagerInterface iGetSettingsManager() {
-        return AndroidSettingsManager.getInstance(context);
+        return GDXSettingsManager.getInstance(this);
     }
 
     @Override

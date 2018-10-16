@@ -40,6 +40,10 @@ public class CommonUtils {
             try {Thread.sleep(100);} catch (InterruptedException e) {} //System.gc();
     }
 
+    public SettingsManagerInterface getSettingsManager(SysUtilsWrapperInterface sysUtils) {
+        return GDXSettingsManager.getInstance(sysUtils);
+    }
+
     public static void downloadBitmapIfNotCached(SysUtilsWrapperInterface sysUtilsWrapper,
                                           String textureResName,
                                           boolean isRelief) {

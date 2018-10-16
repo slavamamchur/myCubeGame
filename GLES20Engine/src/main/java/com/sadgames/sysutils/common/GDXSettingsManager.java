@@ -1,13 +1,9 @@
-package com.sadgames.sysutils.platforms.android;
+package com.sadgames.sysutils.common;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
-
+import com.badlogic.gdx.Preferences;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
-import com.sadgames.sysutils.common.SettingsManagerInterface;
 
-public final class AndroidSettingsManager implements SettingsManagerInterface {
+public final class GDXSettingsManager implements SettingsManagerInterface {
 
     public static final String PARAM_AUTH_TOKEN = "authToken";
     public static final String PARAM_USER_NAME = "userName";
@@ -20,24 +16,22 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
     private static final String DEFAULT_GRAPHICS_QUALITY_LEVEL = GraphicsQuality.HIGH.name();
 
     private static final Object lockObject = new Object();
-    private static AndroidSettingsManager instance = null;
-    private SharedPreferences settings = null;
-    private Context context;
+    private static GDXSettingsManager instance = null;
+    private Preferences settings;
 
-    public AndroidSettingsManager(Context context) {
-        this.context = context;
-        settings = AndroidSysUtilsWrapper.getDefaultSharedPrefs(context);
+    public GDXSettingsManager(SysUtilsWrapperInterface sysUtils) {
+        settings = sysUtils.iGetDefaultSharedPrefs();
     }
 
-    public static AndroidSettingsManager getInstance(Context context){
+    public static GDXSettingsManager getInstance(SysUtilsWrapperInterface sysUtils){
         synchronized (lockObject) {
-            instance = instance != null ? instance : new AndroidSettingsManager(context);
+            instance = instance != null ? instance : new GDXSettingsManager(sysUtils);
             return instance;
         }
     }
 
     @SuppressWarnings("unused")
-    public SharedPreferences getSettings(){
+    public Preferences getSettings(){
         synchronized (lockObject) {
             return settings;
         }
@@ -57,17 +51,15 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
 
     public void safeWriteProperty(String name, String value){
         synchronized (lockObject) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(name, value);
-            editor.apply();
+            settings.putString(name, value);
+            settings.flush();
         }
     }
 
     public void safeWriteProperty(String name, boolean value){
         synchronized (lockObject) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean(name, value);
-            editor.apply();
+            settings.putBoolean(name, value);
+            settings.flush();
         }
     }
 
@@ -78,7 +70,8 @@ public final class AndroidSettingsManager implements SettingsManagerInterface {
 
     @Override
     public boolean isLoggedIn() {
-        return !TextUtils.isEmpty(safeReadProperty(PARAM_AUTH_TOKEN, ""));
+        String str = safeReadProperty(PARAM_AUTH_TOKEN, "");
+        return !(str == null || str.length() == 0);
     }
 
     @Override
