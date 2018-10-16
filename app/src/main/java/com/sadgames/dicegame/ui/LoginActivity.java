@@ -47,6 +47,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_LOGIN_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 /**
  * A login screen that offers login via email/password.
@@ -134,9 +135,9 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             //TODO: process error object
             AuthTokenEntity response = (AuthTokenEntity) intent.getSerializableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null) {
-                getSysUtilsWrapper().iGetSettingsManager().setAuthToken(response.getId());
-                getSysUtilsWrapper().iGetSettingsManager().setUserName(mEmailView.getText().toString());
-                getSysUtilsWrapper().iGetSettingsManager().setUserPass(mPasswordView.getText().toString());
+                getSettingsManager(getSysUtilsWrapper()).setAuthToken(response.getId());
+                getSettingsManager(getSysUtilsWrapper()).setUserName(mEmailView.getText().toString());
+                getSettingsManager(getSysUtilsWrapper()).setUserPass(mPasswordView.getText().toString());
 
                 Intent mintent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mintent);

@@ -36,7 +36,6 @@ public interface SysUtilsWrapperInterface {
 
 
     Preferences iGetDefaultSharedPrefs(); //TODO: remove stub when became not needed.
-    SettingsManagerInterface iGetSettingsManager();
 
     EntityControllerInterface iGetEntityController(String action,
                                                    Class<? extends BasicEntity> entityType,

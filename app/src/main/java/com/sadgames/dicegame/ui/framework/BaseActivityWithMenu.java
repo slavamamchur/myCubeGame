@@ -27,6 +27,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RES
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_RELOGIN_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_LOGIN_RESPONSE_OBJECT;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
@@ -94,7 +95,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void doLogout(){
-        sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
+        getSettingsManager(sysUtilsWrapper).setAuthToken("");
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
@@ -127,7 +128,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_PING_RESPONSE)) {
             if (!intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false))
-                if (!sysUtilsWrapper.iGetSettingsManager().isStayLoggedIn()) {
+                if (!getSettingsManager(sysUtilsWrapper).isStayLoggedIn()) {
                     doLogout();
                 } else
                     doRelogin();
@@ -137,7 +138,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         else if (intent.getAction().equals(ACTION_RELOGIN_RESPONSE)) {
             AuthTokenEntity response = intent.getParcelableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null)
-                sysUtilsWrapper.iGetSettingsManager().setAuthToken(response.getId());
+                getSettingsManager(sysUtilsWrapper).setAuthToken(response.getId());
             else
                 doLogout();
 
@@ -150,8 +151,8 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     private void doRelogin(){
         showProgress();
 
-        RestApiService.startActionRelogin(getApplicationContext(), sysUtilsWrapper.iGetSettingsManager().getUserName(),
-                sysUtilsWrapper.iGetSettingsManager().getUserPass());
+        RestApiService.startActionRelogin(getApplicationContext(), getSettingsManager(sysUtilsWrapper).getUserName(),
+                getSettingsManager(sysUtilsWrapper).getUserPass());
     }
 
     @Override
@@ -229,7 +230,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if (sysUtilsWrapper.iGetSettingsManager().isLoggedIn()) {
+        if (getSettingsManager(sysUtilsWrapper).isLoggedIn()) {
             showProgress();
 
             RestApiService.startActionPing(this);

@@ -24,6 +24,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
@@ -55,6 +56,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OB
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
 
 public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
@@ -87,6 +89,10 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     public SysUtilsWrapperInterface getSysUtilsWrapper() {
         return sysUtilsWrapper;
     }
+    @SuppressWarnings("unused") public SettingsManagerInterface iGetSettingsManager() {
+        return getSettingsManager(sysUtilsWrapper);
+    }
+
     @SuppressWarnings("unused") public GLScene getGl3DScene() {
         return gl3DScene;
     }
@@ -205,7 +211,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
         /** mini-map gui-box */
-        if (!sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
+        if (!getSettingsManager(sysUtilsWrapper).isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(sysUtilsWrapper,
                     glScene.getCachedShader(GUI_OBJECT),
                     new Vector4f(-1, 1, -0.75f, 0.5f), true);

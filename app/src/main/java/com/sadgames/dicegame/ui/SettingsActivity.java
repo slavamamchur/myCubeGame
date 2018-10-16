@@ -25,6 +25,7 @@ import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 import java.util.List;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.DEFAULT_BASE_URL_VALUE;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -62,7 +63,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 final SysUtilsWrapperInterface sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(preference.getContext());
                 if (preference.getKey().equals(preference.getContext().getString(R.string.pref_key_web_service_url))
-                        && !sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
+                        && !getSettingsManager(sysUtilsWrapper).getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
                         ) {
                     forceRelogin(preference.getContext(), sysUtilsWrapper);
                 }
@@ -80,7 +81,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 .setTitle("Warning");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
+                getSettingsManager(sysUtilsWrapper).setAuthToken("");
 
                 ctx.startActivity(new Intent(ctx, LoginActivity.class));
 

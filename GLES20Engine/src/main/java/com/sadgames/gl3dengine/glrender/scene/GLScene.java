@@ -56,6 +56,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface {
 
@@ -90,7 +91,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
-        this.graphicsQualityLevel = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+        this.graphicsQualityLevel = getSettingsManager(sysUtilsWrapper).getGraphicsQualityLevel();
     }
 
     public GLCamera getCamera() {
@@ -578,7 +579,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         mDisplayHeight = height;
         camera.setAspectRatio(width, height);
 
-        if (sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()) {
+        if (getSettingsManager(sysUtilsWrapper).isIn_2D_Mode()) {
             camera.setVfov(camera.getVfov() / 1.5f);
             camera.setZoomed_vfov(camera.getVfov());
         }
@@ -592,15 +593,15 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     public void switrchTo2DMode() {
         synchronized (lockObject) {
-            old2D_ModeValue = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode();
-            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(true);
+            old2D_ModeValue = getSettingsManager(sysUtilsWrapper).isIn_2D_Mode();
+            getSettingsManager(sysUtilsWrapper).setIn_2D_Mode(true);
             setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
         }
     }
 
     public void restorePrevViewMode() {
         synchronized (lockObject) {
-            sysUtilsWrapper.iGetSettingsManager().setIn_2D_Mode(old2D_ModeValue);
+            getSettingsManager(sysUtilsWrapper).setIn_2D_Mode(old2D_ModeValue);
             setCamera(null);
         }
     }

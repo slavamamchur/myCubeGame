@@ -18,10 +18,8 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.Generic
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
-import com.sadgames.sysutils.common.GDXSettingsManager;
 import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.MathUtils;
-import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.LuaTable;
@@ -40,6 +38,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 import static com.sadgames.sysutils.platforms.android.AndroidSQLiteDBHelper.DB_NAME;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
@@ -190,7 +189,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     private BitmapWrapperInterface decodeImage(byte[] bitmapArray, boolean isRelief) {
         if (bitmapArray != null) {
-            int scaleFactor = TEXTURE_RESOLUTION_SCALE[iGetSettingsManager().getGraphicsQualityLevel().ordinal()];
+            int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager(this).getGraphicsQualityLevel().ordinal()];
             final BitmapFactory.Options options = getiBitmapOptions();
             options.inJustDecodeBounds = true;
 
@@ -278,11 +277,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public Preferences iGetDefaultSharedPrefs() {
         return getDefaultSharedPrefs();
-    }
-
-    @Override
-    public SettingsManagerInterface iGetSettingsManager() {
-        return GDXSettingsManager.getInstance(this);
     }
 
     @Override

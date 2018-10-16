@@ -15,6 +15,7 @@ import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -48,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if(sysUtilsWrapper.iGetSettingsManager().isLoggedIn())
+        if(getSettingsManager(sysUtilsWrapper).isLoggedIn())
             RestApiService.startActionPing(this);
         else {
             cls = LoginActivity.class;
@@ -63,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 cls = !intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
                 if(!intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false)){
-                    sysUtilsWrapper.iGetSettingsManager().setAuthToken("");
+                    getSettingsManager(sysUtilsWrapper).setAuthToken("");
                 }
                 delayedHide(HIDE_DELAY);
             }

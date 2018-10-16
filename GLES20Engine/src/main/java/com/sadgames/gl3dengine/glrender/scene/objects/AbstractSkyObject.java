@@ -9,6 +9,7 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public abstract class AbstractSkyObject extends GameItemObject {
 
@@ -33,7 +34,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
 
     @SuppressWarnings("unused")
     public void calcRotationAngle(long frametime) {
-        float angle = sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 0 : getRotationAngle() + 0.5f * frametime / 250f;
+        float angle = getSettingsManager(sysUtilsWrapper).isIn_2D_Mode() ? 0 : getRotationAngle() + 0.5f * frametime / 250f;
         setRotationAngle(angle > 360f ? 360f - angle : angle);
     }
 

@@ -34,6 +34,7 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_FI
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LIST;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_NEW;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_UPDATE;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public abstract class AbstractHttpRequest<T extends BasicEntity> {
 
@@ -50,11 +51,11 @@ public abstract class AbstractHttpRequest<T extends BasicEntity> {
     }
 
     public final String getAuthToken() {
-        return sysUtilsWrapper.iGetSettingsManager().getAuthToken();
+        return getSettingsManager(sysUtilsWrapper).getAuthToken();
     }
 
     public final String getBaseUrl() {
-        return sysUtilsWrapper.iGetSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE);
+        return getSettingsManager(sysUtilsWrapper).getWebServiceUrl(DEFAULT_BASE_URL_VALUE);
     }
 
     public String getmUrl() {

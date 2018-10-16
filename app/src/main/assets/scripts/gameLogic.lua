@@ -41,7 +41,7 @@ local ON_STOP_MOVING_ANIMATION_END = 'playerNextMove'
 onCameraInit  = function(defCam)
     local camera
 
-    if gameLogic:getSysUtilsWrapper():iGetSettingsManager():isIn_2D_Mode() == true then
+    if gameLogic:iGetSettingsManager():isIn_2D_Mode() == true then
         camera = gameLogic:getGl3DScene():createCam2D(LAND_SIZE_IN_WORLD_SPACE)
     else
         camera = gameLogic:getGl3DScene():createCamIsometric(DEFAULT_CAMERA_X,
@@ -86,7 +86,7 @@ function findFirst(pattern)
 end
 
 function chnageWayPointsVisibility()
-    local visible = not gameLogic:getSysUtilsWrapper():iGetSettingsManager():isIn_2D_Mode()
+    local visible = not gameLogic:iGetSettingsManager():isIn_2D_Mode()
     local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
 
     while list:hasNext() do

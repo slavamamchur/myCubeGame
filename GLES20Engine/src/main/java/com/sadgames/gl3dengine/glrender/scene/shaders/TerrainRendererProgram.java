@@ -28,6 +28,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_FRAG
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.MAIN_RENDERER_VERTEX_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.RND_SEED__PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKY_BOX_MV_MATRIXF_PARAM_NAME;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public class TerrainRendererProgram extends VBOShaderProgram {
     private float skyBoxRotationAngle = 0;
@@ -74,7 +75,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
     public void bindGlobalParams(GLScene scene) {
         GLLightSource lightSource = scene.getLightSource();
         GLRenderConsts.GraphicsQuality graphicsQualityLevel =
-                sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
+                getSettingsManager(sysUtilsWrapper).getGraphicsQualityLevel();
 
         AbstractTexture background = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(scene.getBackgroundTextureName());
         if (background != null) {
@@ -82,7 +83,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
             paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);
         }
 
-        paramByName(IS_2D_MODE_PARAM_NAME).setParamValue(sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode() ? 1 : 0);
+        paramByName(IS_2D_MODE_PARAM_NAME).setParamValue(getSettingsManager(sysUtilsWrapper).isIn_2D_Mode() ? 1 : 0);
 
         scene.getShadowMapFBO().getFboTexture().bind(FBO_TEXTURE_SLOT);
         paramByName(ACTIVE_SHADOWMAP_SLOT_PARAM_NAME).setParamValue(FBO_TEXTURE_SLOT);
@@ -100,7 +101,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
 
         paramByName(RND_SEED__PARAM_NAME).setParamValue(
                                                         GLRenderConsts.GraphicsQuality.LOW.equals(graphicsQualityLevel)
-                                                        || sysUtilsWrapper.iGetSettingsManager().isIn_2D_Mode()
+                                                        || getSettingsManager(sysUtilsWrapper).isIn_2D_Mode()
                                                         ?
                                                         -1f
                                                         :
