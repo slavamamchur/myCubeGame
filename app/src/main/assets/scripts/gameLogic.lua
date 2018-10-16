@@ -56,14 +56,32 @@ onCameraInit  = function(defCam)
     gameLogic:getGl3DScene():setCamera(camera)
 end
 
+function playSound(name)
+    local sound = stopSound(name)
+
+    if not (sound == nil) then
+        sound:play()
+    end
+end
+
+function stopSound(name)
+    local sound = gameLogic:getSoundObject(name)
+
+    if not (sound == nil) then
+        sound:stop()
+    end
+
+    return sound
+end
+
 onRollingObjectStart = function(gameObject)
     if gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT) then
-        gameLogic:getSysUtilsWrapper():iPlaySound(ROLLING_DICE_SOUND)
+        gameLogic:getSysUtilsWrapper():iPlaySound(ROLLING_DICE_SOUND) --todo: playSound(ROLLING_DICE_SOUND)
     end
 end
 
 onRollingObjectStop = function(gameObject)
-    gameLogic:getSysUtilsWrapper():iStopSound()
+    gameLogic:getSysUtilsWrapper():iStopSound() --todo: stopSound(ROLLING_DICE_SOUND)
 end
 
 function startWith(item, pattern)

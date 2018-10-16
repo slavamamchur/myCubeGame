@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.sadgames.dicegame.R;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+        Gdx.audio = new AndroidAudio(this.getApplicationContext(), new AndroidApplicationConfiguration());
 
         setContentView(R.layout.activity_main);
 

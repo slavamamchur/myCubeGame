@@ -102,14 +102,14 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     /** Sound    sysutils ---------------------------------------------------------------------------*/
     //TODO: Replace with OpenAL api
-    private static void stopSound() {
+    private static void stopSound() { //TODO: remove
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
     }
 
-    private void playSound(String file) {
+    private void playSound(String file) { //TODO: remove
         AssetFileDescriptor afd = null;
         stopSound();
 

@@ -25,8 +25,8 @@ public interface SysUtilsWrapperInterface {
     Connection             iGetDBConnection(String dbName);
 
     @SuppressWarnings("unused")
-    void                   iPlaySound(String file);
-    void                   iStopSound();
+    void                   iPlaySound(String file); //TODO: remove
+    void                   iStopSound(); //TODO: remove
 
     Vector3f               mulMV(float[] matrix, float[] vector);
     Vector3f               mulMV(Matrix4f matrix, LuaTable vector);

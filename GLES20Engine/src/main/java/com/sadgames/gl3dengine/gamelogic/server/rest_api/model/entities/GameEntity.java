@@ -39,6 +39,7 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     private boolean drawGamePoints;
 
     protected List<InteractiveGameItem> gameItems = null;
+    protected List<String> gameSounds = null;
 
     public GameEntity() {}
 
@@ -104,6 +105,19 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
 
     public InputStream getLuaScript(String name) {
         return getResourceStream("scripts/" + name + ".lua");
+    }
+
+    //TODO: replace with REST object
+    public List<String> getGameSounds() {
+        if (gameSounds == null) {
+            gameSounds = new ArrayList<String>(){
+                {
+                    add("rolling_dice.mp3");
+                }
+            };
+        }
+
+        return gameSounds;
     }
 
     //TODO: replace with REST object

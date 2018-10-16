@@ -1,5 +1,8 @@
 package com.sadgames.gl3dengine.gamelogic.client;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.gamelogic.client.entities.GameMap;
@@ -34,7 +37,9 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Vector4f;
 
@@ -70,6 +75,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     private GameEntity gameEntity = null;
     private GameInstanceEntity gameInstanceEntity = null;
     private List<InstancePlayer> savedPlayers = null;
+    private Map<String, Sound> soundCache = new HashMap<>();
     private Globals luaEngine;
 
     public GameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
@@ -126,6 +132,10 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
     public void setSavedPlayers(List<InstancePlayer> savedPlayers) {
         this.savedPlayers = savedPlayers;
+    }
+
+    public Sound getSoundObject(String name) {
+        return soundCache.get(name);
     }
 
     public void requestFinishGame() {
@@ -251,6 +261,15 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
 
     private void loadGameItems(GLScene glScene) {
+        /** game sounds */
+        soundCache.clear();
+        for (String fileName : gameEntity.getGameSounds()) {
+            FileHandle file = Gdx.files.internal(fileName);
+            if (file.exists())
+                soundCache.put(fileName, Gdx.audio.newSound(file));
+        }
+
+        /** scene objects */
         Blender3DObject sceneObject;
         for (InteractiveGameItem item : gameEntity.getGameItems()) {
             sceneObject = item.createSceneObject(sysUtilsWrapper, glScene);
@@ -269,4 +288,20 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         return parentObject != null ? parentObject : glScene;
     }
 
+    private void releaseSoundCache() {
+        if (soundCache != null) {
+            for (Sound sound : soundCache.values())
+                sound.dispose();
+
+            soundCache.clear();
+            soundCache = null;
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        releaseSoundCache();
+
+        super.finalize();
+    }
 }
