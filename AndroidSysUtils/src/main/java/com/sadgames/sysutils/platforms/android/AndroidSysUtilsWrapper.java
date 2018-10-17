@@ -8,8 +8,6 @@ import android.opengl.ETC1;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
-import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.android.AndroidPreferences;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
@@ -84,13 +82,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     /** ------------------------------------------------------------------------------------------*/
 
-    /** Prefs    sysutils ---------------------------------------------------------------------------*/
-    private Preferences getDefaultSharedPrefs() {
-        return new AndroidPreferences(context.getSharedPreferences(context.getPackageName() + "_preferences",
-                                                                    Context.MODE_PRIVATE));
-    }
-    /** ------------------------------------------------------------------------------------------*/
-
     /** Bitmap sysutils ----------------------------------------------------------------------------*/
     @NonNull
     private static BitmapFactory.Options getiBitmapOptions() {
@@ -144,7 +135,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     private BitmapWrapperInterface decodeImage(byte[] bitmapArray, boolean isRelief) {
         if (bitmapArray != null) {
-            int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager(this).getGraphicsQualityLevel().ordinal()];
+            int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
             final BitmapFactory.Options options = getiBitmapOptions();
             options.inJustDecodeBounds = true;
 
@@ -185,15 +176,10 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
 
     @Override
-    public Preferences iGetDefaultSharedPrefs() {
-        return getDefaultSharedPrefs();
-    }
-
-    @Override
     public EntityControllerInterface iGetEntityController(String action,
                                                           Class<? extends BasicEntity> entityType,
                                                           Class<? extends GenericCollectionResponse> listType,
                                                           int method) {
-        return AndroidRESTControllerFabric.createInstance(this, action, entityType, listType, method);
+        return AndroidRESTControllerFabric.createInstance(action, entityType, listType, method);
     }
 }

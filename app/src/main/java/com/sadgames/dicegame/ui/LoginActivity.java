@@ -135,9 +135,9 @@ public class LoginActivity extends BaseActivityWithMenu implements LoaderCallbac
             //TODO: process error object
             AuthTokenEntity response = (AuthTokenEntity) intent.getSerializableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null) {
-                getSettingsManager(getSysUtilsWrapper()).setAuthToken(response.getId());
-                getSettingsManager(getSysUtilsWrapper()).setUserName(mEmailView.getText().toString());
-                getSettingsManager(getSysUtilsWrapper()).setUserPass(mPasswordView.getText().toString());
+                getSettingsManager().setAuthToken(response.getId());
+                getSettingsManager().setUserName(mEmailView.getText().toString());
+                getSettingsManager().setUserPass(mPasswordView.getText().toString());
 
                 Intent mintent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mintent);

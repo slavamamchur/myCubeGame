@@ -4,7 +4,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEnt
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -41,21 +40,19 @@ public abstract class AbstractHttpRequest<T extends BasicEntity> {
     private String mUrl;
     protected Class<T> mResponseType;
     protected final HttpMethod mHttpMethod;
-    private SysUtilsWrapperInterface sysUtilsWrapper;
 
-    protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod, SysUtilsWrapperInterface sysUtilsWrapper) {
-        this.sysUtilsWrapper = sysUtilsWrapper;
+    protected AbstractHttpRequest(final String url, Class<T> responseType, HttpMethod httpMethod) {
         mUrl = getBaseUrl() + url;
         this.mResponseType = responseType;
         this.mHttpMethod = httpMethod;
     }
 
     public final String getAuthToken() {
-        return getSettingsManager(sysUtilsWrapper).getAuthToken();
+        return getSettingsManager().getAuthToken();
     }
 
     public final String getBaseUrl() {
-        return getSettingsManager(sysUtilsWrapper).getWebServiceUrl(DEFAULT_BASE_URL_VALUE);
+        return getSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE);
     }
 
     public String getmUrl() {
@@ -69,9 +66,6 @@ public abstract class AbstractHttpRequest<T extends BasicEntity> {
     }
     public void setmResponseType(Class<T> mResponseType) {
         this.mResponseType = mResponseType;
-    }
-    public SysUtilsWrapperInterface getSysUtilsWrapper() {
-        return sysUtilsWrapper;
     }
 
     protected void sendRequestWithParams(String action, Object ... args)  throws WebServiceException {

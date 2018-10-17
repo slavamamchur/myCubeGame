@@ -91,7 +91,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
         this.sysUtilsWrapper = sysUtilsWrapper;
-        this.graphicsQualityLevel = getSettingsManager(sysUtilsWrapper).getGraphicsQualityLevel();
+        this.graphicsQualityLevel = getSettingsManager().getGraphicsQualityLevel();
     }
 
     public GLCamera getCamera() {
@@ -579,7 +579,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         mDisplayHeight = height;
         camera.setAspectRatio(width, height);
 
-        if (getSettingsManager(sysUtilsWrapper).isIn_2D_Mode()) {
+        if (getSettingsManager().isIn_2D_Mode()) {
             camera.setVfov(camera.getVfov() / 1.5f);
             camera.setZoomed_vfov(camera.getVfov());
         }
@@ -593,15 +593,15 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     public void switrchTo2DMode() {
         synchronized (lockObject) {
-            old2D_ModeValue = getSettingsManager(sysUtilsWrapper).isIn_2D_Mode();
-            getSettingsManager(sysUtilsWrapper).setIn_2D_Mode(true);
+            old2D_ModeValue = getSettingsManager().isIn_2D_Mode();
+            getSettingsManager().setIn_2D_Mode(true);
             setCamera(new Orthogonal2DCamera(LAND_SIZE_IN_WORLD_SPACE));
         }
     }
 
     public void restorePrevViewMode() {
         synchronized (lockObject) {
-            getSettingsManager(sysUtilsWrapper).setIn_2D_Mode(old2D_ModeValue);
+            getSettingsManager().setIn_2D_Mode(old2D_ModeValue);
             setCamera(null);
         }
     }

@@ -4,7 +4,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterfa
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.restapi.BaseController;
 import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
@@ -18,18 +17,18 @@ public class AndroidRESTControllerFabric implements EntityControllerInterface {
 
     private BaseController<?, ?> controller;
 
-    private AndroidRESTControllerFabric(SysUtilsWrapperInterface sysUtilsWrapper, String action,
+    private AndroidRESTControllerFabric(String action,
                                         Class<? extends BasicEntity> entityType,
                                         Class<? extends GenericCollectionResponse> listType,
                                         int method) {
-        controller = new BaseController<>(action, entityType, listType, null, method, sysUtilsWrapper);
+        controller = new BaseController<>(action, entityType, listType, null, method);
     }
 
-    public static EntityControllerInterface createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String action,
+    public static EntityControllerInterface createInstance(String action,
                                                              Class<? extends BasicEntity> entityType,
                                                              Class<? extends GenericCollectionResponse> listType,
                                                              int method) {
-        return new AndroidRESTControllerFabric(sysUtilsWrapper, action, entityType, listType, method);
+        return new AndroidRESTControllerFabric(action, entityType, listType, method);
     }
 
     @Override

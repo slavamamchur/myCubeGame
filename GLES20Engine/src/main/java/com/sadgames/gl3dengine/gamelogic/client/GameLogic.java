@@ -96,7 +96,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         return sysUtilsWrapper;
     }
     @SuppressWarnings("unused") public SettingsManagerInterface iGetSettingsManager() {
-        return getSettingsManager(sysUtilsWrapper);
+        return getSettingsManager();
     }
 
     @SuppressWarnings("unused") public GLScene getGl3DScene() {
@@ -221,7 +221,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
         /** mini-map gui-box */
-        if (!getSettingsManager(sysUtilsWrapper).isIn_2D_Mode()) {
+        if (!getSettingsManager().isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(sysUtilsWrapper,
                     glScene.getCachedShader(GUI_OBJECT),
                     new Vector4f(-1, 1, -0.75f, 0.5f), true);

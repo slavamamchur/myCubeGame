@@ -2,7 +2,6 @@ package com.sadgames.sysutils.platforms.android.restapi;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -27,9 +26,8 @@ public class BaseController<T extends BasicEntity, C extends GenericCollectionRe
     public BaseController(String action,
                           Class<T> responseType,
                           Class<C> listType,
-                          Map<String, String> params,
-                          SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(action, responseType, HttpMethod.GET, sysUtilsWrapper);
+                          Map<String, String> params) {
+        super(action, responseType, HttpMethod.GET);
 
         this.listType = listType;
         this.params = params;
@@ -39,9 +37,8 @@ public class BaseController<T extends BasicEntity, C extends GenericCollectionRe
                           Class<T> responseType,
                           Class<C> listType,
                           Map<String, String> params,
-                          int method,
-                          SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(action, responseType, HttpMethod.values()[method], sysUtilsWrapper);
+                          int method) {
+        super(action, responseType, HttpMethod.values()[method]);
 
         this.listType = listType;
         this.params = params;

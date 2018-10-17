@@ -40,8 +40,8 @@ public class CommonUtils {
             try {Thread.sleep(100);} catch (InterruptedException e) {} //System.gc();
     }
 
-    public static SettingsManagerInterface getSettingsManager(SysUtilsWrapperInterface sysUtils) {
-        return GDXSettingsManager.getInstance(sysUtils);
+    public static SettingsManagerInterface getSettingsManager() {
+        return GDXSettingsManager.getInstance();
     }
 
     public static void downloadBitmapIfNotCached(SysUtilsWrapperInterface sysUtilsWrapper,

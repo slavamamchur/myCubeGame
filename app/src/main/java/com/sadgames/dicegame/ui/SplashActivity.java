@@ -11,12 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AndroidFiles;
+import com.badlogic.gdx.backends.android.AndroidPreferences;
 import com.sadgames.dicegame.GdxDbAndroid;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
 import com.sadgames.gl3dengine.glrender.GdxExt;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_RESULT;
@@ -34,7 +33,6 @@ public class SplashActivity extends AppCompatActivity {
         }
     };
     private BroadcastReceiver mPingBroadcastReceiver = null;
-    private SysUtilsWrapperInterface sysUtilsWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +42,11 @@ public class SplashActivity extends AppCompatActivity {
 
         initGDXLib();
         registerRestApiResponceReceivers();
-        sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getApplicationContext());
     }
 
     private void initGDXLib() {
+        GdxExt.preferences = new AndroidPreferences(getSharedPreferences(getPackageName() + "_preferences",
+                                                                          Context.MODE_PRIVATE));
         GdxExt.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
         GdxExt.dataBase = new GdxDbAndroid(this);
         GdxExt.audio = new AndroidAudio(this.getApplicationContext(), new AndroidApplicationConfiguration());
@@ -61,7 +60,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if(getSettingsManager(sysUtilsWrapper).isLoggedIn())
+        if(getSettingsManager().isLoggedIn())
             RestApiService.startActionPing(this);
         else {
             cls = LoginActivity.class;
@@ -76,7 +75,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 cls = !intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false) ? LoginActivity.class : /*GameListActivity*/MainActivity.class;
                 if(!intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false)){
-                    getSettingsManager(sysUtilsWrapper).setAuthToken("");
+                    getSettingsManager().setAuthToken("");
                 }
                 delayedHide(HIDE_DELAY);
             }

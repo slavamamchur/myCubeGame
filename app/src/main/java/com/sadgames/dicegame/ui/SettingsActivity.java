@@ -19,8 +19,6 @@ import android.view.MenuItem;
 
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.framework.AppCompatPreferenceActivity;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import java.util.List;
 
@@ -61,11 +59,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             else {
                 preference.setSummary(stringValue);
 
-                final SysUtilsWrapperInterface sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(preference.getContext());
                 if (preference.getKey().equals(preference.getContext().getString(R.string.pref_key_web_service_url))
-                        && !getSettingsManager(sysUtilsWrapper).getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
+                        && !getSettingsManager().getWebServiceUrl(DEFAULT_BASE_URL_VALUE).equals(stringValue)
                         ) {
-                    forceRelogin(preference.getContext(), sysUtilsWrapper);
+                    forceRelogin(preference.getContext());
                 }
             }
 
@@ -75,13 +72,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private static SettingsActivity instance = null;
 
-    private static void forceRelogin(final Context ctx, final SysUtilsWrapperInterface sysUtilsWrapper){
+    private static void forceRelogin(final Context ctx){
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setMessage("Web service url was changed. Relogin is needed.")
                 .setTitle("Warning");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                getSettingsManager(sysUtilsWrapper).setAuthToken("");
+                getSettingsManager().setAuthToken("");
 
                 ctx.startActivity(new Intent(ctx, LoginActivity.class));
 

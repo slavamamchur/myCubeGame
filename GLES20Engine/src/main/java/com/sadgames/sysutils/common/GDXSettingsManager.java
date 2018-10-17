@@ -2,6 +2,7 @@ package com.sadgames.sysutils.common;
 
 import com.badlogic.gdx.Preferences;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 
 public final class GDXSettingsManager implements SettingsManagerInterface {
 
@@ -19,13 +20,13 @@ public final class GDXSettingsManager implements SettingsManagerInterface {
     private static GDXSettingsManager instance = null;
     private Preferences settings;
 
-    public GDXSettingsManager(SysUtilsWrapperInterface sysUtils) {
-        settings = sysUtils.iGetDefaultSharedPrefs();
+    public GDXSettingsManager() {
+        settings = GdxExt.preferences;
     }
 
-    public static GDXSettingsManager getInstance(SysUtilsWrapperInterface sysUtils){
+    public static GDXSettingsManager getInstance(){
         synchronized (lockObject) {
-            instance = instance != null ? instance : new GDXSettingsManager(sysUtils);
+            instance = instance != null ? instance : new GDXSettingsManager();
             return instance;
         }
     }

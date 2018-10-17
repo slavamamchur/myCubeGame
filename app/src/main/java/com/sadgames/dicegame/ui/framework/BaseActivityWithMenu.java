@@ -20,8 +20,6 @@ import com.sadgames.dicegame.ui.LoginActivity;
 import com.sadgames.dicegame.ui.SettingsActivity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.AuthTokenEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_PING_RESPONSE;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_RELOGIN_RESPONSE;
@@ -33,13 +31,8 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
 
     private BroadcastReceiver mBaseBroadcastReceiver = null;
     private ProgressDialog progressDialog = null;
-    private SysUtilsWrapperInterface sysUtilsWrapper;
     private final Handler mAlertHandler = new Handler();
     private boolean isFirstResume;
-
-    public SysUtilsWrapperInterface getSysUtilsWrapper() {
-        return sysUtilsWrapper;
-    }
 
     protected void showError(ErrorEntity error){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -95,7 +88,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void doLogout(){
-        getSettingsManager(sysUtilsWrapper).setAuthToken("");
+        getSettingsManager().setAuthToken("");
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
@@ -128,7 +121,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     protected boolean handleWebServiceResponseAction(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_PING_RESPONSE)) {
             if (!intent.getBooleanExtra(EXTRA_BOOLEAN_RESULT, false))
-                if (!getSettingsManager(sysUtilsWrapper).isStayLoggedIn()) {
+                if (!getSettingsManager().isStayLoggedIn()) {
                     doLogout();
                 } else
                     doRelogin();
@@ -138,7 +131,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
         else if (intent.getAction().equals(ACTION_RELOGIN_RESPONSE)) {
             AuthTokenEntity response = intent.getParcelableExtra(EXTRA_LOGIN_RESPONSE_OBJECT);
             if (response.getId() != null)
-                getSettingsManager(sysUtilsWrapper).setAuthToken(response.getId());
+                getSettingsManager().setAuthToken(response.getId());
             else
                 doLogout();
 
@@ -151,14 +144,8 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     private void doRelogin(){
         showProgress();
 
-        RestApiService.startActionRelogin(getApplicationContext(), getSettingsManager(sysUtilsWrapper).getUserName(),
-                getSettingsManager(sysUtilsWrapper).getUserPass());
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getApplicationContext());
+        RestApiService.startActionRelogin(getApplicationContext(), getSettingsManager().getUserName(),
+                getSettingsManager().getUserPass());
     }
 
     @Override
@@ -230,7 +217,7 @@ public abstract class BaseActivityWithMenu extends AppCompatActivity {
     }
 
     private void checkAuthentication(){
-        if (getSettingsManager(sysUtilsWrapper).isLoggedIn()) {
+        if (getSettingsManager().isLoggedIn()) {
             showProgress();
 
             RestApiService.startActionPing(this);

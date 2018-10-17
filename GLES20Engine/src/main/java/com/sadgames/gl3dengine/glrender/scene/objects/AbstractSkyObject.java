@@ -34,7 +34,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
 
     @SuppressWarnings("unused")
     public void calcRotationAngle(long frametime) {
-        float angle = getSettingsManager(sysUtilsWrapper).isIn_2D_Mode() ? 0 : getRotationAngle() + 0.5f * frametime / 250f;
+        float angle = getSettingsManager().isIn_2D_Mode() ? 0 : getRotationAngle() + 0.5f * frametime / 250f;
         setRotationAngle(angle > 360f ? 360f - angle : angle);
     }
 
