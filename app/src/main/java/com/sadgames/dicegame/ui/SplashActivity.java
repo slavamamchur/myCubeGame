@@ -8,8 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidAudio;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+import com.sadgames.dicegame.GdxDbAndroid;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
@@ -36,9 +41,16 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
-        registerRestApiResponceReceivers();
 
+        initGDXLib();
+        registerRestApiResponceReceivers();
         sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getApplicationContext());
+    }
+
+    private void initGDXLib() {
+        GdxExt.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+        GdxExt.dataBase = new GdxDbAndroid(this);
+        GdxExt.audio = new AndroidAudio(this.getApplicationContext(), new AndroidApplicationConfiguration());
     }
 
     @Override
