@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.gamelogic.client;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.bulletphysics.dynamics.DynamicsWorld;
@@ -12,6 +11,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInst
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.items.InteractiveGameItem;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
@@ -264,9 +264,9 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         /** game sounds */
         soundCache.clear();
         for (String fileName : gameEntity.getGameSounds()) {
-            FileHandle file = Gdx.files.internal(fileName);
+            FileHandle file = GdxExt.files.internal(fileName);
             if (file.exists())
-                soundCache.put(fileName, Gdx.audio.newSound(file));
+                soundCache.put(fileName, GdxExt.audio.newSound(file));
         }
 
         /** scene objects */

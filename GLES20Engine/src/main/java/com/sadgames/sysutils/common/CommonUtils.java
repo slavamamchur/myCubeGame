@@ -1,8 +1,8 @@
 package com.sadgames.sysutils.common;
 
-import com.badlogic.gdx.Gdx;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -22,7 +22,7 @@ public class CommonUtils {
 
     public static String readTextFromFile(String fileName) {
         try {
-            return Gdx.files == null ? "" : Gdx.files.internal(fileName).readString();
+            return GdxExt.files == null ? "" : GdxExt.files.internal(fileName).readString();
         } catch (Exception e) {
             return "";
         }
@@ -63,7 +63,7 @@ public class CommonUtils {
 
     public static InputStream getResourceStream(String fileName) {
         try {
-            return Gdx.files == null ? null : Gdx.files.internal(fileName).read();
+            return GdxExt.files == null ? null : GdxExt.files.internal(fileName).read();
         } catch (Exception e) {
             return null;
         }

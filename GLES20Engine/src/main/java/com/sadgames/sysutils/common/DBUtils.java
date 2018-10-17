@@ -1,5 +1,7 @@
 package com.sadgames.sysutils.common;
 
+import com.sadgames.gl3dengine.glrender.GdxExt;
+
 import java.io.ByteArrayInputStream;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -10,7 +12,6 @@ import java.util.Arrays;
 
 import static com.sadgames.sysutils.common.SysUtilsConsts.BYTES_IN_MB;
 import static com.sadgames.sysutils.common.SysUtilsConsts.CHUNK_NUMBER_DB_FIELD;
-import static com.sadgames.sysutils.common.SysUtilsConsts.DB_NAME;
 import static com.sadgames.sysutils.common.SysUtilsConsts.DB_TABLE_NAME;
 import static com.sadgames.sysutils.common.SysUtilsConsts.MAP_ID_DB_FIELD;
 import static com.sadgames.sysutils.common.SysUtilsConsts.MAP_IMAGE_DB_FIELD;
@@ -42,7 +43,7 @@ public class DBUtils {
                                      byte[] bitmapArray,
                                      String map_id,
                                      Long updatedDate) throws SQLException {
-        try (Connection conn = sysUtils.iGetDBConnection(DB_NAME)) {
+        try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement(
                     "delete from " + DB_TABLE_NAME + " where " + MAP_ID_DB_FIELD + " = \"" + map_id + "\"")) {
                 stmt.executeUpdate();
@@ -61,10 +62,10 @@ public class DBUtils {
         }
     }
 
-    public static boolean isBitmapCached(SysUtilsWrapperInterface sysUtils, String id, Long updatedDate) {
+    public static boolean isBitmapCached(String id, Long updatedDate) {
         boolean result = false;
 
-        try (Connection conn = sysUtils.iGetDBConnection(DB_NAME)) {
+        try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
                 try (PreparedStatement stmt = conn.prepareStatement(
                         "select count(" + MAP_ID_DB_FIELD + ") as CNT" +
                                 " from " + DB_TABLE_NAME +
@@ -90,7 +91,7 @@ public class DBUtils {
 
         CommonUtils.downloadBitmapIfNotCached(sysUtils, textureResName, isRelief);
 
-        try (Connection conn = sysUtils.iGetDBConnection(DB_NAME)) {
+        try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +
                             " from " + DB_TABLE_NAME +
                             " where " + MAP_ID_DB_FIELD + " = ?" +

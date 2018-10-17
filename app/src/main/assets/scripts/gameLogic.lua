@@ -76,12 +76,12 @@ end
 
 onRollingObjectStart = function(gameObject)
     if gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT) then
-        gameLogic:getSysUtilsWrapper():iPlaySound(ROLLING_DICE_SOUND) --todo: playSound(ROLLING_DICE_SOUND)
+        gameLogic:getSysUtilsWrapper():iPlaySound(ROLLING_DICE_SOUND) --todo: getSound(ROLLING_DICE_SOUND):playSound
     end
 end
 
 onRollingObjectStop = function(gameObject)
-    gameLogic:getSysUtilsWrapper():iStopSound() --todo: stopSound(ROLLING_DICE_SOUND)
+    gameLogic:getSysUtilsWrapper():iStopSound() --todo: getSound(ROLLING_DICE_SOUND):stopSound
 end
 
 function startWith(item, pattern)

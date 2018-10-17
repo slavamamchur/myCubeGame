@@ -2,7 +2,6 @@ package com.sadgames.sysutils.platforms.android;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -29,17 +28,12 @@ import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
-import static com.sadgames.sysutils.platforms.android.AndroidSQLiteDBHelper.DB_NAME;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
@@ -51,8 +45,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     protected AndroidSysUtilsWrapper(Context context) {
         this.context = context;
-
-        initDataBase(DB_NAME);
     }
 
     public static SysUtilsWrapperInterface getInstance(Context context) {
@@ -209,35 +201,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
     /** ------------------------------------------------------------------------------------------*/
 
-    /** DB sysutils ---------------------------------------------------------------------------------*/
-    private Connection getDBConnection(String dbName) {
-        String jdbcUrl = "jdbc:sqldroid:" + context.getDatabasePath(dbName).getPath();
-        try {
-            return DriverManager.getConnection(jdbcUrl);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void initDataBase(String dbName) {
-        try {
-            AndroidSQLiteDBHelper dbHelper = new AndroidSQLiteDBHelper(context, dbName, null, AndroidSQLiteDBHelper.DB_VERSION);
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.close();
-            dbHelper.close();
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Failed to create DataBase.");
-        }
-
-        try {
-            DriverManager.registerDriver((Driver) Class.forName("org.sqldroid.SQLDroidDriver").newInstance());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to register SQLDroidDriver");
-        }
-    }
-    /** ------------------------------------------------------------------------------------------*/
-
     @Override
     public BitmapWrapperInterface iCreateColorBitmap(int color) {
         return new AndroidBitmapWrapper(color);
@@ -256,11 +219,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException {
         return createETC1Texture(input);
-    }
-
-    @Override
-    public Connection iGetDBConnection(String dbName) {
-        return getDBConnection(dbName);
     }
 
     @Override

@@ -17,12 +17,13 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.sadgames.dicegame.GdxDbAndroid;
 import com.sadgames.dicegame.R;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 
 import java.util.ArrayList;
 
@@ -38,12 +39,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-        Gdx.audio = new AndroidAudio(this.getApplicationContext(), new AndroidApplicationConfiguration());
+        GdxExt.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+        GdxExt.dataBase = new GdxDbAndroid(this);
+        GdxExt.audio = new AndroidAudio(this.getApplicationContext(), new AndroidApplicationConfiguration());
 
         setContentView(R.layout.activity_main);
 
-        gallery = (Gallery) findViewById(R.id.gallery_menu);
+        gallery = findViewById(R.id.gallery_menu);
         gallery.setAdapter(new ImageAdapter(this, R.layout.menu_item_layout, getData()));
         gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position,long id)

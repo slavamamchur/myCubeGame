@@ -10,7 +10,6 @@ import org.luaj.vm2.LuaTable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
-import java.sql.Connection;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -21,8 +20,6 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iDecodeImage(byte[] bitmapArray, boolean isRelief);
     BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride);
     BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
-
-    Connection             iGetDBConnection(String dbName);
 
     @SuppressWarnings("unused")
     void                   iPlaySound(String file); //TODO: remove
