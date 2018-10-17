@@ -1,9 +1,5 @@
 package com.sadgames.sysutils.common;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
-
 import org.luaj.vm2.LuaTable;
 
 import java.io.IOException;
@@ -25,10 +21,5 @@ public interface SysUtilsWrapperInterface {
     Vector3f               mulMV(float[] matrix, LuaTable vector);
     void                   mulMM(float[] result, int resultOffset, float[] lhs, int lhsOffset, float[] rhs, int rhsOffset);
     void                   rotateM(float[] m, int mOffset, float a, float x, float y, float z);
-
-    EntityControllerInterface iGetEntityController(String action,
-                                                   Class<? extends BasicEntity> entityType,
-                                                   Class<? extends GenericCollectionResponse> listType,
-                                                   int method);
 
 }

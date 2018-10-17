@@ -7,7 +7,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractCont
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameInstanceController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.sysutils.common.LuaUtils;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.LuaTable;
 
@@ -88,8 +87,8 @@ public class GameInstanceEntity extends BasicNamedDbEntity implements Serializab
     }
 
     @Override
-    public AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        return new GameInstanceController(sysUtilsWrapper);
+    public AbstractController getController() {
+        return new GameInstanceController();
     }
 
     public List<InstancePlayer> createPlayersList() {

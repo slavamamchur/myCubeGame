@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.DBPlayerController;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.Serializable;
 
@@ -30,7 +29,7 @@ public class DbPlayerEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     @Override
-    public AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        return new DBPlayerController(sysUtilsWrapper);
+    public AbstractController getController() {
+        return new DBPlayerController();
     }
 }

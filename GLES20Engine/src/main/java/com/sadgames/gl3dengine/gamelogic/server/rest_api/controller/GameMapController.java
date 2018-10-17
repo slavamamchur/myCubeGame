@@ -3,7 +3,6 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameMapCollectionResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_MAP_IMAGE_SIMPLE;
@@ -15,8 +14,8 @@ public class GameMapController extends AbstractController {
     private static final int HTTP_STATUS_NOT_FOUND = 27;
     public final static String MEDIA_TYPE_IMAGE_JPEG = "image/jpeg";
 
-    public GameMapController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_GAME_MAP, GameMapEntity.class, GameMapCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
+    public GameMapController() {
+        super(URL_GAME_MAP, GameMapEntity.class, GameMapCollectionResponse.class, HTTP_METHOD_GET);
     }
 
     public void saveMapImage(GameMapEntity map) {
@@ -36,7 +35,7 @@ public class GameMapController extends AbstractController {
         if (mapArray == null)
             controller.iThrowWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
         else try {
-            saveBitmap2DB(sysUtilsWrapper, mapArray, namePrefix + map.getId(), map.getLastUsedDate());
+            saveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
         } catch (Exception e) {
             controller.iThrowWebServiceException(HTTP_STATUS_NOT_FOUND, errorMessage);
         }

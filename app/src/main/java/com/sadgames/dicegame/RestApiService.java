@@ -24,8 +24,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInst
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.UserEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceStartedResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
 import java.io.Serializable;
@@ -82,13 +80,9 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.UserActionType;
 
 public class RestApiService extends IntentService {
 
-    private SysUtilsWrapperInterface sysUtilsWrapper;
-
     public RestApiService() {
         super(RestApiService.class.getSimpleName());
-        sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(this);
     }
-
 
     protected static Intent getIntent(Context context, String action) {
         Intent intent = new Intent(context, RestApiService.class);
@@ -280,7 +274,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            response = new LoginRequest(userName, userPass, sysUtilsWrapper).doLogin();
+            response = new LoginRequest(userName, userPass).doLogin();
         }
         catch (WebServiceException e) {
             response = new AuthTokenEntity(null);
@@ -302,7 +296,7 @@ public class RestApiService extends IntentService {
         String message = "";
 
         try {
-            response = new LoginRequest(userName, userPass, sysUtilsWrapper).doLogin();
+            response = new LoginRequest(userName, userPass).doLogin();
         }
         catch (WebServiceException e) {
             //TODO: return error object
@@ -323,7 +317,7 @@ public class RestApiService extends IntentService {
         String message = "";
 
         try {
-            new RegistrationRequest(regParams, sysUtilsWrapper).doRegister();
+            new RegistrationRequest(regParams).doRegister();
         } catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
         }
@@ -340,7 +334,7 @@ public class RestApiService extends IntentService {
         boolean result = false;
 
         try {
-            result = new PingRequest(sysUtilsWrapper).doPing();
+            result = new PingRequest().doPing();
         }
         catch (Exception e) {
             result = false;
@@ -355,7 +349,7 @@ public class RestApiService extends IntentService {
         String message = "";
         ArrayList<GameMapEntity> mapList = null;
         try {
-            mapList = new ArrayList<>(new GameMapController(sysUtilsWrapper).getResponseList());
+            mapList = new ArrayList<>(new GameMapController().getResponseList());
         }
         catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
@@ -372,7 +366,7 @@ public class RestApiService extends IntentService {
         ArrayList<GameEntity> mapList = null;
 
         try {
-            mapList = new ArrayList<>(new GameController(sysUtilsWrapper).getResponseList());
+            mapList = new ArrayList<>(new GameController().getResponseList());
         }
         catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
@@ -389,7 +383,7 @@ public class RestApiService extends IntentService {
         ArrayList<GameInstanceEntity> mapList = null;
 
         try {
-            mapList = new ArrayList<>(new GameInstanceController(sysUtilsWrapper).getResponseList());
+            mapList = new ArrayList<>(new GameInstanceController().getResponseList());
         }
         catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
@@ -406,7 +400,7 @@ public class RestApiService extends IntentService {
         ArrayList<DbPlayerEntity> mapList = null;
 
         try {
-            mapList = new ArrayList<>(new DBPlayerController(sysUtilsWrapper).getResponseList());
+            mapList = new ArrayList<>(new DBPlayerController().getResponseList());
         }
         catch (WebServiceException e) {
             message = e.getErrorObject() != null ? e.getErrorObject().getError() : e.getStatusText();
@@ -422,7 +416,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            new GameMapController(sysUtilsWrapper).saveMapImage(map);
+            new GameMapController().saveMapImage(map);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -440,7 +434,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            new GameMapController(sysUtilsWrapper).uploadMapImage(map, fileName);
+            new GameMapController().uploadMapImage(map, fileName);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -457,7 +451,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            item.getController(sysUtilsWrapper).delete(item);
+            item.getController().delete(item);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -474,7 +468,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
         BasicEntity result = null;
         try {
-            result = item.getController(sysUtilsWrapper).update(item);
+            result = item.getController().update(item);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -493,7 +487,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            new GameInstanceController(sysUtilsWrapper).finishInstance(item);
+            new GameInstanceController().finishInstance(item);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -510,7 +504,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            new GameInstanceController(sysUtilsWrapper).restartInstance(item);
+            new GameInstanceController().restartInstance(item);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -528,7 +522,7 @@ public class RestApiService extends IntentService {
         GameInstanceStartedResponse result = null;
 
         try {
-            result = new GameInstanceController(sysUtilsWrapper).startNewInstance(item);
+            result = new GameInstanceController().startNewInstance(item);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -549,7 +543,7 @@ public class RestApiService extends IntentService {
         GameInstanceEntity result = null;
 
         try {
-            result = new GameInstanceController(sysUtilsWrapper).makeTurn(item);
+            result = new GameInstanceController().makeTurn(item);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -569,7 +563,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            new GameController(sysUtilsWrapper).removeChild(parentId, childName, childIndex);
+            new GameController().removeChild(parentId, childName, childIndex);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
@@ -588,7 +582,7 @@ public class RestApiService extends IntentService {
         ErrorEntity error = null;
 
         try {
-            new GameController(sysUtilsWrapper).addChild(parentId, childName, childEntity);
+            new GameController().addChild(parentId, childName, childEntity);
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());

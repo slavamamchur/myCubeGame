@@ -3,14 +3,10 @@ package com.sadgames.sysutils.platforms.android;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.opengl.ETC1;
 import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
@@ -35,7 +31,6 @@ import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     private static final Object lockObject = new Object();
-    private static MediaPlayer mMediaPlayer;
     protected static SysUtilsWrapperInterface instance = null;
 
     protected Context context;
@@ -175,11 +170,4 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return createETC1Texture(input);
     }
 
-    @Override
-    public EntityControllerInterface iGetEntityController(String action,
-                                                          Class<? extends BasicEntity> entityType,
-                                                          Class<? extends GenericCollectionResponse> listType,
-                                                          int method) {
-        return AndroidRESTControllerFabric.createInstance(action, entityType, listType, method);
-    }
 }

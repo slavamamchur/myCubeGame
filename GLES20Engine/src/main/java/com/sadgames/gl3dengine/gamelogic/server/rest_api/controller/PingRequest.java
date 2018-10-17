@@ -2,14 +2,13 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.PingResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_PING;
 
 public class PingRequest extends AbstractController {
 
-    public PingRequest(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_PING, PingResponse.class, GenericCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
+    public PingRequest() {
+        super(URL_PING, PingResponse.class, GenericCollectionResponse.class, HTTP_METHOD_GET);
     }
 
     public boolean doPing(){

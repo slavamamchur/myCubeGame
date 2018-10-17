@@ -39,8 +39,7 @@ public class DBUtils {
         }
     }
 
-    public static void saveBitmap2DB(SysUtilsWrapperInterface sysUtils,
-                                     byte[] bitmapArray,
+    public static void saveBitmap2DB(byte[] bitmapArray,
                                      String map_id,
                                      Long updatedDate) throws SQLException {
         try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
@@ -89,7 +88,7 @@ public class DBUtils {
                                                     String textureResName, boolean isRelief) throws SQLException {
         byte[] bitmapArray = null;
 
-        CommonUtils.downloadBitmapIfNotCached(sysUtils, textureResName, isRelief);
+        CommonUtils.downloadBitmapIfNotCached(textureResName, isRelief);
 
         try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +

@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameCollectionResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.Serializable;
 
@@ -10,8 +9,8 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GA
 
 public class GameController extends AbstractController {
 
-    public GameController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_GAME, GameEntity.class, GameCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
+    public GameController() {
+        super(URL_GAME, GameEntity.class, GameCollectionResponse.class, HTTP_METHOD_GET);
     }
 
     public void removeChild(String parentId, String childName, int childIndex){

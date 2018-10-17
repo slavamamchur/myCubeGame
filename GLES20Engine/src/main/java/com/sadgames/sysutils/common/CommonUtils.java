@@ -44,10 +44,9 @@ public class CommonUtils {
         return GDXSettingsManager.getInstance();
     }
 
-    public static void downloadBitmapIfNotCached(SysUtilsWrapperInterface sysUtilsWrapper,
-                                          String textureResName,
+    public static void downloadBitmapIfNotCached(String textureResName,
                                           boolean isRelief) {
-        GameMapController gmc = new GameMapController(sysUtilsWrapper);
+        GameMapController gmc = new GameMapController();
 
         GameMapEntity map = (GameMapEntity) gmc.find(textureResName);
         if (map == null || map.getId() == null || map.getId().isEmpty())

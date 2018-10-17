@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.AuthTokenEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +12,8 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LO
 
 public class LoginRequest extends AbstractController {
 
-    public LoginRequest(String userName, String userPass, SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(URL_LOGIN, AuthTokenEntity.class, GenericCollectionResponse.class, HTTP_METHOD_GET, sysUtilsWrapper);
+    public LoginRequest(String userName, String userPass) {
+        super(URL_LOGIN, AuthTokenEntity.class, GenericCollectionResponse.class, HTTP_METHOD_GET);
 
         Map<String, String> params = new HashMap<>();
         params.put(PARAM_LOGIN_USER_NAME, userName);

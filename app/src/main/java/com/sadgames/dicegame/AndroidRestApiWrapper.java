@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
+import com.sadgames.sysutils.platforms.android.AndroidRESTControllerFabric;
 
 import static com.sadgames.dicegame.RestApiService.startActionFinishGameInstance;
 import static com.sadgames.dicegame.RestApiService.startActionMoveGameInstance;
@@ -35,6 +39,11 @@ public class AndroidRestApiWrapper implements RestApiInterface {
 
     public AndroidRestApiWrapper(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public EntityControllerInterface iGetEntityController(String action, Class<? extends BasicEntity> entityType, Class<? extends GenericCollectionResponse> listType, int method) {
+        return AndroidRESTControllerFabric.createInstance(action, entityType, listType, method);
     }
 
     private void sendResponseIntent(String action, Bundle params){

@@ -6,7 +6,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameIns
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.IdResponse;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GAME_INSTANCE_FINISH;
@@ -16,12 +15,11 @@ import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_GA
 
 public class GameInstanceController extends AbstractController {
 
-    public GameInstanceController(SysUtilsWrapperInterface sysUtilsWrapper) {
+    public GameInstanceController() {
         super(  URL_GAME_INSTANCE,
                 GameInstanceEntity.class,
                 GameInstanceCollectionResponse.class,
-                HTTP_METHOD_GET,
-                sysUtilsWrapper);
+                HTTP_METHOD_GET);
     }
 
     public GameInstanceResponse finishInstance(GameInstanceEntity instance) {

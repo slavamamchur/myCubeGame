@@ -9,7 +9,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.items.In
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -87,8 +86,8 @@ public class GameEntity extends BasicNamedDbEntity implements Serializable {
     }
 
     @Override
-    public AbstractController getController(SysUtilsWrapperInterface sysUtilsWrapper) {
-        return new GameController(sysUtilsWrapper);
+    public AbstractController getController() {
+        return new GameController();
     }
 
     /** for game init script from web api object -------------------------------------------------*/
