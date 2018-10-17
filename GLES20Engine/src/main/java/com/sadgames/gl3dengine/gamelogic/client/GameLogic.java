@@ -134,7 +134,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         this.savedPlayers = savedPlayers;
     }
 
-    public Sound getSoundObject(String name) {
+    @SuppressWarnings("unused") public Sound getSoundObject(String name) {
         return soundCache.get(name);
     }
 
