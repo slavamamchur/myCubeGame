@@ -126,7 +126,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
 
     @Override
     protected void onDestroy() {
-        getSysUtilsWrapper().iStopSound();
+        //getSysUtilsWrapper().iStopSound();
         fpsCounterTimer.cancel();
 
         super.onDestroy();

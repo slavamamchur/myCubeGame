@@ -1,7 +1,6 @@
 package com.sadgames.sysutils.platforms.android;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -89,42 +88,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     private Preferences getDefaultSharedPrefs() {
         return new AndroidPreferences(context.getSharedPreferences(context.getPackageName() + "_preferences",
                                                                     Context.MODE_PRIVATE));
-    }
-    /** ------------------------------------------------------------------------------------------*/
-
-    /** Sound    sysutils ---------------------------------------------------------------------------*/
-    //TODO: Replace with OpenAL api
-    private static void stopSound() { //TODO: remove
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-        }
-    }
-
-    private void playSound(String file) { //TODO: remove
-        AssetFileDescriptor afd = null;
-        stopSound();
-
-        try {
-            afd = context.getAssets().openFd(file);
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setDataSource(
-                    afd.getFileDescriptor(),
-                    afd.getStartOffset(),
-                    afd.getLength()
-            );
-            afd.close();
-
-            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {stopSound();
-                }
-            });
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     /** ------------------------------------------------------------------------------------------*/
 
@@ -220,17 +183,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     public BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException {
         return createETC1Texture(input);
     }
-
-    @Override
-    public void iPlaySound(String file) {
-        playSound(file);
-    }
-
-    @Override
-    public void iStopSound() {
-        stopSound();
-    }
-
 
     @Override
     public Preferences iGetDefaultSharedPrefs() {

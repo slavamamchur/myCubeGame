@@ -21,10 +21,6 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride);
     BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
 
-    @SuppressWarnings("unused")
-    void                   iPlaySound(String file); //TODO: remove
-    void                   iStopSound(); //TODO: remove
-
     Vector3f               mulMV(float[] matrix, float[] vector);
     Vector3f               mulMV(Matrix4f matrix, LuaTable vector);
     Vector3f               mulMV(float[] matrix, LuaTable vector);
