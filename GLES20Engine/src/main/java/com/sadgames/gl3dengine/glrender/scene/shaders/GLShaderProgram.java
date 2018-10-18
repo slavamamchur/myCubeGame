@@ -308,7 +308,7 @@ public abstract class GLShaderProgram {
         float [] lightMVP = new float[16];
 
         sysUtilsWrapper.mulMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
-        sysUtilsWrapper.mulMM(lightMVP, 0, projectionMatrix, 0, viewMatrix, 0);
+        sysUtilsWrapper.mulMM(lightMVP, 0, projectionMatrix, 0, lightMVP, 0);
         sysUtilsWrapper.mulMM(lightMVP, 0, BIAS, 0, lightMVP, 0);
 
         paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);

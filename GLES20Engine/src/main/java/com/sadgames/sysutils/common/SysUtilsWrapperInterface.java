@@ -20,6 +20,6 @@ public interface SysUtilsWrapperInterface {
     Vector3f               mulMV(Matrix4f matrix, LuaTable vector);
     Vector3f               mulMV(float[] matrix, LuaTable vector);
     void                   mulMM(float[] result, int resultOffset, float[] lhs, int lhsOffset, float[] rhs, int rhsOffset);
-    void                   rotateM(float[] m, int mOffset, float a, float x, float y, float z);
+    void rotateM(float[] m, float a, float x, float y, float z);
 
 }

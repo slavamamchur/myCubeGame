@@ -11,7 +11,6 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
 import com.sadgames.sysutils.common.LuaUtils;
-import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.LuaTable;
@@ -24,9 +23,13 @@ import java.nio.ByteOrder;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
+import static com.sadgames.sysutils.common.MathUtils.getMatrix4f;
+import static com.sadgames.sysutils.common.MathUtils.mulMatOnVec;
+import static com.sadgames.sysutils.common.MathUtils.rotateByVector;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
@@ -49,30 +52,35 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     /** Math    sysutils ---------------------------------------------------------------------------*/
     @Override
     public Vector3f mulMV(Matrix4f matrix, LuaTable vector) {
-        return mulMV(MathUtils.getOpenGlMatrix(matrix), LuaUtils.luaTable2FloatArray(vector));
+        return mulMatOnVec(matrix, new Vector4f(LuaUtils.luaTable2FloatArray(vector)));
     }
 
     @Override
     public Vector3f mulMV(float[] matrix, LuaTable vector) {
-        return mulMV(matrix, LuaUtils.luaTable2FloatArray(vector));
+        return mulMV(getMatrix4f(matrix), vector);
     }
 
     @Override
     public Vector3f mulMV(float[] matrix, float[] vector) {
-        float[] result = new float[4];
-        Matrix.multiplyMV(result, 0, matrix, 0, vector, 0);
-
-        return new Vector3f(result[0], result[1], result[2]);
+        return mulMatOnVec(getMatrix4f(matrix), new Vector4f(vector));
     }
 
     @Override
     public void mulMM(float[] result, int resultOffset, float[] lhs, int lhsOffset, float[] rhs, int rhsOffset) {
         Matrix.multiplyMM(result, resultOffset, lhs, lhsOffset, rhs, rhsOffset);
+
+        /*float[] result2 = new float[16];
+        System.arraycopy(lhs, 0, result2, 0, 16);
+        Matrix4.mul(result2, rhs);
+
+        if (!Arrays.equals(result, result2)) {
+           result2[0] = 0f;
+        }*/
     }
 
     @Override
-    public void rotateM(float[] m, int mOffset, float a, float x, float y, float z) {
-        Matrix.rotateM(m, mOffset, a, x, y, z);
+    public void rotateM(float[] m, float a, float x, float y, float z) {
+        rotateByVector(m, a, x, y, z);
     }
 
     /** ------------------------------------------------------------------------------------------*/

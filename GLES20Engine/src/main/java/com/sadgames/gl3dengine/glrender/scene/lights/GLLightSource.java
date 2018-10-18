@@ -104,7 +104,7 @@ public class GLLightSource {
         float pitch = (float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length()));
         float yaw = (float) Math.toDegrees((Math.atan(direction.x / direction.z)));
         yaw = direction.z > 0 ? yaw - 180 : yaw;
-        MathUtils.rotateM(viewMatrix, pitch, -yaw, 0.0f);
+        MathUtils.rotateMY(viewMatrix, pitch, -yaw, 0.0f);
         MathUtils.translateM(viewMatrix, 0, center.x, center.y, center.z);*/
 
         /** classic opengl view matrix */

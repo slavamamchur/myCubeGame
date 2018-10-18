@@ -3,7 +3,10 @@ package com.sadgames.sysutils.common;
 
 import com.bulletphysics.linearmath.Transform;
 
+import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Tuple4f;
+import javax.vecmath.Vector3f;
 
 public class MathUtils {
 
@@ -29,6 +32,16 @@ public class MathUtils {
         return glMatrix;
     }
 
+    public static Matrix4f getMatrix4f(float[] m) {
+        Matrix4f result = new Matrix4f();
+        Transform tr = new Transform();
+
+        tr.setFromOpenGLMatrix(m);
+        tr.getMatrix(result);
+
+        return result;
+    }
+
     public static void rotateM(float[] target, float pitch, float yaw, float roll) {
         Matrix4f transformer = new Matrix4f();
         Matrix4f transformingObject = new Matrix4f();
@@ -44,6 +57,21 @@ public class MathUtils {
         transformingObject.mul(transformer);
 
         System.arraycopy(getOpenGlMatrix(transformingObject), 0, target, 0, 16);
+    }
+
+    public static void rotateByVector(float[] m, float a, float x, float y, float z) {
+        Matrix4f tm = new Matrix4f();
+        tm.setIdentity();
+        tm.setRotation(new AxisAngle4f(x, y, z, a * (float) (Math.PI / 180.0f)));
+
+        Matrix4f rm = new Matrix4f();
+        Transform tr = new Transform();
+        tr.setFromOpenGLMatrix(m);
+        tr.getMatrix(rm);
+        rm.mul(tm);
+
+        tr.set(rm);
+        tr.getOpenGLMatrix(m);
     }
 
     public static void setIdentityM(float[] sm, int smOffset) {
@@ -245,4 +273,11 @@ public class MathUtils {
 
         translateM(rm, rmOffset, -eyeX, -eyeY, -eyeZ);
     }
+
+    public static Vector3f mulMatOnVec(Matrix4f matrix, Tuple4f tp) {
+        matrix.transform(tp);
+
+        return new Vector3f(tp.x, tp.y, tp.z);
+    }
+
 }
