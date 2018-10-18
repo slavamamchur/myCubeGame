@@ -27,17 +27,19 @@ public class SkyBoxProgram extends ShadowMapProgram {
 
     @Override
     public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
-        float[] mMatrix = Arrays.copyOf(viewMatrix, viewMatrix.length);
+        float [] mVMatrix = Arrays.copyOf(viewMatrix, viewMatrix.length);
+        float [] mMVMatrix = new float[16];
+        float[] mMVPMatrix = new float[16];
 
-        sysUtilsWrapper.rotateM(mMatrix, ((AbstractSkyObject)object).getRotationAngle(), 0.0f, 1.0f, 0.0f);
+        sysUtilsWrapper.rotateM(mVMatrix, ((AbstractSkyObject)object).getRotationAngle(), 0.0f, 1.0f, 0.0f);
 
         /** remove camera translation -> skybox should stay on the fixed position */
         /*if (camera != null) {
-            MathUtils.translateM(mMatrix, 0, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+            MathUtils.translateM(mVMatrix, 0, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
         }*/
 
-        sysUtilsWrapper.mulMM(mMatrix, 0, mMatrix, 0, object.getModelMatrix(), 0);
-        sysUtilsWrapper.mulMM(mMatrix, 0, projectionMatrix, 0, mMatrix, 0);
-        setMVPMatrixData(mMatrix);
+        sysUtilsWrapper.mulMM(mMVMatrix, 0, mVMatrix, 0, object.getModelMatrix(), 0);
+        sysUtilsWrapper.mulMM(mMVPMatrix, 0, projectionMatrix, 0, mMVMatrix, 0);
+        setMVPMatrixData(mMVPMatrix);
     }
 }

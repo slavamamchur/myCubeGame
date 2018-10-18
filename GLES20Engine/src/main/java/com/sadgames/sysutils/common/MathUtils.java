@@ -1,6 +1,7 @@
 package com.sadgames.sysutils.common;
 
 
+import com.badlogic.gdx.math.Matrix4;
 import com.bulletphysics.linearmath.Transform;
 
 import javax.vecmath.AxisAngle4f;
@@ -280,4 +281,8 @@ public class MathUtils {
         return new Vector3f(tp.x, tp.y, tp.z);
     }
 
+    public static void mulMat(float[] result, float[] lhs, float[] rhs) {
+        System.arraycopy(lhs, 0, result, 0, 16);
+        Matrix4.mul(result, rhs);
+    }
 }

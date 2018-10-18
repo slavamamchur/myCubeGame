@@ -281,13 +281,14 @@ public abstract class GLShaderProgram {
     }
 
     public void bindMVPMatrix(AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix) {
-        float[] mMatrix = new float[16];
+        float [] mMVMatrix = new float[16];
+        float[] mMVPMatrix = new float[16];
 
-        sysUtilsWrapper.mulMM(mMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
-        setMVMatrixData(mMatrix);
+        sysUtilsWrapper.mulMM(mMVMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        setMVMatrixData(mMVMatrix);
 
-        sysUtilsWrapper.mulMM(mMatrix, 0, projectionMatrix, 0, mMatrix, 0);
-        setMVPMatrixData(mMatrix);
+        sysUtilsWrapper.mulMM(mMVPMatrix, 0, projectionMatrix, 0, mMVMatrix, 0);
+        setMVPMatrixData(mMVPMatrix);
     }
 
     public void linkVBOData(AbstractGL3DObject object) {
@@ -305,11 +306,13 @@ public abstract class GLShaderProgram {
 
     @SuppressWarnings("all")
     protected void bindLightSourceMVP (AbstractGL3DObject object, float[] viewMatrix, float[] projectionMatrix, boolean hasDepthTextureExtension) {
+        float [] tmpResult1 = new float[16];
+        float [] tmpResult2 = new float[16];
         float [] lightMVP = new float[16];
 
-        sysUtilsWrapper.mulMM(lightMVP, 0, viewMatrix, 0, object.getModelMatrix(), 0);
-        sysUtilsWrapper.mulMM(lightMVP, 0, projectionMatrix, 0, lightMVP, 0);
-        sysUtilsWrapper.mulMM(lightMVP, 0, BIAS, 0, lightMVP, 0);
+        sysUtilsWrapper.mulMM(tmpResult1, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        sysUtilsWrapper.mulMM(tmpResult2, 0, projectionMatrix, 0, tmpResult1, 0);
+        sysUtilsWrapper.mulMM(lightMVP, 0, BIAS, 0, tmpResult2, 0);
 
         paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);
     }

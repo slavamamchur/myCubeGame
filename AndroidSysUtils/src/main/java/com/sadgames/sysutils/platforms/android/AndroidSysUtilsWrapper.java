@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.ETC1;
-import android.opengl.Matrix;
 import android.support.annotation.NonNull;
 
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
@@ -28,6 +27,7 @@ import javax.vecmath.Vector4f;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 import static com.sadgames.sysutils.common.MathUtils.getMatrix4f;
+import static com.sadgames.sysutils.common.MathUtils.mulMat;
 import static com.sadgames.sysutils.common.MathUtils.mulMatOnVec;
 import static com.sadgames.sysutils.common.MathUtils.rotateByVector;
 
@@ -67,15 +67,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
     @Override
     public void mulMM(float[] result, int resultOffset, float[] lhs, int lhsOffset, float[] rhs, int rhsOffset) {
-        Matrix.multiplyMM(result, resultOffset, lhs, lhsOffset, rhs, rhsOffset);
-
-        /*float[] result2 = new float[16];
-        System.arraycopy(lhs, 0, result2, 0, 16);
-        Matrix4.mul(result2, rhs);
-
-        if (!Arrays.equals(result, result2)) {
-           result2[0] = 0f;
-        }*/
+        mulMat(result, lhs, rhs);
     }
 
     @Override
