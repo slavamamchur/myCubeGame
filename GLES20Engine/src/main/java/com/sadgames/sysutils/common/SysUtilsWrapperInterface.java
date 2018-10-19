@@ -11,6 +11,4 @@ public interface SysUtilsWrapperInterface {
     BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride);
     BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException;
 
-    void rotateM(float[] m, float a, float x, float y, float z);
-
 }

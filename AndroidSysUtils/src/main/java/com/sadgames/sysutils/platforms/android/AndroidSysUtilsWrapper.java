@@ -19,7 +19,6 @@ import java.nio.ByteOrder;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
-import static com.sadgames.sysutils.common.MathUtils.rotateByVector;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
 
@@ -38,14 +37,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             return instance;
         }
     }
-
-    /** Math    sysutils ---------------------------------------------------------------------------*/
-    @Override
-    public void rotateM(float[] m, float a, float x, float y, float z) {
-        rotateByVector(m, a, x, y, z);
-    }
-
-    /** ------------------------------------------------------------------------------------------*/
 
     /** Bitmap sysutils ----------------------------------------------------------------------------*/
     @NonNull

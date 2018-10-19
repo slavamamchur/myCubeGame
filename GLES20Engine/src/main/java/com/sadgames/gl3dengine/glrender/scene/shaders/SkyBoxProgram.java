@@ -9,6 +9,7 @@ import java.util.Arrays;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYBOX_FRAGMENT_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYBOX_VERTEX_SHADER;
 import static com.sadgames.sysutils.common.MathUtils.mulMat;
+import static com.sadgames.sysutils.common.MathUtils.rotateByVector;
 
 public class SkyBoxProgram extends ShadowMapProgram {
 
@@ -32,7 +33,7 @@ public class SkyBoxProgram extends ShadowMapProgram {
         float [] mMVMatrix = new float[16];
         float[] mMVPMatrix = new float[16];
 
-        sysUtilsWrapper.rotateM(mVMatrix, ((AbstractSkyObject)object).getRotationAngle(), 0.0f, 1.0f, 0.0f);
+        rotateByVector(mVMatrix, ((AbstractSkyObject)object).getRotationAngle(), 0.0f, 1.0f, 0.0f);
 
         /** remove camera translation -> skybox should stay on the fixed position */
         /*if (camera != null) {
