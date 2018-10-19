@@ -278,10 +278,10 @@ public class MathUtils {
         translateM(rm, rmOffset, -eyeX, -eyeY, -eyeZ);
     }
 
-    public static Vector3f mulMatOnVec(Matrix4f matrix, Tuple4f tp) {
-        matrix.transform(tp);
+    public static Vector3f mulMatOnVec(Matrix4f matrix, Tuple4f vec) {
+        matrix.transform(vec);
 
-        return new Vector3f(tp.x, tp.y, tp.z);
+        return new Vector3f(vec.x, vec.y, vec.z);
     }
 
     public static Vector3f mulMatOnVec(float[] matrix, LuaTable vector) {
