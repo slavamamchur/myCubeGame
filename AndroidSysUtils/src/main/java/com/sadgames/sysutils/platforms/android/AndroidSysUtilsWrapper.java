@@ -47,7 +47,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return options;
     }
 
-    //TODO: save compressed to DB (draw path by OGL)
+    //TODO: save compressed to DB
     private static BitmapWrapperInterface createETC1Texture(InputStream input) throws IOException {
         int width;
         int height;

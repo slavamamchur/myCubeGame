@@ -208,6 +208,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         ///GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
+        //TODO: create blending map for drawing path wia libGD PixelMap
         TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
