@@ -27,10 +27,12 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ResourceFinder;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
@@ -41,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.GameState;
@@ -63,6 +67,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRA
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
+import static com.sadgames.sysutils.common.MathUtils.mulMatOnVec;
 
 public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
@@ -136,6 +141,14 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     @SuppressWarnings("unused") public Sound getSoundObject(String name) {
         return soundCache.get(name);
+    }
+
+    @SuppressWarnings("unused") public Vector3f mulMV(Matrix4f matrix, LuaTable vector) {
+        return mulMatOnVec(matrix, new Vector4f(LuaUtils.luaTable2FloatArray(vector)));
+    }
+
+    @SuppressWarnings("unused") public Vector3f mulMV(float[] matrix, LuaTable vector) {
+        return mulMatOnVec(matrix, vector);
     }
 
     public void requestFinishGame() {

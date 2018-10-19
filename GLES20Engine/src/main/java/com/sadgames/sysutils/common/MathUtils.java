@@ -4,10 +4,13 @@ package com.sadgames.sysutils.common;
 import com.badlogic.gdx.math.Matrix4;
 import com.bulletphysics.linearmath.Transform;
 
+import org.luaj.vm2.LuaTable;
+
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Tuple4f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 public class MathUtils {
 
@@ -279,6 +282,10 @@ public class MathUtils {
         matrix.transform(tp);
 
         return new Vector3f(tp.x, tp.y, tp.z);
+    }
+
+    public static Vector3f mulMatOnVec(float[] matrix, LuaTable vector) {
+        return mulMatOnVec(getMatrix4f(matrix), new Vector4f(LuaUtils.luaTable2FloatArray(vector)));
     }
 
     public static void mulMat(float[] result, float[] lhs, float[] rhs) {

@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYBOX_FRAGMENT_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SKYBOX_VERTEX_SHADER;
+import static com.sadgames.sysutils.common.MathUtils.mulMat;
 
 public class SkyBoxProgram extends ShadowMapProgram {
 
@@ -38,8 +39,8 @@ public class SkyBoxProgram extends ShadowMapProgram {
             MathUtils.translateM(mVMatrix, 0, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
         }*/
 
-        sysUtilsWrapper.mulMM(mMVMatrix, 0, mVMatrix, 0, object.getModelMatrix(), 0);
-        sysUtilsWrapper.mulMM(mMVPMatrix, 0, projectionMatrix, 0, mMVMatrix, 0);
+        mulMat(mMVMatrix, mVMatrix, object.getModelMatrix());
+        mulMat(mMVPMatrix, projectionMatrix, mMVMatrix);
         setMVPMatrixData(mMVPMatrix);
     }
 }

@@ -60,6 +60,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.UY_PIXEL_OFFSET_PA
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEXES_PARAM_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 import static com.sadgames.sysutils.common.CommonUtils.readTextFromFile;
+import static com.sadgames.sysutils.common.MathUtils.mulMat;
 
 public abstract class GLShaderProgram {
 
@@ -284,10 +285,10 @@ public abstract class GLShaderProgram {
         float [] mMVMatrix = new float[16];
         float[] mMVPMatrix = new float[16];
 
-        sysUtilsWrapper.mulMM(mMVMatrix, 0, viewMatrix, 0, object.getModelMatrix(), 0);
+        mulMat(mMVMatrix, viewMatrix, object.getModelMatrix());
         setMVMatrixData(mMVMatrix);
 
-        sysUtilsWrapper.mulMM(mMVPMatrix, 0, projectionMatrix, 0, mMVMatrix, 0);
+        mulMat(mMVPMatrix, projectionMatrix, mMVMatrix);
         setMVPMatrixData(mMVPMatrix);
     }
 
@@ -310,9 +311,9 @@ public abstract class GLShaderProgram {
         float [] tmpResult2 = new float[16];
         float [] lightMVP = new float[16];
 
-        sysUtilsWrapper.mulMM(tmpResult1, 0, viewMatrix, 0, object.getModelMatrix(), 0);
-        sysUtilsWrapper.mulMM(tmpResult2, 0, projectionMatrix, 0, tmpResult1, 0);
-        sysUtilsWrapper.mulMM(lightMVP, 0, BIAS, 0, tmpResult2, 0);
+        mulMat(tmpResult1, viewMatrix, object.getModelMatrix());
+        mulMat(tmpResult2, projectionMatrix, tmpResult1);
+        mulMat(lightMVP, BIAS, tmpResult2);
 
         paramByName(LIGHT_MVP_MATRIX_PARAM_NAME).setParamValue(lightMVP);
     }

@@ -486,7 +486,7 @@ function getTopFaceDiceValue(dice)
     local normals = dice:getRaw3DModel():getNormalsLua()
 
     for i = 1, #normals / 3 do
-        local normalVector = gameLogic:getSysUtilsWrapper():mulMV(dice:getModelMatrix(), { normals[i * 3 - 2], normals[i * 3 - 1], normals[i * 3], 1.0})
+        local normalVector = gameLogic:mulMV(dice:getModelMatrix(), { normals[i * 3 - 2], normals[i * 3 - 1], normals[i * 3], 1.0})
 
         if normalVector.y > max_y then
             max_y = normalVector.y;
@@ -525,7 +525,7 @@ function generateForceVector()
     local transform = gameLogic:getGl3DScene():createTransform()
     transform:rotY(math.rad(45.0 - math.random(0, 90) * 1.0))
 
-    return gameLogic:getSysUtilsWrapper():mulMV(transform, fVector)
+    return gameLogic:mulMV(transform, fVector)
 end
 
 function generateDiceInitialTransform()

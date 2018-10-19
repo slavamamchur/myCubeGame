@@ -9,10 +9,7 @@ import android.support.annotation.NonNull;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
-import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-
-import org.luaj.vm2.LuaTable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,15 +17,8 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
-
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
-import static com.sadgames.sysutils.common.MathUtils.getMatrix4f;
-import static com.sadgames.sysutils.common.MathUtils.mulMat;
-import static com.sadgames.sysutils.common.MathUtils.mulMatOnVec;
 import static com.sadgames.sysutils.common.MathUtils.rotateByVector;
 
 public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
@@ -50,26 +40,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     }
 
     /** Math    sysutils ---------------------------------------------------------------------------*/
-    @Override
-    public Vector3f mulMV(Matrix4f matrix, LuaTable vector) {
-        return mulMatOnVec(matrix, new Vector4f(LuaUtils.luaTable2FloatArray(vector)));
-    }
-
-    @Override
-    public Vector3f mulMV(float[] matrix, LuaTable vector) {
-        return mulMV(getMatrix4f(matrix), vector);
-    }
-
-    @Override
-    public Vector3f mulMV(float[] matrix, float[] vector) {
-        return mulMatOnVec(getMatrix4f(matrix), new Vector4f(vector));
-    }
-
-    @Override
-    public void mulMM(float[] result, int resultOffset, float[] lhs, int lhsOffset, float[] rhs, int rhsOffset) {
-        mulMat(result, lhs, rhs);
-    }
-
     @Override
     public void rotateM(float[] m, float a, float x, float y, float z) {
         rotateByVector(m, a, x, y, z);

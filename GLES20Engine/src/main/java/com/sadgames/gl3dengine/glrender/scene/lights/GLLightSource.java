@@ -5,9 +5,12 @@ import com.sadgames.sysutils.common.MathUtils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.glrender.scene.camera.GLCamera.FAR_PLANE;
 import static com.sadgames.gl3dengine.glrender.scene.camera.GLCamera.NEAR_PLANE;
+import static com.sadgames.sysutils.common.MathUtils.getMatrix4f;
+import static com.sadgames.sysutils.common.MathUtils.mulMatOnVec;
 
 public class GLLightSource {
 
@@ -66,7 +69,8 @@ public class GLLightSource {
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);*/
 
         /** for static light*/
-        Vector3f transformedLightPos = sysUtilsWrapper.mulMV(mCamera.getViewMatrix(), lightPosInModelSpace);
+        Vector3f transformedLightPos = mulMatOnVec(getMatrix4f(mCamera.getViewMatrix()),
+                                                   new Vector4f(lightPosInModelSpace));
         lightPosInEyeSpace[0] = transformedLightPos.x;
         lightPosInEyeSpace[1] = transformedLightPos.y;
         lightPosInEyeSpace[2] = transformedLightPos.z;
