@@ -208,7 +208,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         ///GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         TextureCacheManager.getNewInstance(sysUtilsWrapper);
-        //TODO: create blending map for drawing path wia libGD PixelMap
         TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
@@ -216,8 +215,13 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         /** Terrain map */
         TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity, this);
-        //terrain.setWaterReflectionMap(skyBoxTexture);
+        //TODO: create blending map (new Pixmap(256, 256, Pixmap.Format.RGB888);)
         terrain.loadObject();
+        //TODO: get width, height from terrain texture (terrain.getGlTexture().getWidth()...)
+        //TODO: draw path and blend circle wia PixelMap in lua script (onPrepareMapTexture)
+        //TODO: compress texture and put it into cache (sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 256, 256, 3, 3 * 256);)
+        //TODO: terrain.setGlBlendingMap();
+        //terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);

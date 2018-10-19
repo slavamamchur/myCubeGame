@@ -326,7 +326,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
         if (glTexture != null) {
             if (glTexture.getTextureId() == 0)
-                loadTexture();
+                glTexture = loadTexture();
 
             glTexture.bind(textureSlotIndex);
             program.setTextureSlotData(textureSlotIndex);

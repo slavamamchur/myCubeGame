@@ -32,6 +32,8 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
         setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.SEA_BOTTOM_TEXTURE));
         setGlNormalMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.NORMALMAP_TEXTURE));
         setGlDUDVMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.DUDVMAP_TEXTURE));
+
+        //TODO: Remove
         setGlBlendingMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.BLENDING_MAP_TEXTURE));
     }
 
@@ -49,9 +51,9 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
     public AbstractTexture loadTexture() {
         BitmapWrapperInterface textureBmp = getBitmapFromFile(getSysUtilsWrapper(), textureResName, false);
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
-        scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
+        scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f; //todo: get from glTexture
 
-        gameLogic.onPrepareMapTexture(textureBmp);
+        gameLogic.onPrepareMapTexture(textureBmp);//TODO: Remove
 
         textureBmp = packToETC1(getSysUtilsWrapper(), textureBmp);
         AbstractTexture glTexture = BitmapTexture.createInstance(textureBmp);
