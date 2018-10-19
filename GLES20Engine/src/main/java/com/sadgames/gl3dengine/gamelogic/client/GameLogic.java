@@ -74,7 +74,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     private final static String LUA_GAME_LOGIC_SCRIPT = "gameLogic";
 
     private SysUtilsWrapperInterface sysUtilsWrapper;
-    private RestApiInterface restApiWrapper;
     private GLScene gl3DScene;
     private GameMapEntity mapEntity = null;
     private GameEntity gameEntity = null;
@@ -83,9 +82,8 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     private Map<String, Sound> soundCache = new HashMap<>();
     private Globals luaEngine;
 
-    public GameLogic(SysUtilsWrapperInterface sysUtilsWrapper, RestApiInterface restApiWrapper, GLScene gl3DScene) {
+    public GameLogic(SysUtilsWrapperInterface sysUtilsWrapper, GLScene gl3DScene) {
         this.sysUtilsWrapper = sysUtilsWrapper;
-        this.restApiWrapper = restApiWrapper;
         this.gl3DScene = gl3DScene;
     }
 
@@ -109,7 +107,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
     @SuppressWarnings("unused")
     public RestApiInterface getRestApiWrapper() {
-        return restApiWrapper;
+        return GdxExt.restAPI;
     }
     @SuppressWarnings("unused") public Globals getLuaEngine() {
         return luaEngine;
@@ -152,13 +150,13 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
 
     public void requestFinishGame() {
-        restApiWrapper.finishGameInstance(gameInstanceEntity);
+        GdxExt.restAPI.finishGameInstance(gameInstanceEntity);
     }
     public void onGameFinished() {
         gameInstanceEntity.setState(GameState.FINISHED);
     }
     public void requestRestartGame() {
-        restApiWrapper.restartGameInstance(gameInstanceEntity);
+        GdxExt.restAPI.restartGameInstance(gameInstanceEntity);
     }
 
     public void onGameRestarted() {
@@ -244,7 +242,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         }
 
         forceGCandWait();
-        restApiWrapper.removeLoadingSplash();
+        GdxExt.restAPI.removeLoadingSplash();
     }
 
     @Override
