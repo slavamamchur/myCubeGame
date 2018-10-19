@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.lights;
 
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.sysutils.common.MathUtils;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
@@ -18,7 +17,6 @@ public class GLLightSource {
     // private float[] mLightModelMatrix = new float[16];
 
     private GLCamera mCamera;
-    private SysUtilsWrapperInterface sysUtilsWrapper;
     private float[] lightPosInModelSpace = new float[4];
     private float[] lightPosInEyeSpace = new float[4];
     private Vector3f lightColour;
@@ -27,10 +25,9 @@ public class GLLightSource {
     private int width;
     private int height;
 
-    public GLLightSource(float[] lightPos, Vector3f lightColour, GLCamera camera, SysUtilsWrapperInterface sysUtilsWrapper) {
+    public GLLightSource(float[] lightPos, Vector3f lightColour, GLCamera camera) {
         this.mCamera = camera;
         this.lightColour = lightColour;
-        this.sysUtilsWrapper = sysUtilsWrapper;
 
         setLightPosInModelSpace(lightPos);
         MathUtils.setIdentityM(viewMatrix, 0);

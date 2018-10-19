@@ -517,8 +517,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         camera = createCamIsometric(0f,0.1f,3f,0f,0f,0f);
         lightSource = new GLLightSource(new float[] {DEFAULT_LIGHT_X, DEFAULT_LIGHT_Y, DEFAULT_LIGHT_Z, 1.0f},
                                         DEFAULT_LIGHT_COLOUR,
-                                        camera,
-                                        sysUtilsWrapper);
+                                        camera);
 
         if (gameEventsCallBackListener != null) gameEventsCallBackListener.onInitGLCamera(camera);
         camera.updateViewMatrix();
