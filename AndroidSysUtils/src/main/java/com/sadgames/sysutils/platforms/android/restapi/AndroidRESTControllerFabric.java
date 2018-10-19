@@ -1,11 +1,9 @@
-package com.sadgames.sysutils.platforms.android;
+package com.sadgames.sysutils.platforms.android.restapi;
 
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
-import com.sadgames.sysutils.platforms.android.restapi.BaseController;
-import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
