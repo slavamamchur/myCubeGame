@@ -151,6 +151,14 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         return mulMatOnVec(matrix, vector);
     }
 
+    public Pixmap createPixmap(int width, int height, int fillColor) {
+        Pixmap map = new Pixmap(width, height, Pixmap.Format.RGB888);
+        map.setColor(fillColor);
+        map.fill();
+
+        return  map;
+    }
+
     public void requestFinishGame() {
         GdxExt.restAPI.finishGameInstance(gameInstanceEntity);
     }
@@ -219,10 +227,9 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity, this);
         terrain.loadObject();
 
-        //TODO: Increase resolution, do not compress ???
-        Pixmap blendMap = new Pixmap(257, 257, Pixmap.Format.RGB888);
-        blendMap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        blendMap.fill();
+        //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality
+        //int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
+        Pixmap blendMap = createPixmap(257, 257, 0xFFFFFFFF);
         for (short i = 1; i < 7; i++) {
             blendMap.setColor(1.0f - i * 1.0f / 6f , 0, 0, 1.0f);
             blendMap.drawCircle(128, 128, 118 - i * 3);

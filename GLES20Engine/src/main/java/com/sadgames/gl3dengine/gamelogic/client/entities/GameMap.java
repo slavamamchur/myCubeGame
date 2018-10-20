@@ -48,9 +48,9 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
     public AbstractTexture loadTexture() {
         BitmapWrapperInterface textureBmp = getBitmapFromFile(getSysUtilsWrapper(), textureResName, false);
         scaleX = LAND_WIDTH / textureBmp.getWidth() * 1f;
-        scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f; //todo: get from glTexture ???
+        scaleZ = LAND_HEIGHT / textureBmp.getHeight() * 1f;
 
-        gameLogic.onPrepareMapTexture(textureBmp);//TODO: Remove
+        //gameLogic.onPrepareMapTexture(textureBmp);//TODO: Remove
 
         textureBmp = packToETC1(getSysUtilsWrapper(), textureBmp);
         AbstractTexture glTexture = BitmapTexture.createInstance(textureBmp);
