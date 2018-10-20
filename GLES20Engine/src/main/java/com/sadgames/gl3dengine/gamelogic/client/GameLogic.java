@@ -257,7 +257,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
 
     private AbstractTexture createBlendingMap() {
-        //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality
+        //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality !!!
         //int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
         Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000);
         onPrepareMapTexture(blendMap);

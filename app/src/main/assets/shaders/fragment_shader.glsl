@@ -163,11 +163,20 @@ void main()
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
 
-      if (u_isCubeMapF == 1 && u_is2DModeF == 1) {
-        float blendingFactor = texture2D(u_BlendingMapUnit, v_Texture).r;
+      if (u_isCubeMapF == 1) {
+        vec4 blendingFactor = texture2D(u_BlendingMapUnit, v_Texture);
         vec4 backgroundColour = texture2D(u_BackgroundUnit, v_Texture);
 
-        gl_FragColor = mix(gl_FragColor, backgroundColour, blendingFactor);
+        if (u_is2DModeF == 1) {
+            gl_FragColor = mix(gl_FragColor, backgroundColour, blendingFactor.r);
+        }
+
+        if (blendingFactor.b > 0.0 && blendingFactor.r == 0.0 && blendingFactor.g == 0.0) {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+        else if (blendingFactor.g > 0.0 /*&& blendingFactor.r == 0.0 && blendingFactor.b == 0.0*/) {
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+        }
       }
 
 

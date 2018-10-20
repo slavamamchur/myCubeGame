@@ -154,11 +154,18 @@ drawPath = function(blendMap, gameEntity) --todo: rewrite using Pixmap
         end
         blendMap:fillCircle(128, 128, 128 - 7 * 3)
 
-        for i = 0, gameEntity:getGamePoints():size() - 1 do
-            --table.insert(way, i + 1, gameEntity:getGamePoints():get(i):asVector2fLua(scaleFactor))
-        end
+        for i = 0, gameEntity:getGamePoints():size() - 2 do
+            blendMap:setColor(0 , 1.0, 0, 1.0)
+            local fromPt = gameEntity:getGamePoints():get(i):asVector2fLua(scaleFactor)
+            local toPt = gameEntity:getGamePoints():get(i + 1):asVector2fLua(scaleFactor)
+            blendMap:drawLine(fromPt.x, fromPt.y, toPt.x, toPt.y)
 
-        --blendMap:drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor)
+            blendMap:setColor(0 , 0, 1.0, 1.0)
+            blendMap:fillCircle(fromPt.x, fromPt.y, 7.5 * scaleFactor)
+            if i == (gameEntity:getGamePoints():size() - 2) then
+                blendMap:fillCircle(toPt.x, toPt.y, 7.5 * scaleFactor)
+            end
+        end
     end
 end
 
