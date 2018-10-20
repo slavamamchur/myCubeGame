@@ -2,6 +2,7 @@ package com.sadgames.gl3dengine.gamelogic.client;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.gamelogic.client.entities.GameMap;
@@ -24,6 +25,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
+import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
@@ -215,13 +217,28 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         /** Terrain map */
         TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity, this);
-        //TODO: create blending map (new Pixmap(256, 256, Pixmap.Format.RGB888);)
         terrain.loadObject();
-        //TODO: get width, height from terrain texture (terrain.getGlTexture().getWidth()...)
+
+        //TODO: Increase resolution, do not compress ???
+        Pixmap blendMap = new Pixmap(257, 257, Pixmap.Format.RGB888);
+        blendMap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        blendMap.fill();
+        for (short i = 1; i < 7; i++) {
+            blendMap.setColor(1.0f - i * 1.0f / 6f , 0, 0, 1.0f);
+            blendMap.drawCircle(128, 128, 118 - i * 3);
+            blendMap.drawCircle(128, 128, 118 - i * 3 - 1);
+            blendMap.drawCircle(128, 128, 118 - i * 3 - 2);
+        }
+        blendMap.fillCircle(128, 128, 128 - 7 * 3);
         //TODO: draw path and blend circle wia PixelMap in lua script (onPrepareMapTexture)
-        //TODO: compress texture and put it into cache (sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 256, 256, 3, 3 * 256);)
-        //TODO: terrain.setGlBlendingMap();
-        //terrain.setWaterReflectionMap(skyBoxTexture);
+        BitmapWrapperInterface bmp = sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 257, 257, 3, 3 * 257);
+        blendMap.dispose();
+        AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
+        TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
+        textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture) );
+        terrain.setGlBlendingMap(glTexture);
+
+        /** terrain.setWaterReflectionMap(skyBoxTexture); */
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
