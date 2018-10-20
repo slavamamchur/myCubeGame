@@ -1,12 +1,12 @@
 package com.sadgames.gl3dengine;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 
 import org.luaj.vm2.LuaValue;
 
@@ -23,7 +23,7 @@ public interface GameEventsCallbackInterface {
 
     void onLoadSceneObjects(GLScene glSceneObject, DynamicsWorld dynamicsWorldObject);
 
-    void onPrepareMapTexture(BitmapWrapperInterface textureBmp);
+    void onPrepareMapTexture(Pixmap textureBmp);
 
     void onBeforeDrawFrame(long frametime);
 

@@ -224,28 +224,10 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
         /** Terrain map */
-        TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity, this);
+        TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity);
         terrain.loadObject();
-
-        //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality
-        //int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
-        Pixmap blendMap = createPixmap(257, 257, 0xFFFFFFFF);
-        for (short i = 1; i < 7; i++) {
-            blendMap.setColor(1.0f - i * 1.0f / 6f , 0, 0, 1.0f);
-            blendMap.drawCircle(128, 128, 118 - i * 3);
-            blendMap.drawCircle(128, 128, 118 - i * 3 - 1);
-            blendMap.drawCircle(128, 128, 118 - i * 3 - 2);
-        }
-        blendMap.fillCircle(128, 128, 128 - 7 * 3);
-        //TODO: draw path and blend circle wia PixelMap in lua script (onPrepareMapTexture)
-        BitmapWrapperInterface bmp = sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 257, 257, 3, 3 * 257);
-        blendMap.dispose();
-        AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
-        TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
-        textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture) );
-        terrain.setGlBlendingMap(glTexture);
-
-        /** terrain.setWaterReflectionMap(skyBoxTexture); */
+        terrain.setGlBlendingMap(createBlendingMap());
+        // terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
@@ -274,8 +256,21 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         GdxExt.restAPI.removeLoadingSplash();
     }
 
+    private AbstractTexture createBlendingMap() {
+        //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality
+        //int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
+        Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000);
+        onPrepareMapTexture(blendMap);
+        BitmapWrapperInterface bmp = sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 257, 257, 3, 3 * 257);
+        blendMap.dispose();
+        AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
+        TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
+        textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture) );
+        return glTexture;
+    }
+
     @Override
-    public void onPrepareMapTexture(BitmapWrapperInterface textureBmp) {
+    public void onPrepareMapTexture(Pixmap textureBmp) {
         luaEngine.get(ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER).call(CoerceJavaToLua.coerce(textureBmp),
                                                                  CoerceJavaToLua.coerce(gameEntity));
     }

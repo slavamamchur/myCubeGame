@@ -143,16 +143,22 @@ onPlayTurn = function()
     gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
-drawPath = function(textureBmp, gameEntity) --todo: rewrite using Pixmap
+drawPath = function(blendMap, gameEntity) --todo: rewrite using Pixmap
     if gameEntity:isDrawGamePoints() then
-        local scaleFactor = textureBmp:getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
-        local way = {}
+        local scaleFactor = blendMap:getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
+
+        for i = 1, 48 do
+            local rate = 1.0 - i * 1.0 / 48.0
+            blendMap:setColor(rate , 0, 0, 1.0 - rate)
+            blendMap:drawCircle(128, 128, 120 - i)
+        end
+        blendMap:fillCircle(128, 128, 128 - 7 * 3)
 
         for i = 0, gameEntity:getGamePoints():size() - 1 do
-            table.insert(way, i + 1, gameEntity:getGamePoints():get(i):asVector2fLua(scaleFactor))
+            --table.insert(way, i + 1, gameEntity:getGamePoints():get(i):asVector2fLua(scaleFactor))
         end
 
-        textureBmp:drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor)
+        --blendMap:drawPath(way, PATH_COLOR, WAY_POINT_COLOR, scaleFactor)
     end
 end
 

@@ -17,7 +17,7 @@ import static com.sadgames.dicegame.RestApiService.startActionRestartGameInstanc
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_REMOVE_LOADING_SPLASH;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_SHOW_TURN_INFO;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_DICE_VALUE;
-
+//TODO: do not change because html rest api exists
 public class AndroidRestApiWrapper implements RestApiInterface {
     private static final Object lockObject = new Object();
     @SuppressWarnings("all")
