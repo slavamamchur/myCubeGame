@@ -1,11 +1,12 @@
 package com.sadgames.sysutils.common;
 
-import org.luaj.vm2.LuaTable;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.ETC1;
+
 import org.luaj.vm2.LuaValue;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import javax.vecmath.Vector2f;
 
@@ -42,23 +43,14 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public Buffer getDecodedRawData() {
-        if (mCompressed) {
-            ByteBuffer decodedData = ByteBuffer.allocateDirect(3 * mWidth * mHeight).order(ByteOrder.nativeOrder());
-            decodeImage(data, decodedData);
-
-            return decodedData;
-        }
+        if (mCompressed)
+            return decodeImage(data);
         else
             return getRawData();
     }
 
     @Override
     public abstract int[] asIntArray();
-
-    @Override
-    public int getPixelColor(int x, int y) {
-        return asIntArray()[y * mWidth + x];
-    }
 
     @Override
     public int getWidth() {
@@ -86,9 +78,6 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
     }
 
     @Override
-    public abstract void drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor);
-
-    @Override
     public void release() {
         if (data != null) {
             data.limit(0);
@@ -100,6 +89,9 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
         return (Vector2f)(LuaUtils.getUserData(value, Vector2f.class));
     }
 
-    protected abstract void decodeImage(Buffer in, Buffer out);
+    protected Buffer decodeImage(Buffer in) {
+        return ETC1.decodeImage(new ETC1.ETC1Data(mWidth, mHeight, (ByteBuffer) in, 0),
+                                Pixmap.Format.RGB888).getPixels();
+    }
 
 }

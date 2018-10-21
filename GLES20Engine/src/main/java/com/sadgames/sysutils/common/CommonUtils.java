@@ -88,7 +88,7 @@ public class CommonUtils {
 
         if (result == null)
             try {
-                result = loadBitmapFromDB(sysUtilsWrapper, file, isRelief);
+                result = sysUtilsWrapper.iDecodeImage(loadBitmapFromDB(file, isRelief), isRelief);
             }
             catch (SQLException exception) { result = null; }
 
@@ -126,21 +126,20 @@ public class CommonUtils {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3).order(ByteOrder.BIG_ENDIAN);
-        int[] rawImage = /*((IntBuffer)bitmap.getRawData()).array();*/ bitmap.asIntArray();
+        ByteBuffer rawImage = ((ByteBuffer)bitmap.getRawData());
 
         bitmap.release();
         bitmap = null;
 
+        rawImage.rewind();
         for (int i = 0; i < height * width; i++) {
-                int value = rawImage[i];
+                int value = rawImage.getInt();
                 bb.putShort((short) (value >> 8));
                 bb.put((byte) value);
 
                 //bb.put((byte) (value >> 8));
                 //bb.put((byte) (value >> 16));
         }
-
-        rawImage = null;
 
         bb.rewind();
         BitmapWrapperInterface texture = sysUtilsWrapper.iCompressTexture(bb, width, height, 3, 3 * width);

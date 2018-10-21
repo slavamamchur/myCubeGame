@@ -84,8 +84,7 @@ public class DBUtils {
         return result;
     }
 
-    public static BitmapWrapperInterface loadBitmapFromDB(SysUtilsWrapperInterface sysUtils,
-                                                    String textureResName, boolean isRelief) throws SQLException {
+    public static byte[] loadBitmapFromDB(String textureResName, boolean isRelief) throws SQLException {
         byte[] bitmapArray = null;
 
         CommonUtils.downloadBitmapIfNotCached(textureResName, isRelief);
@@ -123,7 +122,7 @@ public class DBUtils {
             }
         }
 
-        return sysUtils.iDecodeImage(bitmapArray, isRelief);
+        return bitmapArray;
     }
 
 }

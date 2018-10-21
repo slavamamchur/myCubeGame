@@ -2,21 +2,13 @@ package com.sadgames.sysutils.platforms.android;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.opengl.ETC1;
 
 import com.sadgames.sysutils.common.BitmapWrapper;
 import com.sadgames.sysutils.common.ETC1Utils;
 
-import org.luaj.vm2.LuaTable;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
-import javax.vecmath.Vector2f;
 
 public class AndroidBitmapWrapper extends BitmapWrapper {
 
@@ -66,11 +58,6 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
     }
 
     @Override
-    protected void decodeImage(Buffer in, Buffer out) {
-        ETC1.decodeImage(data, out, mWidth, mHeight, 3, 3 * mWidth);
-    }
-
-    @Override
     public int[] asIntArray() {
         int[] result = null;
 
@@ -83,41 +70,6 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
         }
 
         return result;
-    }
-
-    @Override //TODO: draw via blending map
-    public void drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor) {
-        if (path == null || mCompressed)
-            return;
-
-        Bitmap picture = getBitmap(data);
-        Canvas canvas = new Canvas(picture);
-        Path pathObject = new Path();
-        final Paint paint = new Paint();
-        paint.setPathEffect(new DashPathEffect(new float[]{7.5f * scaleFactor, 3.75f * scaleFactor}, 0));
-
-        Vector2f point = getPoint(path.get(1));
-        pathObject.moveTo(point.x, point.y);
-
-        for (int i = 2; i <= path.keys().length; i++) {
-            point = getPoint(path.get(i));
-            pathObject.lineTo(point.x, point.y);
-        }
-
-        paint.setColor(pathColor);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(3.75f * scaleFactor);
-        canvas.drawPath(pathObject, paint);
-
-        paint.setColor(wayPointColor);
-        paint.setStyle(Paint.Style.FILL);
-        for (int i = 1; i <= path.keys().length; i++) {
-            point = getPoint(path.get(i));
-            canvas.drawCircle(point.x, point.y, 7.5f * scaleFactor, paint);
-        }
-
-        data = getRawDataFromBitmap(picture);
-        picture.recycle();
     }
 
 }

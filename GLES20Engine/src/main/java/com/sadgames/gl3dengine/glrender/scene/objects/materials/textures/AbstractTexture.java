@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -17,6 +18,13 @@ public abstract class AbstractTexture {
         this.textureSize = bitmap != null ? bitmap.getImageSizeBytes() : 0;
 
         createTexture(bitmap);
+    }
+
+    protected AbstractTexture(Pixmap bitmap) {
+        init(bitmap.getWidth(), bitmap.getHeight());
+        this.textureSize = bitmap.getPixels().capacity();
+
+
     }
 
     public AbstractTexture(int width, int height, BitmapWrapperInterface bitmap, SysUtilsWrapperInterface sysUtilsWrapper) {

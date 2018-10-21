@@ -1,7 +1,5 @@
 package com.sadgames.sysutils.common;
 
-import org.luaj.vm2.LuaTable;
-
 import java.nio.Buffer;
 
 public interface BitmapWrapperInterface {
@@ -9,7 +7,6 @@ public interface BitmapWrapperInterface {
     Buffer  getRawData();
     Buffer  getDecodedRawData();
     int[]   asIntArray();
-    int     getPixelColor(int x, int y);
 
     int     getWidth();
     int     getHeight();
@@ -17,8 +14,6 @@ public interface BitmapWrapperInterface {
 
     boolean isEmpty();
     boolean isCompressed();
-
-    void    drawPath(LuaTable path, int pathColor, int wayPointColor, float scaleFactor);
 
     void    release();
 
