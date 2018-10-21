@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import com.sadgames.sysutils.common.BitmapWrapper;
 import com.sadgames.sysutils.common.ETC1Utils;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -38,14 +37,6 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
         super(compressedPicture);
     }
 
-    private Bitmap getBitmap(Buffer data) {
-        Bitmap result = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-        data.rewind();
-        result.copyPixelsFromBuffer(data);
-
-        return result;
-    }
-
     private static ByteBuffer getRawDataFromBitmap(Bitmap picture) {
         ByteBuffer rawData = null;
 
@@ -55,21 +46,6 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
         }
 
         return rawData;
-    }
-
-    @Override
-    public int[] asIntArray() {
-        int[] result = null;
-
-        if (!mCompressed) {
-            result = new int[mWidth * mHeight];
-            Bitmap picture = getBitmap(data);
-
-            picture.getPixels(result, 0, mWidth, 0, 0, mWidth, mHeight);
-            picture.recycle();
-        }
-
-        return result;
     }
 
 }

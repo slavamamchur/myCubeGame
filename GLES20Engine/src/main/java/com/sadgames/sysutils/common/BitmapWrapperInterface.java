@@ -6,7 +6,6 @@ public interface BitmapWrapperInterface {
 
     Buffer  getRawData();
     Buffer  getDecodedRawData();
-    int[]   asIntArray();
 
     int     getWidth();
     int     getHeight();

@@ -163,7 +163,7 @@ void main()
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
 
 
-      if (u_isCubeMapF == 1) {
+      if (u_isCubeMapF == 1) { //TODO: no relief error
         vec4 blendingFactor = texture2D(u_BlendingMapUnit, v_Texture);
         vec4 backgroundColour = texture2D(u_BackgroundUnit, v_Texture);
 

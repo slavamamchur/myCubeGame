@@ -8,9 +8,4 @@ public class GdxBitmapWrapper extends BitmapWrapper {
         super(image.getPixels(), image.getWidth(), image.getHeight(), false);
     }
 
-    @Override
-    public int[] asIntArray() {
-        return new int[0];
-    }
-
 }

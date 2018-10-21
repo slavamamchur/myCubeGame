@@ -3,14 +3,10 @@ package com.sadgames.sysutils.common;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ETC1;
 
-import org.luaj.vm2.LuaValue;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-import javax.vecmath.Vector2f;
-
-public abstract class BitmapWrapper implements BitmapWrapperInterface {
+public class BitmapWrapper implements BitmapWrapperInterface {
 
     protected Buffer data;
     protected int sizeInBytes;
@@ -26,11 +22,18 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
         this.mCompressed = compressed;
     }
 
-    protected BitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
+    public BitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
         this(compressedPicture.getData(),
              compressedPicture.getWidth(),
              compressedPicture.getHeight(),
              true);
+    }
+
+    public BitmapWrapper(Pixmap image) {
+        this(image != null ? image.getPixels() : null,
+             image != null ? image.getWidth() : 0,
+             image != null ? image.getHeight() : 0,
+             false);
     }
 
     @Override
@@ -48,9 +51,6 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
         else
             return getRawData();
     }
-
-    @Override
-    public abstract int[] asIntArray();
 
     @Override
     public int getWidth() {
@@ -83,10 +83,6 @@ public abstract class BitmapWrapper implements BitmapWrapperInterface {
             data.limit(0);
             data = null;
         }
-    }
-
-    protected Vector2f getPoint(LuaValue value) {
-        return (Vector2f)(LuaUtils.getUserData(value, Vector2f.class));
     }
 
     protected Buffer decodeImage(Buffer in) {
