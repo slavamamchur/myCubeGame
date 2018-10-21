@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.WATER_OBJECT;
@@ -21,17 +21,17 @@ public class WaterObject extends ProceduralSurfaceObject {
     }
 
     @Override
-    protected float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv, int[] imgData) {
+    protected float getYValue(float valX, float valZ, Pixmap map, float tu, float tv) {
         return 0.0f;
     }
 
     @Override
-    protected BitmapWrapperInterface getReliefMap() {
+    protected Pixmap getReliefMap() {
         return null;
     }
 
     @Override
-    protected int getDimension(BitmapWrapperInterface bmp) {
+    protected int getDimension(Pixmap bmp) {
         return FLAT_MAP_DEFAULT_DIMENSION;//250
     }
 

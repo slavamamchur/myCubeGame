@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
@@ -61,8 +61,8 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
     }
 
     protected abstract float calculateLandScale(float landSize);
-    protected abstract float getYValue(float valX, float valZ, BitmapWrapperInterface map, float tu, float tv, int[] imgData);
-    protected abstract BitmapWrapperInterface getReliefMap();
+    protected abstract float getYValue(float valX, float valZ, Pixmap map, float tu, float tv);
+    protected abstract Pixmap getReliefMap();
 
     @Override
     public int getFacesCount() {
@@ -71,9 +71,9 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
 
     @Override
     protected void createVertexesVBO() {
-        BitmapWrapperInterface bmp = getReliefMap();
+        Pixmap bmp = getReliefMap();
 
-        dimension = (bmp == null) || bmp.isEmpty() ? FLAT_MAP_DEFAULT_DIMENSION : getDimension(bmp);
+        dimension = bmp == null ? FLAT_MAP_DEFAULT_DIMENSION : getDimension(bmp);
         vertexes = new float[(dimension + 1) * (dimension + 1) * VBO_ITEM_SIZE];
 
         float tdu = 1.0f / dimension;
@@ -83,7 +83,6 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
         float x0 = -LAND_WIDTH / 2f;
         float z0 = -LAND_HEIGHT / 2f;
         int k = 0;
-        int[] imgData = (bmp == null) || bmp.isEmpty() ? null : bmp.asIntArray();
 
         for (int j = 0; j <= dimension; j++){
             for (int i = 0; i <= dimension; i++){
@@ -93,17 +92,16 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
                 vertexes[k + 3] = i * tdu; /** u*/
                 vertexes[k + 4] = j * tdv; /** v*/
 
-                vertexes[k + 1] = (bmp == null) || bmp.isEmpty() ?
+                vertexes[k + 1] = (bmp == null) ?
                         FLAT_MAP_DEFAULT_HEIGHT :
-                        getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension, imgData); /** y*/
+                        getYValue(vertexes[k], vertexes[k + 2], bmp, i*1.0f/dimension, j*1.0f/dimension); /** y*/
 
                 k += 5;
             }
         }
 
-        imgData = null;
-        if ((bmp != null) && !bmp.isEmpty()) {
-            bmp.release();
+        if ((bmp != null)) {
+            bmp.dispose();
         }
 
         FloatBuffer vertexData = ByteBuffer

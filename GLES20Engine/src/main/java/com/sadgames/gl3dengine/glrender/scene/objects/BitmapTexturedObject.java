@@ -1,8 +1,8 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 public abstract class BitmapTexturedObject extends AbstractGL3DObject {
@@ -21,5 +21,5 @@ public abstract class BitmapTexturedObject extends AbstractGL3DObject {
         this.textureResName = String.valueOf(textureColor);
     }
 
-    protected abstract int getDimension(BitmapWrapperInterface bmp);
+    protected abstract int getDimension(Pixmap bmp);
 }

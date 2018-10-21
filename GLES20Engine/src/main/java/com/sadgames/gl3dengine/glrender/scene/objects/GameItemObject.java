@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
@@ -34,7 +34,7 @@ public abstract class GameItemObject extends PNodeObject {
     protected abstract short[] getFacesArray();
 
     @Override
-    protected int getDimension(BitmapWrapperInterface bmp) {
+    protected int getDimension(Pixmap bmp) {
         return 0;
     }
 

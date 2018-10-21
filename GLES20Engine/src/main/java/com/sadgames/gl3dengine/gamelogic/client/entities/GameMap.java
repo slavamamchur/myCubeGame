@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.gamelogic.client.entities;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.LinkedRESTObjectInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
@@ -8,10 +9,11 @@ import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
+import java.sql.SQLException;
+
+import static com.sadgames.sysutils.common.DBUtils.loadBitmapFromDB;
 
 public class GameMap extends TopographicMapObject implements LinkedRESTObjectInterface {
 
@@ -36,8 +38,17 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
     }
 
     @Override
-    protected BitmapWrapperInterface getReliefMap() {
-        return textureResName != null ? getBitmapFromFile(getSysUtilsWrapper(), textureResName, true) : null;
+    protected Pixmap getReliefMap() {
+        Pixmap result = null;
+
+        try {
+            byte[] data = loadBitmapFromDB(textureResName, true);
+            result = textureResName != null && data != null ? new Pixmap(data, 0, data.length) : null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     @Override
