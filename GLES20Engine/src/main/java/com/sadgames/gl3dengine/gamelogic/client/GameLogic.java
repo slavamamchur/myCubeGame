@@ -227,7 +227,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity);
         terrain.loadObject();
         terrain.setGlBlendingMap(createBlendingMap());
-        // terrain.setWaterReflectionMap(skyBoxTexture);
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
@@ -237,6 +236,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
+        // terrain.setWaterReflectionMap(skyDomeTexture);
         AbstractSkyObject skyDomeObject = new SkyDomeObject(sysUtilsWrapper, skyDomeTexture, glScene);
         skyDomeObject.setItemName(SKY_BOX_CUBE_MAP_OBJECT);
         skyDomeObject.loadObject();
@@ -263,7 +263,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         onPrepareMapTexture(blendMap);
         BitmapWrapperInterface bmp = sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 257, 257, 3, 3 * 257);
         blendMap.dispose();
-        AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
+        AbstractTexture glTexture = BitmapTexture.createInstance(getSysUtilsWrapper(), bmp);
         TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
         textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture) );
         return glTexture;

@@ -20,11 +20,9 @@ public abstract class AbstractTexture {
     }
 
     public AbstractTexture(int width, int height, BitmapWrapperInterface bitmap, SysUtilsWrapperInterface sysUtilsWrapper) {
-        init(width, height);
-        this.textureSize = bitmap != null ? bitmap.getImageSizeBytes() : 0;
-        this.sysUtilsWrapper = sysUtilsWrapper;
+        this(width, height, bitmap);
 
-        createTexture(bitmap);
+        this.sysUtilsWrapper = sysUtilsWrapper;
     }
 
     protected AbstractTexture() {}
