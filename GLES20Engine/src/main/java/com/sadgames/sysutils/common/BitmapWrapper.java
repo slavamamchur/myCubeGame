@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.glutils.ETC1;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
+import static com.sadgames.sysutils.common.CommonUtils.createPixmap;
+
 public class BitmapWrapper implements BitmapWrapperInterface {
 
-    protected Buffer data;
+    protected ByteBuffer data;
     protected int sizeInBytes;
     protected int mWidth;
     protected int mHeight;
@@ -34,6 +36,10 @@ public class BitmapWrapper implements BitmapWrapperInterface {
              image != null ? image.getWidth() : 0,
              image != null ? image.getHeight() : 0,
              false);
+    }
+
+    protected static Pixmap createColourBitmap(int color) {
+        return createPixmap(2, 2, color, Pixmap.Format.RGBA8888);
     }
 
     @Override
@@ -85,9 +91,8 @@ public class BitmapWrapper implements BitmapWrapperInterface {
         }
     }
 
-    protected Buffer decodeImage(Buffer in) {
-        return ETC1.decodeImage(new ETC1.ETC1Data(mWidth, mHeight, (ByteBuffer) in, 0),
-                                Pixmap.Format.RGB888).getPixels();
+    protected Buffer decodeImage(ByteBuffer in) {
+        return ETC1.decodeImage(new ETC1.ETC1Data(mWidth, mHeight, in, 0), Pixmap.Format.RGB888).getPixels();
     }
 
 }

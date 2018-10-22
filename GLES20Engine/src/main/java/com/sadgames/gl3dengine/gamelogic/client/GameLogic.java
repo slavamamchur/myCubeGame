@@ -29,6 +29,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapT
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
@@ -151,12 +152,8 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         return mulMatOnVec(matrix, vector);
     }
 
-    public Pixmap createPixmap(int width, int height, int fillColor) {
-        Pixmap map = new Pixmap(width, height, Pixmap.Format.RGB888);
-        map.setColor(fillColor);
-        map.fill();
-
-        return  map;
+    public Pixmap createPixmap(int width, int height, int fillColor, Pixmap.Format format) {
+        return  CommonUtils.createPixmap(width, height, fillColor, format);
     }
 
     public void requestFinishGame() {
@@ -259,7 +256,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     private AbstractTexture createBlendingMap() {
         //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality !!!
         //int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
-        Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000);
+        Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000, Pixmap.Format.RGB888);
         onPrepareMapTexture(blendMap);
         BitmapWrapperInterface bmp = sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 257, 257, 3, 3 * 257);
         blendMap.dispose();

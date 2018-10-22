@@ -143,7 +143,7 @@ onPlayTurn = function()
     gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
-drawPath = function(blendMap, gameEntity) --todo: rewrite using Pixmap
+drawPath = function(blendMap, gameEntity)
     if gameEntity:isDrawGamePoints() then
         local scaleFactor = blendMap:getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
 

@@ -1,5 +1,6 @@
 package com.sadgames.sysutils.common;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.glrender.GdxExt;
@@ -136,9 +137,6 @@ public class CommonUtils {
                 int value = rawImage.getInt();
                 bb.putShort((short) (value >> 8));
                 bb.put((byte) value);
-
-                //bb.put((byte) (value >> 8));
-                //bb.put((byte) (value >> 16));
         }
 
         bb.rewind();
@@ -147,5 +145,13 @@ public class CommonUtils {
         bb.limit(0);
 
         return texture;
+    }
+
+    public static Pixmap createPixmap(int width, int height, int fillColor, Pixmap.Format format) {
+        Pixmap map = new Pixmap(width, height, format);
+        map.setColor((fillColor << 8 & 0xFFFFFF00) | (fillColor >> 24 & 0xFF));
+        map.fill();
+
+        return  map;
     }
 }
