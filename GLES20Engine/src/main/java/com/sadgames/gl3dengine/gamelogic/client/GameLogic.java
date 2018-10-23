@@ -28,6 +28,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
+import com.sadgames.sysutils.common.BitmapWrapper;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.LuaUtils;
@@ -254,12 +255,12 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
 
     private AbstractTexture createBlendingMap() {
-        //TODO: Increase resolution, do not compress -> resolution detect by settings.graphicsQuality !!!
-        //int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
-        Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000, Pixmap.Format.RGB888);
+        //TODO: Increase resolution -> resolution detect by settings.graphicsQuality !!!
+        //TODO: int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
+        Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000, Pixmap.Format.RGBA8888);
         onPrepareMapTexture(blendMap);
-        BitmapWrapperInterface bmp = sysUtilsWrapper.iCompressTexture(blendMap.getPixels(), 257, 257, 3, 3 * 257);
-        blendMap.dispose();
+        BitmapWrapperInterface bmp = new BitmapWrapper(blendMap);
+        //blendMap.dispose();
         AbstractTexture glTexture = BitmapTexture.createInstance(getSysUtilsWrapper(), bmp);
         TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
         textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture) );

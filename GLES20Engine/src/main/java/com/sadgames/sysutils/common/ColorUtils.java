@@ -26,4 +26,8 @@ public class ColorUtils {
     public static int blue(int color) {
         return color & 0xFF;
     }
+
+    public static int convert2libGDX(int color) {
+        return (color << 8 & 0xFFFFFF00) | (color >> 24 & 0xFF);
+    }
 }
