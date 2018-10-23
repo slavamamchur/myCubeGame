@@ -3,7 +3,6 @@ package com.sadgames.sysutils.platforms.android;
 import android.graphics.Bitmap;
 
 import com.sadgames.sysutils.common.BitmapWrapper;
-import com.sadgames.sysutils.common.ETC1Utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,14 +17,6 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
 
         if (picture != null)
             picture.recycle();
-    }
-
-    AndroidBitmapWrapper(int color) {
-        super(createColourBitmap(color));
-    }
-
-    AndroidBitmapWrapper(ETC1Utils.ETC1Texture compressedPicture) {
-        super(compressedPicture);
     }
 
     private static ByteBuffer getRawDataFromBitmap(Bitmap picture) {

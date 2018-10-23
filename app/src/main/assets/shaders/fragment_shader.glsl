@@ -113,8 +113,7 @@ vec4 calcSpecularColor(vec3 nNormal, vec3 nLightvector, vec3 n_lookvector, float
       return vec4(u_lightColour * specular, 1.0);
 }
 
-vec4 calcPhongLightingMolel(vec3 n_normal, vec3 n_lightvector, vec3 n_lookvector, vec4 diffuseColor) {
-      highp float shadowRate = calcShadowRate(n_normal);
+vec4 calcPhongLightingMolel(vec3 n_normal, vec3 n_lightvector, vec3 n_lookvector, vec4 diffuseColor, float shadowRate) {
       vec4 lightColor = calcLightColor(n_normal, n_lightvector, shadowRate);
       vec4 specularColor = calcSpecularColor(n_normal, n_lightvector, n_lookvector, shadowRate);
 
@@ -160,7 +159,8 @@ void main()
            diffuseColor = texture2D(u_TextureUnit, v_Texture);
       }
 
-      gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor);
+      highp float shadowRate = calcShadowRate(n_normal);
+      gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor, shadowRate);
 
 
       if (u_isCubeMapF == 1) { //TODO: no relief error
@@ -172,10 +172,10 @@ void main()
         }
 
         if (blendingFactor.b > 0.0 && blendingFactor.r == 0.0 && blendingFactor.g == 0.0) {
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            gl_FragColor = vec4(1.0 * shadowRate, 0.0, 0.0, 1.0);
         }
-        else if (blendingFactor.g > 0.0 /*&& blendingFactor.r == 0.0 && blendingFactor.b == 0.0*/) {
-            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+        else if (blendingFactor.g > 0.0) {
+            gl_FragColor = vec4(0.0, 1.0 * shadowRate, 0.0, 1.0);
         }
       }
 

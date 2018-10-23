@@ -1,11 +1,11 @@
 package com.sadgames.sysutils.platforms.android;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.ETC1;
 import android.support.annotation.NonNull;
 
+import com.sadgames.sysutils.common.BitmapWrapper;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
@@ -52,7 +52,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
                 order(ByteOrder.nativeOrder());
         ETC1.encodeImage(input, width, height, pixelSize, stride, compressedImage);
 
-        return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
+        return new BitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
     }
 
     private BitmapWrapperInterface decodeImage(byte[] bitmapArray, boolean isRelief) {
@@ -73,14 +73,9 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
         }
         else
-            return isRelief ? new AndroidBitmapWrapper((Bitmap) null) : null;
+            return isRelief ? new AndroidBitmapWrapper(null) : null;
     }
     /** ------------------------------------------------------------------------------------------*/
-
-    @Override
-    public BitmapWrapperInterface iCreateColorBitmap(int color) {
-        return new AndroidBitmapWrapper(color);
-    }
 
     @Override
     public BitmapWrapperInterface iDecodeImage(byte[] bitmapArray, boolean isRelief) {

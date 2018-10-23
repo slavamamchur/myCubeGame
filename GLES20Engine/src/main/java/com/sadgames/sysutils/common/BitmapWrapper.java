@@ -38,6 +38,10 @@ public class BitmapWrapper implements BitmapWrapperInterface {
              false);
     }
 
+    public BitmapWrapper(int color) {
+        this(createColourBitmap(color));
+    }
+
     protected static Pixmap createColourBitmap(int color) {
         return createPixmap(2, 2, color, Pixmap.Format.RGBA8888);
     }

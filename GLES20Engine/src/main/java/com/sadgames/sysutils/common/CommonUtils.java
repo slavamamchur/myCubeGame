@@ -95,7 +95,7 @@ public class CommonUtils {
 
         if (result == null)
             try {
-                result = sysUtilsWrapper.iCreateColorBitmap(Integer.parseInt(file));
+                result = new BitmapWrapper(Integer.parseInt(file));
             }
             catch (Exception exception) { result = null; }
 
