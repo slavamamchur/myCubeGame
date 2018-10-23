@@ -139,9 +139,11 @@ public class CommonUtils {
 
         rawImage.rewind();
         for (int i = 0; i < height * width; i++) {
-            int value = ColorUtils.convert2libGDX(rawImage.getInt());
-            bb.putShort((short) (value >> 8));
-            bb.put((byte) value);
+            int value = rawImage.getInt();
+
+            bb.put((byte) (value));
+            bb.put((byte) (value >> 8));
+            bb.put((byte) (value >> 16));
         }
 
         bitmap.release();

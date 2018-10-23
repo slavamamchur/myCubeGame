@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ETC1;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
-import static com.sadgames.sysutils.common.CommonUtils.createPixmap;
-
 public class BitmapWrapper implements BitmapWrapperInterface {
 
     protected ByteBuffer data;
@@ -45,7 +43,7 @@ public class BitmapWrapper implements BitmapWrapperInterface {
     }
 
     protected static Pixmap createColourBitmap(int color) {
-        return createPixmap(2, 2, color, Pixmap.Format.RGBA8888);
+        return CommonUtils.createPixmap(2, 2, color, Pixmap.Format.RGBA8888);
     }
 
     public String getName() {
