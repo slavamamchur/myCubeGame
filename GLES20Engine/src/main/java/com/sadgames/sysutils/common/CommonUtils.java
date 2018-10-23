@@ -77,12 +77,12 @@ public class CommonUtils {
         try (InputStream source = getResourceStream("textures/" + file)) {
 
             if (file.endsWith("pkm"))
-                result = sysUtilsWrapper.iCreateETC1Texture(source);
+                result = new BitmapWrapper(ETC1Utils.ETC1Texture.createFromStream(source));
             else {
                 byte[] data = new byte[source.available()];
                 source.read(data);
 
-                result = sysUtilsWrapper.iDecodeImage(data, isRelief);
+                result = sysUtilsWrapper.iDecodeImage(data, isRelief); //TODO: save compressed to DB
             }
         }
         catch (Exception exception) { result = null; }
@@ -147,7 +147,7 @@ public class CommonUtils {
         return texture;
     }
 
-    public static Pixmap createPixmap(int width, int height, int fillColor, Pixmap.Format format) {
+    public static Pixmap createPixmap(int width, int height, int fillColor, Pixmap.Format format) { //TODO override with GlPixmap
         Pixmap map = new Pixmap(width, height, format);
         map.setColor((fillColor << 8 & 0xFFFFFF00) | (fillColor >> 24 & 0xFF));
         map.fill();

@@ -11,8 +11,6 @@ import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.ETC1Utils;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -47,41 +45,9 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return options;
     }
 
-    //TODO: save compressed to DB
-    private static BitmapWrapperInterface createETC1Texture(InputStream input) throws IOException {
-        int width;
-        int height;
-        byte[] ioBuffer = new byte[32768];
-        {
-            if (input.read(ioBuffer, 0, ETC1.ETC_PKM_HEADER_SIZE) != ETC1.ETC_PKM_HEADER_SIZE) {
-                throw new IOException("Unable to read PKM file header.");
-            }
-            ByteBuffer headerBuffer = ByteBuffer.allocateDirect(ETC1.ETC_PKM_HEADER_SIZE)
-                    .order(ByteOrder.nativeOrder());
-            headerBuffer.put(ioBuffer, 0, ETC1.ETC_PKM_HEADER_SIZE).position(0);
-            if (!ETC1.isValid(headerBuffer)) {
-                throw new IOException("Not a PKM file.");
-            }
-            width = ETC1.getWidth(headerBuffer);
-            height = ETC1.getHeight(headerBuffer);
-        }
-        int encodedSize = ETC1.getEncodedDataSize(width, height);
-        ByteBuffer dataBuffer = ByteBuffer.allocateDirect(encodedSize).order(ByteOrder.nativeOrder());
-        for (int i = 0; i < encodedSize; ) {
-            int chunkSize = Math.min(ioBuffer.length, encodedSize - i);
-            if (input.read(ioBuffer, 0, chunkSize) != chunkSize) {
-                throw new IOException("Unable to read PKM file data.");
-            }
-            dataBuffer.put(ioBuffer, 0, chunkSize);
-            i += chunkSize;
-        }
-        dataBuffer.position(0);
-
-        return new AndroidBitmapWrapper(new ETC1Utils.ETC1Texture(width, height, dataBuffer));
-    }
-
-    private static BitmapWrapperInterface compressTexture(Buffer input, int width, int height, int pixelSize, int stride){
-        int encodedImageSize = ETC1.getEncodedDataSize(width, height);
+    //TODO: create Pixmap via Gdx2DPixmap(input, GDX2D_FORMAT_RGBA8888);
+    private static BitmapWrapperInterface compressTexture(Buffer input, int width, int height, int pixelSize, int stride) {
+        int encodedImageSize = com.badlogic.gdx.graphics.glutils.ETC1.getCompressedDataSize(width, height);
         ByteBuffer compressedImage = ByteBuffer.allocateDirect(encodedImageSize).
                 order(ByteOrder.nativeOrder());
         ETC1.encodeImage(input, width, height, pixelSize, stride, compressedImage);
@@ -124,11 +90,6 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
     @Override
     public BitmapWrapperInterface iCompressTexture(Buffer input, int width, int height, int pixelSize, int stride) {
         return compressTexture(input, width, height, pixelSize, stride);
-    }
-
-    @Override
-    public BitmapWrapperInterface iCreateETC1Texture(InputStream input) throws IOException {
-        return createETC1Texture(input);
     }
 
 }
