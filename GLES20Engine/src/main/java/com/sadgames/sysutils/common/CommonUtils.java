@@ -1,6 +1,7 @@
 package com.sadgames.sysutils.common;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.ETC1;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.glrender.GdxExt;
@@ -122,34 +123,41 @@ public class CommonUtils {
         return inSampleSize;
     }
 
-    public static BitmapWrapperInterface packToETC1(SysUtilsWrapperInterface sysUtilsWrapper,
-                                                    BitmapWrapperInterface bitmap) {
+    private static BitmapWrapperInterface compressTexture(ByteBuffer input, int width, int height) {
+        Pixmap pixmap = new GlPixmap(input, width, height, Pixmap.Format.RGB888);
+        ByteBuffer compressedImage = ETC1.encodeImage(pixmap).compressedData;
+        pixmap.dispose();
+
+        return new BitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
+    }
+
+    public static BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) { //TODO: Pixmap from web and store etc1 into db
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3).order(ByteOrder.BIG_ENDIAN);
         ByteBuffer rawImage = ((ByteBuffer)bitmap.getRawData());
 
+        rawImage.rewind();
+        for (int i = 0; i < height * width; i++) {
+            int value = ColorUtils.convert2libGDX(rawImage.getInt());
+            bb.putShort((short) (value >> 8));
+            bb.put((byte) value);
+        }
+
         bitmap.release();
         bitmap = null;
 
-        rawImage.rewind();
-        for (int i = 0; i < height * width; i++) {
-                int value = rawImage.getInt();
-                bb.putShort((short) (value >> 8));
-                bb.put((byte) value);
-        }
-
         bb.rewind();
-        BitmapWrapperInterface texture = sysUtilsWrapper.iCompressTexture(bb, width, height, 3, 3 * width);
+        BitmapWrapperInterface texture = compressTexture(bb, width, height);
 
         bb.limit(0);
 
         return texture;
     }
 
-    public static Pixmap createPixmap(int width, int height, int fillColor, Pixmap.Format format) { //TODO override with GlPixmap
-        Pixmap map = new Pixmap(width, height, format);
-        map.setColor((fillColor << 8 & 0xFFFFFF00) | (fillColor >> 24 & 0xFF));
+    public static Pixmap createPixmap(int width, int height, int fillColor, Pixmap.Format format) {
+        Pixmap map = new GlPixmap(width, height, format);
+        map.setColor(fillColor);
         map.fill();
 
         return  map;

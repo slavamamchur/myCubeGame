@@ -11,6 +11,15 @@ public class ColorUtils {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
+    public static int argb2libGDX(
+            int alpha,
+            int red,
+            int green,
+            int blue) {
+
+        return (red << 24) | (alpha << 16) | (green << 8) | blue;
+    }
+
     public static int alpha(int color) {
         return color >>> 24;
     }

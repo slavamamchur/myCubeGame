@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
+import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
@@ -61,10 +62,15 @@ public class BitmapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
-        if (!bitmap.isCompressed() && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3) && sysUtilsWrapper != null)
-            bitmap = packToETC1(sysUtilsWrapper, bitmap);
+        if (!bitmap.isCompressed()
+            && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3)
+            && bitmap.getRawData() != null
+            && !GameConst.BLENDING_MAP_TEXTURE.equals(bitmap.getTextureName()))
+
+            bitmap = packToETC1(bitmap);
 
         loadTextureInternal(getTextureType(), bitmap);
+
         bitmap.release();
     }
 

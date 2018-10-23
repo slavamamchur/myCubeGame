@@ -10,7 +10,7 @@ public class GameConst {
     public static final String SEA_BOTTOM_TEXTURE     = "5bae5d26f2675fb54e7cb7dc";
     public static final String NORMALMAP_TEXTURE      = "5bae5be1f2675fb54e7cb7da";
     public static final String DUDVMAP_TEXTURE        = "5bae5df2f2675fb54e7cb7df";
-    public static final String BLENDING_MAP_TEXTURE   = "5bae5e6df2675fb54e7cb7e3";
+    public static final String BLENDING_MAP_TEXTURE   = "BLENDING_MAP_TEXTURE";
     public static final String SKY_BOX_TEXTURE_NAME   = "SKY_BOX_CUBE_MAP_TEXTURE";
     public static final String SKY_DOME_TEXTURE_NAME   = "5bae5eb9f2675fb54e7cb7e8";
     public static final String MAP_BACKGROUND_TEXTURE_NAME = "5bae5f0cf2675fb54e7cb7ee";

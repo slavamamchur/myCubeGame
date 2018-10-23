@@ -10,6 +10,7 @@ public interface BitmapWrapperInterface {
     int     getWidth();
     int     getHeight();
     int     getImageSizeBytes();
+    String  getTextureName();
 
     boolean isEmpty();
     boolean isCompressed();

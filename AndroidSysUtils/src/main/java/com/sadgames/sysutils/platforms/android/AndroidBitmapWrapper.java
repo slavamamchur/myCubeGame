@@ -30,4 +30,6 @@ public class AndroidBitmapWrapper extends BitmapWrapper {
         return rawData;
     }
 
+
+
 }

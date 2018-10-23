@@ -116,7 +116,7 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
         int R = ColorUtils.alpha(color);
         int G = ColorUtils.red(color);
         int B = ColorUtils.green(color);
-        int A = ColorUtils.blue(color);
+        //int A = ColorUtils.blue(color);
 
         if ((G <= B) && (R < G))
             return G <= 0.5 * B ? ColorType.BLUE : ColorType.CYAN; //B <= 231 ? BLUE : CYAN;//

@@ -16,6 +16,8 @@ public class BitmapWrapper implements BitmapWrapperInterface {
     protected int mHeight;
     protected boolean mCompressed;
 
+    private String name = "";
+
     protected BitmapWrapper(ByteBuffer data, int width, int height, boolean compressed) {
         this.data = data;
         this.sizeInBytes = data != null ? data.capacity() : 0;
@@ -44,6 +46,19 @@ public class BitmapWrapper implements BitmapWrapperInterface {
 
     protected static Pixmap createColourBitmap(int color) {
         return createPixmap(2, 2, color, Pixmap.Format.RGBA8888);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getTextureName() {
+        return getName();
     }
 
     @Override
