@@ -38,7 +38,7 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
         return options;
     }
 
-    private BitmapWrapperInterface decodeImage(byte[] bitmapArray, boolean isRelief) {
+    private BitmapWrapperInterface decodeImage(byte[] bitmapArray) {
         if (bitmapArray != null) {
             int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
             final BitmapFactory.Options options = getiBitmapOptions();
@@ -56,13 +56,13 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
             return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
         }
         else
-            return isRelief ? new AndroidBitmapWrapper(null) : null;
+            return null;
     }
     /** ------------------------------------------------------------------------------------------*/
 
     @Override
-    public BitmapWrapperInterface iDecodeImage(byte[] bitmapArray, boolean isRelief) {
-        return decodeImage(bitmapArray, isRelief);
+    public BitmapWrapperInterface iDecodeImage(byte[] bitmapArray) {
+        return decodeImage(bitmapArray);
     }
 
 }

@@ -6,6 +6,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapContr
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.glrender.GdxExt;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -74,25 +75,27 @@ public class CommonUtils {
                                                            String file,
                                                            boolean isRelief) {
         BitmapWrapperInterface result;
+        byte[] bitmapArray;
 
         try (InputStream source = getResourceStream("textures/" + file)) {
 
             if (file.endsWith("pkm"))
                 result = new BitmapWrapper(ETC1Utils.ETC1Texture.createFromStream(source));
             else {
-                byte[] data = new byte[source.available()];
-                source.read(data);
+                bitmapArray = new byte[source.available()];
+                source.read(bitmapArray);
 
-                result = sysUtilsWrapper.iDecodeImage(data, isRelief); //TODO: save compressed to DB
+                result = new BitmapWrapper(bitmapArray);
             }
         }
         catch (Exception exception) { result = null; }
 
         if (result == null)
             try {
-                result = sysUtilsWrapper.iDecodeImage(loadBitmapFromDB(file, isRelief), isRelief);
+                bitmapArray = loadBitmapFromDB(file, isRelief);
+                result = bitmapArray != null ? new BitmapWrapper(bitmapArray) : null;
             }
-            catch (SQLException exception) { result = null; }
+            catch (SQLException | IOException exception) { result = null; }
 
         if (result == null)
             try {
@@ -131,7 +134,7 @@ public class CommonUtils {
         return new BitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
     }
 
-    public static BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) { //TODO: Pixmap from web and store etc1 into db
+    public static BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3).order(ByteOrder.nativeOrder());
@@ -141,12 +144,12 @@ public class CommonUtils {
         for (int i = 0; i < height * width; i++) {
             int value = rawImage.getInt();
 
-            bb.put((byte) (value));
-            bb.put((byte) (value >> 8));
+            bb.put((byte) (value >> 24));
             bb.put((byte) (value >> 16));
+            bb.put((byte) (value >> 8));
         }
 
-        bitmap.release();
+        bitmap.release(); //TODO: store Pixmap ptr and dispose it
         bitmap = null;
 
         bb.rewind();

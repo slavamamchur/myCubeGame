@@ -1,10 +1,14 @@
 package com.sadgames.sysutils.common;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.glutils.ETC1;
 
+import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+
+import static com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
 
 public class BitmapWrapper implements BitmapWrapperInterface {
 
@@ -40,6 +44,10 @@ public class BitmapWrapper implements BitmapWrapperInterface {
 
     public BitmapWrapper(int color) {
         this(createColourBitmap(color));
+    }
+
+    public BitmapWrapper(byte[] encodedImage) throws IOException {
+        this(new Pixmap(new Gdx2DPixmap(encodedImage, 0, encodedImage.length, GDX2D_FORMAT_RGBA8888))); //TODO: RGB888
     }
 
     protected static Pixmap createColourBitmap(int color) {
