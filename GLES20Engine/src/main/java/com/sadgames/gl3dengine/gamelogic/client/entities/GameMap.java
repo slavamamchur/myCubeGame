@@ -27,9 +27,9 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
 
         //TODO: get from material object
         setCubeMap(true);
-        setGlCubeMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.SEA_BOTTOM_TEXTURE));
-        setGlNormalMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.NORMALMAP_TEXTURE));
-        setGlDUDVMap(TextureCacheManager.getInstance(sysUtilsWrapper).getItem(GameConst.DUDVMAP_TEXTURE));
+        setGlCubeMap(TextureCacheManager.getInstance().getItem(GameConst.SEA_BOTTOM_TEXTURE));
+        setGlNormalMap(TextureCacheManager.getInstance().getItem(GameConst.NORMALMAP_TEXTURE));
+        setGlDUDVMap(TextureCacheManager.getInstance().getItem(GameConst.DUDVMAP_TEXTURE));
     }
 
     @Override

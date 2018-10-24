@@ -215,8 +215,8 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
         ///GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
-        TextureCacheManager.getNewInstance(sysUtilsWrapper);
-        TextureCacheManager.getInstance(sysUtilsWrapper).getItem(MAP_BACKGROUND_TEXTURE_NAME);
+        TextureCacheManager.getNewInstance();
+        TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
@@ -233,7 +233,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));
 
         /** sky-dome */
-        AbstractTexture skyDomeTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(SKY_DOME_TEXTURE_NAME);
+        AbstractTexture skyDomeTexture = TextureCacheManager.getInstance().getItem(SKY_DOME_TEXTURE_NAME);
         // terrain.setWaterReflectionMap(skyDomeTexture);
         AbstractSkyObject skyDomeObject = new SkyDomeObject(sysUtilsWrapper, skyDomeTexture, glScene);
         skyDomeObject.setItemName(SKY_BOX_CUBE_MAP_OBJECT);
@@ -261,9 +261,9 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         onPrepareMapTexture(blendMap);
         BitmapWrapperInterface bmp = new BitmapWrapper(blendMap);
         ((BitmapWrapper)bmp).setName(GameConst.BLENDING_MAP_TEXTURE);
-        AbstractTexture glTexture = BitmapTexture.createInstance(getSysUtilsWrapper(), bmp);
+        AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
         blendMap.dispose();
-        TextureCacheManager textureCache = TextureCacheManager.getInstance(getSysUtilsWrapper());
+        TextureCacheManager textureCache = TextureCacheManager.getInstance();
         textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture));
 
         return glTexture;

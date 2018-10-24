@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
-
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;

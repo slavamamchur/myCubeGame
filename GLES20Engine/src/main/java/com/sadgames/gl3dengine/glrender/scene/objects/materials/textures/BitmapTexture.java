@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;
 
@@ -107,11 +106,11 @@ public class BitmapTexture extends AbstractTexture {
         }
     }
 
-    public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, BitmapWrapperInterface bitmap) {
+    public static AbstractTexture createInstance(BitmapWrapperInterface bitmap) {
         return new BitmapTexture(bitmap);
     }
 
-    public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String file) {
+    public static AbstractTexture createInstance(String file) {
         return new BitmapTexture(file);
     }
 

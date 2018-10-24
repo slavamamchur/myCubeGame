@@ -77,7 +77,7 @@ public class TerrainRendererProgram extends VBOShaderProgram {
         GLRenderConsts.GraphicsQuality graphicsQualityLevel =
                 getSettingsManager().getGraphicsQualityLevel();
 
-        AbstractTexture background = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(scene.getBackgroundTextureName());
+        AbstractTexture background = TextureCacheManager.getInstance().getItem(scene.getBackgroundTextureName());
         if (background != null) {
             background.bind(BACKGROUND_TEXTURE_SLOT);
             paramByName(ACTIVE_BACKGROUND_SLOT_PARAM_NAME).setParamValue(BACKGROUND_TEXTURE_SLOT);

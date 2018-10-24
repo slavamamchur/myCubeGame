@@ -1,7 +1,5 @@
 package com.sadgames.gl3dengine.manager;
 
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
-
 import java.util.HashMap;
 
 import static com.sadgames.gl3dengine.GLEngineConsts.NOT_ENOUGH_SPACE_IN_CACHE_ERROR_MESSAGE;
@@ -48,12 +46,10 @@ public abstract class AbstractEntityCacheManager<T> {
     private long cacheSize;
     private long actualCacheSize = 0;
     private HashMap<String, CacheItem> items = new HashMap<>();
-    protected SysUtilsWrapperInterface sysUtilsWrapper;
 
     @SuppressWarnings("all")
-    protected AbstractEntityCacheManager(SysUtilsWrapperInterface sysUtilsWrapper, long cacheSize) {
+    protected AbstractEntityCacheManager(long cacheSize) {
         this.cacheSize = cacheSize;
-        this.sysUtilsWrapper = sysUtilsWrapper;
     }
 
     public abstract long getItemSize(T item);

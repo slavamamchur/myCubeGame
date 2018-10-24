@@ -255,16 +255,16 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
         textureResName = material.getDiffuseMapName();
         if (textureResName != null)
-            glTexture = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
+            glTexture = TextureCacheManager.getInstance().getItem(textureResName);
 
         if (material.getNormalMapName() != null)
-            glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(material.getNormalMapName());
+            glNormalMap = TextureCacheManager.getInstance().getItem(material.getNormalMapName());
 
         if (material.getDUDVMapName() != null)
-            glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(material.getDUDVMapName());
+            glNormalMap = TextureCacheManager.getInstance().getItem(material.getDUDVMapName());
 
         if (material.getNormalMapName() != null)
-            glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(material.getNormalMapName());
+            glNormalMap = TextureCacheManager.getInstance().getItem(material.getNormalMapName());
     }
 
     private void createVBOParams() {
@@ -355,7 +355,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         param = program.paramByName(ACTIVE_REFRACTION_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && isCubeMap()) {
             if (glCubeMap.getTextureId() == 0)
-                glCubeMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glCubeMap).getTextureName());
+                glCubeMap = TextureCacheManager.getInstance().getItem(((BitmapTexture) glCubeMap).getTextureName());
 
             glCubeMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
@@ -365,7 +365,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         param = program.paramByName(ACTIVE_NORMALMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasNormalMap()) {
             if (glNormalMap.getTextureId() == 0)
-                glNormalMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glNormalMap).getTextureName());
+                glNormalMap = TextureCacheManager.getInstance().getItem(((BitmapTexture) glNormalMap).getTextureName());
 
             glNormalMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
@@ -375,7 +375,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         param = program.paramByName(ACTIVE_DUDVMAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasDUDVMap()) {
             if (glDUDVMap.getTextureId() == 0)
-                glDUDVMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glDUDVMap).getTextureName());
+                glDUDVMap = TextureCacheManager.getInstance().getItem(((BitmapTexture) glDUDVMap).getTextureName());
 
             glDUDVMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
@@ -386,7 +386,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         param = program.paramByName(ACTIVE_BLENDING_MAP_SLOT_PARAM_NAME);
         if (param != null && param.getParamReference() >= 0 && hasBlendingMap()) {
             if (glBlendingMap.getTextureId() == 0)
-                glBlendingMap = TextureCacheManager.getInstance(sysUtilsWrapper).getItem(((BitmapTexture) glBlendingMap).getTextureName());
+                glBlendingMap = TextureCacheManager.getInstance().getItem(((BitmapTexture) glBlendingMap).getTextureName());
 
             glBlendingMap.bind(textureSlotIndex);
             param.setParamValue(textureSlotIndex);
@@ -429,7 +429,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
     public AbstractTexture loadTexture() {
         if (textureResName != null && !textureResName.isEmpty()) {
-            return TextureCacheManager.getInstance(sysUtilsWrapper).getItem(textureResName);
+            return TextureCacheManager.getInstance().getItem(textureResName);
         }
         else
             return null;
@@ -438,7 +438,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     public synchronized void reloadTexture () {
         if (glTexture != null) {
             unbindTexture(1);
-            glTexture = TextureCacheManager.getInstance(sysUtilsWrapper).reloadItem(((BitmapTexture)getGlTexture()).getTextureName());
+            glTexture = TextureCacheManager.getInstance().reloadItem(((BitmapTexture)getGlTexture()).getTextureName());
         }
     }
 
