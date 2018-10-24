@@ -304,9 +304,7 @@ function createWPFlyForward(gameEntity)
             TERRAIN_MESH_OBJECT,
             CHIP_DEFAULT_WEIGHT,
             COLLISION_OBJECT,
-            TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-            gameLogic:getGl3DScene(),
-            0xFFFFFFFF)
+            TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene(), 0xFFFFFFFF)
     wp:setInitialScale(0.015625)
     wp:setInitialTranslation(0.0, 0.0, 0.25)
     loadObject(wp, 'WP_FLY_FORWARD_')
@@ -322,8 +320,7 @@ function createWPFinish(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-    gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.5)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
@@ -339,8 +336,7 @@ function createWPFlyBack(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-    gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.1)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
@@ -356,8 +352,7 @@ function createWPMoveSkip(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-    gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.16667)
     loadObject(wp, 'WP_MOVE_SKIP_')
@@ -372,8 +367,7 @@ function createWPMoveMore(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getSysUtilsWrapper(),
-    gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
 
     wp:setInitialScale(0.00125)
     wp:setInitialTranslation(0.0, 0.0625, 0.0)
@@ -435,7 +429,7 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
         CHIP_DEFAULT_WEIGHT,
         COLLISION_OBJECT,
         TERRAIN_MATERIAL)
-        :createSceneObject(gameLogic:getSysUtilsWrapper(), gameLogic:getGl3DScene(), player:getColor())
+        :createSceneObject(gameLogic:getGl3DScene(), player:getColor())
 
         chip:setInitialScale(0.2)
         chip:setInitialTranslation(0.0, 0.08, 0.0)
