@@ -31,12 +31,12 @@ public class BitmapTexture extends AbstractTexture {
 
     private String textureName = null;
 
-    private BitmapTexture(BitmapWrapperInterface bitmap, SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(bitmap.getWidth(), bitmap.getHeight(), bitmap, sysUtilsWrapper);
+    private BitmapTexture(BitmapWrapperInterface bitmap) {
+        super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
-    private BitmapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String textureName) {
-        this(getBitmapFromFile(sysUtilsWrapper, textureName, false), sysUtilsWrapper);
+    private BitmapTexture(String textureName) {
+        this(getBitmapFromFile(textureName, false));
         this.textureName = textureName;
     }
 
@@ -108,11 +108,11 @@ public class BitmapTexture extends AbstractTexture {
     }
 
     public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, BitmapWrapperInterface bitmap) {
-        return new BitmapTexture(bitmap, sysUtilsWrapper);
+        return new BitmapTexture(bitmap);
     }
 
     public static AbstractTexture createInstance(SysUtilsWrapperInterface sysUtilsWrapper, String file) {
-        return new BitmapTexture(sysUtilsWrapper, file);
+        return new BitmapTexture(file);
     }
 
 }

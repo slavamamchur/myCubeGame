@@ -1,7 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.Buffer;
 
@@ -30,13 +29,11 @@ public class CubeMapTexture extends AbstractTexture {
 
     private String textureName = null;
     private String[] faces;
-    private SysUtilsWrapperInterface sysUtilsWrapper;
 
-    public CubeMapTexture(SysUtilsWrapperInterface sysUtilsWrapper, String[] faces, String textureName) {
+    public CubeMapTexture(String[] faces, String textureName) {
         init(-1, -1);
 
         this.faces = faces;
-        this.sysUtilsWrapper = sysUtilsWrapper;
         this.textureName = textureName;
 
         createTexture(null);
@@ -68,7 +65,7 @@ public class CubeMapTexture extends AbstractTexture {
 
         for (int i =0; i < faces.length; i++)
             try {
-                bitmap = getBitmapFromFile(sysUtilsWrapper, faces[i], false);
+                bitmap = getBitmapFromFile(faces[i], false);
                 loadTextureInternal(get_GL_TEXTURE_CUBE_MAP_POSITIVE_X_value() + i, bitmap);
                 textureSize += bitmap.getImageSizeBytes();
                 bitmap.release();

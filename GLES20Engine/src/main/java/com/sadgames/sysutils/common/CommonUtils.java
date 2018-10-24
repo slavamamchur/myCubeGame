@@ -71,9 +71,7 @@ public class CommonUtils {
         }
     }
 
-    public static BitmapWrapperInterface getBitmapFromFile(SysUtilsWrapperInterface sysUtilsWrapper,
-                                                           String file,
-                                                           boolean isRelief) {
+    public static BitmapWrapperInterface getBitmapFromFile(String file, boolean isRelief) {
         BitmapWrapperInterface result;
         byte[] bitmapArray;
 

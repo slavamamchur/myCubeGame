@@ -53,16 +53,11 @@ public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
                     options.outHeight / scaleFactor);
             options.inJustDecodeBounds = false;
 
-            return new AndroidBitmapWrapper(BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length, options));
+            return null;
         }
         else
             return null;
     }
     /** ------------------------------------------------------------------------------------------*/
-
-    @Override
-    public BitmapWrapperInterface iDecodeImage(byte[] bitmapArray) {
-        return decodeImage(bitmapArray);
-    }
 
 }

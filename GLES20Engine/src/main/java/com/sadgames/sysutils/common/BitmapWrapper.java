@@ -47,7 +47,7 @@ public class BitmapWrapper implements BitmapWrapperInterface {
     }
 
     public BitmapWrapper(byte[] encodedImage) throws IOException {
-        this(new Pixmap(new Gdx2DPixmap(encodedImage, 0, encodedImage.length, GDX2D_FORMAT_RGBA8888))); //TODO: RGB888
+        this(new Pixmap(new Gdx2DPixmap(encodedImage, 0, encodedImage.length, GDX2D_FORMAT_RGBA8888))); //TODO: RGB888 and scale image by settings
     }
 
     protected static Pixmap createColourBitmap(int color) {
