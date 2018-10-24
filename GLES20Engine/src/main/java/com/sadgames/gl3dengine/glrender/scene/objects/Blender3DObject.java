@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -44,13 +43,13 @@ public class Blender3DObject extends ImportedObject {
     protected float initialScale;
     protected Vector3f initialTranslation;
 
-    public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, float mass, int tag) {
-        super(sysUtilsWrapper, objFileName /*+ COMPRESSED_TEXTURE_FILE_EXT*/, program, mass, tag);
+    public Blender3DObject(String objFileName, GLShaderProgram program, float mass, int tag) {
+        super(objFileName /*+ COMPRESSED_TEXTURE_FILE_EXT*/, program, mass, tag);
         init(objFileName);
     }
 
-    public Blender3DObject(SysUtilsWrapperInterface sysUtilsWrapper, String objFileName, GLShaderProgram program, int color, float mass, int tag) {
-        super(sysUtilsWrapper, program, color, mass, tag);
+    public Blender3DObject(String objFileName, GLShaderProgram program, int color, float mass, int tag) {
+        super(program, color, mass, tag);
         init(objFileName);
     }
 

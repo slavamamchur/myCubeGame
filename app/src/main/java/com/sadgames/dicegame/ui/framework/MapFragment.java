@@ -18,9 +18,7 @@ import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
-import com.sadgames.sysutils.platforms.android.AndroidSysUtilsWrapper;
 
 import java.util.ArrayList;
 
@@ -37,9 +35,8 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        SysUtilsWrapperInterface sysUtilsWrapper = AndroidSysUtilsWrapper.getInstance(getContext());
-        glRenderer = new AndroidGLES20Renderer(sysUtilsWrapper);
-        gameLogic = new GameLogic(sysUtilsWrapper, glRenderer.getScene());
+        glRenderer = new AndroidGLES20Renderer();
+        gameLogic = new GameLogic(glRenderer.getScene());
         glRenderer.getScene().setGameEventsCallBackListener(gameLogic);
 
         glMapSurfaceView = new MapGLSurfaceView(getContext());

@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,12 +20,12 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 
 public abstract class GameItemObject extends PNodeObject {
 
-    public GameItemObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag) {
-        super(sysUtilsWrapper, GAME_ITEM_OBJECT, textureResName, program, mass, tag);
+    public GameItemObject(String textureResName, GLShaderProgram program, float mass, int tag) {
+        super(GAME_ITEM_OBJECT, textureResName, program, mass, tag);
     }
 
-    public GameItemObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag) {
-        super(sysUtilsWrapper, GAME_ITEM_OBJECT, program, color, mass, tag);
+    public GameItemObject(GLShaderProgram program, int color, float mass, int tag) {
+        super(GAME_ITEM_OBJECT, program, color, mass, tag);
     }
 
     protected abstract float[] getVertexesArray();

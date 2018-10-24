@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.shaders;
 
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.Arrays;
 
@@ -13,8 +12,8 @@ import static com.sadgames.sysutils.common.MathUtils.rotateByVector;
 
 public class SkyBoxProgram extends ShadowMapProgram {
 
-    public SkyBoxProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(sysUtilsWrapper);
+    public SkyBoxProgram() {
+        super();
     }
 
     @Override

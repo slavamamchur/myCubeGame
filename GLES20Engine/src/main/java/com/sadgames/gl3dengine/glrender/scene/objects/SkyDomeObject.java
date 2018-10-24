@@ -3,7 +3,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -19,16 +18,16 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEX_SIZE;
 
 public class SkyDomeObject extends AbstractSkyObject {
 
-    public SkyDomeObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLScene glScene) {
-        super(sysUtilsWrapper, cubeTexture, glScene.getCachedShader(SKY_DOME_OBJECT));
+    public SkyDomeObject(AbstractTexture cubeTexture, GLScene glScene) {
+        super(cubeTexture, glScene.getCachedShader(SKY_DOME_OBJECT));
 
         textureResName = cubeTexture != null && cubeTexture instanceof BitmapTexture ?
                 ((BitmapTexture)cubeTexture).getTextureName() : null;
     }
 
     @Override
-    protected GameItemObject createSkyPrimitive(SysUtilsWrapperInterface sysUtilsWrapper, float halfSize) {
-        return new SpherePrimitiveObject(sysUtilsWrapper, null, getProgram(), 1f, COLLISION_OBJECT, halfSize);
+    protected GameItemObject createSkyPrimitive(float halfSize) {
+        return new SpherePrimitiveObject(null, getProgram(), 1f, COLLISION_OBJECT, halfSize);
     }
 
     @Override

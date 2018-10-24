@@ -1,7 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -23,8 +22,8 @@ public class GUI2DImageObject extends AbstractGL3DObject {
     private float bottom;
     private boolean isReftectedY;
 
-    public GUI2DImageObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, Vector4f box, boolean isReftectedY) {
-        super(sysUtilsWrapper, GUI_OBJECT, program);
+    public GUI2DImageObject(GLShaderProgram program, Vector4f box, boolean isReftectedY) {
+        super(GUI_OBJECT, program);
 
         this.left = box.x;
         this.top = box.y;

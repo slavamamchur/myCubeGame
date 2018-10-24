@@ -8,7 +8,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.Abstrac
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
@@ -33,8 +32,8 @@ import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 public class TerrainRendererProgram extends VBOShaderProgram {
     private float skyBoxRotationAngle = 0;
 
-    public TerrainRendererProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(sysUtilsWrapper);
+    public TerrainRendererProgram() {
+        super();
     }
 
     @SuppressWarnings("unused")

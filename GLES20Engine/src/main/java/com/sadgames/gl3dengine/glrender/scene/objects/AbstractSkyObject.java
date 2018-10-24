@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
@@ -16,10 +15,10 @@ public abstract class AbstractSkyObject extends GameItemObject {
     private float rotationAngle = 0;
     protected GameItemObject skyPrimitive;
 
-    public AbstractSkyObject(SysUtilsWrapperInterface sysUtilsWrapper, AbstractTexture cubeTexture, GLShaderProgram program) {
-        super(sysUtilsWrapper, null, program, 1f, COLLISION_OBJECT);
+    public AbstractSkyObject(AbstractTexture cubeTexture, GLShaderProgram program) {
+        super(null, program, 1f, COLLISION_OBJECT);
 
-        skyPrimitive = createSkyPrimitive(sysUtilsWrapper, LAND_SIZE_IN_WORLD_SPACE / 2f /*+ 0.25f*/);
+        skyPrimitive = createSkyPrimitive(LAND_SIZE_IN_WORLD_SPACE / 2f /*+ 0.25f*/);
 
         setGlTexture(cubeTexture);
         setCastShadow(false);
@@ -38,7 +37,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
         setRotationAngle(angle > 360f ? 360f - angle : angle);
     }
 
-    protected abstract GameItemObject createSkyPrimitive(SysUtilsWrapperInterface sysUtilsWrapper, float halfSize);
+    protected abstract GameItemObject createSkyPrimitive(float halfSize);
 
     @Override
     public void render() {

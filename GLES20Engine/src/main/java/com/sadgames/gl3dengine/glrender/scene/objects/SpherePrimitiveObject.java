@@ -1,7 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,8 @@ public class SpherePrimitiveObject extends GameItemObject {
     protected int _mCountIndex;
     protected int _mCountTriangle;
 
-    public SpherePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag, float halfSize) {
-        super(sysUtilsWrapper, textureResName, program, mass, tag);
+    public SpherePrimitiveObject(String textureResName, GLShaderProgram program, float mass, int tag, float halfSize) {
+        super(textureResName, program, mass, tag);
 
         this.halfSize = halfSize;
         mRefineLevel = 2;
@@ -30,8 +29,8 @@ public class SpherePrimitiveObject extends GameItemObject {
 
     }
 
-    @SuppressWarnings("unused") public SpherePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag, float halfSize) {
-        super(sysUtilsWrapper, program, color, mass, tag);
+    @SuppressWarnings("unused") public SpherePrimitiveObject(GLShaderProgram program, int color, float mass, int tag, float halfSize) {
+        super(program, color, mass, tag);
 
         this.halfSize = halfSize;
         mRefineLevel = 2;

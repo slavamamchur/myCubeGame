@@ -9,7 +9,6 @@ import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.util.Random;
 
@@ -28,17 +27,17 @@ public abstract class PNodeObject extends BitmapTexturedObject {
     protected CollisionShape _shape = null;
     private Transform worldTransformOld = new Transform(new Matrix4f(new float[16]));
 
-    public PNodeObject(SysUtilsWrapperInterface sysUtilsWrapper, GLRenderConsts.GLObjectType type, String textureResName, GLShaderProgram program,
+    public PNodeObject(GLRenderConsts.GLObjectType type, String textureResName, GLShaderProgram program,
                        float mass, int tag) {
 
-        super(sysUtilsWrapper, type, textureResName, program);
+        super(type, textureResName, program);
         init(mass, tag);
     }
 
-    public PNodeObject(SysUtilsWrapperInterface sysUtilsWrapper, GLRenderConsts.GLObjectType type, GLShaderProgram program, int color,
+    public PNodeObject(GLRenderConsts.GLObjectType type, GLShaderProgram program, int color,
                        float mass, int tag) {
 
-        super(sysUtilsWrapper, type, program, color);
+        super(type, program, color);
         init(mass, tag);
     }
 

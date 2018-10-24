@@ -3,7 +3,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.sysutils.common.ColorUtils;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector2f;
 
@@ -58,8 +57,8 @@ public abstract class TopographicMapObject extends ProceduralSurfaceObject {
     protected float scaleX;
     protected float scaleZ;
 
-    public TopographicMapObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, String mapName) {
-        super(sysUtilsWrapper, TERRAIN_OBJECT, mapName, LAND_SIZE_IN_WORLD_SPACE, program);
+    public TopographicMapObject(GLShaderProgram program, String mapName) {
+        super(TERRAIN_OBJECT, mapName, LAND_SIZE_IN_WORLD_SPACE, program);
 
         castShadow = false;
         setCubeMap(true);

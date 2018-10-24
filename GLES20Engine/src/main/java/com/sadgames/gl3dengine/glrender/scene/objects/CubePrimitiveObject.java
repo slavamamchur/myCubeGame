@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.vecmath.Vector3f;
 
@@ -51,13 +50,13 @@ public class CubePrimitiveObject extends GameItemObject {
 
     protected float halfSize;
 
-    public CubePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag, float halfSize) {
-        super(sysUtilsWrapper, textureResName, program, mass, tag);
+    public CubePrimitiveObject(String textureResName, GLShaderProgram program, float mass, int tag, float halfSize) {
+        super(textureResName, program, mass, tag);
         this.halfSize = halfSize;
     }
 
-    public CubePrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag, float halfSize) {
-        super(sysUtilsWrapper, program, color, mass, tag);
+    public CubePrimitiveObject(GLShaderProgram program, int color, float mass, int tag, float halfSize) {
+        super(program, color, mass, tag);
         this.halfSize = halfSize;
     }
 

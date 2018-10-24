@@ -3,7 +3,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.util.ObjectArrayList;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -27,12 +26,12 @@ public abstract class ImportedObject extends GameItemObject {
     protected int facesCount = 0;
     protected ShapeType collisionShapeType = ShapeType.UNKNOWN;
 
-    public ImportedObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float mass, int tag) {
-        super(sysUtilsWrapper, textureResName, program, mass, tag);
+    public ImportedObject(String textureResName, GLShaderProgram program, float mass, int tag) {
+        super(textureResName, program, mass, tag);
     }
 
-    public ImportedObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float mass, int tag) {
-        super(sysUtilsWrapper, program, color, mass, tag);
+    public ImportedObject(GLShaderProgram program, int color, float mass, int tag) {
+        super(program, color, mass, tag);
     }
 
     public abstract Raw3DModel getRaw3DModel();

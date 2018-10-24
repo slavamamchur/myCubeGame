@@ -4,7 +4,6 @@ import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -71,14 +70,10 @@ public abstract class GLShaderProgram {
     private int programId;
     private int vertexShaderID;
     private int fragmentShaderID;
-    protected SysUtilsWrapperInterface sysUtilsWrapper;
     protected Map<String, GLShaderParam> params = new HashMap<>();
 
 
-    public GLShaderProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
-
-        this.sysUtilsWrapper = sysUtilsWrapper;
-
+    public GLShaderProgram() {
         vertexShaderID = createShaderFromResource(get_GL_VERTEX_SHADER_value(), getVertexShaderResId());
         fragmentShaderID = createShaderFromResource(get_GL_FRAGMENT_SHADER_value(), getFragmentShaderResId());
         programId = createProgram(vertexShaderID, fragmentShaderID);

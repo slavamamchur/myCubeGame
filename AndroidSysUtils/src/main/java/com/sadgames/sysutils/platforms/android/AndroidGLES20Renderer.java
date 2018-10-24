@@ -4,7 +4,6 @@ import android.opengl.GLSurfaceView;
 
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -13,8 +12,8 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
 
     private GLRendererInterface glInternalRenderer;
 
-    public AndroidGLES20Renderer(SysUtilsWrapperInterface sysUtilsWrapper) {
-        glInternalRenderer = new GLScene(sysUtilsWrapper);
+    public AndroidGLES20Renderer() {
+        glInternalRenderer = new GLScene();
     }
 
     public GLScene getScene() {

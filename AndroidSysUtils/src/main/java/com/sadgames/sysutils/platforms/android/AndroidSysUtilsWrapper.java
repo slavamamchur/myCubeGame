@@ -6,27 +6,16 @@ import android.support.annotation.NonNull;
 
 import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
-public class AndroidSysUtilsWrapper implements SysUtilsWrapperInterface {
-
-    private static final Object lockObject = new Object();
-    protected static SysUtilsWrapperInterface instance = null;
+public class AndroidSysUtilsWrapper {
 
     protected Context context;
 
     protected AndroidSysUtilsWrapper(Context context) {
         this.context = context;
-    }
-
-    public static SysUtilsWrapperInterface getInstance(Context context) {
-        synchronized (lockObject) {
-            instance = instance != null ? instance : new AndroidSysUtilsWrapper(context);
-            return instance;
-        }
     }
 
     /** Bitmap sysutils ----------------------------------------------------------------------------*/

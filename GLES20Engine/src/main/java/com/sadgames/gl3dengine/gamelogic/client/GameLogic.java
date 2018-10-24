@@ -33,7 +33,6 @@ import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaTable;
@@ -77,7 +76,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private final static String LUA_GAME_LOGIC_SCRIPT = "gameLogic";
 
-    private SysUtilsWrapperInterface sysUtilsWrapper;
     private GLScene gl3DScene;
     private GameMapEntity mapEntity = null;
     private GameEntity gameEntity = null;
@@ -86,8 +84,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     private Map<String, Sound> soundCache = new HashMap<>();
     private Globals luaEngine;
 
-    public GameLogic(SysUtilsWrapperInterface sysUtilsWrapper, GLScene gl3DScene) {
-        this.sysUtilsWrapper = sysUtilsWrapper;
+    public GameLogic(GLScene gl3DScene) {
         this.gl3DScene = gl3DScene;
     }
 
@@ -99,9 +96,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         gl3DScene.setLuaEngine(luaEngine);
     }
 
-    public SysUtilsWrapperInterface getSysUtilsWrapper() {
-        return sysUtilsWrapper;
-    }
     @SuppressWarnings("unused") public SettingsManagerInterface iGetSettingsManager() {
         return getSettingsManager();
     }
@@ -222,7 +216,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
         /** Terrain map */
-        TopographicMapObject terrain = new GameMap(sysUtilsWrapper, program, gameEntity);
+        TopographicMapObject terrain = new GameMap(program, gameEntity);
         terrain.loadObject();
         terrain.setGlBlendingMap(createBlendingMap());
         terrain.createRigidBody();
@@ -235,16 +229,15 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance().getItem(SKY_DOME_TEXTURE_NAME);
         // terrain.setWaterReflectionMap(skyDomeTexture);
-        AbstractSkyObject skyDomeObject = new SkyDomeObject(sysUtilsWrapper, skyDomeTexture, glScene);
+        AbstractSkyObject skyDomeObject = new SkyDomeObject(skyDomeTexture, glScene);
         skyDomeObject.setItemName(SKY_BOX_CUBE_MAP_OBJECT);
         skyDomeObject.loadObject();
         glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
         /** mini-map gui-box */
         if (!getSettingsManager().isIn_2D_Mode()) {
-            GUI2DImageObject miniMapView = new GUI2DImageObject(sysUtilsWrapper,
-                    glScene.getCachedShader(GUI_OBJECT),
-                    new Vector4f(-1, 1, -0.75f, 0.5f), true);
+            GUI2DImageObject miniMapView = new GUI2DImageObject(glScene.getCachedShader(GUI_OBJECT),
+                                                                new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
             miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
@@ -307,7 +300,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         /** scene objects */
         Blender3DObject sceneObject;
         for (InteractiveGameItem item : gameEntity.getGameItems()) {
-            sceneObject = item.createSceneObject(sysUtilsWrapper, glScene);
+            sceneObject = item.createSceneObject(glScene);
             sceneObject.loadObject();
 
             if (item.onInitEventHandler != null)

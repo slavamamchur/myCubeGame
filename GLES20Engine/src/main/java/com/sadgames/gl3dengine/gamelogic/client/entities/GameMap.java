@@ -9,7 +9,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.sql.SQLException;
 
@@ -19,8 +18,8 @@ public class GameMap extends TopographicMapObject implements LinkedRESTObjectInt
 
     private GameEntity gameEntity;
 
-    public GameMap(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, GameEntity gameEntity) {
-        super(sysUtilsWrapper, program, gameEntity == null ? null : gameEntity.getMapId());
+    public GameMap(GLShaderProgram program, GameEntity gameEntity) {
+        super(program, gameEntity == null ? null : gameEntity.getMapId());
 
         //castShadow = true;
         this.gameEntity = gameEntity;

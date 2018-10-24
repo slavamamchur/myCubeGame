@@ -5,7 +5,6 @@ import com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.io.Serializable;
 
@@ -156,8 +155,8 @@ public class InteractiveGameItem implements Serializable {
         this.material = material;
     }
 
-    public Blender3DObject createSceneObject(SysUtilsWrapperInterface sysUtilsWrapper, GLScene scene) {
-        Blender3DObject object = new Blender3DObject(sysUtilsWrapper,
+    public Blender3DObject createSceneObject(GLScene scene) {
+        Blender3DObject object = new Blender3DObject(
                                                      itemName,
                                                      scene.getCachedShader(type),
                                                      mass,
@@ -169,8 +168,8 @@ public class InteractiveGameItem implements Serializable {
     }
 
     @SuppressWarnings("unused")
-    public Blender3DObject createSceneObject(SysUtilsWrapperInterface sysUtilsWrapper, GLScene scene, int color) {
-        Blender3DObject object = new Blender3DObject(sysUtilsWrapper,
+    public Blender3DObject createSceneObject(GLScene scene, int color) {
+        Blender3DObject object = new Blender3DObject(
                 itemName,
                 scene.getCachedShader(type),
                0xFF000000 | color,

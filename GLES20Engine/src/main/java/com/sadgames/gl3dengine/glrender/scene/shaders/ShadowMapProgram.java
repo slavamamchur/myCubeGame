@@ -4,7 +4,6 @@ import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOWMAP_FRAGMENT_SHADER;
@@ -15,8 +14,8 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.VERTEXES_PARAM_NAM
 
 public class ShadowMapProgram extends VBOShaderProgram {
 
-    public ShadowMapProgram(SysUtilsWrapperInterface sysUtilsWrapper) {
-        super(sysUtilsWrapper);
+    public ShadowMapProgram() {
+        super();
     }
 
     @Override

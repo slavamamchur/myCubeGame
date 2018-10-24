@@ -1,7 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import static com.sadgames.sysutils.common.MathUtils.crossProduct;
 
@@ -12,13 +11,13 @@ public class PyramidPrimitiveObject extends GameItemObject {
     protected float bottomHalfWidth;
     protected float height;
 
-    public PyramidPrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, GLShaderProgram program, int color, float bottomHalfWidth, float height) {
-        super(sysUtilsWrapper, program, color, 1f, COLLISION_OBJECT);
+    public PyramidPrimitiveObject(GLShaderProgram program, int color, float bottomHalfWidth, float height) {
+        super(program, color, 1f, COLLISION_OBJECT);
         init(bottomHalfWidth, height);
     }
 
-    public PyramidPrimitiveObject(SysUtilsWrapperInterface sysUtilsWrapper, String textureResName, GLShaderProgram program, float bottomHalfWidth, float height) {
-        super(sysUtilsWrapper, textureResName, program, 1f, COLLISION_OBJECT);
+    public PyramidPrimitiveObject(String textureResName, GLShaderProgram program, float bottomHalfWidth, float height) {
+        super(textureResName, program, 1f, COLLISION_OBJECT);
         init(bottomHalfWidth, height);
     }
 

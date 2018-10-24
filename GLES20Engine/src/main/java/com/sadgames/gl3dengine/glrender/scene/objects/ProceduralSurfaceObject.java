@@ -2,7 +2,6 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -34,15 +33,15 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
 
     private float[] vertexes;
 
-    public ProceduralSurfaceObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, String textureResName, float landSize, GLShaderProgram program) {
-        super(sysUtilsWrapper, type, textureResName, program, 0, COLLISION_OBJECT);
+    public ProceduralSurfaceObject(GLObjectType type, String textureResName, float landSize, GLShaderProgram program) {
+        super(type, textureResName, program, 0, COLLISION_OBJECT);
 
         initMesh(landSize);
     }
 
     @SuppressWarnings("unused")
-    public ProceduralSurfaceObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, float landSize, GLShaderProgram program, int color) {
-        super(sysUtilsWrapper, type, program, color, 0, 0);
+    public ProceduralSurfaceObject(GLObjectType type, float landSize, GLShaderProgram program, int color) {
+        super(type, program, color, 0, 0);
 
         initMesh(landSize);
     }

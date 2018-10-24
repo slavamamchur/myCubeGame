@@ -30,7 +30,6 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.ShadowMapProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyBoxProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.SkyDomeProgram;
 import com.sadgames.gl3dengine.glrender.scene.shaders.TerrainRendererProgram;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import org.luaj.vm2.Globals;
 
@@ -83,14 +82,12 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private AbstractFBO mainRenderFBO = null;
     private GUI2DImageObject postEffects2DScreen = null;
     private GLAnimation zoomCameraAnimation = null;
-    private SysUtilsWrapperInterface sysUtilsWrapper;
     private GameEventsCallbackInterface gameEventsCallBackListener = null;
     private GraphicsQuality graphicsQualityLevel;
     private String backgroundTextureName = null;
     private Globals luaEngine = null;
 
-    public GLScene(SysUtilsWrapperInterface sysUtilsWrapper) {
-        this.sysUtilsWrapper = sysUtilsWrapper;
+    public GLScene() {
         this.graphicsQualityLevel = getSettingsManager().getGraphicsQualityLevel();
     }
 
@@ -210,22 +207,22 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         if (program == null) {
             switch (type) {
                 case TERRAIN_OBJECT:
-                    program = new TerrainRendererProgram(sysUtilsWrapper);
+                    program = new TerrainRendererProgram();
                     break;
                 case SHADOW_MAP_OBJECT:
-                    program = new ShadowMapProgram(sysUtilsWrapper);
+                    program = new ShadowMapProgram();
                     break;
                 case GUI_OBJECT:
-                    program = new GUIRendererProgram(sysUtilsWrapper);
+                    program = new GUIRendererProgram();
                     break;
                 case SKY_BOX_OBJECT:
-                    program = new SkyBoxProgram(sysUtilsWrapper);
+                    program = new SkyBoxProgram();
                     break;
                 case SKY_DOME_OBJECT:
-                    program = new SkyDomeProgram(sysUtilsWrapper);
+                    program = new SkyDomeProgram();
                     break;
                 default:
-                    program = new TerrainRendererProgram(sysUtilsWrapper);
+                    program = new TerrainRendererProgram();
             }
 
             shaders.put(type, program);
@@ -556,7 +553,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     private void createPostEffects2DScreen() {
         GLShaderProgram guiShader = getCachedShader(GUI_OBJECT);
-        postEffects2DScreen = new GUI2DImageObject(sysUtilsWrapper, guiShader, new Vector4f(-1, 1, 1, -1), false);
+        postEffects2DScreen = new GUI2DImageObject(guiShader, new Vector4f(-1, 1, 1, -1), false);
         postEffects2DScreen.loadObject();
     }
 

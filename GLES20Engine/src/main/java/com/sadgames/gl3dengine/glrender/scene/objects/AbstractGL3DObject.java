@@ -10,7 +10,6 @@ import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParamVBO;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.MathUtils;
-import com.sadgames.sysutils.common.SysUtilsWrapperInterface;
 
 import java.nio.ShortBuffer;
 
@@ -47,7 +46,6 @@ import static com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation.ROTAT
 
 public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements GLAnimation.IAnimatedObject {
 
-    protected SysUtilsWrapperInterface sysUtilsWrapper;
     private GLObjectType objectType;
     protected AbstractTexture glTexture = null;
     private GLShaderParamVBO vertexVBO = null;
@@ -79,10 +77,9 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
 
     protected boolean castShadow = true;
 
-    public AbstractGL3DObject(SysUtilsWrapperInterface sysUtilsWrapper, GLObjectType type, GLShaderProgram program) {
+    public AbstractGL3DObject(GLObjectType type, GLShaderProgram program) {
         super();
 
-        this.sysUtilsWrapper = sysUtilsWrapper;
         this.objectType = type;
         this.program = program;
 
@@ -91,9 +88,6 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         createVBOParams();
     }
 
-    public SysUtilsWrapperInterface getSysUtilsWrapper() {
-        return sysUtilsWrapper;
-    }
     public GLObjectType getObjectType() {
         return objectType;
     }
