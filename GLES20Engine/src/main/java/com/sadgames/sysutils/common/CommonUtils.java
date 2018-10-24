@@ -134,7 +134,7 @@ public class CommonUtils {
     public static BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) { //TODO: Pixmap from web and store etc1 into db
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3).order(ByteOrder.BIG_ENDIAN);
+        ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3).order(ByteOrder.nativeOrder());
         ByteBuffer rawImage = ((ByteBuffer)bitmap.getRawData());
 
         rawImage.rewind();
