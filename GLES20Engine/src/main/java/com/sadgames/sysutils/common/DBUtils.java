@@ -19,6 +19,8 @@ import static com.sadgames.sysutils.common.SysUtilsConsts.MAP_UPDATED_DATE_DB_FI
 
 public class DBUtils {
 
+    //TODO: pass table_name, field_name as params, rename bitmap to array
+
     private static void saveChunk2DB(Connection conn,
                                      String map_id,
                                      int chunkNumber,

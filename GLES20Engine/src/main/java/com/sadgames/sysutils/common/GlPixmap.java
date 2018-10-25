@@ -21,7 +21,7 @@ public class GlPixmap extends Pixmap {
         this(input.array(), width, height, format);
     }
 
-    public GlPixmap(byte[] encodedData, int offset, int length) {
+    @SuppressWarnings("unused") public GlPixmap(byte[] encodedData, int offset, int length) {
         super(encodedData, offset, length);
     }
 
