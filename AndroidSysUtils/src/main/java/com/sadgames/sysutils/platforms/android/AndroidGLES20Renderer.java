@@ -8,6 +8,7 @@ import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+//TODO: replace with libGDX renderer and implement interface in GLScene
 public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
 
     private GLRendererInterface glInternalRenderer;

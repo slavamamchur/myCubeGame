@@ -49,6 +49,12 @@ public class BitmapWrapper implements BitmapWrapperInterface {
 
     public BitmapWrapper(byte[] encodedImage) throws IOException {
         //TODO: RGB888 and scale image by settings
+        /* int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
+           options.inSampleSize = CommonUtils.calculateInSampleSize(
+           options.outWidth,
+           options.outHeight,
+           options.outWidth / scaleFactor,
+           options.outHeight / scaleFactor); */
         this(new Pixmap(new Gdx2DPixmap(encodedImage, 0, encodedImage.length, GDX2D_FORMAT_RGBA8888)));
     }
 
