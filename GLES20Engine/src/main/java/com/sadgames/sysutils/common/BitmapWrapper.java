@@ -10,6 +10,8 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import static com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
+import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public class BitmapWrapper implements BitmapWrapperInterface {
 
@@ -50,15 +52,9 @@ public class BitmapWrapper implements BitmapWrapperInterface {
         this(createColourBitmap(color));
     }
 
-    public BitmapWrapper(byte[] encodedImage) throws IOException {
-        //TODO: RGB888 and scale image by settings (scale first!!!)
-        /* int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
-           options.inSampleSize = CommonUtils.calculateInSampleSize(
-           options.outWidth,
-           options.outHeight,
-           options.outWidth / scaleFactor,
-           options.outHeight / scaleFactor); */
-        this(new Pixmap(new Gdx2DPixmap(encodedImage, 0, encodedImage.length, GDX2D_FORMAT_RGBA8888)));
+    public BitmapWrapper(byte[] encodedImage) throws IOException { //TODO: RGB888
+        this(GlPixmap.createScaledTexture(new Gdx2DPixmap(encodedImage, 0, encodedImage.length, GDX2D_FORMAT_RGBA8888),
+                                          TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()]));
     }
 
     protected static Pixmap createColourBitmap(int color) {

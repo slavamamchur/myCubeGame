@@ -1,6 +1,7 @@
 package com.sadgames.sysutils.common;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -33,5 +34,22 @@ public class GlPixmap extends Pixmap {
     @Override
     public int getPixel(int x, int y) {
         return ColorUtils.convert2libGDX(super.getPixel(x, y));
+    }
+
+    public static Pixmap createScaledTexture(Gdx2DPixmap src, int scale) {
+        Gdx2DPixmap dst = src;
+
+        if (scale != 1) {
+            int srcWidth = src.getWidth();
+            int srcHeight = src.getHeight();
+            int dstWidth = srcWidth / scale;
+            int dstHeight = srcHeight / scale;
+            dst = new Gdx2DPixmap(dstWidth, dstHeight, src.getFormat());
+
+            dst.drawPixmap(src, 0, 0, srcWidth, srcHeight, 0, 0, dstWidth, dstHeight);
+            src.dispose();
+        }
+
+        return new Pixmap(dst);
     }
 }
