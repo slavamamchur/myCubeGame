@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PAGE_SORT_BY_HEADER;
+import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PAGE_SORT_HEADER;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.PARAM_HEADER_AUTH_TOKEN;
 import static com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst.URL_LIST;
 
@@ -64,19 +66,25 @@ public class BaseController<T extends BasicEntity, C extends GenericCollectionRe
             params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
         }
 
-        //params.put(PAGE_OFFSET_HEADER, "1");
-        //params.put(PAGE_LIMIT_HEADER, "2");
-        //params.put(FILTER_BY_NAME, "test_");
-        //params.put(PAGE_SORT_BY_HEADER, "lastUsedDate");
-        //params.put(PAGE_SORT_HEADER, "asc");
-
         return getHeaderAndObjectParamsHttpEntity(params, entity);
     }
 
     @Override
     public Collection getResponseList() throws WebServiceException {
+        Map<String, String> old_params = params;
+
+        params = new HashMap<>();
+        params.put(PARAM_HEADER_AUTH_TOKEN, getAuthToken());
+        params.put(PAGE_SORT_BY_HEADER, "lastUsedDate");
+        params.put(PAGE_SORT_HEADER, "desc");
+        //params.put(PAGE_OFFSET_HEADER, "1");
+        //params.put(PAGE_LIMIT_HEADER, "2");
+
         ResponseEntity<C> responseEntity =
                 getRestTemplate().exchange(getmUrl() + URL_LIST, HttpMethod.GET, getHttpEntity(null), listType);
+
+        params.clear();
+        params = old_params;
 
         return responseEntity.getBody() == null ? null : responseEntity.getBody().getCollection();
     }

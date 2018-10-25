@@ -3,6 +3,7 @@ package com.sadgames.sysutils.common;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.glutils.ETC1;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;
 import java.nio.Buffer;
@@ -120,8 +121,12 @@ public class BitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public void release() {
-        if (pixmap != null)
-            pixmap.dispose();
+        try {
+            if (pixmap != null)
+                pixmap.dispose();
+        }
+        catch (GdxRuntimeException e) { e.printStackTrace(); }
+        finally { pixmap = null; }
 
         if (data != null) {
             data.limit(0);
