@@ -41,6 +41,8 @@ public class BitmapWrapper implements BitmapWrapperInterface {
              image != null ? image.getWidth() : 0,
              image != null ? image.getHeight() : 0,
              false);
+
+        pixmap = image;
     }
 
     public BitmapWrapper(int color) {

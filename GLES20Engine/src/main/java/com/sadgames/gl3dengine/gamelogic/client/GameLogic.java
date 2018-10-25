@@ -255,7 +255,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         BitmapWrapperInterface bmp = new BitmapWrapper(blendMap);
         ((BitmapWrapper)bmp).setName(GameConst.BLENDING_MAP_TEXTURE);
         AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
-        blendMap.dispose();
         TextureCacheManager textureCache = TextureCacheManager.getInstance();
         textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture));
 
