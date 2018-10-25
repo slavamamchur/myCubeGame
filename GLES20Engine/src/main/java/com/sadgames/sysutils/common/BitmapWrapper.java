@@ -51,7 +51,7 @@ public class BitmapWrapper implements BitmapWrapperInterface {
     }
 
     public BitmapWrapper(byte[] encodedImage) throws IOException {
-        //TODO: RGB888 and scale image by settings
+        //TODO: RGB888 and scale image by settings (scale first!!!)
         /* int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
            options.inSampleSize = CommonUtils.calculateInSampleSize(
            options.outWidth,

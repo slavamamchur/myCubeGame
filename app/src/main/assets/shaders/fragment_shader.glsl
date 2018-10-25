@@ -60,9 +60,9 @@ highp float unpack (highp vec4 packedZValue) {
 float calcShadowRate(vec3 nNormal) {
       highp float shadow = 1.0;
 
-      if (vShadowCoord.w > 0.0 && u_isCubeMapF == 1) {
-        highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal);
-        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/;
+      if (vShadowCoord.w > 0.0 /*&& u_isCubeMapF == 1*/) { //TODO: remove stub
+        highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal); //TODO: set proper bias
+        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/; //TODO: for spot lights
 
         highp vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
         highp float distanceFromLight = unpack(packedZValue);

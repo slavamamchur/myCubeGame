@@ -191,6 +191,7 @@ onDiceObjectInit = function(gameObject)
     gameObject:hideObject()
 end
 
+--todo: recalc playersOnWayPoints on fly_forward/backward
 onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
     local playersOnWayPoints = {}
     for i = 1, gameInstanceEntity:getGame():getGamePoints():size() do
