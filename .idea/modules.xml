@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AndroidSysUtils/AndroidSysUtils.iml" filepath="$PROJECT_DIR$/AndroidSysUtils/AndroidSysUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/CubeGame.iml" filepath="$PROJECT_DIR$/CubeGame.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/DiceGameAndroidClient.iml" filepath="$PROJECT_DIR$/app/DiceGameAndroidClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/GLES20Engine/GLES20Engine.iml" filepath="$PROJECT_DIR$/GLES20Engine/GLES20Engine.iml" />
