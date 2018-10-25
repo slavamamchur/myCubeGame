@@ -147,7 +147,7 @@ public class CommonUtils {
             bb.put((byte) (value >> 8));
         }
 
-        bitmap.release(); //TODO: store Pixmap ptr and dispose it
+        bitmap.release(); //TODO: store Pixmap ptr and dispose it -> move code after compress
         bitmap = null;
 
         bb.rewind();

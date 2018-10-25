@@ -17,6 +17,7 @@ public class BitmapWrapper implements BitmapWrapperInterface {
     protected int mWidth;
     protected int mHeight;
     protected boolean mCompressed;
+    private Pixmap pixmap = null;
 
     private String name = "";
 
@@ -111,6 +112,9 @@ public class BitmapWrapper implements BitmapWrapperInterface {
 
     @Override
     public void release() {
+        if (pixmap != null)
+            pixmap.dispose();
+
         if (data != null) {
             data.limit(0);
             data = null;
