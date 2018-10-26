@@ -13,12 +13,8 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
 
     private GLRendererInterface glInternalRenderer;
 
-    public AndroidGLES20Renderer() {
-        glInternalRenderer = new GLScene();
-    }
-
-    public GLScene getScene() {
-        return glInternalRenderer.getScene();
+    public AndroidGLES20Renderer(GLScene scene) {
+        glInternalRenderer = scene;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.sadgames.dicegame.ui.framework;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -18,6 +17,7 @@ import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import java.util.ArrayList;
@@ -25,8 +25,9 @@ import java.util.ArrayList;
 public class MapFragment extends Fragment {
 
     private GameLogic gameLogic;
+    private GLScene scene;
 
-    public GLSurfaceView glMapSurfaceView;
+    public MapGLSurfaceView glMapSurfaceView;
     public AndroidGLES20Renderer glRenderer;
 
     public MapFragment() {}
@@ -35,35 +36,41 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        glRenderer = new AndroidGLES20Renderer();
-        gameLogic = new GameLogic(glRenderer.getScene());
-        glRenderer.getScene().setGameEventsCallBackListener(gameLogic);
+        scene = new GLScene();
+        glRenderer = new AndroidGLES20Renderer(scene);
+        gameLogic = new GameLogic();
+        scene.setGameEventsCallBackListener(gameLogic);
 
-        glMapSurfaceView = new MapGLSurfaceView(getContext());
+        glMapSurfaceView = new MapGLSurfaceView(getContext()); //TODO: init from libGDX but save touche listener
         return  glMapSurfaceView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        glMapSurfaceView.setScene(scene);
         glMapSurfaceView.setRenderer(glRenderer);
     }
 
     @Override
     public void onDetach() {
         AndroidRestApiWrapper.releaseInstance();
+
         super.onDetach();
     }
 
     @Override
     public void onPause() {
         glMapSurfaceView.onPause();
+
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         glMapSurfaceView.onResume();
     }
 
@@ -78,7 +85,8 @@ public class MapFragment extends Fragment {
             GameMapEntity map = new GameMapEntity();
             map.setId(game.getMapId());
             InitMap(map);
-            gameLogic.initScriptEngine();
+
+            scene.setLuaEngine(gameLogic.initScriptEngine(scene));
         }
     }
 
@@ -109,4 +117,7 @@ public class MapFragment extends Fragment {
         return gameLogic;
     }
 
+    public GLScene getScene() {
+        return scene;
+    }
 }

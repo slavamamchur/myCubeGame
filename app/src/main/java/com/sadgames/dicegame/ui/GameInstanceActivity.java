@@ -102,7 +102,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
             @Override
             public void run() {
                 try {
-                    if (mMapFragment.glRenderer.getScene().getFrameTime() > 0)
+                    if (mMapFragment.getScene().getFrameTime() > 0)
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -213,7 +213,7 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     };
 
     private void updateTitle () {
-        long fps = 1000 / mMapFragment.glRenderer.getScene().getFrameTime();
+        long fps = 1000 / mMapFragment.getScene().getFrameTime();
         setTitle(getItem().getName() + "(GameState: " + getItem().getState()  + ") FPS: " + fps);
         supportInvalidateOptionsMenu();
     }

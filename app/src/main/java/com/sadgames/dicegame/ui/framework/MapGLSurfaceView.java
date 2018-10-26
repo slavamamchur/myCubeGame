@@ -23,6 +23,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
     private float mPreviousY;
     private float mScaleFactor = 1.0f;
 
+    private GLScene scene = null;
     private ScaleGestureDetector mScaleDetector;
 
     public MapGLSurfaceView(Context context) {
@@ -43,12 +44,16 @@ public class MapGLSurfaceView extends GLSurfaceView {
         mRenderer = (AndroidGLES20Renderer) renderer;
     }
 
+    public void setScene(GLScene scene) {
+        this.scene = scene;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         float x = e.getX();
         float y = e.getY();
-        GLCamera camera = mRenderer.getScene().getCamera();
+        GLCamera camera = scene.getCamera();
 
         float oldScaleFactor = mScaleFactor;
         mScaleDetector.onTouchEvent(e);
@@ -68,7 +73,7 @@ public class MapGLSurfaceView extends GLSurfaceView {
                 camera.rotateY(dx * TOUCH_SCALE_FACTOR * 2);
 
                 camera.updateViewMatrix();
-                mRenderer.getScene().getLightSource().setLightPosInEyeSpace();
+                scene.getLightSource().setLightPosInEyeSpace();
             }
 
             //requestRender();

@@ -75,7 +75,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     private final static String LUA_GAME_LOGIC_SCRIPT = "gameLogic";
 
-    private GLScene gl3DScene;
     private GameMapEntity mapEntity = null;
     private GameEntity gameEntity = null;
     private GameInstanceEntity gameInstanceEntity = null;
@@ -83,25 +82,22 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     private Map<String, Sound> soundCache = new HashMap<>();
     private Globals luaEngine;
 
-    public GameLogic(GLScene gl3DScene) {
-        this.gl3DScene = gl3DScene;
+    public GameLogic() {
+        super();
     }
 
-    public void initScriptEngine() {
+    public Globals initScriptEngine(GLScene scene) {
         luaEngine = JsePlatform.standardGlobals();
         luaEngine.finder = this;
-        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(CoerceJavaToLua.coerce(this));
+        luaEngine.loadfile(LUA_GAME_LOGIC_SCRIPT).call(CoerceJavaToLua.coerce(this), CoerceJavaToLua.coerce(scene));
 
-        gl3DScene.setLuaEngine(luaEngine);
+        return luaEngine;
     }
 
     @SuppressWarnings("unused") public SettingsManagerInterface iGetSettingsManager() {
         return getSettingsManager();
     }
 
-    @SuppressWarnings("unused") public GLScene getGl3DScene() {
-        return gl3DScene;
-    }
     @SuppressWarnings("unused")
     public RestApiInterface getRestApiWrapper() {
         return GdxExt.restAPI;

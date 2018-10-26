@@ -1,4 +1,4 @@
-local gameLogic = ...
+local gameLogic, gameScene = ...
 
 local ROLLING_DICE_SOUND = 'rolling_dice.mp3'
 local SKY_BOX_CUBE_MAP_OBJECT = 'SKY_BOX_CUBE_MAP_OBJECT'
@@ -42,9 +42,9 @@ onCameraInit  = function(defCam)
     local camera
 
     if gameLogic:iGetSettingsManager():isIn_2D_Mode() == true then
-        camera = gameLogic:getGl3DScene():createCam2D(LAND_SIZE_IN_WORLD_SPACE)
+        camera = gameScene:createCam2D(LAND_SIZE_IN_WORLD_SPACE)
     else
-        camera = gameLogic:getGl3DScene():createCamIsometric(DEFAULT_CAMERA_X,
+        camera = gameScene:createCamIsometric(DEFAULT_CAMERA_X,
                                                              DEFAULT_CAMERA_Y,
                                                              DEFAULT_CAMERA_Z,
                                                              DEFAULT_CAMERA_PITCH,
@@ -53,7 +53,7 @@ onCameraInit  = function(defCam)
         camera:rotateX(22.5)
     end
 
-    gameLogic:getGl3DScene():setCamera(camera)
+    gameScene:setCamera(camera)
 end
 
 function playSound(name)
@@ -75,7 +75,7 @@ function stopSound(name)
 end
 
 onRollingObjectStart = function(gameObject)
-    if gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT) then
+    if gameObject == gameScene:getObject(DICE_MESH_OBJECT) then
         playSound(ROLLING_DICE_SOUND)
     end
 end
@@ -90,7 +90,7 @@ function startWith(item, pattern)
 end
 
 function findFirst(pattern)
-    local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
+    local list = gameScene:getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
 
     while list:hasNext() do
         local item = list:next()
@@ -105,7 +105,7 @@ end
 
 function chnageWayPointsVisibility()
     local visible = not gameLogic:iGetSettingsManager():isIn_2D_Mode()
-    local list = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
+    local list = gameScene:getObject(TERRAIN_MESH_OBJECT):getChilds():values():iterator()
 
     while list:hasNext() do
         local item = list:next()
@@ -117,30 +117,30 @@ function chnageWayPointsVisibility()
 end
 
 onMovingObjectStop = function(gameObject, gameInstance)
-    if not (gameInstance == nil) and (gameObject == gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT)) then
+    if not (gameInstance == nil) and (gameObject == gameScene:getObject(DICE_MESH_OBJECT)) then
         gameInstance:setStepsToGo(getTopFaceDiceValue(gameObject))
         gameLogic:getRestApiWrapper():showTurnInfo(gameInstance)
 
-        gameLogic:getGl3DScene():restorePrevViewMode()
+        gameScene:restorePrevViewMode()
 
         gameObject:hideObject()
         chnageWayPointsVisibility()
 
-        gameLogic:getGl3DScene():setZoomCameraAnimation(gameLogic:getGl3DScene():createZoomCameraAnimation(2.0))
-        gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, { gameInstance})
+        gameScene:setZoomCameraAnimation(gameScene:createZoomCameraAnimation(2.0))
+        gameScene:getZoomCameraAnimation():startAnimation(nil, ON_STOP_MOVING_ANIMATION_END, { gameInstance})
     end
 end
 
 beforeDrawFrame = function(frametime)
-    local skyBox = gameLogic:getGl3DScene():getObject(SKY_BOX_CUBE_MAP_OBJECT)
+    local skyBox = gameScene:getObject(SKY_BOX_CUBE_MAP_OBJECT)
 
     skyBox:calcRotationAngle(frametime)
-    gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
+    gameScene:getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
 end
 
 onPlayTurn = function()
-    gameLogic:getGl3DScene():setZoomCameraAnimation(gameLogic:getGl3DScene():createZoomCameraAnimation(0.5))
-    gameLogic:getGl3DScene():getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
+    gameScene:setZoomCameraAnimation(gameScene:createZoomCameraAnimation(0.5))
+    gameScene:getZoomCameraAnimation():startAnimation(nil, ON_PLAY_TURN_ANIMATION_END, {})
 end
 
 drawPath = function(blendMap, gameEntity)
@@ -170,9 +170,9 @@ drawPath = function(blendMap, gameEntity)
 end
 
 rollDice = function()
-    local dice = gameLogic:getGl3DScene():getObject(DICE_MESH_OBJECT)
+    local dice = gameScene:getObject(DICE_MESH_OBJECT)
 
-    gameLogic:getGl3DScene():switrchTo2DMode()
+    gameScene:switrchTo2DMode()
     chnageWayPointsVisibility()
 
     dice:createRigidBody()
@@ -180,7 +180,7 @@ rollDice = function()
     dice:get_body():setLinearVelocity(generateForceVector())
 
     dice:showObject()
-    gameLogic:getGl3DScene():getPhysicalWorldObject():addRigidBody(dice:get_body())
+    gameScene:getPhysicalWorldObject():addRigidBody(dice:get_body())
 end
 
 playerNextMove = function(gameInstance)
@@ -224,7 +224,7 @@ onPlayerMakeTurn = function(gameInstanceEntity, savedPlayers, delegate)
 
     if movedPlayerIndex >= 0 then
         animateChip(gameInstanceEntity, delegate, endGamePoint, playersCnt,
-                    gameLogic:getGl3DScene():getObject(string.format(
+                    gameScene:getObject(string.format(
                                                                     '%s_%s',
                                                                      CHIP_MESH_OBJECT,
                                                                      savedPlayers[movedPlayerIndex + 1]:getName())))
@@ -256,7 +256,7 @@ animateChip = function(gameInstanceEntity, delegate, endGamePoint, playersCnt, c
     local chipPlace = getChipPlace(endGamePoint,
                                    playersCnt,
                            (gameInstanceEntity:getStepsToGo() == 0) or (endGamePoint:getType():ordinal() == POINT_TYPE_FINISH))
-    local move = gameLogic:getGl3DScene():createTranslateAnimation(chip:getPlace().x, chipPlace.x,
+    local move = gameScene:createTranslateAnimation(chip:getPlace().x, chipPlace.x,
                                                                    0.0, 0.0,
                                                                    chip:getPlace().y, chipPlace.y,
                                                                    CHIP_ANIMATION_DURATION)
@@ -273,7 +273,7 @@ moveChips = function(gameInstanceEntity)
 
     for i = 0, gameInstanceEntity:getPlayers():size() - 1 do
         local player = gameInstanceEntity:getPlayers():get(i)
-        local chip = gameLogic:getGl3DScene():getObject(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
+        local chip = gameScene:getObject(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
         local currentPointIdx = player:getCurrentPoint() + 1
 
         playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
@@ -284,7 +284,7 @@ moveChips = function(gameInstanceEntity)
 end
 
 function createSpinAnimation(rotationAxe)
-    local spin = gameLogic:getGl3DScene():createRotateAnimation(-360.0, rotationAxe, 4000)
+    local spin = gameScene:createRotateAnimation(-360.0, rotationAxe, 4000)
     spin:setRepeatCount(0)
 
     return spin
@@ -305,7 +305,7 @@ function createWPFlyForward(gameEntity)
             TERRAIN_MESH_OBJECT,
             CHIP_DEFAULT_WEIGHT,
             COLLISION_OBJECT,
-            TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene(), 0xFFFFFFFF)
+            TERRAIN_MATERIAL):createSceneObject(gameScene, 0xFFFFFFFF)
     wp:setInitialScale(0.015625)
     wp:setInitialTranslation(0.0, 0.0, 0.25)
     loadObject(wp, 'WP_FLY_FORWARD_')
@@ -321,7 +321,7 @@ function createWPFinish(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameScene)
 
     wp:setInitialScale(0.5)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
@@ -337,7 +337,7 @@ function createWPFlyBack(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameScene)
 
     wp:setInitialScale(0.1)
     wp:setInitialTranslation(0.0, 0.33, 0.0)
@@ -353,7 +353,7 @@ function createWPMoveSkip(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameScene)
 
     wp:setInitialScale(0.16667)
     loadObject(wp, 'WP_MOVE_SKIP_')
@@ -368,7 +368,7 @@ function createWPMoveMore(gameEntity)
     TERRAIN_MESH_OBJECT,
     CHIP_DEFAULT_WEIGHT,
     COLLISION_OBJECT,
-    TERRAIN_MATERIAL):createSceneObject(gameLogic:getGl3DScene())
+    TERRAIN_MATERIAL):createSceneObject(gameScene)
 
     wp:setInitialScale(0.00125)
     wp:setInitialTranslation(0.0, 0.0625, 0.0)
@@ -380,7 +380,7 @@ function createWPMoveMore(gameEntity)
 end
 
 function createSpecialPoint(type, number, place, gameEntity)
-    local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
+    local map = gameScene:getObject(TERRAIN_MESH_OBJECT)
     local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
     local coords = map:map2WorldCoord(place.x * scaleFactor, place.y * scaleFactor)
 
@@ -430,14 +430,14 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
         CHIP_DEFAULT_WEIGHT,
         COLLISION_OBJECT,
         TERRAIN_MATERIAL)
-        :createSceneObject(gameLogic:getGl3DScene(), player:getColor())
+        :createSceneObject(gameScene, player:getColor())
 
         chip:setInitialScale(0.2)
         chip:setInitialTranslation(0.0, 0.08, 0.0)
         chip:setTwoSidedSurface(false);
         chip:setItemName(string.format('%s_%s', CHIP_MESH_OBJECT, player:getName()))
 
-        local parent = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
+        local parent = gameScene:getObject(TERRAIN_MESH_OBJECT)
         local currentPointIdx = player:getCurrentPoint() + 1
         playersOnWayPoints[currentPointIdx] = playersOnWayPoints[currentPointIdx] + 1
         chip:setInWorldPosition(getChipPlace(gameEntity:getGamePoints():get(player:getCurrentPoint()),
@@ -456,7 +456,7 @@ onCreateDynamicItems = function(gameEntity, gameInstance)
 end
 
 function getChipPlace(point, playersCnt, rotate)
-    local map = gameLogic:getGl3DScene():getObject(TERRAIN_MESH_OBJECT)
+    local map = gameScene:getObject(TERRAIN_MESH_OBJECT)
     local scaleFactor = map:getGlTexture():getWidth() * 1.0 / DEFAULT_TEXTURE_SIZE
     local toX2 = point:getxPos() * scaleFactor
     local toZ2 = point:getyPos() * scaleFactor
@@ -530,7 +530,7 @@ function generateForceVector()
     local fy = fxz * 3.0 / 4.0
     local fVector = {0.0, fy, -fxz, 1.0}
 
-    local transform = gameLogic:getGl3DScene():createTransform()
+    local transform = gameScene:createTransform()
     transform:rotY(math.rad(45.0 - math.random(0, 90) * 1.0))
 
     return gameLogic:mulMV(transform, fVector)
@@ -539,13 +539,13 @@ end
 function generateDiceInitialTransform()
     math.randomseed(os.time())
 
-    local transformer = gameLogic:getGl3DScene():createTransform()
-    local transformingObject = gameLogic:getGl3DScene():createTransform()
+    local transformer = gameScene:createTransform()
+    local transformingObject = gameScene:createTransform()
 
     transformingObject:setIdentity()
     transformer:setIdentity()
 
-    transformer:setTranslation(gameLogic:getGl3DScene():createVector3f(0.0, 0.5, 2.5))
+    transformer:setTranslation(gameScene:createVector3f(0.0, 0.5, 2.5))
     transformingObject:mul(transformer)
 
     transformer:rotX(math.rad(math.random(0, 3) * 90.0)) --4
