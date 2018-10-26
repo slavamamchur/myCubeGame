@@ -40,7 +40,7 @@ public class MapFragment extends Fragment {
         scene = new GLScene(gameLogic);
         glRenderer = new AndroidGLES20Renderer(scene);
 
-        glMapSurfaceView = new MapGLSurfaceView(getContext()); //TODO: init from libGDX but save touche listener
+        glMapSurfaceView = new MapGLSurfaceView(getContext());
         return  glMapSurfaceView;
     }
 

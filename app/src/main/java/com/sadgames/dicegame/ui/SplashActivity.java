@@ -12,6 +12,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 import com.badlogic.gdx.backends.android.AndroidPreferences;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.GdxDbAndroid;
 import com.sadgames.dicegame.R;
@@ -23,6 +24,10 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_R
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public class SplashActivity extends AppCompatActivity {
+
+    static {
+        GdxNativesLoader.load();
+    }
 
     public static  final int HIDE_DELAY = 3000;
 

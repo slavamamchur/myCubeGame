@@ -1,11 +1,19 @@
 package com.sadgames.gl3dengine.glrender;
 
-public class GLES20JniWrapper {
+import com.badlogic.gdx.graphics.GL20;
+
+public class GLES20JniWrapper { //TODO: modify for use glEngine
 
     private static final String GLES_20_JNI_WRAPPER_LIB = "gleswrapper";
 
     static {
-        System.loadLibrary(GLES_20_JNI_WRAPPER_LIB);
+        System.loadLibrary(GLES_20_JNI_WRAPPER_LIB); //TODO: remove
+    }
+
+    private static GL20 glEngine;
+
+    public static void setGlEngine(GL20 gl) {
+        glEngine = gl;
     }
 
     public static native void glClear();

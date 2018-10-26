@@ -17,16 +17,11 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.sadgames.dicegame.R;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    static {
-        GdxNativesLoader.load();
-    }
 
     Gallery gallery;
 
