@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapper;
 
 public abstract class AbstractTexture {
 
@@ -10,7 +10,7 @@ public abstract class AbstractTexture {
     private     int textureId;
     protected  long textureSize;
 
-    public AbstractTexture(int width, int height, BitmapWrapperInterface bitmap) {
+    public AbstractTexture(int width, int height, BitmapWrapper bitmap) {
         init(width, height);
         this.textureSize = bitmap != null ? bitmap.getImageSizeBytes() : 0;
 
@@ -37,7 +37,7 @@ public abstract class AbstractTexture {
         this.height = height;
     }
 
-    protected void createTexture(BitmapWrapperInterface bitmap) {
+    protected void createTexture(BitmapWrapper bitmap) {
         final int[] textureIds = new int[1];
         GLES20JniWrapper.glGenTextures(textureIds);
 
@@ -94,5 +94,5 @@ public abstract class AbstractTexture {
 
     protected abstract int getTextureType();
     protected abstract void setTextureParams();
-    protected abstract void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException;
+    protected abstract void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException;
 }

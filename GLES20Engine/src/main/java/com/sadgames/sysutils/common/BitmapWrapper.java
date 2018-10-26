@@ -13,7 +13,7 @@ import static com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXTURE_RESOLUTION_SCALE;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
-public class BitmapWrapper implements BitmapWrapperInterface {
+public class BitmapWrapper {
 
     protected ByteBuffer data;
     protected int sizeInBytes;
@@ -69,12 +69,10 @@ public class BitmapWrapper implements BitmapWrapperInterface {
         this.name = name;
     }
 
-    @Override
     public String getTextureName() {
         return getName();
     }
 
-    @Override
     public Buffer getRawData() {
         if (data != null)
             data.rewind();
@@ -82,40 +80,33 @@ public class BitmapWrapper implements BitmapWrapperInterface {
         return data;
     }
 
-    @Override
-    public Buffer getDecodedRawData() {
+    @SuppressWarnings("unused") public Buffer getDecodedRawData() {
         if (mCompressed)
             return decodeImage(data);
         else
             return getRawData();
     }
 
-    @Override
     public int getWidth() {
         return mWidth;
     }
 
-    @Override
     public int getHeight() {
         return mHeight;
     }
 
-    @Override
     public int getImageSizeBytes() {
         return sizeInBytes;
     }
 
-    @Override
     public boolean isEmpty() {
         return data == null;
     }
 
-    @Override
     public boolean isCompressed() {
         return mCompressed;
     }
 
-    @Override
     public void release() {
         try {
             if (pixmap != null)

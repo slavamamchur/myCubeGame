@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapper;
 
 import java.nio.Buffer;
 
@@ -30,7 +30,7 @@ public class BitmapTexture extends AbstractTexture {
 
     private String textureName = null;
 
-    private BitmapTexture(BitmapWrapperInterface bitmap) {
+    private BitmapTexture(BitmapWrapper bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
@@ -60,7 +60,7 @@ public class BitmapTexture extends AbstractTexture {
     }
 
     @Override
-    protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException {
         if (!bitmap.isCompressed()
             && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3)
             && bitmap.getRawData() != null
@@ -74,7 +74,7 @@ public class BitmapTexture extends AbstractTexture {
     }
 
     @SuppressWarnings("all")
-    protected void loadTextureInternal(int target, BitmapWrapperInterface bitmap) {
+    protected void loadTextureInternal(int target, BitmapWrapper bitmap) {
         try {
             if (!bitmap.isCompressed())
                 glTexImage2D(target,
@@ -106,7 +106,7 @@ public class BitmapTexture extends AbstractTexture {
         }
     }
 
-    public static AbstractTexture createInstance(BitmapWrapperInterface bitmap) {
+    public static AbstractTexture createInstance(BitmapWrapper bitmap) {
         return new BitmapTexture(bitmap);
     }
 

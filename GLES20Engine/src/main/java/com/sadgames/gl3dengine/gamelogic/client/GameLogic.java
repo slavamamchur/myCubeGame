@@ -29,7 +29,6 @@ import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapT
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 import com.sadgames.gl3dengine.manager.TextureCacheManager;
 import com.sadgames.sysutils.common.BitmapWrapper;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
 import com.sadgames.sysutils.common.CommonUtils;
 import com.sadgames.sysutils.common.LuaUtils;
 import com.sadgames.sysutils.common.SettingsManagerInterface;
@@ -252,7 +251,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         //TODO: int scaleFactor = TEXTURE_RESOLUTION_SCALE[getSettingsManager().getGraphicsQualityLevel().ordinal()];
         Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000, Pixmap.Format.RGBA8888);
         onPrepareMapTexture(blendMap);
-        BitmapWrapperInterface bmp = new BitmapWrapper(blendMap);
+        BitmapWrapper bmp = new BitmapWrapper(blendMap);
         ((BitmapWrapper)bmp).setName(GameConst.BLENDING_MAP_TEXTURE);
         AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
         TextureCacheManager textureCache = TextureCacheManager.getInstance();

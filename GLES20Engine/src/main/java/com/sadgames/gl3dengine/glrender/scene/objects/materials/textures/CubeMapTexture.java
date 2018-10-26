@@ -1,6 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapper;
 
 import java.nio.Buffer;
 
@@ -60,7 +60,7 @@ public class CubeMapTexture extends AbstractTexture {
     }
 
     @Override
-    protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException {
         textureSize = 0;
 
         for (int i =0; i < faces.length; i++)
@@ -76,7 +76,7 @@ public class CubeMapTexture extends AbstractTexture {
     }
 
     @SuppressWarnings("all")
-    protected void loadTextureInternal(int target, BitmapWrapperInterface bitmap) {
+    protected void loadTextureInternal(int target, BitmapWrapper bitmap) {
         try {
             if (!bitmap.isCompressed()) {
                 glTexImage2D(target,

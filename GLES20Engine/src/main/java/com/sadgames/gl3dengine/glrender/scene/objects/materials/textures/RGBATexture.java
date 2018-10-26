@@ -1,6 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapper;
 
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_CLAMP_TO_EDGE_value;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_NEAREST_value;
@@ -34,7 +34,7 @@ public class RGBATexture extends AbstractTexture {
     }
 
     @Override
-    protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException {
         glTexImage2D(getTextureType(),
                     0,
                      get_GL_RGBA_value(),

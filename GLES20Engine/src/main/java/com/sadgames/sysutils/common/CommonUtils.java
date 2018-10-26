@@ -71,8 +71,8 @@ public class CommonUtils {
         }
     }
 
-    public static BitmapWrapperInterface getBitmapFromFile(String file, boolean isRelief) {
-        BitmapWrapperInterface result;
+    public static BitmapWrapper getBitmapFromFile(String file, boolean isRelief) {
+        BitmapWrapper result;
         byte[] bitmapArray;
 
         try (InputStream source = getResourceStream("textures/" + file)) {
@@ -104,27 +104,7 @@ public class CommonUtils {
         return result;
     }
 
-    public static int calculateInSampleSize(int width, int height, int reqWidth, int reqHeight) {
-        /** Raw height and width of image*/
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            /** Calculate the largest inSampleSize value that is a power of 2 and keeps both
-             // height and width larger than the requested height and width.*/
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    private static BitmapWrapperInterface compressTexture(ByteBuffer input, int width, int height) {
+    private static BitmapWrapper compressTexture(ByteBuffer input, int width, int height) {
         Pixmap pixmap = new GlPixmap(input, width, height, Pixmap.Format.RGB888);
         ByteBuffer compressedImage = ETC1.encodeImage(pixmap).compressedData;
         pixmap.dispose();
@@ -132,7 +112,7 @@ public class CommonUtils {
         return new BitmapWrapper(new ETC1Utils.ETC1Texture(width, height, compressedImage));
     }
 
-    public static BitmapWrapperInterface packToETC1(BitmapWrapperInterface bitmap) {
+    public static BitmapWrapper packToETC1(BitmapWrapper bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         ByteBuffer bb = ByteBuffer.allocateDirect(width * height * 3).order(ByteOrder.nativeOrder());
@@ -151,7 +131,7 @@ public class CommonUtils {
         bitmap = null;
 
         bb.rewind();
-        BitmapWrapperInterface texture = compressTexture(bb, width, height);
+        BitmapWrapper texture = compressTexture(bb, width, height);
 
         bb.limit(0);
 

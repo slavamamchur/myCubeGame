@@ -1,7 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
-import com.sadgames.sysutils.common.BitmapWrapperInterface;
+import com.sadgames.sysutils.common.BitmapWrapper;
 
 public class DepthTexture extends RGBATexture {
 
@@ -10,7 +10,7 @@ public class DepthTexture extends RGBATexture {
     }
 
     @Override
-    protected void loadTexture(BitmapWrapperInterface bitmap) throws UnsupportedOperationException {
+    protected void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException {
         GLES20JniWrapper.glTexImageDepth(getWidth(), getHeight());
     }
 }
