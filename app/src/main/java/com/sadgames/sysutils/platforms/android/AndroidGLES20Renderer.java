@@ -3,7 +3,6 @@ package com.sadgames.sysutils.platforms.android;
 import android.opengl.GLSurfaceView;
 
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
-import com.sadgames.gl3dengine.glrender.scene.GLScene;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -13,8 +12,8 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
 
     private GLRendererInterface glInternalRenderer;
 
-    public AndroidGLES20Renderer(GLScene scene) {
-        glInternalRenderer = scene;
+    public AndroidGLES20Renderer(GLRendererInterface renderer) {
+        this.glInternalRenderer = renderer;
     }
 
     @Override
