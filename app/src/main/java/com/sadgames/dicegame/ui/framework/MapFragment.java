@@ -36,10 +36,9 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        scene = new GLScene();
-        glRenderer = new AndroidGLES20Renderer(scene);
         gameLogic = new GameLogic();
-        scene.setGameEventsCallBackListener(gameLogic);
+        scene = new GLScene(gameLogic);
+        glRenderer = new AndroidGLES20Renderer(scene);
 
         glMapSurfaceView = new MapGLSurfaceView(getContext()); //TODO: init from libGDX but save touche listener
         return  glMapSurfaceView;

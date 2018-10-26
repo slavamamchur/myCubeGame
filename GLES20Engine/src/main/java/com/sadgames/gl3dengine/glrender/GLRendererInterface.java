@@ -1,7 +1,6 @@
 package com.sadgames.gl3dengine.glrender;
 
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
-import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 
 public interface GLRendererInterface {
@@ -15,6 +14,5 @@ public interface GLRendererInterface {
     void onDrawFrame();
 
     DiscreteDynamicsWorld getPhysicalWorldObject();
-    void setGameEventsCallBackListener(GameEventsCallbackInterface gameEventsCallBackListener);
 
 }

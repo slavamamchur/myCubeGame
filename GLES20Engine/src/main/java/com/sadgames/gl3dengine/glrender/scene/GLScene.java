@@ -82,13 +82,14 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     private AbstractFBO mainRenderFBO = null;
     private GUI2DImageObject postEffects2DScreen = null;
     private GLAnimation zoomCameraAnimation = null;
-    private GameEventsCallbackInterface gameEventsCallBackListener = null;
+    private GameEventsCallbackInterface gameEventsCallBackListener;
     private GraphicsQuality graphicsQualityLevel;
     private String backgroundTextureName = null;
     private Globals luaEngine = null;
 
-    public GLScene() {
+    public GLScene(GameEventsCallbackInterface gameEventsCallBackListener) {
         this.graphicsQualityLevel = getSettingsManager().getGraphicsQualityLevel();
+        this.gameEventsCallBackListener = gameEventsCallBackListener;
     }
 
     public GLCamera getCamera() {
@@ -603,11 +604,6 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     /** GLRendererInterface implementation -------------------------------------------------------*/
-    @Override
-    public void setGameEventsCallBackListener(GameEventsCallbackInterface gameEventsCallBackListener) {
-        this.gameEventsCallBackListener = gameEventsCallBackListener;
-    }
-
     @Override
     public GLScene getScene() {
         return this;
