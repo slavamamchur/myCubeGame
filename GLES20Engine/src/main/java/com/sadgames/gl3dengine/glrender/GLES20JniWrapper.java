@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.GL20;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_EXTENSIONS;
 
 public class GLES20JniWrapper {
 
@@ -42,7 +43,9 @@ public class GLES20JniWrapper {
         glEngine.glDisable(cap);
     }
 
-    public static native String glExtensions();
+    public static String glExtensions() {
+        return glEngine.glGetString(GL_EXTENSIONS);
+    }
 
     public static native void glUseProgram(int id);
     public static native void glAttachShader(int program, int shader);
