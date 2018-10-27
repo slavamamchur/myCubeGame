@@ -31,7 +31,10 @@ public class GLES20JniWrapper {
         glEngine.glViewport(0, 0, width, height);
     }
 
-    public static native void glBlendFunc(int sfactor, int dfactor);
+    public static void glBlendFunc(int sfactor, int dfactor) {
+        glEngine.glBlendFunc(sfactor, dfactor);
+    }
+
     public static native void glEnable(int cap);
     public static native void glDisable(int cap);
 
