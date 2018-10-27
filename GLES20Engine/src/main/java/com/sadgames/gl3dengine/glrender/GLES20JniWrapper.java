@@ -5,9 +5,13 @@ import com.badlogic.gdx.utils.BufferUtils;
 
 import java.nio.IntBuffer;
 
+import static com.badlogic.gdx.graphics.GL20.GL_BACK;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.badlogic.gdx.graphics.GL20.GL_EXTENSIONS;
+import static com.badlogic.gdx.graphics.GL20.GL_FRONT;
 
 public class GLES20JniWrapper {
 
@@ -98,14 +102,29 @@ public class GLES20JniWrapper {
         glEngine.glGetShaderiv(shader, pname, buffer);
         intBuffer2Array(buffer, params);
     }
-    public static native void glLinkProgram(int program);
-    public static native void glShaderSource(int shader, String string);
+    public static void glLinkProgram(int program) {
+        glEngine.glLinkProgram(program);
+    }
+    public static void glShaderSource(int shader, String string) {
+        glEngine.glShaderSource(shader, string);
+    }
 
-    public static native void glEnableFrontFacesCulling();
-    public static native void glEnableBackFacesCulling();
-    public static native void glEnableFacesCulling();
-    public static native void glEnableDepthTest();
-    public static native void glEnableVertexAttribArray(int index);
+    public static void glEnableFrontFacesCulling() {
+        glEngine.glCullFace(GL_FRONT);
+    }
+    public static void glEnableBackFacesCulling() {
+        glEngine.glCullFace(GL_BACK);
+    }
+    public static void glEnableFacesCulling() {
+        glEnable(GL_CULL_FACE);
+    }
+    public static void glEnableDepthTest() {
+        glEnable(GL_DEPTH_TEST);
+    }
+    public static void glEnableVertexAttribArray(int index) {
+        glEngine.glEnableVertexAttribArray(index);
+    }
+
     public static native void glVertexAttribPointer(
             int indx,
             int size,
@@ -114,6 +133,7 @@ public class GLES20JniWrapper {
             int stride,
             int offset
     );
+
     private static native void glVertexAttribPointerBounds(
             int indx,
             int size,
