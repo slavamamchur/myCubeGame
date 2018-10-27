@@ -35,8 +35,12 @@ public class GLES20JniWrapper {
         glEngine.glBlendFunc(sfactor, dfactor);
     }
 
-    public static native void glEnable(int cap);
-    public static native void glDisable(int cap);
+    public static void glEnable(int cap) {
+        glEngine.glEnable(cap);
+    }
+    public static void glDisable(int cap) {
+        glEngine.glDisable(cap);
+    }
 
     public static native String glExtensions();
 
