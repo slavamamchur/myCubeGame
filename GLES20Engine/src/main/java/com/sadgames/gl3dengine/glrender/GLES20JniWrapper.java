@@ -1,6 +1,9 @@
 package com.sadgames.gl3dengine.glrender;
 
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.BufferUtils;
+
+import java.nio.IntBuffer;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
@@ -20,18 +23,32 @@ public class GLES20JniWrapper {
         glEngine = gl;
     }
 
+    public static IntBuffer intArray2Buffer(int[] array) {
+        IntBuffer buffer = BufferUtils.newIntBuffer(array.length);
+        BufferUtils.copy(array, 0, array.length, buffer);
+        buffer.rewind();
+
+        return buffer;
+    }
+
+    public static void intBuffer2Array(IntBuffer buffer, int[] array) {
+        buffer.rewind();
+
+        for (int i = 0; i < buffer.remaining(); i++)
+            array[i] = buffer.get();
+
+        buffer.limit(0);
+    }
+
     public static void glClear() {
         glEngine.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
-
     public static void glClearColor(float red, float green, float blue, float alpha) {
         glEngine.glClearColor(red, green, blue, alpha);
     }
-
     public static void glViewport(int width, int height) {
         glEngine.glViewport(0, 0, width, height);
     }
-
     public static void glBlendFunc(int sfactor, int dfactor) {
         glEngine.glBlendFunc(sfactor, dfactor);
     }
@@ -47,16 +64,40 @@ public class GLES20JniWrapper {
         return glEngine.glGetString(GL_EXTENSIONS);
     }
 
-    public static native void glUseProgram(int id);
-    public static native void glAttachShader(int program, int shader);
-    public static native void glCompileShader(int shader);
-    public static native  int glCreateProgram();
-    public static native  int glCreateShader(int type);
-    public static native void glDeleteProgram(int program);
-    public static native void glDeleteShader(int shader);
-    public static native void glDetachShader(int program, int shader);
-    public static native void glGetProgramiv(int program, int pname, int[] params);
-    public static native void glGetShaderiv(int shader, int pname, int[] params);
+    public static void glUseProgram(int id) {
+        glEngine.glUseProgram(id);
+    }
+    public static void glAttachShader(int program, int shader) {
+        glEngine.glAttachShader(program, shader);
+    }
+    public static void glCompileShader(int shader) {
+        glEngine.glCompileShader(shader);
+    }
+    public static  int glCreateProgram() {
+        return glEngine.glCreateProgram();
+    }
+    public static  int glCreateShader(int type) {
+        return glEngine.glCreateShader(type);
+    }
+    public static void glDeleteProgram(int program) {
+        glEngine.glDeleteProgram(program);
+    }
+    public static void glDeleteShader(int shader) {
+        glEngine.glDeleteShader(shader);
+    }
+    public static void glDetachShader(int program, int shader) {
+        glEngine.glDetachShader(program, shader);
+    }
+    public static void glGetProgramiv(int program, int pname, int[] params) {
+        IntBuffer buffer = intArray2Buffer(params);
+        glEngine.glGetProgramiv(program, pname, buffer);
+        intBuffer2Array(buffer, params);
+    }
+    public static void glGetShaderiv(int shader, int pname, int[] params) {
+        IntBuffer buffer = intArray2Buffer(params);
+        glEngine.glGetShaderiv(shader, pname, buffer);
+        intBuffer2Array(buffer, params);
+    }
     public static native void glLinkProgram(int program);
     public static native void glShaderSource(int shader, String string);
 
