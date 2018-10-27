@@ -2,6 +2,9 @@ package com.sadgames.gl3dengine.glrender;
 
 import com.badlogic.gdx.graphics.GL20;
 
+import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
+
 public class GLES20JniWrapper { //TODO: modify for use glEngine
 
     private static final String GLES_20_JNI_WRAPPER_LIB = "gleswrapper";
@@ -16,8 +19,14 @@ public class GLES20JniWrapper { //TODO: modify for use glEngine
         glEngine = gl;
     }
 
-    public static native void glClear();
-    public static native void glClearColor(float red, float green, float blue, float alpha);
+    public static void glClear() {
+        glEngine.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    public static void glClearColor(float red, float green, float blue, float alpha) {
+        glEngine.glClearColor(red, green, blue, alpha);
+    }
+
     public static native void glViewport(int width, int height);
     public static native void glBlendFunc(int sfactor, int dfactor);
     public static native void glEnable(int cap);
