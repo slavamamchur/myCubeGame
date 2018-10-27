@@ -170,14 +170,12 @@ public class GLES20JniWrapper {
         );
     }
 
-    public static native int glGetAttribLocation(
-            int program,
-            String name
-    );
-    public static native int glGetUniformLocation(
-            int program,
-            String name
-    );
+    public static int glGetAttribLocation(int program, String name) {
+        return glEngine.glGetAttribLocation(program, name);
+    }
+    public static int glGetUniformLocation(int program, String name) {
+        return glEngine.glGetUniformLocation(program, name);
+    }
 
     public static native void glUniform3fv(
             int location,
