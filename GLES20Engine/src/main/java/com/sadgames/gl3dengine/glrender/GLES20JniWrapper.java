@@ -125,24 +125,32 @@ public class GLES20JniWrapper {
         glEngine.glEnableVertexAttribArray(index);
     }
 
-    public static native void glVertexAttribPointer(
+    public static void glVertexAttribPointer(
             int indx,
             int size,
             int type,
             boolean normalized,
             int stride,
             int offset
-    );
+    ) {
+        glEngine.glVertexAttribPointer(indx, size, type, normalized, stride, offset);
+    }
 
-    private static native void glVertexAttribPointerBounds(
+    private static void glVertexAttribPointerBounds(
             int indx,
             int size,
             int type,
             boolean normalized,
             int stride,
-            java.nio.Buffer ptr,
-            int remaining
-    );
+            java.nio.Buffer ptr
+    ) {
+        glEngine.glVertexAttribPointer(indx,
+                size,
+                type,
+                normalized,
+                stride,
+                ptr);
+    }
 
     public static void glVertexAttribPointer(
             int indx,
@@ -158,10 +166,10 @@ public class GLES20JniWrapper {
                 type,
                 normalized,
                 stride,
-                ptr,
-                ptr.remaining()
+                ptr
         );
     }
+
     public static native int glGetAttribLocation(
             int program,
             String name
@@ -170,6 +178,7 @@ public class GLES20JniWrapper {
             int program,
             String name
     );
+
     public static native void glUniform3fv(
             int location,
             int count,
