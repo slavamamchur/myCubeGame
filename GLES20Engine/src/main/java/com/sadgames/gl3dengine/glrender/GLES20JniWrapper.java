@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
 
-public class GLES20JniWrapper { //TODO: modify for use glEngine
+public class GLES20JniWrapper {
 
     private static final String GLES_20_JNI_WRAPPER_LIB = "gleswrapper";
 
@@ -27,7 +27,10 @@ public class GLES20JniWrapper { //TODO: modify for use glEngine
         glEngine.glClearColor(red, green, blue, alpha);
     }
 
-    public static native void glViewport(int width, int height);
+    public static void glViewport(int width, int height) {
+        glEngine.glViewport(0, 0, width, height);
+    }
+
     public static native void glBlendFunc(int sfactor, int dfactor);
     public static native void glEnable(int cap);
     public static native void glDisable(int cap);
