@@ -183,8 +183,12 @@ public class GLES20JniWrapper {
     public static void glUniform1f(int location, float value) {
         glEngine.glUniform1f(location, value);
     }
-    public static native void glUniform3fv(int location, int count, float[] value);
-    public static native void glUniformMatrix4fv(int location, int count, boolean transpose, float[] value);
+    public static void glUniform3fv(int location, int count, float[] value) {
+        glEngine.glUniform3fv(location, count, value, 0);
+    }
+    public static void glUniformMatrix4fv(int location, int count, boolean transpose, float[] value) {
+        glEngine.glUniformMatrix4fv(location, count, transpose, value, 0);
+    }
 
     public static native void glBindBuffer(int target, int buffer);
     public static native void glDeleteBuffers(int[] buffers);
