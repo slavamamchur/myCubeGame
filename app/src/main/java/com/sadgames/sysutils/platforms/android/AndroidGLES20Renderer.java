@@ -12,7 +12,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.opengles.GL10;
 
-public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
+public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: replace with AndroidGraphics from libGDX
 
     private GLRendererInterface glInternalRenderer;
     private EGLContext eglContext;
@@ -21,7 +21,7 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
         this.glInternalRenderer = renderer;
     }
 
-    private void initGDX() {
+    private void initLibGDX() {
         AndroidGL20.init();
 
         GdxExt.gl20 = new AndroidGL20();
@@ -30,11 +30,17 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer {
         GLES20JniWrapper.setGlEngine(GdxExt.gl);
     }
 
+    public void preserveEGLContextOnPause(GLSurfaceView view) {
+            try {
+                view.getClass().getMethod("setPreserveEGLContextOnPause", boolean.class).invoke(view, true);
+            } catch (Exception e) {}
+    }
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         eglContext = ((EGL10)EGLContext.getEGL()).eglGetCurrentContext();
 
-        //TODO: initGDX(); -> after GLES20JniWrapper modifying
+        initLibGDX();
 
         glInternalRenderer.onSurfaceCreated();
     }
