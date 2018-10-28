@@ -38,13 +38,8 @@ public class MapFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         gameLogic = new GameLogic();
         scene = new GLScene(gameLogic);
-        glRenderer = new AndroidGLES20Renderer(scene);
-        glMapSurfaceView = new MapGLSurfaceView(getContext());
-
-        glRenderer.preserveEGLContextOnPause(glMapSurfaceView);
-
-        glMapSurfaceView.setFocusable(true);
-        glMapSurfaceView.setFocusableInTouchMode(true);
+        glRenderer = new AndroidGLES20Renderer(getContext(), scene);
+        glMapSurfaceView = (MapGLSurfaceView) glRenderer.getView();
 
         return  glMapSurfaceView;
     }
