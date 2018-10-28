@@ -180,8 +180,12 @@ public class GLES20JniWrapper {
         buffers[0] = glEngine.glGenBuffer();
     }
 
-    public static native void glDrawArrays(int mode, int first, int count);
-    public static native void glDrawElements(int mode, int count, int type);
+    public static void glDrawArrays(int mode, int first, int count) {
+        glEngine.glDrawArrays(mode, first, count);
+    }
+    public static void glDrawElements(int mode, int count, int type) {
+        glEngine.glDrawElements(mode, count, type, null);
+    }
 
     public static native void glBindFramebuffer(int id);
     public static native boolean glCheckFramebufferStatus();
