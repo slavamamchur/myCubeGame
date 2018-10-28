@@ -4,7 +4,9 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.View;
 
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGL20;
+import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.sadgames.dicegame.ui.framework.MapGLSurfaceView;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
@@ -22,14 +24,18 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
     private EGLContext eglContext;
     private final View view;
 
-    public AndroidGLES20Renderer(Context context, GLRendererInterface renderer, boolean focusableView) {
-        glInternalRenderer = renderer;
-        app = context;
+    protected final AndroidApplicationConfiguration config;
 
+    public AndroidGLES20Renderer(Context context, GLRendererInterface renderer, AndroidApplicationConfiguration config,  boolean focusableView) {
         AndroidGL20.init();
 
-        view = new MapGLSurfaceView(context);
+        glInternalRenderer = renderer;
+        app = context;
+        this.config = config;
+        view = createGLSurfaceView();
+
         preserveEGLContextOnPause();
+
         if (focusableView) {
             view.setFocusable(true);
             view.setFocusableInTouchMode(true);
@@ -37,7 +43,7 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
     }
 
     public AndroidGLES20Renderer(Context context, GLRendererInterface renderer) {
-        this(context, renderer, true);
+        this(context, renderer, new AndroidApplicationConfiguration(), true);
     }
 
     public Context getApp() {
@@ -57,10 +63,28 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
         GLES20JniWrapper.setGlEngine(GdxExt.gl);
     }
 
-    public void preserveEGLContextOnPause() {
+    private void preserveEGLContextOnPause() {
             try {
                 view.getClass().getMethod("setPreserveEGLContextOnPause", boolean.class).invoke(view, true);
             } catch (Exception e) {}
+    }
+
+    protected GLSurfaceView.EGLConfigChooser getEglConfigChooser () {
+        return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
+    }
+
+    protected View createGLSurfaceView() {
+        GLSurfaceView.EGLConfigChooser configChooser = getEglConfigChooser();
+        GLSurfaceView view = new MapGLSurfaceView(app, config.resolutionStrategy);
+
+        if (configChooser != null)
+            view.setEGLConfigChooser(configChooser);
+        else
+            view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+
+        //view.setRenderer(this);
+
+        return view;
     }
 
     @Override
