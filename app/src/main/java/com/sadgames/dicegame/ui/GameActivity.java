@@ -63,6 +63,8 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
             //showProgress();
             mMapFragment.InitMap(getItem());
         }
+
+        mMapFragment.setActivity(this);
     }
 
     @Override

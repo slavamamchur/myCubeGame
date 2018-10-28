@@ -89,6 +89,8 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         if(getItem() != null && getItem().getId() != null){
             mMapFragment.InitMap(getItem());
         }
+
+        mMapFragment.setActivity(this);
     }
 
     @Override

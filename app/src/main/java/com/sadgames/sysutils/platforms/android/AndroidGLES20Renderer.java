@@ -7,6 +7,7 @@ import android.view.View;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGL20;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
+import com.badlogic.gdx.math.WindowedMean;
 import com.sadgames.dicegame.ui.framework.MapGLSurfaceView;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
@@ -19,12 +20,23 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: replace with AndroidGraphics from libGDX
 
+    public static volatile boolean enforceContinuousRendering = false;
+
     private GLRendererInterface glInternalRenderer;
     private final Context app;
     private EGLContext eglContext;
     private final View view;
+    private boolean isContinuous = true;
+    private volatile boolean created = false;
+    private volatile boolean running = false;
+    private volatile boolean pause = false;
+    private volatile boolean resume = false;
+    private volatile boolean destroy = false;
 
     protected final AndroidApplicationConfiguration config;
+    protected WindowedMean mean = new WindowedMean(5);
+
+    public Object synch = new Object();
 
     public AndroidGLES20Renderer(Context context, GLRendererInterface renderer, AndroidApplicationConfiguration config,  boolean focusableView) {
         AndroidGL20.init();
@@ -82,9 +94,24 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
         else
             view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 
-        //view.setRenderer(this);
+        view.setRenderer(this);
 
         return view;
+    }
+
+    public void setContinuousRendering (boolean isContinuous) {
+        if (view != null) {
+            // ignore setContinuousRendering(false) while pausing
+            this.isContinuous = enforceContinuousRendering || isContinuous;
+            int renderMode = this.isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+
+            ((GLSurfaceView)view).setRenderMode(renderMode);
+            mean.clear();
+        }
+    }
+
+    public boolean isContinuousRendering () {
+        return isContinuous;
     }
 
     @Override
@@ -104,6 +131,55 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
     @Override
     public void onDrawFrame(GL10 gl) {
         glInternalRenderer.onDrawFrame();
+    }
+
+    public void resume () {
+        synchronized (synch) {
+            running = true;
+            resume = true;
+        }
+    }
+
+    public void pause () {
+        synchronized (synch) {
+            if (!running) return;
+            running = false;
+            pause = true;
+            while (pause) {
+                try {
+                    // TODO: fix deadlock race condition with quick resume/pause.
+                    // Temporary workaround:
+                    // Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
+                    // deadlock and killing process. This can easily be triggered by opening the
+                    // Recent Apps list and then double-tapping the Recent Apps button with
+                    // ~500ms between taps.
+                    synch.wait(4000);
+                    if (pause) {
+                        // pause will never go false if onDrawFrame is never called by the GLThread
+                        // when entering this method, we MUST enforce continuous rendering
+                        //Gdx.app.error(LOG_TAG, "waiting for pause synchronization took too long; assuming deadlock and killing");
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                } catch (InterruptedException ignored) {
+                    //Gdx.app.log(LOG_TAG, "waiting for pause synchronization failed!");
+                }
+            }
+        }
+    }
+
+    public void destroy () {
+        synchronized (synch) {
+            running = false;
+            destroy = true;
+
+            while (destroy) {
+                try {
+                    synch.wait();
+                } catch (InterruptedException ex) {
+                    //Gdx.app.log(LOG_TAG, "waiting for destroy synchronization failed!");
+                }
+            }
+        }
     }
 
 }

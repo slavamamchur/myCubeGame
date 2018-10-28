@@ -1,5 +1,6 @@
 package com.sadgames.dicegame.ui.framework;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,26 +12,46 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Preferences;
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
 import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.sysutils.common.GdxDbInterface;
 import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
 
+    private Activity activity = null;
     private GameLogic gameLogic;
     private GLScene scene;
+    private Audio audio = null;
+    private Files files = null;
+    private Preferences preferences = null;
+    private RestApiInterface restApi = null;
+    private GdxDbInterface database = null;
+    private boolean isWaitingForAudio = false;
+    private int wasFocusChanged = -1;
+
+    protected boolean firstResume = true;
 
     public MapGLSurfaceView glMapSurfaceView;
     public AndroidGLES20Renderer glRenderer;
 
     public MapFragment() {}
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
 
     @Nullable
     @Override
@@ -41,15 +62,9 @@ public class MapFragment extends Fragment {
         glRenderer = new AndroidGLES20Renderer(getContext(), scene);
         glMapSurfaceView = (MapGLSurfaceView) glRenderer.getView();
 
-        return  glMapSurfaceView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         glMapSurfaceView.setScene(scene);
-        glMapSurfaceView.setRenderer(glRenderer);
+
+        return  glMapSurfaceView;
     }
 
     @Override
@@ -61,16 +76,52 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onPause() {
-        glMapSurfaceView.onPause();
+        /*boolean isContinuous = glRenderer.isContinuousRendering();
+        boolean isContinuousEnforced = AndroidGLES20Renderer.enforceContinuousRendering;
+        AndroidGLES20Renderer.enforceContinuousRendering = true;*/
 
+        audio = GdxExt.audio;
+        files = GdxExt.files;
+        preferences = GdxExt.preferences;
+        restApi = GdxExt.restAPI;
+        database = GdxExt.dataBase;
+
+        /*glRenderer.setContinuousRendering(true);
+        glRenderer.pause();
+
+        if (activity != null && activity.isFinishing()) {
+            glRenderer.destroy();
+        }
+
+        AndroidGLES20Renderer.enforceContinuousRendering = isContinuousEnforced;
+        glRenderer.setContinuousRendering(isContinuous);*/
+
+        glMapSurfaceView.onPause();
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        super.onResume();
-
         glMapSurfaceView.onResume();
+
+        if (!firstResume) {
+            GdxExt.audio = audio;
+            GdxExt.files = files;
+            GdxExt.preferences = preferences;
+            GdxExt.restAPI = restApi;
+            GdxExt.dataBase = database;
+
+            //glRenderer.resume();
+        } else
+            firstResume = false;
+
+        /*this.isWaitingForAudio = true;
+        if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
+            ((AndroidAudio)this.audio).resume();
+            this.isWaitingForAudio = false;
+        }*/
+
+        super.onResume();
     }
 
     public void InitMap(GameMapEntity map) {
@@ -115,7 +166,6 @@ public class MapFragment extends Fragment {
     public GameLogic getGameLogic() {
         return gameLogic;
     }
-
     public GLScene getScene() {
         return scene;
     }
