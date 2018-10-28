@@ -26,12 +26,6 @@ import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_INT;
 
 public class GLES20JniWrapper {
 
-    private static final String GLES_20_JNI_WRAPPER_LIB = "gleswrapper";
-
-    static {
-        System.loadLibrary(GLES_20_JNI_WRAPPER_LIB); //TODO: remove
-    }
-
     private static GL20 glEngine;
 
     public static void setGlEngine(GL20 gl) {
