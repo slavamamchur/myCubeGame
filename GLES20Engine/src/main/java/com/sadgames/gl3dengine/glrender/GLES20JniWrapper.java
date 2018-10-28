@@ -11,11 +11,13 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_ATTACHMENT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_COMPONENT16;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.badlogic.gdx.graphics.GL20.GL_EXTENSIONS;
 import static com.badlogic.gdx.graphics.GL20.GL_FRAMEBUFFER;
 import static com.badlogic.gdx.graphics.GL20.GL_FRAMEBUFFER_COMPLETE;
 import static com.badlogic.gdx.graphics.GL20.GL_FRONT;
+import static com.badlogic.gdx.graphics.GL20.GL_RENDERBUFFER;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE_2D;
 
 public class GLES20JniWrapper {
@@ -211,11 +213,21 @@ public class GLES20JniWrapper {
         glEngine.glDeleteFramebuffer(framebuffers[0]);
     }
 
-    public static native void glGenRenderBuffers(int[] renderbuffers);
-    public static native void glDeleteRenderBuffers(int[] renderbuffers);
-    public static native void glBindRenderBuffer(int id);
-    public static native void glRenderBufferStorage(int width, int height);
-    public static native void glFramebufferAttachDepthBuffer(int id);
+    public static void glGenRenderBuffers(int[] renderbuffers) {
+        renderbuffers[0] = glEngine.glGenRenderbuffer();
+    }
+    public static void glDeleteRenderBuffers(int[] renderbuffers) {
+        glEngine.glDeleteRenderbuffer(renderbuffers[0]);
+    }
+    public static void glBindRenderBuffer(int id) {
+        glEngine.glBindRenderbuffer(GL_RENDERBUFFER, id);
+    }
+    public static void glRenderBufferStorage(int width, int height) {
+        glEngine.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    }
+    public static void glFramebufferAttachDepthBuffer(int id) {
+        glEngine.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
+    }
 
     public static native void glGenTextures(int[] textures);
     public static native void glDeleteTextures(int[] textures);
