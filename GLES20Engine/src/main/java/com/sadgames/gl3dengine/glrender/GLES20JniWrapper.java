@@ -6,12 +6,17 @@ import com.badlogic.gdx.utils.BufferUtils;
 import java.nio.IntBuffer;
 
 import static com.badlogic.gdx.graphics.GL20.GL_BACK;
+import static com.badlogic.gdx.graphics.GL20.GL_COLOR_ATTACHMENT0;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
+import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_ATTACHMENT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.badlogic.gdx.graphics.GL20.GL_EXTENSIONS;
+import static com.badlogic.gdx.graphics.GL20.GL_FRAMEBUFFER;
+import static com.badlogic.gdx.graphics.GL20.GL_FRAMEBUFFER_COMPLETE;
 import static com.badlogic.gdx.graphics.GL20.GL_FRONT;
+import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE_2D;
 
 public class GLES20JniWrapper {
 
@@ -187,10 +192,18 @@ public class GLES20JniWrapper {
         glEngine.glDrawElements(mode, count, type, null);
     }
 
-    public static native void glBindFramebuffer(int id);
-    public static native boolean glCheckFramebufferStatus();
-    public static native void glFramebufferAttachDepthTexture(int textureId);
-    public static native void glFramebufferAttachColorTexture(int textureId);
+    public static void glBindFramebuffer(int id) {
+        glEngine.glBindFramebuffer(GL_FRAMEBUFFER, id);
+    }
+    public static boolean glCheckFramebufferStatus() {
+        return glEngine.glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    }
+    public static void glFramebufferAttachDepthTexture(int textureId) {
+        glEngine.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, textureId, 0);
+    }
+    public static void glFramebufferAttachColorTexture(int textureId) {
+        glEngine.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+    }
     public static native void glGenFrameBuffers(int[] framebuffers);
     public static native void glDeleteFrameBuffers(int[] framebuffers);
 
