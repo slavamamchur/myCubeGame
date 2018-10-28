@@ -18,7 +18,9 @@ import static com.badlogic.gdx.graphics.GL20.GL_FRAMEBUFFER;
 import static com.badlogic.gdx.graphics.GL20.GL_FRAMEBUFFER_COMPLETE;
 import static com.badlogic.gdx.graphics.GL20.GL_FRONT;
 import static com.badlogic.gdx.graphics.GL20.GL_RENDERBUFFER;
+import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE_2D;
+import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE_CUBE_MAP;
 
 public class GLES20JniWrapper {
 
@@ -229,13 +231,25 @@ public class GLES20JniWrapper {
         glEngine.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, id);
     }
 
-    public static native void glGenTextures(int[] textures);
-    public static native void glDeleteTextures(int[] textures);
-    public static native void glActiveTexture(int slot);
-    public static native void glBindTexture2D(int id);
-    public static native void glBindTextureCube(int id);
-    public static native void glTexImageDepth(int width, int height);
-    public static native void glTexParameteri(int target, int pname, int param);
+    public static void glGenTextures(int[] textures) {
+        textures[0] = glEngine.glGenTexture();
+    }
+    public static void glDeleteTextures(int[] textures) {
+        glEngine.glDeleteTexture(textures[0]);
+    }
+    public static void glActiveTexture(int slot) {
+        glEngine.glActiveTexture(GL_TEXTURE0 + slot);
+    }
+    public static void glBindTexture2D(int id) {
+        glEngine.glBindTexture(GL_TEXTURE_2D, id);
+    }
+    public static void glBindTextureCube(int id) {
+        glEngine.glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+    }
+    public static void glTexParameteri(int target, int pname, int param) {
+        glEngine.glTexParameteri(target, pname, param);
+    }
+    public static native void glTexImageDepth(int width, int height); //glEngine.glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, null);
     public static native void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, java.nio.Buffer data);
     public static native void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, java.nio.Buffer data);
 
