@@ -11,6 +11,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_ATTACHMENT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_COMPONENT;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_COMPONENT16;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.badlogic.gdx.graphics.GL20.GL_EXTENSIONS;
@@ -21,6 +22,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_RENDERBUFFER;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE_2D;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE_CUBE_MAP;
+import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_INT;
 
 public class GLES20JniWrapper {
 
@@ -249,9 +251,15 @@ public class GLES20JniWrapper {
     public static void glTexParameteri(int target, int pname, int param) {
         glEngine.glTexParameteri(target, pname, param);
     }
-    public static native void glTexImageDepth(int width, int height); //glEngine.glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, null);
-    public static native void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, java.nio.Buffer data);
-    public static native void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, java.nio.Buffer data);
+    public static void glTexImageDepth(int width, int height) {
+        glEngine.glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, null);
+    }
+    public static void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, java.nio.Buffer data) {
+        glEngine.glTexImage2D(target, level, internalformat, width, height, border, format, type, data);
+    }
+    public static void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, java.nio.Buffer data) {
+        glEngine.glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
+    }
 
     public static native int get_GL_TEXTURE_2D_value();
     public static native int get_GL_TEXTURE_CUBE_MAP_value();
