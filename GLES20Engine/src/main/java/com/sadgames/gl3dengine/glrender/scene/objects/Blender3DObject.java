@@ -12,10 +12,10 @@ import java.util.List;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
+import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
+import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLES;
+import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT;
 import static com.sadgames.gl3dengine.GLEngineConsts.MODELS_RESOURCE_FOLDER_NAME;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_CULL_FACE_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_SHORT_value;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDisable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
@@ -232,11 +232,11 @@ public class Blender3DObject extends ImportedObject {
 
     @Override
     public void render() {
-        if (twoSidedSurface) glDisable(get_GL_CULL_FACE_value());
+        if (twoSidedSurface) glDisable(GL_CULL_FACE);
 
-        glDrawElements(get_GL_TRIANGLES_value(), getFacesCount(), get_GL_UNSIGNED_SHORT_value());
+        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT);
 
-        if (twoSidedSurface) glEnable(get_GL_CULL_FACE_value());
+        if (twoSidedSurface) glEnable(GL_CULL_FACE);
     }
 
 }

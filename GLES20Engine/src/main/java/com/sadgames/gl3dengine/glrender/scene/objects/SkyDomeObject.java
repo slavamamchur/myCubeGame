@@ -8,8 +8,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_SHORT_value;
+import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLES;
+import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawElements;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
@@ -49,7 +49,7 @@ public class SkyDomeObject extends AbstractSkyObject {
     @Override
     public void render() {
         glEnableFrontFacesCulling();
-        glDrawElements(get_GL_TRIANGLES_value(), getFacesCount(), get_GL_UNSIGNED_SHORT_value());
+        glDrawElements(GL_TRIANGLES, getFacesCount(), GL_UNSIGNED_SHORT);
         glEnableBackFacesCulling();
     }
 }

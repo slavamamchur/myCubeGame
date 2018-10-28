@@ -8,7 +8,7 @@ import java.nio.FloatBuffer;
 
 import javax.vecmath.Vector4f;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
+import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLE_STRIP;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.TEXEL_UV_SIZE;
@@ -62,7 +62,7 @@ public class GUI2DImageObject extends AbstractGL3DObject {
 
     @Override
     public void render() {
-        glDrawArrays(get_GL_TRIANGLE_STRIP_value(), 0, getFacesCount());
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, getFacesCount());
     }
 
     @Override

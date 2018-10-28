@@ -2,9 +2,9 @@ package com.sadgames.gl3dengine.glrender.scene.shaders.params;
 
 import java.nio.FloatBuffer;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_ARRAY_BUFFER_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_FLOAT_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_STATIC_DRAW_value;
+import static com.badlogic.gdx.graphics.GL20.GL_ARRAY_BUFFER;
+import static com.badlogic.gdx.graphics.GL20.GL_FLOAT;
+import static com.badlogic.gdx.graphics.GL20.GL_STATIC_DRAW;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindBuffer;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBufferData;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDeleteBuffers;
@@ -40,9 +40,9 @@ public class GLShaderParamVBO extends GLShaderParam {
         if (vboPtr == 0)
             initVBO();
 
-        glBindBuffer(get_GL_ARRAY_BUFFER_value(), vboPtr);
-        glBufferData(get_GL_ARRAY_BUFFER_value(), data.capacity() * Float.SIZE / 8, data, get_GL_STATIC_DRAW_value());
-        glBindBuffer(get_GL_ARRAY_BUFFER_value(), 0);
+        glBindBuffer(GL_ARRAY_BUFFER, vboPtr);
+        glBufferData(GL_ARRAY_BUFFER, data.capacity() * Float.SIZE / 8, data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     @Override
@@ -65,10 +65,10 @@ public class GLShaderParamVBO extends GLShaderParam {
 
     @Override
     protected void internalLinkParamValue() {
-        glBindBuffer(get_GL_ARRAY_BUFFER_value(), vboPtr);
-        glVertexAttribPointer(paramReference, size, get_GL_FLOAT_value(), false, stride, pos);
+        glBindBuffer(GL_ARRAY_BUFFER, vboPtr);
+        glVertexAttribPointer(paramReference, size, GL_FLOAT, false, stride, pos);
         glEnableVertexAttribArray(paramReference);
-        glBindBuffer(get_GL_ARRAY_BUFFER_value(), 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     public void clearParamDataVBO() {

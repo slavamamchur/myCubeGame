@@ -16,10 +16,10 @@ import java.nio.ShortBuffer;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_ELEMENT_ARRAY_BUFFER_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLES_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_UNSIGNED_SHORT_value;
+import static com.badlogic.gdx.graphics.GL20.GL_ELEMENT_ARRAY_BUFFER;
+import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLES;
+import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLE_STRIP;
+import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glActiveTexture;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindBuffer;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindTexture2D;
@@ -304,7 +304,7 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
         program.linkVBOData(this);
 
         if (facesIBOPtr > 0)
-            glBindBuffer(get_GL_ELEMENT_ARRAY_BUFFER_value(), facesIBOPtr);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, facesIBOPtr);
     }
 
     public void unbindTexture(int slot) {
@@ -411,9 +411,9 @@ public abstract class AbstractGL3DObject extends SceneObjectsTreeItem implements
     public void render() {
         /** USING VBO BUFFER */
         if (facesIBOPtr == 0)
-            glDrawArrays(get_GL_TRIANGLES_value(), 0, getFacesCount());
+            glDrawArrays(GL_TRIANGLES, 0, getFacesCount());
         else {
-            glDrawElements(get_GL_TRIANGLE_STRIP_value(), getFacesCount(), get_GL_UNSIGNED_SHORT_value());
+            glDrawElements(GL_TRIANGLE_STRIP, getFacesCount(), GL_UNSIGNED_SHORT);
         }
 
         /** USING RAM BUFFER */

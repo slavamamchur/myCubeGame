@@ -8,8 +8,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_ELEMENT_ARRAY_BUFFER_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_STATIC_DRAW_value;
+import static com.badlogic.gdx.graphics.GL20.GL_ELEMENT_ARRAY_BUFFER;
+import static com.badlogic.gdx.graphics.GL20.GL_STATIC_DRAW;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBindBuffer;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glBufferData;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glGenBuffers;
@@ -225,10 +225,10 @@ public abstract class ProceduralSurfaceObject extends PNodeObject {
         indexData.put(index);
         final int buffers[] = new int[1];
         glGenBuffers(1, buffers);
-        glBindBuffer(get_GL_ELEMENT_ARRAY_BUFFER_value(), buffers[0]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[0]);
         indexData.position(0);
-        glBufferData(get_GL_ELEMENT_ARRAY_BUFFER_value(), indexData.capacity() * 2, indexData, get_GL_STATIC_DRAW_value());
-        glBindBuffer(get_GL_ELEMENT_ARRAY_BUFFER_value(), 0);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.capacity() * 2, indexData, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         /** do not clear for RAM - buffered objects!!! */
         indexData.limit(0);

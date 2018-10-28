@@ -4,7 +4,7 @@ import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 
 import java.nio.FloatBuffer;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_FLOAT_value;
+import static com.badlogic.gdx.graphics.GL20.GL_FLOAT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_ATTRIB_ARRAY_PARAM;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLParamType.FLOAT_UNIFORM_MATRIX_PARAM;
@@ -87,7 +87,7 @@ public class GLShaderParam {
     }
 
     protected void internalLinkParamValue() {
-        GLES20JniWrapper.glVertexAttribPointer(paramReference, size, get_GL_FLOAT_value(), false, stride, data);
+        GLES20JniWrapper.glVertexAttribPointer(paramReference, size, GL_FLOAT, false, stride, data);
         GLES20JniWrapper.glEnableVertexAttribArray(paramReference);
     }
 

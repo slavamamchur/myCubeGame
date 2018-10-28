@@ -3,7 +3,7 @@ package com.sadgames.gl3dengine.glrender.scene.objects;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_TRIANGLE_STRIP_value;
+import static com.badlogic.gdx.graphics.GL20.GL_TRIANGLE_STRIP;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glDrawArrays;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableBackFacesCulling;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnableFrontFacesCulling;
@@ -42,7 +42,7 @@ public abstract class AbstractSkyObject extends GameItemObject {
     @Override
     public void render() {
         glEnableFrontFacesCulling();
-        glDrawArrays(get_GL_TRIANGLE_STRIP_value(), 0, getFacesCount());
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, getFacesCount());
         glEnableBackFacesCulling();
     }
 

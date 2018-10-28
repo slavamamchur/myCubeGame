@@ -9,10 +9,10 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_COMPILE_STATUS_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_FRAGMENT_SHADER_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_LINK_STATUS_value;
-import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.get_GL_VERTEX_SHADER_value;
+import static com.badlogic.gdx.graphics.GL20.GL_COMPILE_STATUS;
+import static com.badlogic.gdx.graphics.GL20.GL_FRAGMENT_SHADER;
+import static com.badlogic.gdx.graphics.GL20.GL_LINK_STATUS;
+import static com.badlogic.gdx.graphics.GL20.GL_VERTEX_SHADER;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glAttachShader;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCompileShader;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glCreateProgram;
@@ -74,8 +74,8 @@ public abstract class GLShaderProgram {
 
 
     public GLShaderProgram() {
-        vertexShaderID = createShaderFromResource(get_GL_VERTEX_SHADER_value(), getVertexShaderResId());
-        fragmentShaderID = createShaderFromResource(get_GL_FRAGMENT_SHADER_value(), getFragmentShaderResId());
+        vertexShaderID = createShaderFromResource(GL_VERTEX_SHADER, getVertexShaderResId());
+        fragmentShaderID = createShaderFromResource(GL_FRAGMENT_SHADER, getFragmentShaderResId());
         programId = createProgram(vertexShaderID, fragmentShaderID);
 
         createParams();
@@ -324,7 +324,7 @@ public abstract class GLShaderProgram {
 
         glLinkProgram(programId);
         final int[] linkStatus = new int[1];
-        glGetProgramiv(programId, get_GL_LINK_STATUS_value(), linkStatus);
+        glGetProgramiv(programId, GL_LINK_STATUS, linkStatus);
         if (linkStatus[0] == 0) {
             glDeleteProgram(programId);
             return 0;
@@ -346,7 +346,7 @@ public abstract class GLShaderProgram {
         glShaderSource(shaderId, shaderText);
         glCompileShader(shaderId);
         final int[] compileStatus = new int[1];
-        glGetShaderiv(shaderId, get_GL_COMPILE_STATUS_value(), compileStatus);
+        glGetShaderiv(shaderId, GL_COMPILE_STATUS, compileStatus);
         if (compileStatus[0] == 0) {
             glDeleteShader(shaderId);
             return 0;
