@@ -204,8 +204,12 @@ public class GLES20JniWrapper {
     public static void glFramebufferAttachColorTexture(int textureId) {
         glEngine.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
     }
-    public static native void glGenFrameBuffers(int[] framebuffers);
-    public static native void glDeleteFrameBuffers(int[] framebuffers);
+    public static void glGenFrameBuffers(int[] framebuffers) {
+        framebuffers[0] = glEngine.glGenFramebuffer();
+    }
+    public static void glDeleteFrameBuffers(int[] framebuffers) {
+        glEngine.glDeleteFramebuffer(framebuffers[0]);
+    }
 
     public static native void glGenRenderBuffers(int[] renderbuffers);
     public static native void glDeleteRenderBuffers(int[] renderbuffers);
