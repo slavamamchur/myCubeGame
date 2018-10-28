@@ -173,8 +173,12 @@ public class GLES20JniWrapper {
     public static void glBufferData(int target, int size, java.nio.Buffer data, int usage) {
         glEngine.glBufferData(target, size, data, usage);
     }
-    public static native void glDeleteBuffers(int[] buffers);
-    public static native void glGenBuffers(int n, int[] buffers);
+    public static void glDeleteBuffers(int[] buffers) {
+        glEngine.glDeleteBuffer(buffers[0]);
+    }
+    public static void glGenBuffers(int n, int[] buffers) {
+        buffers[0] = glEngine.glGenBuffer();
+    }
 
     public static native void glDrawArrays(int mode, int first, int count);
     public static native void glDrawElements(int mode, int count, int type);
