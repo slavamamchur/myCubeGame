@@ -167,30 +167,17 @@ public class GLES20JniWrapper {
         glEngine.glUniformMatrix4fv(location, count, transpose, value, 0);
     }
 
-    public static native void glBindBuffer(int target, int buffer);
+    public static void glBindBuffer(int target, int buffer) {
+        glEngine.glBindBuffer(target, buffer);
+    }
+    public static void glBufferData(int target, int size, java.nio.Buffer data, int usage) {
+        glEngine.glBufferData(target, size, data, usage);
+    }
     public static native void glDeleteBuffers(int[] buffers);
-    public static native void glGenBuffers(
-            int n,
-            int[] buffers
-    );
-    public static native void glBufferData(
-            int target,
-            int size,
-            java.nio.Buffer data,
-            int usage
-    );
+    public static native void glGenBuffers(int n, int[] buffers);
 
-    public static native void glDrawArrays(
-            int mode,
-            int first,
-            int count
-    );
-
-    public static native void glDrawElements(
-            int mode,
-            int count,
-            int type
-    );
+    public static native void glDrawArrays(int mode, int first, int count);
+    public static native void glDrawElements(int mode, int count, int type);
 
     public static native void glBindFramebuffer(int id);
     public static native boolean glCheckFramebufferStatus();
@@ -212,27 +199,8 @@ public class GLES20JniWrapper {
     public static native void glBindTextureCube(int id);
     public static native void glTexImageDepth(int width, int height);
     public static native void glTexParameteri(int target, int pname, int param);
-    public static native void glTexImage2D(
-            int target,
-            int level,
-            int internalformat,
-            int width,
-            int height,
-            int border,
-            int format,
-            int type,
-            java.nio.Buffer data
-    );
-    public static native void glCompressedTexImage2D(
-            int target,
-            int level,
-            int internalformat,
-            int width,
-            int height,
-            int border,
-            int imageSize,
-            java.nio.Buffer data
-    );
+    public static native void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, java.nio.Buffer data);
+    public static native void glCompressedTexImage2D(int target, int level, int internalformat, int width, int height, int border, int imageSize, java.nio.Buffer data);
 
     public static native int get_GL_TEXTURE_2D_value();
     public static native int get_GL_TEXTURE_CUBE_MAP_value();
