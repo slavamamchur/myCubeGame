@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
@@ -36,6 +37,7 @@ public class MapFragment extends Fragment {
     private GLScene scene;
     private Audio audio = null;
     private Files files = null;
+    private Input input = null;
     private Preferences preferences = null;
     private RestApiInterface restApi = null;
     private GdxDbInterface database = null;
