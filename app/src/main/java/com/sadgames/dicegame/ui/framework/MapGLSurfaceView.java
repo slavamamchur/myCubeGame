@@ -30,7 +30,7 @@ public class MapGLSurfaceView extends GLSurfaceView20 {
         //TODO: gl set number of samples
         //EGL10 Egl = (EGL10) EGLContext.getEGL();
 
-        mScaleDetector = new ScaleGestureDetector(context.getApplicationContext(), new ScaleListener());
+        mScaleDetector = new ScaleGestureDetector(context.getApplicationContext(), new ScaleListener()); //TODO: change to libGDX
     }
 
     public void setScene(GLScene scene) {

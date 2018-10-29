@@ -15,4 +15,6 @@ public interface GLRendererInterface {
 
     DiscreteDynamicsWorld getPhysicalWorldObject();
 
+    void onDispose();
+
 }

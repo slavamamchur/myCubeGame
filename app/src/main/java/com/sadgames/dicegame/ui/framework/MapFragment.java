@@ -76,17 +76,17 @@ public class MapFragment extends Fragment {
 
     @Override
     public void onPause() {
-        /*boolean isContinuous = glRenderer.isContinuousRendering();
+        boolean isContinuous = glRenderer.isContinuousRendering();
         boolean isContinuousEnforced = AndroidGLES20Renderer.enforceContinuousRendering;
-        AndroidGLES20Renderer.enforceContinuousRendering = true;*/
+        AndroidGLES20Renderer.enforceContinuousRendering = true;
 
         audio = GdxExt.audio;
         files = GdxExt.files;
         preferences = GdxExt.preferences;
         restApi = GdxExt.restAPI;
-        database = GdxExt.dataBase;
+        database = GdxExt.dataBase;  //TODO: add input
 
-        /*glRenderer.setContinuousRendering(true);
+        glRenderer.setContinuousRendering(true);
         glRenderer.pause();
 
         if (activity != null && activity.isFinishing()) {
@@ -94,7 +94,7 @@ public class MapFragment extends Fragment {
         }
 
         AndroidGLES20Renderer.enforceContinuousRendering = isContinuousEnforced;
-        glRenderer.setContinuousRendering(isContinuous);*/
+        glRenderer.setContinuousRendering(isContinuous);
 
         glMapSurfaceView.onPause();
         super.onPause();
@@ -109,13 +109,13 @@ public class MapFragment extends Fragment {
             GdxExt.files = files;
             GdxExt.preferences = preferences;
             GdxExt.restAPI = restApi;
-            GdxExt.dataBase = database;
+            GdxExt.dataBase = database; //TODO: add input
 
-            //glRenderer.resume();
+            glRenderer.resume();
         } else
             firstResume = false;
 
-        /*this.isWaitingForAudio = true;
+        /*this.isWaitingForAudio = true; //TODO: find solution
         if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
             ((AndroidAudio)this.audio).resume();
             this.isWaitingForAudio = false;

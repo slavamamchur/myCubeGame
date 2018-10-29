@@ -1,5 +1,6 @@
 package com.sadgames.gl3dengine.glrender.scene;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -57,7 +58,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
-public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface {
+public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface, ApplicationListener {
 
     public  final static Object lockObject = new Object();
     private final static long CAMERA_ZOOM_ANIMATION_DURATION = 1000;
@@ -628,6 +629,44 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     public void onDrawFrame() {
         drawScene();
     }
+
+    @Override
+    public void onDispose() {
+        cleanUp();
+    }
+
     /** ------------------------------------------------------------------------------------------*/
 
+    /** ApplicationListener implementation -------------------------------------------------------*/
+    @Override
+    public void create() {
+        scenePrepare();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        updateViewPorts(width, height);
+    }
+
+    @Override
+    public void render() {
+        drawScene();
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void dispose() {
+        cleanUp();
+    }
+
+    /** ------------------------------------------------------------------------------------------*/
 }

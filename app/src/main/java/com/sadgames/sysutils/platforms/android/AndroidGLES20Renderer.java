@@ -70,7 +70,7 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
 
     private void setupGL() {
         GdxExt.gl20 = new AndroidGL20();
-        GdxExt.gl = GdxExt.gl20;
+        GdxExt.gl = GdxExt.gl20;  //TODO: add input
 
         GLES20JniWrapper.setGlEngine(GdxExt.gl);
     }
@@ -117,20 +117,109 @@ public class AndroidGLES20Renderer implements GLSurfaceView.Renderer { //TODO: r
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         eglContext = ((EGL10)EGLContext.getEGL()).eglGetCurrentContext();
-
         setupGL();
-
-        glInternalRenderer.onSurfaceCreated();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        if (created == false) {
+            glInternalRenderer.onSurfaceCreated();
+            created = true;
+            synchronized (this) {
+                running = true;
+            }
+        }
+
         glInternalRenderer.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        glInternalRenderer.onDrawFrame();
+        boolean lrunning = false;
+        boolean lpause = false;
+        boolean ldestroy = false;
+        boolean lresume = false;
+
+        synchronized (synch) {
+            lrunning = running;
+            lpause = pause;
+            ldestroy = destroy;
+            lresume = resume;
+
+            if (resume) {
+                resume = false;
+            }
+
+            if (pause) {
+                pause = false;
+                synch.notifyAll();
+            }
+
+            if (destroy) {
+                destroy = false;
+                synch.notifyAll();
+            }
+        }
+
+        if (lresume) {
+            /*SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+            synchronized (lifecycleListeners) {
+                LifecycleListener[] listeners = lifecycleListeners.begin();
+                for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+                    listeners[i].resume();
+                }
+                lifecycleListeners.end();
+            }
+            app.getApplicationListener().resume();
+            Gdx.app.log(LOG_TAG, "resumed");*/
+        }
+
+        if (lrunning) {
+            /*synchronized (app.getRunnables()) {
+                app.getExecutedRunnables().clear();
+                app.getExecutedRunnables().addAll(app.getRunnables());
+                app.getRunnables().clear();
+            }
+
+            for (int i = 0; i < app.getExecutedRunnables().size; i++) {
+                try {
+                    app.getExecutedRunnables().get(i).run();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }*/
+
+            /*app.getInput().processEvents();
+            frameId++;*/
+
+            glInternalRenderer.onDrawFrame();
+        }
+
+        if (lpause) {
+            /*SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+            synchronized (lifecycleListeners) {
+                LifecycleListener[] listeners = lifecycleListeners.begin();
+                for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+                    listeners[i].pause();
+                }
+            }
+            app.getApplicationListener().pause();
+            Gdx.app.log(LOG_TAG, "paused");*/
+        }
+
+        if (ldestroy) {
+            /*SnapshotArray<LifecycleListener> lifecycleListeners = app.getLifecycleListeners();
+            synchronized (lifecycleListeners) {
+                LifecycleListener[] listeners = lifecycleListeners.begin();
+                for (int i = 0, n = lifecycleListeners.size; i < n; ++i) {
+                    listeners[i].dispose();
+                }
+            }
+            app.getApplicationListener().dispose();
+            Gdx.app.log(LOG_TAG, "destroyed");*/
+
+            glInternalRenderer.onDispose();
+        }
     }
 
     public void resume () {
