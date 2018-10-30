@@ -1,8 +1,8 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses;
 
+import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 
 public class GameInstanceResponse extends IdResponse {
 

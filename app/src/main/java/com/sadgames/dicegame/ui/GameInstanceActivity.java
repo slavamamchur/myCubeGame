@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
@@ -21,7 +22,6 @@ import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.dicegame.ui.framework.MapFragment;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 
 import org.luaj.vm2.LuaValue;

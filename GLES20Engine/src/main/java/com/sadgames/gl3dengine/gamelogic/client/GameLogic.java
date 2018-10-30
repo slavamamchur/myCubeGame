@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.bulletphysics.dynamics.DynamicsWorld;
+import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.gamelogic.client.entities.GameMap;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
@@ -11,7 +12,6 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEnti
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.items.InteractiveGameItem;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;

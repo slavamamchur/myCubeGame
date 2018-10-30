@@ -1,6 +1,7 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.params;
 
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
+
+import com.cubegames.engine.domain.entities.players.InstancePlayer;
 
 import java.io.Serializable;
 import java.util.List;

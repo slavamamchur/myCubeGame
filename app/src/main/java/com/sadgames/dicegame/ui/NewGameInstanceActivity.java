@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.framework.BaseActivityWithMenu;
 import com.sadgames.dicegame.ui.framework.DBColumnInfo;
@@ -16,7 +17,6 @@ import com.sadgames.dicegame.ui.framework.DBTableFragment;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.DbPlayerEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.players.InstancePlayer;
 
 import java.util.ArrayList;
 
