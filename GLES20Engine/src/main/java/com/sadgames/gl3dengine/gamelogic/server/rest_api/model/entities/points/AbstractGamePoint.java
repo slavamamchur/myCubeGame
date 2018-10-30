@@ -1,5 +1,7 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points;
 
+import com.cubegames.engine.domain.entities.points.PointType;
+import com.cubegames.engine.domain.rest.requests.NewPointRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
 

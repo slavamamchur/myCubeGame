@@ -16,9 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.cubegames.engine.domain.entities.points.PointType;
 import com.sadgames.dicegame.R;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicNamedDbEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.PointType;
 import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.lang.reflect.Field;

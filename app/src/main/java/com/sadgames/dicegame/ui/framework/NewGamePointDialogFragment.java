@@ -14,9 +14,9 @@ import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
+import com.cubegames.engine.domain.entities.points.PointType;
+import com.cubegames.engine.domain.rest.requests.NewPointRequest;
 import com.sadgames.dicegame.R;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.NewPointRequest;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.PointType;
 
 
 public class NewGamePointDialogFragment extends DialogFragment {
