@@ -1,12 +1,16 @@
 package com.cubegames.engine.domain.entities.players;
 
-public class InstancePlayer {
+import java.io.Serializable;
 
-  private String name;
-  private int color;
-  private int currentPoint;
-  private boolean finished;
-  private boolean skipped;
+public class InstancePlayer implements Serializable {
+
+  private static final long serialVersionUID = -6815839058727920425L;
+
+  public String name;
+  public int color;
+  public int currentPoint;
+  public boolean finished;
+  public boolean skipped;
 
   public String getName() {
     return name;

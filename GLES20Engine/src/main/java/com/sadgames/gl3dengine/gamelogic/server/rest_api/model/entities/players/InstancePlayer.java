@@ -11,8 +11,6 @@ public class InstancePlayer implements Serializable {
     public boolean finished;
     public boolean skipped;
 
-    public InstancePlayer() {}
-
     public String getName() {
         return name;
     }
