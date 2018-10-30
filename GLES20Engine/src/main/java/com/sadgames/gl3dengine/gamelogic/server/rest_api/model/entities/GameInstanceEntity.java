@@ -10,12 +10,11 @@ import com.sadgames.sysutils.common.LuaUtils;
 
 import org.luaj.vm2.LuaTable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GameInstanceEntity extends BasicNamedDbEntity implements Serializable {
+public class GameInstanceEntity extends BasicNamedDbEntity {
 
     private static final long serialVersionUID = -8604963480687767704L;
 

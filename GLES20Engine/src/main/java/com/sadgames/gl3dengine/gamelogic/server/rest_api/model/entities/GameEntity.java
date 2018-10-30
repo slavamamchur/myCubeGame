@@ -11,7 +11,6 @@ import com.sadgames.gl3dengine.glrender.GLRenderConsts;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.MaterialPropertiesObject;
 
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_
 import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
 
 @JsonIgnoreProperties(ignoreUnknown = true) //todo: add gameLogicScript field, read textures via getImage()
-public class GameEntity extends BasicNamedDbEntity implements Serializable {
+public class GameEntity extends BasicNamedDbEntity {
 
     private static final long serialVersionUID = -4698835803284111481L;
 

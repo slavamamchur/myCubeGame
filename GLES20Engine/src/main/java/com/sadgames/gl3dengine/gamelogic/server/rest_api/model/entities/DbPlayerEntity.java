@@ -5,10 +5,8 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.DBPlayerController;
 
-import java.io.Serializable;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DbPlayerEntity extends BasicNamedDbEntity implements Serializable {
+public class DbPlayerEntity extends BasicNamedDbEntity {
 
     private static final long serialVersionUID = 1709751985689672630L;
 

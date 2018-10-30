@@ -2,10 +2,8 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.io.Serializable;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AuthTokenEntity extends BasicEntity implements Serializable {
+public class AuthTokenEntity extends BasicEntity {
 
     private static final long serialVersionUID = 2059404078619968113L;
 

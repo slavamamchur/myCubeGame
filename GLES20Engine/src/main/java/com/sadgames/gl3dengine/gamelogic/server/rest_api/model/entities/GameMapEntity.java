@@ -5,9 +5,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapController;
 
-import java.io.Serializable;
-
-public class GameMapEntity extends BasicNamedDbEntity implements Serializable {
+public class GameMapEntity extends BasicNamedDbEntity {
 
     private static final long serialVersionUID = -1298194783869611909L;
 

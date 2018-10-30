@@ -1,15 +1,12 @@
 apply plugin: 'java-library'
-apply plugin: 'me.tatarka.retrolambda'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+version = '1.0-SNAPSHOT'
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-
-    implementation 'cz.advel.jbullet:jbullet:20101010-1'
-    implementation 'org.luaj:luaj-jse:3.0.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
 }

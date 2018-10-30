@@ -1,8 +1,6 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 
-import java.io.Serializable;
-
-public class UserEntity extends BasicEntity implements Serializable {
+public class UserEntity extends BasicEntity {
 
     private static final long serialVersionUID = -360850314355350792L;
 

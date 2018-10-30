@@ -1,8 +1,6 @@
 package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 
-import java.io.Serializable;
-
-public abstract class BasicDbEntity extends BasicEntity implements Serializable {
+public abstract class BasicDbEntity extends BasicEntity {
     protected String id;
     protected String tenantId;
     protected boolean deleted;

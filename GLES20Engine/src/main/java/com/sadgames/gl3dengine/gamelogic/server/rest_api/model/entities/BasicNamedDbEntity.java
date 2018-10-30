@@ -3,9 +3,7 @@ package com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.AbstractController;
 
-import java.io.Serializable;
-
-public abstract class BasicNamedDbEntity extends BasicDbEntity implements Serializable {
+public abstract class BasicNamedDbEntity extends BasicDbEntity {
 
     @JsonProperty(required = true)
     public String name;
