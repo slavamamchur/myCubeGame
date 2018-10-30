@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 
+import com.cubegames.engine.domain.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
@@ -16,7 +17,6 @@ import com.sadgames.dicegame.ui.framework.MapFragment;
 import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.ErrorEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
-import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.points.AbstractGamePoint;
 import com.sadgames.sysutils.common.DateTimeUtils;
 
 import java.util.ArrayList;

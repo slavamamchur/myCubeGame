@@ -10,4 +10,6 @@ public class RestCommonConsts {
   public final static String FILTER_BY_NAME = "FILTER_NAME";
   public final static String FILTER_BY_SIZE = "FILTER_SIZE";
   public final static String FILTER_BY_PLAYERS = "FILTER_PLAYERS";
+
+  public final static String URL_GAME_POINT = "/point";
 }

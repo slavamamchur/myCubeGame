@@ -1,7 +1,14 @@
 package com.cubegames.engine.domain.entities.points;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.io.Serializable;
+
+import javax.vecmath.Vector2f;
+
+import static com.cubegames.engine.consts.RestCommonConsts.URL_GAME_POINT;
 
 /**
  * Abstract game point
@@ -20,12 +27,19 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = GamePointMoveSkip.class, name = "com.cubegames.engine.domain.entities.points.GamePointMoveSkip"),
     @JsonSubTypes.Type(value = GamePointRegular.class, name = "com.cubegames.engine.domain.entities.points.GamePointRegular")
 })
-public abstract class AbstractGamePoint {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class AbstractGamePoint implements Serializable {
 
-  protected int xPos;
-  protected int yPos;
-  protected PointType type;
-  protected int nextPointIndex;
+  private static final long serialVersionUID = 593713937939910727L;
+
+  public static String urlForActionName(){
+    return URL_GAME_POINT;
+  }
+
+  public int xPos;
+  public int yPos;
+  public PointType type;
+  public int nextPointIndex;
 
   public int getxPos() {
     return xPos;
@@ -57,6 +71,14 @@ public abstract class AbstractGamePoint {
 
   public void setNextPointIndex(int nextPointIndex) {
     this.nextPointIndex = nextPointIndex;
+  }
+
+  public Vector2f asVector2f() {
+    return new Vector2f(xPos, yPos);
+  }
+
+  public Vector2f asVector2fLua(float scaleFactor) {
+    return new Vector2f(xPos * scaleFactor, yPos * scaleFactor);
   }
 
 }
