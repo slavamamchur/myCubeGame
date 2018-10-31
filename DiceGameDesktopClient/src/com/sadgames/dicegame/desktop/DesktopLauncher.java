@@ -21,8 +21,10 @@ public class DesktopLauncher {
 												  config.preferencesFileType));
 
 		GameLogic logic = new GameLogic();
+		GLScene scene = new GLScene(logic);
 		//TODO: Init database and check login, then create hardcoded entity and call logic.InitMap(entity)
+		scene.setLuaEngine(logic.initScriptEngine(scene)); //TODO: remove stub
 
-		new LwjglApplication(new GLScene(logic), config);
+		new LwjglApplication(scene, config);
 	}
 }

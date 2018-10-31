@@ -67,6 +67,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OB
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
+import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 import static com.sadgames.sysutils.common.LuaUtils.javaList2LuaTable;
 import static com.sadgames.sysutils.common.MathUtils.mulMatOnVec;
@@ -279,7 +280,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     @Override
     public InputStream findResource(String name) {
-        return getGameEntity().getLuaScript(name);
+        return getResourceStream("scripts/" + name + ".lua"); //getGameEntity().getLuaScript(name); TODO: restore
     }
 
     private void loadGameItems(GLScene glScene) {
