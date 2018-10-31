@@ -191,14 +191,14 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
 
     @Override
-    public void onInitLightSource(GLLightSource lightSource) {
-        lightSource.setLightPosInModelSpace(gameEntity._getStartSunPosition());
-        lightSource.setLightColour(gameEntity._getStartSunColor());
+    public void onInitLightSource(GLLightSource lightSource) { //TODO: restore
+        lightSource.setLightPosInModelSpace(/*gameEntity._getStartSunPosition()*/new Vector3f(-2.2f, 1.7f, -3.2f));
+        lightSource.setLightColour(/*gameEntity._getStartSunColor()*/new Vector3f(1.0f, 1.0f, 0.8f));
     }
 
     @Override
-    public void onInitPhysics(DynamicsWorld dynamicsWorld) {
-        dynamicsWorld.setGravity(gameEntity._getGravity());
+    public void onInitPhysics(DynamicsWorld dynamicsWorld) { //TODO: restore
+        dynamicsWorld.setGravity(/*gameEntity._getGravity()*/new Vector3f(0f, -9.8f, 0f));
     }
 
     @Override

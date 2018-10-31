@@ -13,6 +13,7 @@ import com.sadgames.gl3dengine.GameEventsCallbackInterface;
 import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.FixedIsometricCamera;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
@@ -580,6 +581,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         if (firstRun) {
             firstRun = false;
 
+            GLES20JniWrapper.setGlEngine(GdxExt.gl);
             hasDepthTextureExtension = checkDepthTextureExtension();
             GLES20JniWrapper.glEnableFacesCulling();
             GLES20JniWrapper.glEnableDepthTest();
