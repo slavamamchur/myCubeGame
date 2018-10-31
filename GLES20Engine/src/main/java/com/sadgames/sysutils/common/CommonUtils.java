@@ -6,12 +6,10 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.controller.GameMapContr
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.glrender.GdxExt;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import static com.sadgames.sysutils.common.DBUtils.loadBitmapFromDB;
@@ -93,7 +91,7 @@ public class CommonUtils {
                 bitmapArray = loadBitmapFromDB(file, isRelief);
                 result = bitmapArray != null ? new BitmapWrapper(bitmapArray) : null;
             }
-            catch (SQLException | IOException exception) { result = null; }
+            catch (Exception exception) { result = null; }
 
         if (result == null)
             try {

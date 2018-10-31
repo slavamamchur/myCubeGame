@@ -134,8 +134,11 @@ end
 beforeDrawFrame = function(frametime)
     local skyBox = gameScene:getObject(SKY_BOX_CUBE_MAP_OBJECT)
 
-    skyBox:calcRotationAngle(frametime)
-    gameScene:getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
+    if not (skyBox == nil) then
+        skyBox:calcRotationAngle(frametime)
+        gameScene:getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
+
+    end
 end
 
 onPlayTurn = function()
