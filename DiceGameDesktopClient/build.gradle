@@ -1,0 +1,65 @@
+apply plugin: "java"
+apply plugin: 'application'
+apply plugin: "com.github.johnrengelman.shadow"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':common')
+    implementation project(':GLES20Engine')
+
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+
+    implementation 'org.luaj:luaj-jse:3.0.1'
+    implementation 'cz.advel.jbullet:jbullet:20101010-1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+}
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+mainClassName = "com.sadgames.dicegame.desktop.DesktopLauncher"
+project.ext.mainClassName = "com.sadgames.dicegame.desktop.DesktopLauncher"
+project.ext.assetsDir = new File("../app/src/main/assets")
+
+shadowJar {
+    from files(project.assetsDir)
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+    baseName = 'diceGame'
+}
+
+/*task run(dependsOn: classes, type: JavaExec) {
+    main = project.ext.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.ext.assetsDir
+    ignoreExitValue = true
+}*/
+
+task debug(dependsOn: classes, type: JavaExec) {
+    main = project.ext.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.ext.assetsDir
+    ignoreExitValue = true
+    debug = true
+}
+
+task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    //from files("libs/$it.name")
+    from {configurations.compile.collect {zipTree(it)}}
+    //from {configurations.runtimeClasspath.files.collect {it.getName()}}
+    from files(project.ext.assetsDir)
+
+    manifest {
+        attributes 'Main-Class': project.ext.mainClassName,
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+    }
+}
+
+dist.dependsOn classes

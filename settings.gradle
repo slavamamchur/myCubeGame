@@ -1,2 +1,2 @@
-include ':DiceGameAndroidClient', ':GLES20Engine', ':common'
+include ':DiceGameAndroidClient', ':GLES20Engine', ':common', ':DiceGameHtmlClient', ':DiceGameDesktopClient'
 project(':DiceGameAndroidClient').projectDir = new File(settingsDir, '/app')

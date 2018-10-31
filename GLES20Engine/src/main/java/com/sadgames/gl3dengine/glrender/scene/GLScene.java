@@ -10,6 +10,7 @@ import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
+import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.GLRendererInterface;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
@@ -91,6 +92,10 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     public GLScene(GameEventsCallbackInterface gameEventsCallBackListener) {
         this.graphicsQualityLevel = getSettingsManager().getGraphicsQualityLevel();
         this.gameEventsCallBackListener = gameEventsCallBackListener;
+    }
+
+    public GLScene() {
+        this(new GameLogic()); //TODO: test login and init game
     }
 
     public GLCamera getCamera() {
@@ -560,19 +565,30 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
     }
 
     private void scenePrepare() {
-        hasDepthTextureExtension = checkDepthTextureExtension();
-        GLES20JniWrapper.glEnableFacesCulling();
-        GLES20JniWrapper.glEnableDepthTest();
-
-        //TODO: glEnable(MULTISAMPLING)
+        //hasDepthTextureExtension = checkDepthTextureExtension();
+        //GLES20JniWrapper.glEnableFacesCulling();
+        //GLES20JniWrapper.glEnableDepthTest();
 
         initScene();
         initPhysics();
-        loadScene();
-        startSimulation();
+        //loadScene();
+        //startSimulation();
     }
 
+    private boolean firstRun = true;
     private void updateViewPorts(int width, int height) {
+        if (firstRun) {
+            firstRun = false;
+
+            hasDepthTextureExtension = checkDepthTextureExtension();
+            GLES20JniWrapper.glEnableFacesCulling();
+            GLES20JniWrapper.glEnableDepthTest();
+            //TODO: glEnable(MULTISAMPLING)
+
+            loadScene();
+            startSimulation();
+        }
+
         mDisplayWidth = width;
         mDisplayHeight = height;
         camera.setAspectRatio(width, height);

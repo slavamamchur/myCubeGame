@@ -51,8 +51,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void initGDXLib() {
-        GdxExt.preferences = new AndroidPreferences(getSharedPreferences(getPackageName() + "_preferences",
-                                                                          Context.MODE_PRIVATE));
+        GdxExt.preferences = new AndroidPreferences(getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE));
         GdxExt.restAPI = AndroidRestApiWrapper.getInstance(this.getApplicationContext());
         GdxExt.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
         GdxExt.dataBase = new GdxDbAndroid(this);
