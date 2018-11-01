@@ -14,8 +14,8 @@ import java.io.File;
 public class DesktopLauncher {
 
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration(); //TODO: setup config
-		GdxExt.restAPI = DesktopRestApiWrapper.getInstance();
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		GdxExt.restAPI = DesktopRestApiWrapper.getInstance();//TODO: create desktop wrapper
 		GdxExt.files = new LwjglFiles();
 		GdxExt.preferences = new LwjglPreferences(new LwjglFileHandle(new File(config.preferencesDirectory, "DiceGamePrefs"),
 												  config.preferencesFileType));
@@ -23,6 +23,8 @@ public class DesktopLauncher {
 		GameLogic logic = new GameLogic();
 		GLScene scene = new GLScene(logic);
 		//TODO: Init database and check login, then create hardcoded entity and call logic.InitMap(entity)
+		//... 1. login
+		//... 2. load GameInstance
 		scene.setLuaEngine(logic.initScriptEngine(scene)); //TODO: remove stub
 
 		new LwjglApplication(scene, config);

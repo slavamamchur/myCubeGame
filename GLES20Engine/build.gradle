@@ -6,12 +6,12 @@ targetCompatibility = 1.8
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':common')
+
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-    
+
     implementation 'cz.advel.jbullet:jbullet:20101010-1'
     implementation 'org.luaj:luaj-jse:3.0.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
 
-    implementation project(':common')
 }

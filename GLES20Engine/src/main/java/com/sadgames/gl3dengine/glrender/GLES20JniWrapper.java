@@ -3,8 +3,6 @@ package com.sadgames.gl3dengine.glrender;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.BufferUtils;
 
-import org.lwjgl.opengl.GL11;
-
 import java.nio.IntBuffer;
 
 import static com.badlogic.gdx.graphics.GL20.GL_BACK;
@@ -192,10 +190,7 @@ public class GLES20JniWrapper {
     }
 
     public static void glDrawElements(int mode, int count, int type) {
-        if (glEngine.getClass().getSimpleName().contains("LwjglGL20"))
-            GL11.glDrawElements(mode, count, type, 0);
-        else
-            glEngine.glDrawElements(mode, count, type, null);
+        glEngine.glDrawElements(mode, count, type, 0);
     }
 
     public static void glBindFramebuffer(int id) {
