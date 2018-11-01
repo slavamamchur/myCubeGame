@@ -1,3 +1,4 @@
+#version 130
 precision mediump float;
 
 uniform mat4 u_MV_MatrixF;

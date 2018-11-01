@@ -1,3 +1,4 @@
+#version 130
 precision highp float;
 
 varying highp vec4 vPosition;

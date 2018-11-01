@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
-import com.sadgames.gl3dengine.gamelogic.client.entities.GameMap;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
@@ -17,13 +16,9 @@ import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
-import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
-import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
-import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -50,10 +45,7 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.GameState;
-import static com.sadgames.gl3dengine.gamelogic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
-import static com.sadgames.gl3dengine.gamelogic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
-import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_CREATE_DYNAMIC_ITEMS_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_INIT_CAMERA_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
@@ -61,10 +53,6 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_PLAYER_MAKE_
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
-import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
-import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_DOME_TEXTURE_NAME;
-import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OBJECT;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
@@ -206,12 +194,26 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         ///GLRenderConsts.GraphicsQuality graphicsQuality = sysUtilsWrapper.iGetSettingsManager().getGraphicsQualityLevel();
 
         TextureCacheManager.getNewInstance();
-        TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
-        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
+        /*TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
+        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);*/
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
-        /** Terrain map */
+
+        //TODO: rollback test
+        Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);
+        testObj.setInitialScale(0.015625f);
+        testObj.setInitialTranslation(0.0f, 0.0f, 0.25f);
+        testObj.loadObject();
+        testObj.setRotationX(-90f);
+        testObj.setItemName("test1");
+        GLAnimation spin = glScene.createRotateAnimation(-360.0f, (short) 4, 4000);
+        spin.setRepeatCount((short) 0);
+        testObj.setAnimation(spin);
+        spin.startAnimation(testObj, null);
+        glScene.putChild(testObj, testObj.getItemName());
+
+        /** Terrain map *//*
         TopographicMapObject terrain = new GameMap(program, gameEntity);
         terrain.loadObject();
         terrain.setGlBlendingMap(createBlendingMap());
@@ -222,7 +224,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         loadGameItems(glScene);
         luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));
 
-        /** sky-dome */
+        *//** sky-dome *//*
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance().getItem(SKY_DOME_TEXTURE_NAME);
         // terrain.setWaterReflectionMap(skyDomeTexture);
         AbstractSkyObject skyDomeObject = new SkyDomeObject(skyDomeTexture, glScene);
@@ -230,14 +232,14 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         skyDomeObject.loadObject();
         glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
-        /** mini-map gui-box */
+        *//** mini-map gui-box *//*
         if (!getSettingsManager().isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(glScene.getCachedShader(GUI_OBJECT),
                                                                 new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
             miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
-        }
+        }*/
 
         forceGCandWait();
         GdxExt.restAPI.removeLoadingSplash();

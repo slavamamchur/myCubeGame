@@ -1,3 +1,5 @@
+#version 130
+
 uniform mat4 u_MVP_Matrix;
 uniform mat4 u_MV_Matrix;
 uniform highp mat4 uShadowProjMatrix;

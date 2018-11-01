@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Input;
@@ -23,6 +24,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
+import com.sadgames.gl3dengine.glrender.FakeGdxApp;
 import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.sysutils.common.GdxDbInterface;
@@ -41,6 +43,7 @@ public class MapFragment extends Fragment {
     private Preferences preferences = null;
     private RestApiInterface restApi = null;
     private GdxDbInterface database = null;
+    private Application app = null;
     private boolean isWaitingForAudio = false;
     private int wasFocusChanged = -1;
 
@@ -59,6 +62,7 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        GdxExt.app = new FakeGdxApp();
         gameLogic = new GameLogic();
         scene = new GLScene(gameLogic);
         glRenderer = new AndroidGLES20Renderer(getContext(), scene);
@@ -82,6 +86,7 @@ public class MapFragment extends Fragment {
         boolean isContinuousEnforced = AndroidGLES20Renderer.enforceContinuousRendering;
         AndroidGLES20Renderer.enforceContinuousRendering = true;
 
+        app = GdxExt.app;
         audio = GdxExt.audio;
         files = GdxExt.files;
         preferences = GdxExt.preferences;
@@ -107,6 +112,7 @@ public class MapFragment extends Fragment {
         glMapSurfaceView.onResume();
 
         if (!firstResume) {
+            GdxExt.app = app;
             GdxExt.audio = audio;
             GdxExt.files = files;
             GdxExt.preferences = preferences;
