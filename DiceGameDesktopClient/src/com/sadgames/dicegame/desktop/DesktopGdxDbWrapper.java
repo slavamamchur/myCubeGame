@@ -5,6 +5,9 @@ import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.sysutils.common.GdxDbInterface;
 
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import static com.sadgames.sysutils.common.SysUtilsConsts.DB_NAME;
 
@@ -32,7 +35,7 @@ public class DesktopGdxDbWrapper implements GdxDbInterface {
         }
 
         try {
-            //DriverManager.registerDriver((Driver) Class.forName("org.sqldroid.SQLDroidDriver").newInstance()); //TODO: register driver
+            DriverManager.registerDriver((Driver) Class.forName("org.sqlite.JDBC").newInstance());
         } catch (Exception e) {
             throw new RuntimeException("Failed to register SQLDroidDriver");
         }
@@ -41,6 +44,11 @@ public class DesktopGdxDbWrapper implements GdxDbInterface {
 
     @Override
     public Connection getJDBCConnection() {
-        return null; //TODO: get connection
+        String jdbcUrl = "jdbc:sqlite:" + GdxExt.files.external(name).file().getAbsolutePath();
+        try {
+            return DriverManager.getConnection(jdbcUrl);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
