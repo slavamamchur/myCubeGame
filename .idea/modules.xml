@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/DiceGameDesktopClient/DiceGameDesktopClient.iml" filepath="$PROJECT_DIR$/DiceGameDesktopClient/DiceGameDesktopClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/DiceGameHtmlClient/DiceGameHtmlClient.iml" filepath="$PROJECT_DIR$/DiceGameHtmlClient/DiceGameHtmlClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/GLES20Engine/GLES20Engine.iml" filepath="$PROJECT_DIR$/GLES20Engine/GLES20Engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebServer/WebServer.iml" filepath="$PROJECT_DIR$/WebServer/WebServer.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
     </modules>
   </component>

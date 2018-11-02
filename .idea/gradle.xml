@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/DiceGameDesktopClient" />
             <option value="$PROJECT_DIR$/DiceGameHtmlClient" />
             <option value="$PROJECT_DIR$/GLES20Engine" />
+            <option value="$PROJECT_DIR$/WebServer" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common" />
           </set>
