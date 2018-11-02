@@ -20,6 +20,7 @@ import com.cubegames.vaa.client.responces.CollectionResponseGame;
 import com.cubegames.vaa.client.responces.CollectionResponseGameMap;
 import com.cubegames.vaa.client.responces.CollectionResponseInstance;
 import com.google.common.base.Strings;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
@@ -92,6 +93,13 @@ public class RestClient {
     token = null;
   }
 
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
 
   public void register(String username, String password, String email, String language) {
     RegisterRequest request = new RegisterRequest();
@@ -169,8 +177,8 @@ public class RestClient {
   }
 
 
-  public GameInstance getInstance(String id) {
-    return runRestGet(Consts.INSTANCE_GET_URL + id, GameInstance.class);
+  public GameInstanceEntity getInstance(String id) {
+    return runRestGet(Consts.INSTANCE_GET_URL + id, GameInstanceEntity.class);
   }
 
 
