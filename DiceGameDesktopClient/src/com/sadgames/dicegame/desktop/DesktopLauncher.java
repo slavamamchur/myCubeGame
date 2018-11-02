@@ -26,14 +26,16 @@ public class DesktopLauncher {
 
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+
 		GdxExt.restAPI = DesktopRestApiWrapper.getInstance();//TODO: create desktop wrapper
 		GdxExt.files = new LwjglFiles();
 		GdxExt.preferences = new LwjglPreferences(new LwjglFileHandle(new File(config.preferencesDirectory, "DiceGamePrefs"),
 												  config.preferencesFileType));
+		GdxExt.dataBase = new DesktopGdxDbWrapper();
 
 		GameLogic logic = new GameLogic();
 		GLScene scene = new GLScene(logic);
-		//TODO: Init database
+
 		RestClient restClient = new RestClient(getSettingsManager().getWebServiceUrl(Consts.BASE_URL));
 		if (checkLogin(restClient)) {
 			GameInstanceEntity gameInst = restClient.getInstance(TEST_GAME_INSTANCE_ID);
