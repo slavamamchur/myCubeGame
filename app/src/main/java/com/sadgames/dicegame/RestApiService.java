@@ -26,6 +26,8 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.UserEnti
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GameInstanceStartedResponse;
 import com.sadgames.sysutils.platforms.android.restapi.WebServiceException;
 
+import org.springframework.http.HttpStatus;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -420,6 +422,9 @@ public class RestApiService extends IntentService {
         }
         catch (WebServiceException e) {
             error = e.getErrorObject() != null ? e.getErrorObject() : new ErrorEntity(e.getStatusText(), e.getStatusCode().value());
+        }
+        catch (Exception e) {
+            error = new ErrorEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE.value());
         }
 
         Bundle params = new Bundle();

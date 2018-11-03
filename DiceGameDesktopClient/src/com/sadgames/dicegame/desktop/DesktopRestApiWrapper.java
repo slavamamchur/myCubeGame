@@ -4,6 +4,7 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.EntityControllerInterfa
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.BasicEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
+import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.GenericCollectionResponse;
 
 /**
@@ -25,6 +26,12 @@ public class DesktopRestApiWrapper implements RestApiInterface {
         synchronized (lockObject) {
             instance = null;
         }
+    }
+
+    private GameMapEntity map = null;
+
+    public void setMap(GameMapEntity map) {
+        this.map = map;
     }
 
     @Override
@@ -59,6 +66,17 @@ public class DesktopRestApiWrapper implements RestApiInterface {
 
     @Override
     public void iDownloadBitmapIfNotCached(String textureResName, boolean isRelief) {
-        //TODO:
+        if (map == null || map.getId() == null || map.getId().isEmpty())
+            return;
+        else {
+        /*try {
+            if (isRelief)
+                saveMapRelief(map);
+            else
+                saveMapImage(map);
+        } catch (Exception e) {}*/
+        }
     }
+
+
 }
