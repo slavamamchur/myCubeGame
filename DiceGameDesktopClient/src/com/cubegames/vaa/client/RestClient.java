@@ -182,6 +182,11 @@ public class RestClient {
   }
 
 
+  public GameMap getGameMap(String id) {
+    return runRestGet(Consts.MAP_GET_URL + id, GameMap.class);
+  }
+
+
   public IdResponse restartInstance(String id) {
     return runRestGet(Consts.INSTANCE_RESTART_URL + id, IdResponse.class);
   }
@@ -244,6 +249,16 @@ public class RestClient {
     return baseUrl +
         MAP_URL + (isImage ? MAP_IMAGE_URL : MAP_RELIEF_URL) + mapId +
         PARAM_USER_TOKEN + this.token;
+  }
+
+
+  public String getMapImagePostfix(String mapId, boolean isImage) {
+    return  MAP_URL + (isImage ? MAP_IMAGE_URL : MAP_RELIEF_URL) + mapId;
+  }
+
+
+  public byte[] getBinaryData(String url) {
+    return runRestGet(url, byte[].class);
   }
 
 

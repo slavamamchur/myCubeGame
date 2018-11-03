@@ -45,6 +45,7 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.GameState;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_INIT_CAMERA_EVENT_HANDLER;
@@ -194,8 +195,8 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         ///GLRenderConsts.GraphicsQuality graphicsQuality = getSettingsManager().getGraphicsQualityLevel();
 
         TextureCacheManager.getNewInstance();
-        /*TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
-        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);*/
+        TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
+        //glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 

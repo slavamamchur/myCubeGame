@@ -86,16 +86,16 @@ public class DBUtils {
         return result;
     }
 
-    public static byte[] loadBitmapFromDB(String textureResName, boolean isRelief) throws SQLException {
+    public static byte[] loadBitmapFromDB(String textureResName, boolean isRelief) throws SQLException { //TODO: without cache???
         byte[] bitmapArray = null;
 
         GdxExt.restAPI.iDownloadBitmapIfNotCached(textureResName, isRelief);
 
         try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +
-                            " from " + DB_TABLE_NAME +
-                            " where " + MAP_ID_DB_FIELD + " = ?" +
-                            " order by " + CHUNK_NUMBER_DB_FIELD)) {
+                            " from " + DB_TABLE_NAME
+                          + " where " + MAP_ID_DB_FIELD + " = ?"
+                          + " order by " + CHUNK_NUMBER_DB_FIELD)) {
                 stmt.setString(1, (isRelief ? "rel_" : "") + textureResName);
 
                 try (ResultSet rs = stmt.executeQuery()) {

@@ -24,6 +24,7 @@ public class Consts {
   public static final String PLAYER_URL = "/player";
 
   public static final String MAP_LIST_URL = MAP_URL + LIST_URL;
+  public static final String MAP_GET_URL = MAP_URL + FIND_URL;
   public static final String MAP_DELETE_URL = MAP_URL + DELETE_URL;
   public static final String MAP_IMAGE_URL = "/image/";
   public static final String MAP_RELIEF_URL = "/relief/";
