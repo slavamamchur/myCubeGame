@@ -45,6 +45,7 @@ import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.GameState;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_INIT_CAMERA_EVENT_HANDLER;
@@ -179,14 +180,14 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
     }
 
     @Override
-    public void onInitLightSource(GLLightSource lightSource) { //TODO: restore
-        lightSource.setLightPosInModelSpace(/*gameEntity._getStartSunPosition()*/new Vector3f(-2.2f, 1.7f, -3.2f));
-        lightSource.setLightColour(/*gameEntity._getStartSunColor()*/new Vector3f(1.0f, 1.0f, 0.8f));
+    public void onInitLightSource(GLLightSource lightSource) {
+        lightSource.setLightPosInModelSpace(gameEntity._getStartSunPosition());
+        lightSource.setLightColour(gameEntity._getStartSunColor());
     }
 
     @Override
-    public void onInitPhysics(DynamicsWorld dynamicsWorld) { //TODO: restore
-        dynamicsWorld.setGravity(/*gameEntity._getGravity()*/new Vector3f(0f, -9.8f, 0f));
+    public void onInitPhysics(DynamicsWorld dynamicsWorld) {
+        dynamicsWorld.setGravity(gameEntity._getGravity());
     }
 
     @Override
@@ -194,11 +195,10 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         ///GLRenderConsts.GraphicsQuality graphicsQuality = getSettingsManager().getGraphicsQualityLevel();
 
         TextureCacheManager.getNewInstance();
-        /*TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
-        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);*/
+        TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
+        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
-
 
         //TODO: rollback test
         Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);

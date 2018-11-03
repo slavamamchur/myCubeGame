@@ -89,7 +89,7 @@ public class DBUtils {
     public static byte[] loadBitmapFromDB(String textureResName, boolean isRelief) throws SQLException {
         byte[] bitmapArray = null;
 
-        CommonUtils.downloadBitmapIfNotCached(textureResName, isRelief);
+        GdxExt.restAPI.iDownloadBitmapIfNotCached(textureResName, isRelief);
 
         try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
             try (PreparedStatement stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +

@@ -56,4 +56,9 @@ public class DesktopRestApiWrapper implements RestApiInterface {
     public EntityControllerInterface iGetEntityController(String action, Class<? extends BasicEntity> entityType, Class<? extends GenericCollectionResponse> listType, int method) {
         return null;
     }
+
+    @Override
+    public void iDownloadBitmapIfNotCached(String textureResName, boolean isRelief) {
+        //TODO:
+    }
 }

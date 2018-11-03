@@ -18,4 +18,7 @@ public interface RestApiInterface {
                                                    Class<? extends GenericCollectionResponse> listType,
                                                    int method);
 
+    //TODO: remove fake
+    void iDownloadBitmapIfNotCached(String textureResName,
+                                   boolean isRelief);
 }
