@@ -36,6 +36,7 @@ public class DesktopLauncher {
 		GameLogic logic = new GameLogic();
 		GLScene scene = new GLScene(logic);
 
+		/** TEST CODE ------------------------------------------------------------------------------ */
 		RestClient restClient = new RestClient(getSettingsManager().getWebServiceUrl(Consts.BASE_URL));
 		if (checkLogin(restClient)) {
 			GameInstanceEntity gameInst = restClient.getInstance(TEST_GAME_INSTANCE_ID);
@@ -56,6 +57,7 @@ public class DesktopLauncher {
 		}
 		else
 			throw new RuntimeException("Can not login to server.");
+		/** TEST CODE ------------------------------------------------------------------------------ */
 	}
 
 	private static boolean checkLogin(RestClient restClient) {
