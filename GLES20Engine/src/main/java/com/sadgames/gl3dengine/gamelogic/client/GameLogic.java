@@ -202,7 +202,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
-        /*Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);
+        Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);
         testObj.setInitialScale(0.015625f);
         testObj.setInitialTranslation(0.0f, 0.0f, 0.25f);
         testObj.loadObject();
@@ -212,7 +212,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         spin.setRepeatCount((short) 0);
         testObj.setAnimation(spin);
         spin.startAnimation(testObj, null);
-        glScene.putChild(testObj, testObj.getItemName());*/
+        glScene.putChild(testObj, testObj.getItemName());
 
         /** Terrain map */
         /*TopographicMapObject terrain = new GameMap(program, gameEntity);

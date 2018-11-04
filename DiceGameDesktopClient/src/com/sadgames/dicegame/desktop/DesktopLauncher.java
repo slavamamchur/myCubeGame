@@ -26,6 +26,10 @@ public class DesktopLauncher {
 
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 1280;
+		config.height = 618;
+		config.vSyncEnabled = false;
+
 
 		GdxExt.restAPI = DesktopRestApiWrapper.getInstance();//TODO: create desktop wrapper
 		GdxExt.files = new LwjglFiles();
@@ -62,6 +66,7 @@ public class DesktopLauncher {
 
 	private static boolean checkLogin(RestClient restClient) {
 		SettingsManagerInterface setings = getSettingsManager();
+		setings.setIn_2D_Mode(false);
 		boolean result = setings.isLoggedIn();
 
 		if (!result) {
