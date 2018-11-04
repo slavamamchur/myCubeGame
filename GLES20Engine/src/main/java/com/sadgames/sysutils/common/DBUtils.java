@@ -99,7 +99,7 @@ public class DBUtils {
                           + " order by " + CHUNK_NUMBER_DB_FIELD)) {
                 stmt.setString(1, (isRelief ? "rel_" : "") + textureResName);
 
-                try (ResultSet rs = stmt.executeQuery()) {
+                try (ResultSet rs = stmt.executeQuery()) { //TODO: check exception
                     if (rs != null && rs.first()) {
                         int dataPtr = 0;
                         int chunkCount = 1;

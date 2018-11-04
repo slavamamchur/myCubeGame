@@ -66,7 +66,7 @@ public class BitmapTexture extends AbstractTexture {
             && bitmap.getRawData() != null
             && !GameConst.BLENDING_MAP_TEXTURE.equals(bitmap.getTextureName()))
 
-            bitmap = packToETC1(bitmap);
+            bitmap = packToETC1(bitmap);//TODO: do not compress
 
         loadTextureInternal(getTextureType(), bitmap);
 
