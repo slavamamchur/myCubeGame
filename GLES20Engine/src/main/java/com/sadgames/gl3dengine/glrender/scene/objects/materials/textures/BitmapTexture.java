@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
-import com.sadgames.gl3dengine.gamelogic.client.GameConst;
 import com.sadgames.sysutils.common.BitmapWrapper;
 
 import java.nio.Buffer;
@@ -24,7 +23,6 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
 import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
-import static com.sadgames.sysutils.common.CommonUtils.packToETC1;
 
 public class BitmapTexture extends AbstractTexture {
 
@@ -61,12 +59,12 @@ public class BitmapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException {
-        if (!bitmap.isCompressed()
+        /*if (!bitmap.isCompressed()
             && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3)
             && bitmap.getRawData() != null
             && !GameConst.BLENDING_MAP_TEXTURE.equals(bitmap.getTextureName()))
 
-            bitmap = packToETC1(bitmap);//TODO: do not compress
+            bitmap = packToETC1(bitmap);*///TODO: remove stub after fix error
 
         loadTextureInternal(getTextureType(), bitmap);
 
