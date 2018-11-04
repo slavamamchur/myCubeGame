@@ -67,7 +67,7 @@ public class DesktopRestApiWrapper implements RestApiInterface {
     }
 
     @Override
-    public void iDownloadBitmapIfNotCached(String textureResName, boolean isRelief) {
+    public byte[] iDownloadBitmapIfNotCached(String textureResName, boolean isRelief) {
         RestClient restClient = getRestClient();
         GameMap map = restClient.getGameMap(textureResName);
 
@@ -78,6 +78,8 @@ public class DesktopRestApiWrapper implements RestApiInterface {
                 else
                     saveMapImage(map);
             } catch (Exception ignored) {}
+
+        return null;
     }
 
     private RestClient getRestClient() {

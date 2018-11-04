@@ -83,7 +83,9 @@ public class AndroidRestApiWrapper implements RestApiInterface {
     }
 
     @Override
-    public void iDownloadBitmapIfNotCached(String textureResName, boolean isRelief) {
+    public byte[] iDownloadBitmapIfNotCached(String textureResName, boolean isRelief) {
         CommonUtils.downloadBitmapIfNotCached(textureResName, isRelief);
+
+        return null;
     }
 }

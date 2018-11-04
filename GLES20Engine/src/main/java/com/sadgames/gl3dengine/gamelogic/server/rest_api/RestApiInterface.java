@@ -19,6 +19,6 @@ public interface RestApiInterface {
                                                    int method);
 
     //TODO: remove fake
-    void iDownloadBitmapIfNotCached(String textureResName,
+    byte[] iDownloadBitmapIfNotCached(String textureResName,
                                    boolean isRelief);
 }

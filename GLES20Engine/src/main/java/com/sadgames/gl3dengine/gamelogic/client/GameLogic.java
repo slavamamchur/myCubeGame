@@ -196,7 +196,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         TextureCacheManager.getNewInstance();
         TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
-        //glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
+        glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
