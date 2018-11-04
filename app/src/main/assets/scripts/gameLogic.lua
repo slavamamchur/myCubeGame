@@ -11,6 +11,7 @@ local BACK_MESH_OBJECT = '5bb6671fea957bd2affb428c'
 local SKIP_MESH_OBJECT = '5bb7042244dd519c21662955'
 local MORE_MESH_OBJECT = '5bb7785f44dd519c21662956'
 
+local TERRAIN_OBJECT_TYPE = 1
 local CHIP_DEFAULT_WEIGHT = 1.0
 local COLLISION_OBJECT = 1
 local TERRAIN_MATERIAL = 1
@@ -136,7 +137,7 @@ beforeDrawFrame = function(frametime)
 
     if not (skyBox == nil) then
         skyBox:calcRotationAngle(frametime)
-        gameScene:getObject(TERRAIN_MESH_OBJECT):getProgram():setSkyBoxRotationAngle(-skyBox:getRotationAngle())
+        gameScene:getCachedShaderLua(TERRAIN_OBJECT_TYPE):setSkyBoxRotationAngle(-skyBox:getRotationAngle())
 
     end
 end

@@ -16,9 +16,11 @@ import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.animation.GLAnimation;
 import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
+import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
+import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -54,6 +56,8 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_PLAYER_MAKE_
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_PREPARE_MAP_TEXTURE_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJECT_START_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
@@ -198,8 +202,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
-        //TODO: rollback test
-        Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);
+        /*Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);
         testObj.setInitialScale(0.015625f);
         testObj.setInitialTranslation(0.0f, 0.0f, 0.25f);
         testObj.loadObject();
@@ -209,10 +212,10 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         spin.setRepeatCount((short) 0);
         testObj.setAnimation(spin);
         spin.startAnimation(testObj, null);
-        glScene.putChild(testObj, testObj.getItemName());
+        glScene.putChild(testObj, testObj.getItemName());*/
 
-        /** Terrain map *//*
-        TopographicMapObject terrain = new GameMap(program, gameEntity);
+        /** Terrain map */
+        /*TopographicMapObject terrain = new GameMap(program, gameEntity);
         terrain.loadObject();
         terrain.setGlBlendingMap(createBlendingMap());
         terrain.createRigidBody();
@@ -220,9 +223,9 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
         loadGameItems(glScene);
-        luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));
+        luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));*/
 
-        *//** sky-dome *//*
+        /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance().getItem(SKY_DOME_TEXTURE_NAME);
         // terrain.setWaterReflectionMap(skyDomeTexture);
         AbstractSkyObject skyDomeObject = new SkyDomeObject(skyDomeTexture, glScene);
@@ -230,8 +233,8 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         skyDomeObject.loadObject();
         glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
-        *//** mini-map gui-box *//*
-        if (!getSettingsManager().isIn_2D_Mode()) {
+        /** mini-map gui-box */
+        /*if (!getSettingsManager().isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(glScene.getCachedShader(GUI_OBJECT),
                                                                 new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();

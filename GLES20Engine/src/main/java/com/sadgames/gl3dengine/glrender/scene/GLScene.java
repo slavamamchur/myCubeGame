@@ -209,6 +209,10 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
         return (AbstractGL3DObject) getChild(name);
     }
 
+    @SuppressWarnings("unused") public GLShaderProgram getCachedShaderLua(int type) {
+        return getCachedShader(GLObjectType.values()[type]);
+    }
+
     public GLShaderProgram getCachedShader(GLObjectType type) {
         GLShaderProgram program = shaders.get(type);
 
