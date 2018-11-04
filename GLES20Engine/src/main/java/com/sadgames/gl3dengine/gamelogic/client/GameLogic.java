@@ -192,8 +192,6 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
     @Override
     public void onLoadSceneObjects(GLScene glScene, DynamicsWorld dynamicsWorldObject) {
-        ///GLRenderConsts.GraphicsQuality graphicsQuality = getSettingsManager().getGraphicsQualityLevel();
-
         TextureCacheManager.getNewInstance();
         TextureCacheManager.getInstance().getItem(MAP_BACKGROUND_TEXTURE_NAME);
         glScene.setBackgroundTextureName(MAP_BACKGROUND_TEXTURE_NAME);
