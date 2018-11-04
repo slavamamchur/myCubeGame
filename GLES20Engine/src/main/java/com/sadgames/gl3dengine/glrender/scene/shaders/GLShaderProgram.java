@@ -1,6 +1,5 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
-import com.sadgames.gl3dengine.glrender.GLES20JniWrapper;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
@@ -82,7 +81,7 @@ public abstract class GLShaderProgram {
     }
 
     public void useProgram() {
-        GLES20JniWrapper.glUseProgram(programId);
+        shaderProgram.begin();
     }
 
     public void deleteProgram() {
