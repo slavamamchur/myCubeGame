@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.gl3dengine.GameEventsCallbackInterface;
+import com.sadgames.gl3dengine.gamelogic.client.entities.GameMap;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
@@ -21,6 +22,7 @@ import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.TopographicMapObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.AbstractTexture;
 import com.sadgames.gl3dengine.glrender.scene.objects.materials.textures.BitmapTexture;
 import com.sadgames.gl3dengine.glrender.scene.shaders.GLShaderProgram;
@@ -58,6 +60,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJE
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJECT_STOP_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_DOME_TEXTURE_NAME;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
@@ -202,32 +205,20 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
 
         GLShaderProgram program = glScene.getCachedShader(TERRAIN_OBJECT);
 
-        Blender3DObject testObj = new Blender3DObject("WP_FLY_FORWARD", program, 0xFFFFFFFF, 10f, 2);
-        testObj.setInitialScale(0.015625f);
-        testObj.setInitialTranslation(0.0f, 0.0f, 0.25f);
-        testObj.loadObject();
-        testObj.setRotationX(-90f);
-        testObj.setItemName("test1");
-        GLAnimation spin = glScene.createRotateAnimation(-360.0f, (short) 4, 4000);
-        spin.setRepeatCount((short) 0);
-        testObj.setAnimation(spin);
-        spin.startAnimation(testObj, null);
-        glScene.putChild(testObj, testObj.getItemName());
-
         /** Terrain map */
-        /*TopographicMapObject terrain = new GameMap(program, gameEntity);
+        TopographicMapObject terrain = new GameMap(program, gameEntity);
         terrain.loadObject();
         terrain.setGlBlendingMap(createBlendingMap());
         terrain.createRigidBody();
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
-        loadGameItems(glScene);
+        /*loadGameItems(glScene);
         luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));*/
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance().getItem(SKY_DOME_TEXTURE_NAME);
-        // terrain.setWaterReflectionMap(skyDomeTexture);
+        /// terrain.setWaterReflectionMap(skyDomeTexture); //TODO: for ultra graphics settings
         AbstractSkyObject skyDomeObject = new SkyDomeObject(skyDomeTexture, glScene);
         skyDomeObject.setItemName(SKY_BOX_CUBE_MAP_OBJECT);
         skyDomeObject.loadObject();
@@ -252,7 +243,7 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         Pixmap blendMap = createPixmap(257, 257, 0xFFFF0000, Pixmap.Format.RGBA8888);
         onPrepareMapTexture(blendMap);
         BitmapWrapper bmp = new BitmapWrapper(blendMap);
-        ((BitmapWrapper)bmp).setName(GameConst.BLENDING_MAP_TEXTURE);
+        bmp.setName(GameConst.BLENDING_MAP_TEXTURE);
         AbstractTexture glTexture = BitmapTexture.createInstance(bmp);
         TextureCacheManager textureCache = TextureCacheManager.getInstance();
         textureCache.putItem(glTexture, GameConst.BLENDING_MAP_TEXTURE, textureCache.getItemSize(glTexture));
