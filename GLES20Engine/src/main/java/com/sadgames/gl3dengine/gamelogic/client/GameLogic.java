@@ -19,6 +19,7 @@ import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 import com.sadgames.gl3dengine.glrender.scene.lights.GLLightSource;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractSkyObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.Blender3DObject;
+import com.sadgames.gl3dengine.glrender.scene.objects.GUI2DImageObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject;
 import com.sadgames.gl3dengine.glrender.scene.objects.SceneObjectsTreeItem;
 import com.sadgames.gl3dengine.glrender.scene.objects.SkyDomeObject;
@@ -50,7 +51,9 @@ import javax.vecmath.Vector4f;
 
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.GameState;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.MAP_BACKGROUND_TEXTURE_NAME;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.MINI_MAP_OBJECT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_BEFORE_DRAW_FRAME_EVENT_HANDLER;
+import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_CREATE_DYNAMIC_ITEMS_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_GAME_RESTARTED_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_INIT_CAMERA_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_MOVING_OBJECT_STOP_EVENT_HANDLER;
@@ -61,6 +64,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_ROLLING_OBJE
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_BOX_CUBE_MAP_OBJECT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.SKY_DOME_TEXTURE_NAME;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.TERRAIN_MESH_OBJECT;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.TERRAIN_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.forceGCandWait;
 import static com.sadgames.sysutils.common.CommonUtils.getResourceStream;
@@ -213,8 +217,8 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         dynamicsWorldObject.addRigidBody(terrain.get_body());
         glScene.putChild(terrain, TERRAIN_MESH_OBJECT);
 
-        /*loadGameItems(glScene);
-        luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));*/
+        loadGameItems(glScene);
+        luaEngine.get(ON_CREATE_DYNAMIC_ITEMS_HANDLER).call(CoerceJavaToLua.coerce(gameEntity), CoerceJavaToLua.coerce(gameInstanceEntity));
 
         /** sky-dome */
         AbstractTexture skyDomeTexture = TextureCacheManager.getInstance().getItem(SKY_DOME_TEXTURE_NAME);
@@ -225,13 +229,13 @@ public class GameLogic implements GameEventsCallbackInterface, ResourceFinder {
         glScene.putChild(skyDomeObject, skyDomeObject.getItemName());
 
         /** mini-map gui-box */
-        /*if (!getSettingsManager().isIn_2D_Mode()) {
+        if (!getSettingsManager().isIn_2D_Mode()) {
             GUI2DImageObject miniMapView = new GUI2DImageObject(glScene.getCachedShader(GUI_OBJECT),
                                                                 new Vector4f(-1, 1, -0.75f, 0.5f), true);
             miniMapView.loadObject();
             miniMapView.setGlTexture(terrain.getGlTexture());
             glScene.putChild(miniMapView, MINI_MAP_OBJECT);
-        }*/
+        }
 
         forceGCandWait();
         GdxExt.restAPI.removeLoadingSplash();
