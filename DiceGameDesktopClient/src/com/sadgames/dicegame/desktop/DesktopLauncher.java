@@ -28,10 +28,10 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 618;
-		config.vSyncEnabled = false;
+		config.vSyncEnabled = true;
+		config.fullscreen = false;
 
-
-		GdxExt.restAPI = DesktopRestApiWrapper.getInstance();//TODO: create desktop wrapper
+		GdxExt.restAPI = DesktopRestApiWrapper.getInstance();
 		GdxExt.files = new LwjglFiles();
 		GdxExt.preferences = new LwjglPreferences(new LwjglFileHandle(new File(config.preferencesDirectory, "DiceGamePrefs"),
 												  config.preferencesFileType));
