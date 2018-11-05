@@ -32,7 +32,7 @@ import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment { //TODO: AndroidFragmentApplication
 
     private Activity activity = null;
     private GameLogic gameLogic;
@@ -62,6 +62,7 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        //TODO: initializeForView
         GdxExt.app = new FakeGdxApp();
         gameLogic = new GameLogic();
         scene = new GLScene(gameLogic);
