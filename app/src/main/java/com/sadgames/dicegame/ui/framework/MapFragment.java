@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.badlogic.gdx.input.GestureDetector;
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
+import com.sadgames.gl3dengine.MyGestureListener;
 import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
@@ -69,6 +71,8 @@ public class MapFragment extends AndroidFragmentApplication {
             GdxExt.restAPI = restApi;
             GdxExt.dataBase = database;
         }
+        else
+            GdxExt.input.setInputProcessor(new GestureDetector(new MyGestureListener(scene)));
 
         super.onResume();
     }
