@@ -1,22 +1,18 @@
 package com.sadgames.dicegame.ui.framework;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.RestApiService;
 import com.sadgames.gl3dengine.gamelogic.client.GameLogic;
@@ -24,54 +20,30 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.RestApiInterface;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameInstanceEntity;
 import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.entities.GameMapEntity;
-import com.sadgames.gl3dengine.glrender.FakeGdxApp;
 import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.sysutils.common.GdxDbInterface;
-import com.sadgames.sysutils.platforms.android.AndroidGLES20Renderer;
 
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment { //TODO: AndroidFragmentApplication
+public class MapFragment extends AndroidFragmentApplication {
 
-    private Activity activity = null;
     private GameLogic gameLogic;
     private GLScene scene;
-    private Audio audio = null;
-    private Files files = null;
-    private Input input = null;
     private Preferences preferences = null;
     private RestApiInterface restApi = null;
     private GdxDbInterface database = null;
-    private Application app = null;
-    private boolean isWaitingForAudio = false;
-    private int wasFocusChanged = -1;
-
-    protected boolean firstResume = true;
-
-    public MapGLSurfaceView glMapSurfaceView;
-    public AndroidGLES20Renderer glRenderer;
 
     public MapFragment() {}
 
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        //TODO: initializeForView
-        GdxExt.app = new FakeGdxApp();
         gameLogic = new GameLogic();
         scene = new GLScene(gameLogic);
-        glRenderer = new AndroidGLES20Renderer(getContext(), scene);
-        glMapSurfaceView = (MapGLSurfaceView) glRenderer.getView();
 
-        glMapSurfaceView.setScene(scene);
-
-        return  glMapSurfaceView;
+        return initializeForView(scene);
     }
 
     @Override
@@ -83,52 +55,20 @@ public class MapFragment extends Fragment { //TODO: AndroidFragmentApplication
 
     @Override
     public void onPause() {
-        boolean isContinuous = glRenderer.isContinuousRendering();
-        boolean isContinuousEnforced = AndroidGLES20Renderer.enforceContinuousRendering;
-        AndroidGLES20Renderer.enforceContinuousRendering = true;
-
-        app = GdxExt.app;
-        audio = GdxExt.audio;
-        files = GdxExt.files;
         preferences = GdxExt.preferences;
         restApi = GdxExt.restAPI;
-        database = GdxExt.dataBase;  //TODO: add input
+        database = GdxExt.dataBase;
 
-        glRenderer.setContinuousRendering(true);
-        glRenderer.pause();
-
-        if (activity != null && activity.isFinishing()) {
-            glRenderer.destroy();
-        }
-
-        AndroidGLES20Renderer.enforceContinuousRendering = isContinuousEnforced;
-        glRenderer.setContinuousRendering(isContinuous);
-
-        glMapSurfaceView.onPause();
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        glMapSurfaceView.onResume();
-
         if (!firstResume) {
-            GdxExt.app = app;
-            GdxExt.audio = audio;
-            GdxExt.files = files;
             GdxExt.preferences = preferences;
             GdxExt.restAPI = restApi;
-            GdxExt.dataBase = database; //TODO: add input
-
-            glRenderer.resume();
-        } else
-            firstResume = false;
-
-        /*this.isWaitingForAudio = true; //TODO: find solution
-        if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
-            ((AndroidAudio)this.audio).resume();
-            this.isWaitingForAudio = false;
-        }*/
+            GdxExt.dataBase = database;
+        }
 
         super.onResume();
     }

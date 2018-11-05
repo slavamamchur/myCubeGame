@@ -10,12 +10,11 @@
     tools:context=".ui.GameInstanceActivity"
     android:id="@+id/map_container">
 
-    <fragment
+    <LinearLayout
+        android:id="@+id/map_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.sadgames.dicegame.ui.framework.MapFragment"
-        tools:layout="@layout/map_fragment"
-        android:id="@+id/map_fragment" />
+        android:orientation="vertical" />
 
     <fragment
         android:layout_height="200dp"

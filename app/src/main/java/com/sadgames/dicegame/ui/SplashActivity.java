@@ -8,11 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.backends.android.AndroidAudio;
-import com.badlogic.gdx.backends.android.AndroidFiles;
 import com.badlogic.gdx.backends.android.AndroidPreferences;
-import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.sadgames.dicegame.AndroidRestApiWrapper;
 import com.sadgames.dicegame.GdxDbAndroid;
 import com.sadgames.dicegame.R;
@@ -24,10 +20,6 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_BOOLEAN_R
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
 public class SplashActivity extends AppCompatActivity {
-
-    static {
-        GdxNativesLoader.load();
-    }
 
     public static  final int HIDE_DELAY = 3000;
 
@@ -53,9 +45,7 @@ public class SplashActivity extends AppCompatActivity {
     private void initGDXLib() {
         GdxExt.preferences = new AndroidPreferences(getSharedPreferences(getPackageName() + "_preferences", Context.MODE_PRIVATE));
         GdxExt.restAPI = AndroidRestApiWrapper.getInstance(this.getApplicationContext());
-        GdxExt.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
         GdxExt.dataBase = new GdxDbAndroid(this);
-        GdxExt.audio = new AndroidAudio(this.getApplicationContext(), new AndroidApplicationConfiguration());
     }
 
     @Override

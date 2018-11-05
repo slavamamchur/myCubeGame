@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.cubegames.engine.domain.entities.players.InstancePlayer;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.ui.framework.BaseItemDetailsActivity;
@@ -46,7 +47,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_PLAYER_NEXT_
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ON_PLAY_TURN_EVENT_HANDLER;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.UserActionType;
 
-public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> {
+public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEntity> implements  AndroidFragmentApplication.Callbacks {
 
     public static final String FINISHED_FIELD_NAME = "finished";
     public static final String SKIPPED_FIELD_NAME = "skipped";
@@ -82,20 +83,22 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
         setContentView(R.layout.activity_game_instance);
 
         //TODO: camera navigation fragment
-        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        mMapFragment = new MapFragment();
+        getSupportFragmentManager().beginTransaction().
+                add(R.id.map_fragment, mMapFragment).
+                commit();
+
         playersFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.players_fragment);
         playersFragment.getView().setBackgroundColor(0x40000000);
-
-        if(getItem() != null && getItem().getId() != null){
-            mMapFragment.InitMap(getItem());
-        }
-
-        mMapFragment.setActivity(this);
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        if(getItem() != null && getItem().getId() != null){
+            mMapFragment.InitMap(getItem());
+        }
 
         setTitle(getItem().getName() + "(GameState: " + getItem().getState()  + ")");
 
@@ -294,5 +297,10 @@ public class GameInstanceActivity extends BaseItemDetailsActivity<GameInstanceEn
     private void restartGame() {
         showProgress();
         mMapFragment.getGameLogic().requestRestartGame();
+    }
+
+    @Override
+    public void exit() {
+
     }
 }

@@ -9,11 +9,9 @@
     android:orientation="horizontal"
     android:weightSum="100">
 
-    <fragment
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:name="com.sadgames.dicegame.ui.framework.MapFragment"
-        tools:layout="@layout/map_fragment"
         android:id="@+id/map_fragment"
         android:layout_weight="70" />
 

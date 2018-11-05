@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.cubegames.engine.domain.entities.points.AbstractGamePoint;
 import com.sadgames.dicegame.R;
 import com.sadgames.dicegame.RestApiService;
@@ -28,7 +29,7 @@ import static com.sadgames.gl3dengine.gamelogic.client.GameConst.ACTION_REMOVE_L
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ENTITY_OBJECT;
 import static com.sadgames.gl3dengine.gamelogic.client.GameConst.EXTRA_ERROR_OBJECT;
 
-public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
+public class GameActivity extends BaseItemDetailsActivity<GameEntity> implements  AndroidFragmentApplication.Callbacks {
 
     private static final String X_POS_FIELD_NAME = "xPos";
     private static final String Y_POS_FIELD_NAME = "yPos";
@@ -55,21 +56,22 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
 
         setContentView(R.layout.activity_game);
 
-        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        mMapFragment = new MapFragment();
+        getSupportFragmentManager().beginTransaction().
+                add(R.id.map_fragment, mMapFragment).
+                commit();
         tableFragment = (DBTableFragment) getSupportFragmentManager().findFragmentById(R.id.game_points_list_fragment);
         //TODO: camera navigation fragment and loading splash fragment
-
-        if(getItem() != null && getItem().getId() != null){
-            //showProgress();
-            mMapFragment.InitMap(getItem());
-        }
-
-        mMapFragment.setActivity(this);
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        if(getItem() != null && getItem().getId() != null){
+            //showProgress();
+            mMapFragment.InitMap(getItem());
+        }
 
         setTitle(getItem().getName() + "(ID: " + getItem().getId() + ", created: " +
                 DateTimeUtils.formatDateTime(getItem().getCreatedDate()) + ")");
@@ -143,5 +145,10 @@ public class GameActivity extends BaseItemDetailsActivity<GameEntity> {
         }
         else
             return super.handleWebServiceResponseAction(context, intent);
+    }
+
+    @Override
+    public void exit() {
+
     }
 }
