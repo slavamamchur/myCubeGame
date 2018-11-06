@@ -12,6 +12,8 @@ import com.sadgames.gl3dengine.gamelogic.server.rest_api.model.responses.Generic
 import com.sadgames.sysutils.common.SettingsManagerInterface;
 
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
+import static com.sadgames.sysutils.common.DBUtils.isBitmapCached;
+import static com.sadgames.sysutils.common.DBUtils.saveBitmap2DB;
 
 /**
  * Created by Slava Mamchur on 31.10.2018.
@@ -98,19 +100,19 @@ public class DesktopRestApiWrapper implements RestApiInterface {
     }
 
     private byte[] internalSavePicture(GameMap map, String url, String namePrefix, String errorMessage) throws NoSuchFieldException {
-        /*if (isBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
-            return;*/
+        if (isBitmapCached(namePrefix + map.getId(), map.getLastUsedDate()))
+            return null;
 
         RestClient restClient = getRestClient();
         byte[] mapArray = restClient.getBinaryData(restClient.getMapImagePostfix(map.getId(), !"rel_".equals(namePrefix)));
         if (mapArray == null)
             throw new NoSuchFieldException(errorMessage);
-        /*else try {
+        else try {
             saveBitmap2DB(mapArray, namePrefix + map.getId(), map.getLastUsedDate());
         } catch (Exception e) {
             throw new RuntimeException(errorMessage);
-        }*/
+        }
 
-        return mapArray;
+        return null;
     }
 }

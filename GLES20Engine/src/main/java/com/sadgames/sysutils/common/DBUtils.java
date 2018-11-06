@@ -3,7 +3,6 @@ package com.sadgames.sysutils.common;
 import com.sadgames.gl3dengine.glrender.GdxExt;
 
 import java.io.ByteArrayInputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,36 +88,35 @@ public class DBUtils {
     public static byte[] loadBitmapFromDB(String textureResName, boolean isRelief) throws SQLException {
         byte[] bitmapArray = GdxExt.restAPI.iDownloadBitmapIfNotCached(textureResName, isRelief);
 
-        if (bitmapArray == null) /** temp stub for desktop client */
+        if (bitmapArray == null)
         try (Connection conn = GdxExt.dataBase.getJDBCConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +
-                            " from " + DB_TABLE_NAME
-                          + " where " + MAP_ID_DB_FIELD + " = ?"
-                          + " order by " + CHUNK_NUMBER_DB_FIELD)) {
+            try (PreparedStatement  stmt = conn.prepareStatement("select " + MAP_IMAGE_DB_FIELD +
+                                                                    " from " + DB_TABLE_NAME
+                                                                  + " where " + MAP_ID_DB_FIELD + " = ?"
+                                                                  + " order by " + CHUNK_NUMBER_DB_FIELD)) {
                 stmt.setString(1, (isRelief ? "rel_" : "") + textureResName);
-
-                try (ResultSet rs = stmt.executeQuery()) { //TODO: check exception
-                    if (rs != null && rs.first()) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs != null && rs.next()) {
                         int dataPtr = 0;
-                        int chunkCount = 1;
-                        while (rs.next()) chunkCount++;
-                        int imageSize = chunkCount * (BYTES_IN_MB * 2);
-
-                        rs.last();
-                        Blob blob = rs.getBlob(1);
-                        byte[] lastChunk = blob.getBytes(0, (int) blob.length());
-                        imageSize = lastChunk.length < (BYTES_IN_MB * 2) ? imageSize - (BYTES_IN_MB * 2) + lastChunk.length : imageSize;
-                        bitmapArray = new byte[imageSize];
-                        rs.first();
-
+                        int dataSize = 0;
+                        byte[] chunkData;
+                        byte[] tmpArray;
                         do {
-                            blob = rs.getBlob(1);
-                            byte[] chunkData = blob.getBytes(0, (int) blob.length());
+                            chunkData = rs.getBytes(1);
+                            tmpArray = bitmapArray;
+                            dataSize += chunkData.length;
+
+                            bitmapArray = new byte[dataSize];
+                            if (tmpArray != null)
+                                System.arraycopy(tmpArray, 0, bitmapArray, 0, tmpArray.length);
                             System.arraycopy(chunkData, 0, bitmapArray, dataPtr, chunkData.length);
 
                             dataPtr += chunkData.length;
                         } while (rs.next());
                     }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
