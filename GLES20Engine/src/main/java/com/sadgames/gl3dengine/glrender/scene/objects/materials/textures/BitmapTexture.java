@@ -1,5 +1,8 @@
 package com.sadgames.gl3dengine.glrender.scene.objects.materials.textures;
 
+import com.badlogic.gdx.Application;
+import com.sadgames.gl3dengine.gamelogic.client.GameConst;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.sysutils.common.BitmapWrapper;
 
 import java.nio.Buffer;
@@ -23,6 +26,7 @@ import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glEnable;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexImage2D;
 import static com.sadgames.gl3dengine.glrender.GLES20JniWrapper.glTexParameteri;
 import static com.sadgames.sysutils.common.CommonUtils.getBitmapFromFile;
+import static com.sadgames.sysutils.common.CommonUtils.packToETC1;
 
 public class BitmapTexture extends AbstractTexture {
 
@@ -59,12 +63,13 @@ public class BitmapTexture extends AbstractTexture {
 
     @Override
     protected void loadTexture(BitmapWrapper bitmap) throws UnsupportedOperationException {
-        /*if (!bitmap.isCompressed()
+        if (!bitmap.isCompressed()
             && !(bitmap.getWidth() < 3 && bitmap.getHeight() < 3)
             && bitmap.getRawData() != null
-            && !GameConst.BLENDING_MAP_TEXTURE.equals(bitmap.getTextureName()))
+            && !GameConst.BLENDING_MAP_TEXTURE.equals(bitmap.getTextureName())
+            && GdxExt.app.getType() != Application.ApplicationType.Desktop)
 
-            bitmap = packToETC1(bitmap);*///TODO: remove stub after fix error -> must be available!!!
+            bitmap = packToETC1(bitmap);
 
         loadTextureInternal(getTextureType(), bitmap);
 
