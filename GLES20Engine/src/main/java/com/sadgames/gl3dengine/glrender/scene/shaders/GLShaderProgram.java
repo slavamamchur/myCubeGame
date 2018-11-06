@@ -1,5 +1,7 @@
 package com.sadgames.gl3dengine.glrender.scene.shaders;
 
+import com.badlogic.gdx.Application;
+import com.sadgames.gl3dengine.glrender.GdxExt;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
 import com.sadgames.gl3dengine.glrender.scene.objects.AbstractGL3DObject;
 import com.sadgames.gl3dengine.glrender.scene.shaders.params.GLShaderParam;
@@ -57,6 +59,8 @@ public abstract class GLShaderProgram {
 
     public GLShaderProgram() {
         MyShaderProgram.pedantic = false;
+        MyShaderProgram.prependVertexCode = GdxExt.app.getType() == Application.ApplicationType.Desktop ? "#version 130\n" : "";
+        MyShaderProgram.prependFragmentCode = GdxExt.app.getType() == Application.ApplicationType.Desktop ? "#version 130\n" : "";
         String errorText = "";
         shaderProgram = new MyShaderProgram(getVertexShaderResId(), getFragmentShaderResId());
 

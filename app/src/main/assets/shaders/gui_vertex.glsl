@@ -1,4 +1,3 @@
-#version 130
 attribute vec3 a_Position;
 attribute vec2 a_Texture;
 

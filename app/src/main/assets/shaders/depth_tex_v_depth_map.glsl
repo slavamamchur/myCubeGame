@@ -1,5 +1,3 @@
-#version 130
-
 precision highp float;
 
 // model-view projection matrix

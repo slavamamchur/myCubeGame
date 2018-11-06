@@ -1,4 +1,3 @@
-//#version 130
 precision mediump float;
 
 uniform samplerCube u_TextureUnit;
