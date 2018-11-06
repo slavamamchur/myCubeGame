@@ -57,7 +57,7 @@ public class MyGestureListener implements GestureDetector.GestureListener {
     @Override
     public boolean zoom(float initialDistance, float distance) {
         oldScaleFactor = mScaleFactor;
-        mScaleFactor *= distance / initialDistance;
+        mScaleFactor = distance / initialDistance;
 
         if (oldScaleFactor != mScaleFactor) {
             scene.getCamera().setVfov(DEFAULT_CAMERA_VERTICAL_FOV / mScaleFactor);
