@@ -3,6 +3,7 @@ package com.sadgames.gl3dengine;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.sadgames.gl3dengine.glrender.scene.GLScene;
+import com.sadgames.gl3dengine.glrender.scene.camera.GLCamera;
 
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.DEFAULT_CAMERA_VERTICAL_FOV;
 
@@ -46,7 +47,19 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
+        GLCamera camera = scene.getCamera();
+
+        synchronized (GLScene.lockObject) {
+            camera.rotateX(-deltaY * TOUCH_SCALE_FACTOR / 2);
+            camera.rotateY(deltaX * TOUCH_SCALE_FACTOR * 2);
+
+            camera.updateViewMatrix();
+            scene.getLightSource().setLightPosInEyeSpace();
+        }
+
+        //requestRender();
+
+        return true;
     }
 
     @Override
