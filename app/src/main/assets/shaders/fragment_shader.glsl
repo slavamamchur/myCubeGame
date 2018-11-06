@@ -60,9 +60,9 @@ highp float unpack (highp vec4 packedZValue) {
 float calcShadowRate(vec3 nNormal) {
       highp float shadow = 1.0;
 
-      if (vShadowCoord.w > 0.0 /*&& u_isCubeMapF == 1*/) { //TODO: remove stub
-        highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal); //TODO: set proper bias
-        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/; //TODO: for spot lights
+      if (vShadowCoord.w > 0.0) {
+        highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal); //TODO: set proper bias !!!
+        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/; //TODO: for spot lights (low priority)
 
         highp vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
         highp float distanceFromLight = unpack(packedZValue);
@@ -163,7 +163,7 @@ void main()
       gl_FragColor = calcPhongLightingMolel(n_normal, n_lightvector, n_lookvector, diffuseColor, shadowRate);
 
 
-      if (u_isCubeMapF == 1) { //TODO: no relief error
+      if (u_isCubeMapF == 1) { //TODO: no relief error !!!
         vec4 blendingFactor = texture2D(u_BlendingMapUnit, v_Texture);
         vec4 backgroundColour = texture2D(u_BackgroundUnit, v_Texture);
 

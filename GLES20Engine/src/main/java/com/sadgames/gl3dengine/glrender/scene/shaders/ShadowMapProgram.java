@@ -29,7 +29,7 @@ public class ShadowMapProgram extends VBOShaderProgram {
     }
 
     private boolean checkDepthTextureExtension() {
-        return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
+        return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION); //TODO: check on desktop
     }
 
     @Override
