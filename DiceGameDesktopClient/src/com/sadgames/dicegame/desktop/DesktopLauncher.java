@@ -1,6 +1,5 @@
 package com.sadgames.dicegame.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFileHandle;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
 
-public class DesktopLauncher {
+public class DesktopLauncher { //TODO: Implement InputProcessor interface for mouse zoom and pan detection
 
 	private static final String TEST_GAME_INSTANCE_ID = "5bb9b8ed674b7d1ff899ca75";
 
@@ -57,7 +56,7 @@ public class DesktopLauncher {
 				scene.setLuaEngine(logic.initScriptEngine(scene));
 			}
 
-			new LwjglApplication(scene, config);
+			new MyLwjglApplication(scene, config);
 		}
 		else
 			throw new RuntimeException("Can not login to server.");

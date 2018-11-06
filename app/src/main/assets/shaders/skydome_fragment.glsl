@@ -1,4 +1,4 @@
-//#version 130
+#version 130
 precision mediump float;
 
 uniform sampler2D u_TextureUnit;
