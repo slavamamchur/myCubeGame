@@ -47,7 +47,7 @@ highp float calcDynamicBias(highp float bias, vec3 normal) {
     return clamp(result, 0.0, 0.3);
 }
 
-highp float unpack (highp vec4 packedZValue) {
+highp float unpack (highp vec4 packedZValue) { //TODO: try rgb-buffer for desktop
     /*const highp vec4 bitShifts = vec4(1.0 / (256.0 * 256.0 * 256.0),
                                     1.0 / (256.0 * 256.0),
                                     1.0 / 256.0,
@@ -62,7 +62,7 @@ float calcShadowRate(vec3 nNormal) {
 
       if (vShadowCoord.w > 0.0) {
         highp float bias = 0.0005; //calcDynamicBias(0.1, nNormal); //TODO: set proper bias !!!
-        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/; //TODO: for spot lights (low priority)
+        highp vec4 shadowMapPosition = vShadowCoord/* / vShadowCoord.w*/; //TODO: for spot lights only (low priority)
 
         highp vec4 packedZValue = texture2D(uShadowTexture, shadowMapPosition.st);
         highp float distanceFromLight = unpack(packedZValue);

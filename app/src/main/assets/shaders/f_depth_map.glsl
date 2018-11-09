@@ -16,12 +16,12 @@ highp vec4 pack (float depth)
 	highp vec4 comp = vec4(fract(bitSh * depth));
 	comp -= comp.xxyz * bitMsk;
 
-	return comp;
+	return comp; //TODO: use old method
 }
 
 void main() {
-	float normalizedDistance  = vPosition.z / vPosition.w;
-	normalizedDistance = normalizedDistance * 0.5 + 0.5;// scale -1.0;1.0 to 0.0;1.0
+	float normalizedDistance  = vPosition.z /*/ vPosition.w*/; //TODO: for spot lights only
+	normalizedDistance = normalizedDistance * 0.5 + 0.5;
 	//normalizedDistance -= 0.5; //TODO: use with rgb buffer + 0.5 ???
 
     highp vec4 result = pack(normalizedDistance);
