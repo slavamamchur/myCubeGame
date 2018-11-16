@@ -54,8 +54,8 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.GUI_O
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GLObjectType.SHADOW_MAP_OBJECT;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.GraphicsQuality;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.LAND_SIZE_IN_WORLD_SPACE;
-import static com.sadgames.gl3dengine.glrender.GLRenderConsts.OES_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.SHADOW_MAP_RESOLUTION_SCALE;
+import static com.sadgames.gl3dengine.glrender.GLRenderConsts.UNI_DEPTH_TEXTURE_EXTENSION;
 import static com.sadgames.gl3dengine.glrender.GLRenderConsts.WAVE_SPEED;
 import static com.sadgames.gl3dengine.glrender.scene.objects.PNodeObject.MOVING_OBJECT;
 import static com.sadgames.sysutils.common.CommonUtils.getSettingsManager;
@@ -171,7 +171,7 @@ public class GLScene extends SceneObjectsTreeItem implements GLRendererInterface
 
     @SuppressWarnings("all")
     public boolean checkDepthTextureExtension() {
-        return GLES20JniWrapper.glExtensions().contains(OES_DEPTH_TEXTURE_EXTENSION);
+        return GLES20JniWrapper.glExtensions().contains(UNI_DEPTH_TEXTURE_EXTENSION);
     }
 
     private void clearData() {

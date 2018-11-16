@@ -10,6 +10,7 @@ import static com.sadgames.gl3dengine.glrender.GLRenderConsts.FBO_TEXTURE_SLOT;
 
 public class DepthBufferFBO extends AbstractFBO {
 
+    //TODO: try to use libGDX FBO
     public DepthBufferFBO(int width, int height, Color4f clearColor) {
         super(width, height, clearColor);
     }

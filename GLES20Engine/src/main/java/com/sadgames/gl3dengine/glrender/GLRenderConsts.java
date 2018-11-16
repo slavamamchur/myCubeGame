@@ -100,6 +100,8 @@ public  class GLRenderConsts {
     public static final String UY_PIXEL_OFFSET_PARAM_NAME = "uyPixelOffset";
 
     public static final String OES_DEPTH_TEXTURE_EXTENSION = "OES_depth_texture";
+    public static final String ARB_DEPTH_TEXTURE_EXTENSION = "GL_ARB_depth_texture";
+    public static final String UNI_DEPTH_TEXTURE_EXTENSION = "_depth_texture";
 
     public static final String MAIN_RENDERER_VERTEX_SHADER = "shaders/vertex_shader.glsl";
     public static final String MAIN_RENDERER_FRAGMENT_SHADER = "shaders/fragment_shader.glsl";
